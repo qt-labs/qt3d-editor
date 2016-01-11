@@ -32,14 +32,18 @@ import QtQuick.Dialogs 1.2
 
 PropertyInputField {
     id: fileInput
+    property alias dialog: fileDialog
     width: parent.width
     height: mainLayout.height
 
     property alias label: fileLabel.text
     property url url: " "
+    property url defaultUrl: ""
 
     onComponentValueChanged: {
         url = component[propertyName]
+        if (fileButton.text === "")
+            fileDialog.open()
     }
 
     FileDialog {
@@ -47,6 +51,10 @@ PropertyInputField {
         title: fileLabel.text
         onAccepted: {
             handleEditingFinished(fileUrl)
+        }
+        onRejected: {
+            if (fileButton.text === "")
+                handleEditingFinished(defaultUrl)
         }
     }
 

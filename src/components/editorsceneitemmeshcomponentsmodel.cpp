@@ -103,13 +103,9 @@ void EditorSceneItemMeshComponentsModel::setMesh(MeshComponentTypes type)
     if (type != m_type) {
         Qt3DRender::QGeometryRenderer *mesh = Q_NULLPTR;
         switch (type) {
-        case Custom: {
-            Qt3DRender::QMesh *customMesh = new Qt3DRender::QMesh();
-            // TODO: Better default mesh
-            customMesh->setSource(QUrl(QStringLiteral("qrc:/meshes/cameracone.obj")));
-            mesh = customMesh;
+        case Custom:
+            mesh = new Qt3DRender::QMesh();
             break;
-        }
         case Cuboid:
             mesh = new Qt3DRender::QCuboidMesh();
             break;

@@ -38,6 +38,8 @@ MeshDelegate {
         propertyName: "source"
         component: meshComponentData
         componentType: thisDelegate.componentType
+        dialog.nameFilters: [qsTr("Wavefront files (*.obj)")]
+        defaultUrl: "qrc:/meshes/defaultmesh.obj"
     }
 }
 

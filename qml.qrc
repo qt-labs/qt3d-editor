@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>meshes/cameracone.obj</file>
+        <file>meshes/defaultmesh.obj</file>
         <file alias="main.qml">qml/main.qml</file>
         <file alias="CameraEntityDelegate.qml">qml/CameraEntityDelegate.qml</file>
         <file alias="CameraLensComponentDelegate.qml">qml/CameraLensComponentDelegate.qml</file>
