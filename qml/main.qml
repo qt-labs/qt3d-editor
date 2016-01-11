@@ -91,6 +91,7 @@ ApplicationWindow {
                 Instantiator {
                     model: editorScene.sceneCamerasModel
                     MenuItem {
+                        enabled: !freeViewCamera.checked
                         text: model.display
                         checkable: true
                         checked: editorScene.activeSceneCameraIndex === index
