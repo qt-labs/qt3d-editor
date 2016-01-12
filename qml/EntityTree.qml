@@ -228,7 +228,7 @@ Item {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        selectedEntityName = editorScene.sceneModel.entityName(styleData.index)
+                        entityName = editorScene.sceneModel.entityName(styleData.index)
                         if (entityEnabled)
                             entityEnabled = false
                         else

@@ -30,6 +30,7 @@ import com.theqtcompany.Editor3d 1.0
 
 Item {
     property string propertyName: ""
+    property string entityName: selectedEntityName
     property var component: null
     property int componentType: EditorSceneItemComponentsModel.Unknown
     property var componentValue: component[propertyName]
@@ -42,7 +43,7 @@ Item {
             oldValue = component[propertyName]
         if (oldValue !== newValue) {
             editorScene.undoHandler.createChangePropertyCommand(
-                        selectedEntityName, componentType,
+                        entityName, componentType,
                         propertyName, newValue, oldValue, true)
         }
     }
@@ -54,7 +55,7 @@ Item {
         if (oldValue !== newValue) {
             // Execute temporary command
             editorScene.undoHandler.createChangePropertyCommand(
-                        selectedEntityName, componentType,
+                        entityName, componentType,
                         propertyName, newValue, oldValue, false)
         }
     }
