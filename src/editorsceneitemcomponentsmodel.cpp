@@ -134,9 +134,6 @@ void EditorSceneItemComponentsModel::initializeModel()
     if (qobject_cast<Qt3DCore::QCamera *>(m_sceneItem->entity()))
         newInfoMap.insert(CameraEntity, ComponentInfo(Q_NULLPTR, CameraEntity));
 
-    // All entities have a general entity component
-    newInfoMap.insert(GeneralEntity, ComponentInfo(Q_NULLPTR, GeneralEntity));
-
     m_modelRowList.clear();
     // Resolve row indexes for components. We want to show components in predictable order.
     for (int i = 0; i < SupportedComponentCount; i++) {
@@ -192,8 +189,6 @@ EditorSceneItemComponentsModel::typeOfComponent(QObject *component)
     if (qobject_cast<Qt3DCore::QEntity *>(component)) {
         if (qobject_cast<Qt3DCore::QCamera *>(component))
             return CameraEntity;
-        else
-            return GeneralEntity;
     }
     if (qobject_cast<Qt3DRender::QLight *>(component))
         return Light;
@@ -242,10 +237,8 @@ QVariant EditorSceneItemComponentsModel::data(const QModelIndex &index, int role
 
     QVariant componentData = QVariant();
 
-    // GeneralEntity and CameraEntity are not actually components, so handle them first
-    if (compInfo.type == GeneralEntity) {
-        return QVariant::fromValue(m_sceneItem->entity());
-    } else if (compInfo.type == CameraEntity) {
+    // CameraEntity is not actually a component, so handle it first
+    if (compInfo.type == CameraEntity) {
         Qt3DCore::QCamera *camera = qobject_cast<Qt3DCore::QCamera *>(m_sceneItem->entity());
         if (camera)
             componentData = QVariant::fromValue(camera);

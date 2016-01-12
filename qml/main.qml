@@ -336,6 +336,16 @@ ApplicationWindow {
                     id: entityTree
                 }
 
+                GeneralPropertyView {
+                    id: generalPropertyView
+                    entityName: selectedEntityName
+                    propertiesButtonVisible: {
+                        (entityTree.view.selection.currentIndex
+                         !== editorScene.sceneModel.sceneEntityIndex())
+                                ? true : false
+                    }
+                }
+
                 // Property (transform, material, etc.) list
                 ListView {
                     id: componentPropertiesView
@@ -344,6 +354,7 @@ ApplicationWindow {
                     flickableDirection: Flickable.VerticalFlick
                     boundsBehavior: Flickable.StopAtBounds
                     clip: true
+                    visible: generalPropertyView.viewTitleVisible
                 }
             }
         }

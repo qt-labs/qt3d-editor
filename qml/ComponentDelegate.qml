@@ -35,6 +35,7 @@ Item {
 
     property alias title: componentTitle.headerText
     default property alias _contentChildren: columnLayout.data
+    property alias viewTitleVisible: componentTitle.viewVisible
     property int componentType: EditorSceneItemComponentsModel.Unknown
     property int componentHeight: columnLayout.y + columnLayout.height
 

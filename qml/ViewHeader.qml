@@ -53,10 +53,13 @@ Rectangle {
     MouseArea {
         anchors.fill: parent
         onClicked: {
-            if (viewVisible)
+            if (viewVisible) {
+                viewVisible = false
                 hideViewTitle()
-            else
+            } else {
+                viewVisible = true
                 showViewTitle()
+            }
         }
     }
 }

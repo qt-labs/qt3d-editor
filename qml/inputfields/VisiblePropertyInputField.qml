@@ -31,12 +31,12 @@ import com.theqtcompany.Editor3d 1.0
 PropertyInputField {
     id: visibleInput
     width: parent.width
-    componentType: EditorSceneItemComponentsModel.GeneralEntity
 
     property bool entityEnabled: true
     property string visibleOnImage
     property string visibleOffImage
     property bool propertyImagevisible: true
+    componentType: EditorSceneItemComponentsModel.GeneralEntity
 
     onComponentValueChanged: {
         entityEnabled = component[propertyName]

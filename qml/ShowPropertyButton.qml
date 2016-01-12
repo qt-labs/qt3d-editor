@@ -25,25 +25,42 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.4
-import com.theqtcompany.Editor3d 1.0
+import QtQuick 2.5
 import QtQuick.Controls 1.3
-import QtQuick.Layouts 1.1
+import QtQuick.Controls.Styles 1.4
+import com.theqtcompany.Editor3d 1.0
 
-ComponentDelegate {
-    title: qsTr("Properties")
+Item {
+    height: 24
+    width: 24
 
-    TextInputField {
-        id: textInputField
-        label: qsTr("Entity name")
-        displayText: componentData.objectName
+    property string showIconSource
+    property string hideIconSource
+    property alias tooltip: propertyButton.tooltip
+    property int propertyComponentType: EditorSceneItemComponentsModel.Unknown
 
-        onDesiredTextChanged: {
-            if (desiredText !== "") {
-                editorScene.undoHandler.createRenameEntityCommand(selectedEntityName, desiredText);
-                selectedEntityName = editorScene.sceneModel.entityName(entityTree.view.selection.currentIndex)
+    // Button style delegate
+    Component {
+        id: propertyButtonStyle
+        ButtonStyle {
+            padding.top: 0
+            padding.bottom: 0
+            padding.right: 0
+            padding.left: 0
+            background: Rectangle {
+                border.width: 0
             }
         }
     }
-}
 
+    Button {
+        id: propertyButton
+        anchors.centerIn: parent.Center
+        iconSource: showIconSource //TODO: or hideIconSource if the properties are hidden
+        style: propertyButtonStyle
+        onClicked: {
+            //TODO: show/hide properties view
+            console.log("Property button clicked")
+        }
+    }
+}

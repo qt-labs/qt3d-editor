@@ -61,7 +61,6 @@
         <file alias="SpotLightDelegate.qml">qml/lights/SpotLightDelegate.qml</file>
         <file alias="UnknownLightDelegate.qml">qml/lights/UnknownLightDelegate.qml</file>
         <file alias="EntityMenu.qml">qml/EntityMenu.qml</file>
-        <file alias="GeneralEntityDelegate.qml">qml/GeneralEntityDelegate.qml</file>
         <file alias="TextInputField.qml">qml/inputfields/TextInputField.qml</file>
         <file alias="PropertyInputField.qml">qml/inputfields/PropertyInputField.qml</file>
         <file alias="ModelRoleInputField.qml">qml/inputfields/ModelRoleInputField.qml</file>
@@ -77,5 +76,7 @@
         <file>shaders/wireframe.frag</file>
         <file>shaders/wireframe.vert</file>
         <file alias="VisiblePropertyInputField.qml">qml/inputfields/VisiblePropertyInputField.qml</file>
+        <file alias="ShowPropertyButton.qml">qml/ShowPropertyButton.qml</file>
+        <file alias="GeneralPropertyView.qml">qml/GeneralPropertyView.qml</file>
     </qresource>
 </RCC>

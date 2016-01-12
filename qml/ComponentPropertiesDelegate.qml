@@ -35,8 +35,6 @@ Loader {
     width: parent.width
 
     function componentTypeToDelegateSource(componentType) {
-        if (componentType == EditorSceneItemComponentsModel.GeneralEntity)
-            return "GeneralEntityDelegate.qml"
         if (componentType == EditorSceneItemComponentsModel.CameraEntity)
             return "CameraEntityDelegate.qml"
 //        if (componentType == EditorSceneItemComponentsModel.CameraLens)
