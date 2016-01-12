@@ -26,8 +26,8 @@ SOURCES += src/main.cpp \
     src/undohandler/modelrolechangecommand.cpp \
     src/undohandler/replacecomponentcommand.cpp
 
-TRANSLATIONS = qt3deditor_fi.ts \
-               qt3deditor_en.ts
+TRANSLATIONS = qt3dsceneeditor_fi.ts \
+               qt3dsceneeditor_en.ts
 
 RESOURCES += qml.qrc \
     images.qrc

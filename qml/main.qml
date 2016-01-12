@@ -31,11 +31,11 @@ import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.1
 import QtQml.Models 2.2
 import Qt3D.Core 2.0
-import com.theqtcompany.Editor3d 1.0
+import com.theqtcompany.SceneEditor3D 1.0
 
 ApplicationWindow {
     id: mainwindow
-    title: qsTr("Qt 3D Editor")
+    title: qsTr("Qt 3D Scene Editor")
     width: 1280
     height: 700
     visible: true

@@ -29,7 +29,7 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.1
 import QtQml.Models 2.2
-import com.theqtcompany.Editor3d 1.0
+import com.theqtcompany.SceneEditor3D 1.0
 
 Item {
     id: treeViewSplit

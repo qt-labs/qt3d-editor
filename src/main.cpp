@@ -51,19 +51,19 @@ int main(int argc, char *argv[])
     app.installTranslator(&qtTranslator);
 
     QTranslator appTranslator;
-    appTranslator.load(":/qt3deditor_" + QLocale::system().name());
+    appTranslator.load(":/qt3dsceneeditor_" + QLocale::system().name());
     app.installTranslator(&appTranslator);
 
-    qmlRegisterType<EditorScene>("com.theqtcompany.Editor3d", 1, 0, "EditorScene");
-    qmlRegisterType<EditorViewportItem>("com.theqtcompany.Editor3d", 1, 0, "EditorViewport");
-    qmlRegisterUncreatableType<EditorSceneItemModel>("com.theqtcompany.Editor3d", 1, 0, "EditorSceneItemModel", "Created by EditorScene");
-    qmlRegisterUncreatableType<EditorSceneItem>("com.theqtcompany.Editor3d", 1, 0, "EditorSceneItem", "Created by EditorScene");
-    qmlRegisterUncreatableType<EditorSceneItemComponentsModel>("com.theqtcompany.Editor3d", 1, 0, "EditorSceneItemComponentsModel", "Created by EditorSceneItem");
-    qmlRegisterUncreatableType<EditorSceneItemTransformComponentsModel>("com.theqtcompany.Editor3d", 1, 0, "EditorSceneItemTransformComponentsModel", "Created by EditorSceneItemComponentsModel");
-    qmlRegisterUncreatableType<EditorSceneItemMaterialComponentsModel>("com.theqtcompany.Editor3d", 1, 0, "EditorSceneItemMaterialComponentsModel", "Created by EditorSceneItemComponentsModel");
-    qmlRegisterUncreatableType<EditorSceneItemMeshComponentsModel>("com.theqtcompany.Editor3d", 1, 0, "EditorSceneItemMeshComponentsModel", "Created by EditorSceneItemComponentsModel");
-    qmlRegisterUncreatableType<EditorSceneItemLightComponentsModel>("com.theqtcompany.Editor3d", 1, 0, "EditorSceneItemLightComponentsModel", "Created by EditorSceneItemComponentsModel");
-    qmlRegisterUncreatableType<UndoHandler>("com.theqtcompany.Editor3d", 1, 0, "UndoHandler", "Created by EditorScene");
+    qmlRegisterType<EditorScene>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorScene");
+    qmlRegisterType<EditorViewportItem>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorViewport");
+    qmlRegisterUncreatableType<EditorSceneItemModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemModel", "Created by EditorScene");
+    qmlRegisterUncreatableType<EditorSceneItem>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItem", "Created by EditorScene");
+    qmlRegisterUncreatableType<EditorSceneItemComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemComponentsModel", "Created by EditorSceneItem");
+    qmlRegisterUncreatableType<EditorSceneItemTransformComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemTransformComponentsModel", "Created by EditorSceneItemComponentsModel");
+    qmlRegisterUncreatableType<EditorSceneItemMaterialComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemMaterialComponentsModel", "Created by EditorSceneItemComponentsModel");
+    qmlRegisterUncreatableType<EditorSceneItemMeshComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemMeshComponentsModel", "Created by EditorSceneItemComponentsModel");
+    qmlRegisterUncreatableType<EditorSceneItemLightComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemLightComponentsModel", "Created by EditorSceneItemComponentsModel");
+    qmlRegisterUncreatableType<UndoHandler>("com.theqtcompany.SceneEditor3D", 1, 0, "UndoHandler", "Created by EditorScene");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

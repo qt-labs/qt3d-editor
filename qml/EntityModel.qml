@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
-import com.theqtcompany.Editor3d 1.0
+import com.theqtcompany.SceneEditor3D 1.0
 
 ListModel {
     ListElement {

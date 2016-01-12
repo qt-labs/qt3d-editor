@@ -28,7 +28,7 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.3
 import QtQuick.Controls.Styles 1.4
-import com.theqtcompany.Editor3d 1.0
+import com.theqtcompany.SceneEditor3D 1.0
 
 Item {
     height: 24
