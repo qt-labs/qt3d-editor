@@ -52,14 +52,11 @@ Item {
             id: componentTitle
             anchors.top: parent.top
             headerText: componentTitle
-            viewVisible: columnLayout.visible
 
             onShowViewTitle: {
-                columnLayout.visible = true
                 componentDelegate.height = componentHeight
             }
             onHideViewTitle: {
-                columnLayout.visible = false
                 componentHeight = componentDelegate.height
                 componentDelegate.height = minimumHeaderHeight
             }
@@ -73,6 +70,7 @@ Item {
             anchors.leftMargin: 8
             anchors.right: parent.right
             anchors.rightMargin: 8
+            visible: componentTitle.viewVisible
         }
     }
 }

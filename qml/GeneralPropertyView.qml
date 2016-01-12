@@ -56,9 +56,10 @@ Item {
         anchors.right: parent.right
         height: componentTitle.height
 
-        ViewHeader {
+        ButtonViewHeader {
             id: componentTitle
             anchors.top: parent.top
+            visibleEntityButtonShown: true
             headerText: qsTr("Properties")
 
             function showView() {
@@ -73,10 +74,10 @@ Item {
                 generalEntityItem.Layout.minimumHeight = minimumHeaderHeight
             }
 
-            onShowViewTitle: {
+            onShowViewButtonPressed: {
                 showView()
             }
-            onHideViewTitle: {
+            onHideViewButtonPressed: {
                 hideView()
             }
         }

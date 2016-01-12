@@ -80,5 +80,6 @@
         <file alias="GeneralPropertyView.qml">qml/GeneralPropertyView.qml</file>
         <file>qt3dsceneeditor_en.qm</file>
         <file>qt3dsceneeditor_fi.qm</file>
+        <file alias="ButtonViewHeader.qml">qml/ButtonViewHeader.qml</file>
     </qresource>
 </RCC>

@@ -44,6 +44,7 @@ PropertyInputField {
 
     Image {
         id: visibleImage
+        anchors.verticalCenter: parent.verticalCenter
         visible: propertyImagevisible
         source: { entityEnabled ? visibleOnImage : visibleOffImage }
     }

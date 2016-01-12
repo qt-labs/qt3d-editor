@@ -116,18 +116,15 @@ Item {
             }
         }
     }
-    ViewHeader {
+    ButtonViewHeader {
         id: treeViewHeader
         anchors.top: treeViewHeaderBackground.bottom
         headerText: qsTr("Scene")
-        viewVisible: entityTreeView.visible
 
-        onShowViewTitle: {
-            entityTreeView.visible = true
+        onShowViewButtonPressed: {
             treeViewSplit.height = splitHeight
         }
-        onHideViewTitle: {
-            entityTreeView.visible = false
+        onHideViewButtonPressed: {
             splitHeight = treeViewSplit.height
             treeViewSplit.height = minimumHeaderHeight + treeViewHeaderBackground.height
         }
@@ -138,6 +135,7 @@ Item {
         anchors.top: treeViewHeader.bottom
         anchors.bottom: treeViewSplit.bottom
         width: parent.width
+        visible: treeViewHeader.viewVisible
         model: editorScene.sceneModel
         selection: ItemSelectionModel {
             model: editorScene.sceneModel

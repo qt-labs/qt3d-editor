@@ -40,17 +40,14 @@ Item {
     Layout.minimumHeight: entityViewHeader.height
     height: splitHeight
 
-    ViewHeader {
+    ButtonViewHeader {
         id: entityViewHeader
         headerText: qsTr("Shapes")
-        viewVisible: entityView.visible
 
-        onShowViewTitle: {
-            entityView.visible = true
+        onShowViewButtonPressed: {
             entityLibrary.height = splitHeight
         }
-        onHideViewTitle: {
-            entityView.visible = false
+        onHideViewButtonPressed: {
             splitHeight = entityLibrary.height
             entityLibrary.height = minimumHeaderHeight
         }
@@ -63,6 +60,7 @@ Item {
         width: parent.width
         color: "lightGray"
         border.color: "darkGray"
+        visible: entityViewHeader.viewVisible
         ScrollView {
             anchors.fill: parent
             GridView {
