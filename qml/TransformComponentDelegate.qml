@@ -56,9 +56,9 @@ ComponentDelegate {
                 ListElement { text: qsTr("Matrix") }
             }
             onCurrentTextChanged: {
-                if (currentText == "Scale, Rotate & Translate")
+                if (currentText == qsTr("Scale, Rotate & Translate"))
                     componentData.model.setTransform(EditorSceneItemTransformComponentsModel.SRT)
-                else if (currentText == "Matrix")
+                else if (currentText == qsTr("Matrix"))
                     componentData.model.setTransform(EditorSceneItemTransformComponentsModel.Matrix)
             }
         }

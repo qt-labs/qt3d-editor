@@ -35,7 +35,7 @@ ComponentDelegate {
     title: qsTr("Object Picker")
 
     CheckBoxPropertyInputField {
-        label: qsTr("Hover Enabled")
+        checkBoxLabel: qsTr("Hover Enabled")
         propertyName: "hoverEnabled"
         component: componentData
         componentType: thisDelegate.componentType

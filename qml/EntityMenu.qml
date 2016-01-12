@@ -34,7 +34,7 @@ Menu {
     title: qsTr("Add Entity")
 
     MenuItem {
-        text: selectedEntityName === "" ? qsTr("Add new entity") : qsTr("Add new entity under '") + selectedEntityName + qsTr("'")
+        text: selectedEntityName === "" ? qsTr("Add new entity") : qsTr("Add new entity under '%1'").arg(selectedEntityName)
         enabled: false
     }
 

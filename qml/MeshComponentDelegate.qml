@@ -38,11 +38,12 @@ ComponentDelegate {
 
     Item {
         width: parent.width
-        height: title.height + 8
+        height: meshCombobox.height + 8
 
         Component.onCompleted: meshCombobox.currentIndex = meshDelegate.currentMesh - 1
 
-        RowLayout {
+        ComboBox {
+            id: meshCombobox
             anchors.right: parent.right
             anchors.rightMargin: 8
             anchors.left: parent.left
@@ -50,39 +51,27 @@ ComponentDelegate {
             anchors.bottomMargin: 4
             anchors.verticalCenter: parent.verticalCenter
 
-            Label {
-                id: title
-                text: qsTr("Static mesh")
-                color: labelTextColor
-                Layout.alignment: Qt.AlignLeft
+            model: ListModel {
+                ListElement { text: qsTr("Cube") }
+                ListElement { text: qsTr("Custom") }
+                ListElement { text: qsTr("Cylinder") }
+                ListElement { text: qsTr("Plane") }
+                ListElement { text: qsTr("Sphere") }
+                ListElement { text: qsTr("Torus") }
             }
-
-            ComboBox {
-                id: meshCombobox
-                Layout.alignment: Qt.AlignRight
-                model: ListModel {
-                    ListElement { text: qsTr("Cube") }
-                    ListElement { text: qsTr("Custom") }
-                    ListElement { text: qsTr("Cylinder") }
-                    ListElement { text: qsTr("Plane") }
-                    ListElement { text: qsTr("Sphere") }
-                    ListElement { text: qsTr("Torus") }
-                }
-                onCurrentTextChanged: {
-                    if (currentText == "Cube")
-                        componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Cuboid)
-                    else if (currentText == "Custom")
-                        componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Custom)
-                    else if (currentText == "Cylinder")
-                        componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Cylinder)
-                    else if (currentText == "Plane")
-                        componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Plane)
-                    else if (currentText == "Sphere")
-                        componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Sphere)
-                    else if (currentText == "Torus")
-                        componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Torus)
-
-                }
+            onCurrentTextChanged: {
+                if (currentText == qsTr("Cube"))
+                    componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Cuboid)
+                else if (currentText == qsTr("Custom"))
+                    componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Custom)
+                else if (currentText == qsTr("Cylinder"))
+                    componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Cylinder)
+                else if (currentText == qsTr("Plane"))
+                    componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Plane)
+                else if (currentText == qsTr("Sphere"))
+                    componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Sphere)
+                else if (currentText == qsTr("Torus"))
+                    componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Torus)
             }
         }
     }

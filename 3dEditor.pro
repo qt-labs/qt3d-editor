@@ -26,6 +26,9 @@ SOURCES += src/main.cpp \
     src/undohandler/modelrolechangecommand.cpp \
     src/undohandler/replacecomponentcommand.cpp
 
+TRANSLATIONS = qt3deditor_fi.ts \
+               qt3deditor_en.ts
+
 RESOURCES += qml.qrc \
     images.qrc
 
@@ -60,3 +63,13 @@ HEADERS += \
     src/undohandler/propertychangecommand.h \
     src/undohandler/modelrolechangecommand.h \
     src/undohandler/replacecomponentcommand.h
+
+lupdate_only {
+SOURCES = qml/*.qml \
+    qml/inputfields/*.qml \
+    qml/lights/*.qml \
+    qml/materials/*.qml \
+    qml/meshes/*.qml \
+    qml/transforms/*.qml \
+    src/editorscene.cpp
+}

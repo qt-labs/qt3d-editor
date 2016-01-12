@@ -31,49 +31,49 @@ import com.theqtcompany.Editor3d 1.0
 ListModel {
     ListElement {
         meshType: EditorSceneItemModel.CuboidEntity
-        meshString: "Cube"
+        meshString: qsTr("Cube")
         meshImage: "images/mesh_cuboid-large.png"
         meshDragImage: "images/mesh_cuboid-large.png"
     }
     ListElement {
         meshType: EditorSceneItemModel.CylinderEntity
-        meshString: "Cylinder"
+        meshString: qsTr("Cylinder")
         meshImage: "images/mesh_cylinder-large.png"
         meshDragImage: "images/mesh_cylinder-large.png"
     }
     ListElement {
         meshType: EditorSceneItemModel.PlaneEntity
-        meshString: "Plane"
+        meshString: qsTr("Plane")
         meshImage: "images/mesh_plane-large.png"
         meshDragImage: "images/mesh_plane-large.png"
     }
     ListElement {
         meshType: EditorSceneItemModel.SphereEntity
-        meshString: "Sphere"
+        meshString: qsTr("Sphere")
         meshImage: "images/mesh_sphere-large.png"
         meshDragImage: "images/mesh_sphere-large.png"
     }
     ListElement {
         meshType: EditorSceneItemModel.TorusEntity
-        meshString: "Torus"
+        meshString: qsTr("Torus")
         meshImage: "images/mesh_torus-large.png"
         meshDragImage: "images/mesh_torus-large.png"
     }
     ListElement {
         meshType: EditorSceneItemModel.CustomEntity
-        meshString: "Custom"
+        meshString: qsTr("Custom")
         meshImage: "images/mesh_custom-large.png"
         meshDragImage: "images/mesh_custom-large.png"
     }
     ListElement {
         meshType: EditorSceneItemModel.CameraEntity
-        meshString: "Camera"
+        meshString: qsTr("Camera")
         meshImage: "images/camera-large.png"
         meshDragImage: "images/camera-large.png"
     }
     ListElement {
         meshType: EditorSceneItemModel.LightEntity
-        meshString: "Light"
+        meshString: qsTr("Light")
         meshImage: "images/light-large.png"
         meshDragImage: "images/light-large.png"
     }

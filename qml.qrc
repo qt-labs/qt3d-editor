@@ -78,5 +78,7 @@
         <file alias="VisiblePropertyInputField.qml">qml/inputfields/VisiblePropertyInputField.qml</file>
         <file alias="ShowPropertyButton.qml">qml/ShowPropertyButton.qml</file>
         <file alias="GeneralPropertyView.qml">qml/GeneralPropertyView.qml</file>
+        <file>qt3deditor_en.qm</file>
+        <file>qt3deditor_fi.qm</file>
     </qresource>
 </RCC>

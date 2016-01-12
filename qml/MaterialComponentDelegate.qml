@@ -39,11 +39,12 @@ ComponentDelegate {
 
     Item {
         width: parent.width
-        height: title.height + 8
+        height: materialCombobox.height + 8
 
         Component.onCompleted: materialCombobox.currentIndex = materialDelegate.currentMaterial - 1
 
-        RowLayout {
+        ComboBox {
+            id: materialCombobox
             anchors.right: parent.right
             anchors.rightMargin: 4
             anchors.left: parent.left
@@ -51,45 +52,34 @@ ComponentDelegate {
             anchors.bottomMargin: 4
             anchors.verticalCenter: parent.verticalCenter
 
-            Label {
-                id: title
-                text: qsTr("Material")
-                color: labelTextColor
-                Layout.alignment: Qt.AlignLeft
+            model: ListModel {
+                ListElement { text: qsTr("DiffuseMap") }
+                ListElement { text: qsTr("DiffuseSpecularMap") }
+                ListElement { text: qsTr("Gooch") }
+                ListElement { text: qsTr("NormalDiffuseMap") }
+                ListElement { text: qsTr("NormalDiffuseMapAlpha") }
+                ListElement { text: qsTr("NormalDiffuseSpecularMap") }
+                ListElement { text: qsTr("PerVertexColor") }
+                ListElement { text: qsTr("PhongAlpha") }
+                ListElement { text: qsTr("Phong") }
             }
-
-            ComboBox {
-                id: materialCombobox
-                Layout.alignment: Qt.AlignRight
-                model: ListModel {
-                    ListElement { text: qsTr("DiffuseMap") }
-                    ListElement { text: qsTr("DiffuseSpecularMap") }
-                    ListElement { text: qsTr("Gooch") }
-                    ListElement { text: qsTr("NormalDiffuseMap") }
-                    ListElement { text: qsTr("NormalDiffuseMapAlpha") }
-                    ListElement { text: qsTr("NormalDiffuseSpecularMap") }
-                    ListElement { text: qsTr("PerVertexColor") }
-                    ListElement { text: qsTr("PhongAlpha") }
-                    ListElement { text: qsTr("Phong") }
-                }
-                onCurrentTextChanged: {
-                    if (currentText == "DiffuseMap")
-                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.DiffuseMap)
-                    else if (currentText == "DiffuseSpecularMap")
-                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.DiffuseSpecularMap)
-                    else if (currentText == "Gooch")
-                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.Gooch)
-                    else if (currentText == "NormalDiffuseMap")
-                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.NormalDiffuseMap)
-                    else if (currentText == "NormalDiffuseSpecularMap")
-                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.NormalDiffuseSpecularMap)
-                    else if (currentText == "PerVertexColor")
-                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.PerVertexColor)
-                    else if (currentText == "PhongAlpha")
-                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.PhongAlpha)
-                    else if (currentText == "Phong")
-                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.Phong)
-                }
+            onCurrentTextChanged: {
+                if (currentText == qsTr("DiffuseMap"))
+                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.DiffuseMap)
+                else if (currentText == qsTr("DiffuseSpecularMap"))
+                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.DiffuseSpecularMap)
+                else if (currentText == qsTr("Gooch"))
+                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.Gooch)
+                else if (currentText == qsTr("NormalDiffuseMap"))
+                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.NormalDiffuseMap)
+                else if (currentText == qsTr("NormalDiffuseSpecularMap"))
+                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.NormalDiffuseSpecularMap)
+                else if (currentText == qsTr("PerVertexColor"))
+                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.PerVertexColor)
+                else if (currentText == qsTr("PhongAlpha"))
+                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.PhongAlpha)
+                else if (currentText == qsTr("Phong"))
+                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.Phong)
             }
         }
     }

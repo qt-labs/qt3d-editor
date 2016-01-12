@@ -532,7 +532,7 @@ void EditorScene::setupDefaultScene()
 #else
     // Camera
     Qt3DCore::QCamera *sceneCameraEntity = new Qt3DCore::QCamera(m_sceneEntity);
-    sceneCameraEntity->setObjectName(QStringLiteral("camera"));
+    sceneCameraEntity->setObjectName(tr("Camera"));
 
     sceneCameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     sceneCameraEntity->setPosition(QVector3D(0, 0, -20.0f));
@@ -544,7 +544,7 @@ void EditorScene::setupDefaultScene()
 
     // Cube
     Qt3DCore::QEntity *cubeEntity = new Qt3DCore::QEntity(m_sceneEntity);
-    cubeEntity->setObjectName(QStringLiteral("Cube"));
+    cubeEntity->setObjectName(tr("Cube"));
     Qt3DRender::QCuboidMesh *cubeMesh = new Qt3DRender::QCuboidMesh();
     Qt3DCore::QTransform *cubeTransform = new Qt3DCore::QTransform();
     cubeTransform->setTranslation(QVector3D(0.0f, 0.0f, 0.0f));
@@ -566,7 +566,7 @@ void EditorScene::setupDefaultScene()
 
     // Light
     Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity(m_sceneEntity);
-    lightEntity->setObjectName(QStringLiteral("Light"));
+    lightEntity->setObjectName(tr("Light"));
     Qt3DRender::QLight *light = new Qt3DRender::QLight(m_sceneEntity);
     Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform();
     lightTransform->setTranslation(QVector3D(0.0f, 0.0f, -10.0f));
@@ -645,7 +645,7 @@ void EditorScene::createRootEntity()
 
     // Scene entity (i.e. the visible root)
     m_sceneEntity = new Qt3DCore::QEntity();
-    m_sceneEntity->setObjectName(QStringLiteral("Scene root"));
+    m_sceneEntity->setObjectName(tr("Scene root"));
 
     // Free view camera
     m_freeViewCameraEntity = new Qt3DCore::QCamera(m_rootEntity);
