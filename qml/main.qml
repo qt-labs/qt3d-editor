@@ -56,6 +56,13 @@ ApplicationWindow {
         Menu {
             title: qsTr("&File")
             MenuItem {
+                text: qsTr("&New")
+                onTriggered: {
+                    editorScene.resetScene()
+                    planeOrientationY.checked = true
+                }
+            }
+            MenuItem {
                 action: fileLoadAction
             }
             MenuItem {

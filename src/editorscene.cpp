@@ -76,7 +76,7 @@
 #include <QtGui/QWindow>
 #include <QtGui/QKeySequence>
 
-#define TEST_SCENE // If a test scene is wanted instead of the default scene
+//#define TEST_SCENE // If a test scene is wanted instead of the default scene
 
 static const QString cameraConeName = QStringLiteral("__internal camera cone");
 static const QString internalPrefix = QStringLiteral("__internal");
@@ -273,6 +273,36 @@ void EditorScene::removeEntityItem(const Qt3DCore::QNodeId &id)
 const QMap<Qt3DCore::QNodeId, EditorSceneItem *> &EditorScene::items() const
 {
     return m_sceneItems;
+}
+
+void EditorScene::resetScene()
+{
+    // Clear the existing scene
+    setFrameGraphCamera(Q_NULLPTR);
+    m_undoHandler->clear();
+    clearSceneCameras();
+    removeEntity(m_sceneEntity, true);
+
+    // Create new scene root
+    m_sceneEntity = new Qt3DCore::QEntity();
+    m_sceneEntity->setObjectName(tr("Scene root"));
+    addEntity(m_sceneEntity);
+
+    // Set up default scene
+    setupDefaultScene();
+
+    // Set other defaults
+    setActiveSceneCameraIndex(0);
+    m_freeView = true;
+    m_freeViewCameraEntity->setPosition(QVector3D(20.0f, 20.0f, 20.0f));
+    m_freeViewCameraEntity->setUpVector(QVector3D(0, 1, 0));
+    m_freeViewCameraEntity->setViewCenter(QVector3D(0, 0, 0));
+    setFrameGraphCamera(m_freeViewCameraEntity);
+    enableCameraCones(m_freeView);
+    emit freeViewChanged(m_freeView);
+
+    // Reset entity tree
+    m_sceneModel->resetModel();
 }
 
 bool EditorScene::saveScene(const QUrl &fileUrl)
@@ -736,7 +766,6 @@ void EditorScene::createRootEntity()
     backPlane->addComponent(helperPlaneMaterial);
     m_helperPlane->addComponent(m_helperPlaneTransform);
     m_helperPlane->setParent(m_rootEntity);
-
 }
 
 void EditorScene::setFrameGraphCamera(Qt3DCore::QEntity *cameraEntity)

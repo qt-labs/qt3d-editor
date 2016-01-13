@@ -336,22 +336,23 @@
 <context>
     <name>EditorScene</name>
     <message>
-        <location filename="src/editorscene.cpp" line="535"/>
+        <location filename="src/editorscene.cpp" line="567"/>
         <source>Camera</source>
         <translation>Camera</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="547"/>
+        <location filename="src/editorscene.cpp" line="579"/>
         <source>Cube</source>
         <translation>Cube</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="569"/>
+        <location filename="src/editorscene.cpp" line="601"/>
         <source>Light</source>
         <translation>Light</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="648"/>
+        <location filename="src/editorscene.cpp" line="288"/>
+        <location filename="src/editorscene.cpp" line="680"/>
         <source>Scene root</source>
         <translation>Scene Root</translation>
     </message>
@@ -1335,108 +1336,113 @@
         <translation>&amp;File</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="68"/>
+        <location filename="qml/main.qml" line="59"/>
+        <source>&amp;New</source>
+        <translation>&amp;New</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="72"/>
         <source>E&amp;xit</source>
         <translation>E&amp;xit</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="73"/>
+        <location filename="qml/main.qml" line="77"/>
         <source>&amp;Edit</source>
         <translation>&amp;Edit</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="83"/>
+        <location filename="qml/main.qml" line="87"/>
         <source>&amp;View</source>
         <translation>&amp;View</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="86"/>
+        <location filename="qml/main.qml" line="90"/>
         <source>&amp;Camera</source>
         <translation>&amp;Camera</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="112"/>
+        <location filename="qml/main.qml" line="116"/>
         <source>Free viewing mode</source>
         <translation>Free Viewing Mode</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="122"/>
+        <location filename="qml/main.qml" line="126"/>
         <source>&amp;Helper Plane</source>
         <translation>&amp;Helper Plane</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="128"/>
+        <location filename="qml/main.qml" line="132"/>
         <source>Normal &amp;X</source>
         <translation>Normal &amp;X</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="141"/>
+        <location filename="qml/main.qml" line="145"/>
         <source>Normal &amp;Y</source>
         <translation>Normal &amp;Y</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="154"/>
+        <location filename="qml/main.qml" line="158"/>
         <source>Normal &amp;Z</source>
         <translation>Normal &amp;Z</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="167"/>
+        <location filename="qml/main.qml" line="171"/>
         <source>&amp;Hide</source>
         <translation>&amp;Hide</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="183"/>
+        <location filename="qml/main.qml" line="187"/>
         <source>Load Scene</source>
         <translation>Load Scene</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="184"/>
-        <location filename="qml/main.qml" line="196"/>
+        <location filename="qml/main.qml" line="188"/>
+        <location filename="qml/main.qml" line="200"/>
         <source>Qt3D Scenes (*.qml)</source>
         <translation>Qt 3D Scenes (*.qml)</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="195"/>
+        <location filename="qml/main.qml" line="199"/>
         <source>Save Scene</source>
         <translation>Save Scene</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="205"/>
+        <location filename="qml/main.qml" line="209"/>
         <source>L&amp;oad</source>
         <translation>L&amp;oad</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="217"/>
+        <location filename="qml/main.qml" line="221"/>
         <source>&amp;Save</source>
         <translation>&amp;Save</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="230"/>
+        <location filename="qml/main.qml" line="234"/>
         <source>Save As</source>
         <translation>Save As</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="237"/>
+        <location filename="qml/main.qml" line="241"/>
         <source>Undo</source>
         <translation>Undo</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="237"/>
+        <location filename="qml/main.qml" line="241"/>
         <source>Undo &apos;%1&apos;</source>
         <translation>Undo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="245"/>
+        <location filename="qml/main.qml" line="249"/>
         <source>Redo</source>
         <translation>Redo</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="245"/>
+        <location filename="qml/main.qml" line="249"/>
         <source>Redo &apos;%1&apos;</source>
         <translation>Redo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="270"/>
+        <location filename="qml/main.qml" line="274"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>

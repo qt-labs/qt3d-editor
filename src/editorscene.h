@@ -88,6 +88,7 @@ public:
 
     const QMap<Qt3DCore::QNodeId, EditorSceneItem *> &items() const;
 
+    Q_INVOKABLE void resetScene();
     Q_INVOKABLE bool saveScene(const QUrl &fileUrl);
     Q_INVOKABLE bool loadScene(const QUrl &fileUrl);
     Q_INVOKABLE QString cameraName(int index) const;
