@@ -124,6 +124,13 @@ ApplicationWindow {
                         editorScene.freeView = checked
                     }
                 }
+
+                MenuItem {
+                    text: qsTr("Reset")
+                    onTriggered: {
+                        editorScene.resetFreeViewCamera()
+                    }
+                }
             }
             Menu {
                 id: helperPlaneMenu

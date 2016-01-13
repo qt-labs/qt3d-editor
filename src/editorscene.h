@@ -92,6 +92,7 @@ public:
     Q_INVOKABLE bool saveScene(const QUrl &fileUrl);
     Q_INVOKABLE bool loadScene(const QUrl &fileUrl);
     Q_INVOKABLE QString cameraName(int index) const;
+    Q_INVOKABLE void resetFreeViewCamera();
 
     bool isRemovable(Qt3DCore::QEntity *entity) const;
 

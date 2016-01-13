@@ -295,9 +295,7 @@ void EditorScene::resetScene()
     // Set other defaults
     setActiveSceneCameraIndex(0);
     m_freeView = true;
-    m_freeViewCameraEntity->setPosition(QVector3D(20.0f, 20.0f, 20.0f));
-    m_freeViewCameraEntity->setUpVector(QVector3D(0, 1, 0));
-    m_freeViewCameraEntity->setViewCenter(QVector3D(0, 0, 0));
+    resetFreeViewCamera();
     setFrameGraphCamera(m_freeViewCameraEntity);
     enableCameraCones(m_freeView);
     emit freeViewChanged(m_freeView);
@@ -358,6 +356,13 @@ QString EditorScene::cameraName(int index) const
         return m_sceneCameras.at(index).entity->objectName();
     else
         return QString();
+}
+
+void EditorScene::resetFreeViewCamera()
+{
+    m_freeViewCameraEntity->setPosition(QVector3D(20.0f, 20.0f, 20.0f));
+    m_freeViewCameraEntity->setUpVector(QVector3D(0, 1, 0));
+    m_freeViewCameraEntity->setViewCenter(QVector3D(0, 0, 0));
 }
 
 void EditorScene::enableCameraCones(bool enable)
@@ -690,9 +695,7 @@ void EditorScene::createRootEntity()
     // Free view camera
     m_freeViewCameraEntity = new Qt3DCore::QCamera(m_rootEntity);
     m_freeViewCameraEntity->setObjectName(QStringLiteral("__internal free view camera"));
-    m_freeViewCameraEntity->setPosition(QVector3D(20.0f, 20.0f, 20.0f));
-    m_freeViewCameraEntity->setUpVector(QVector3D(0, 1, 0));
-    m_freeViewCameraEntity->setViewCenter(QVector3D(0, 0, 0));
+    resetFreeViewCamera();
 
     addEntity(m_sceneEntity);
 
