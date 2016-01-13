@@ -68,6 +68,7 @@ PropertyInputField {
         Label {
             id: fileLabel
             text: qsTr("File")
+            color: labelTextColor
             Layout.alignment: Qt.AlignLeft
         }
 

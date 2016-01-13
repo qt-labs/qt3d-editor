@@ -28,6 +28,5 @@
 import QtQuick 2.4
 
 MaterialDelegate {
-    title: qsTr("Per Vertex Color")
 }
 

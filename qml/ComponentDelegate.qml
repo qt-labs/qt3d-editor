@@ -41,7 +41,7 @@ Item {
 
     height: componentHeight
 
-    Rectangle {
+    Item {
         id: titleHeader
         anchors.top: parent.top
         anchors.left: parent.left

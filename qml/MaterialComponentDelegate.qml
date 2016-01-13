@@ -53,32 +53,34 @@ ComponentDelegate {
             anchors.verticalCenter: parent.verticalCenter
 
             model: ListModel {
-                ListElement { text: qsTr("DiffuseMap") }
-                ListElement { text: qsTr("DiffuseSpecularMap") }
+                ListElement { text: qsTr("Diffuse Map") }
+                ListElement { text: qsTr("Diffuse & Specular Map") }
                 ListElement { text: qsTr("Gooch") }
-                ListElement { text: qsTr("NormalDiffuseMap") }
-                ListElement { text: qsTr("NormalDiffuseMapAlpha") }
-                ListElement { text: qsTr("NormalDiffuseSpecularMap") }
-                ListElement { text: qsTr("PerVertexColor") }
-                ListElement { text: qsTr("PhongAlpha") }
+                ListElement { text: qsTr("Normal & Diffuse Map") }
+                ListElement { text: qsTr("Normal & Diffuse Map Alpha") }
+                ListElement { text: qsTr("Normal, Diffuse & Specular Map") }
+                ListElement { text: qsTr("Per Vertex Color") }
+                ListElement { text: qsTr("Phong Alpha") }
                 ListElement { text: qsTr("Phong") }
             }
-            onCurrentTextChanged: {
-                if (currentText == qsTr("DiffuseMap"))
+            onCurrentIndexChanged: {
+                if (currentIndex === EditorSceneItemMaterialComponentsModel.DiffuseMap - 1)
                     componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.DiffuseMap)
-                else if (currentText == qsTr("DiffuseSpecularMap"))
+                else if (currentIndex === EditorSceneItemMaterialComponentsModel.DiffuseSpecularMap - 1)
                     componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.DiffuseSpecularMap)
-                else if (currentText == qsTr("Gooch"))
+                else if (currentIndex === EditorSceneItemMaterialComponentsModel.Gooch - 1)
                     componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.Gooch)
-                else if (currentText == qsTr("NormalDiffuseMap"))
+                else if (currentIndex === EditorSceneItemMaterialComponentsModel.NormalDiffuseMap - 1)
                     componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.NormalDiffuseMap)
-                else if (currentText == qsTr("NormalDiffuseSpecularMap"))
+                else if (currentIndex === EditorSceneItemMaterialComponentsModel.NormalDiffuseMapAlpha - 1)
+                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.NormalDiffuseMapAlpha)
+                else if (currentIndex === EditorSceneItemMaterialComponentsModel.NormalDiffuseSpecularMap - 1)
                     componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.NormalDiffuseSpecularMap)
-                else if (currentText == qsTr("PerVertexColor"))
+                else if (currentIndex === EditorSceneItemMaterialComponentsModel.PerVertexColor - 1)
                     componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.PerVertexColor)
-                else if (currentText == qsTr("PhongAlpha"))
+                else if (currentIndex === EditorSceneItemMaterialComponentsModel.PhongAlpha - 1)
                     componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.PhongAlpha)
-                else if (currentText == qsTr("Phong"))
+                else if (currentIndex === EditorSceneItemMaterialComponentsModel.Phong - 1)
                     componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.Phong)
             }
         }

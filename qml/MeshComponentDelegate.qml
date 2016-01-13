@@ -59,18 +59,18 @@ ComponentDelegate {
                 ListElement { text: qsTr("Sphere") }
                 ListElement { text: qsTr("Torus") }
             }
-            onCurrentTextChanged: {
-                if (currentText == qsTr("Cube"))
+            onCurrentIndexChanged: {
+                if (currentIndex === EditorSceneItemMeshComponentsModel.Cuboid - 1)
                     componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Cuboid)
-                else if (currentText == qsTr("Custom"))
+                else if (currentIndex === EditorSceneItemMeshComponentsModel.Custom - 1)
                     componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Custom)
-                else if (currentText == qsTr("Cylinder"))
+                else if (currentIndex === EditorSceneItemMeshComponentsModel.Cylinder - 1)
                     componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Cylinder)
-                else if (currentText == qsTr("Plane"))
+                else if (currentIndex === EditorSceneItemMeshComponentsModel.Plane - 1)
                     componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Plane)
-                else if (currentText == qsTr("Sphere"))
+                else if (currentIndex === EditorSceneItemMeshComponentsModel.Sphere - 1)
                     componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Sphere)
-                else if (currentText == qsTr("Torus"))
+                else if (currentIndex === EditorSceneItemMeshComponentsModel.Torus - 1)
                     componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Torus)
             }
         }

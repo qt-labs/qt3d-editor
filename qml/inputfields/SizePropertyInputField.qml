@@ -75,6 +75,7 @@ PropertyInputField {
             Label {
                 id: widthLabel
                 text: qsTr("X")
+                color: labelTextColor
             }
 
             TextField {
@@ -97,6 +98,7 @@ PropertyInputField {
             Label {
                 id: heightLabel
                 text: qsTr("Y")
+                color: labelTextColor
             }
 
             TextField {

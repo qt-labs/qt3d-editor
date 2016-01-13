@@ -29,12 +29,50 @@ import QtQuick 2.4
 import com.theqtcompany.SceneEditor3D 1.0
 import QtQuick.Controls 1.3
 import QtQuick.Layouts 1.2
-import Qt3D.Render 2.0
 
 ComponentDelegate {
+    id: lightDelegate
     title: qsTr("Light")
 
+    property int currentLight: 0
+
+    Item {
+        id: comboboxItem
+        width: parent.width
+        height: lightCombobox.height + 8
+
+        Component.onCompleted: lightCombobox.currentIndex = lightDelegate.currentLight - 1
+
+        ComboBox {
+            id: lightCombobox
+            anchors.right: parent.right
+            anchors.rightMargin: 4
+            anchors.left: parent.left
+            anchors.leftMargin: 8
+            anchors.bottomMargin: 4
+            anchors.verticalCenter: parent.verticalCenter
+
+            model: ListModel {
+                ListElement { text: qsTr("Directional Light") }
+                ListElement { text: qsTr("Point Light") }
+                ListElement { text: qsTr("Spot Light") }
+                ListElement { text: qsTr("Basic Light") }
+            }
+            onCurrentIndexChanged: {
+                if (currentIndex === EditorSceneItemLightComponentsModel.Directional - 1)
+                    componentData.model.setLight(EditorSceneItemLightComponentsModel.Directional)
+                else if (currentIndex === EditorSceneItemLightComponentsModel.Point - 1)
+                    componentData.model.setLight(EditorSceneItemLightComponentsModel.Point)
+                else if (currentIndex === EditorSceneItemLightComponentsModel.Spot - 1)
+                    componentData.model.setLight(EditorSceneItemLightComponentsModel.Spot)
+                else if (currentIndex === EditorSceneItemLightComponentsModel.Basic - 1)
+                    componentData.model.setLight(EditorSceneItemLightComponentsModel.Basic)
+            }
+        }
+    }
+
     Repeater {
+        id: lightRepeater
         model: componentData.model
 
         Loader {
@@ -42,6 +80,7 @@ ComponentDelegate {
             width: parent.width
 
             function lightTypetoDelegateSource(lightType) {
+                lightDelegate.currentLight = lightType
                 if (lightType == EditorSceneItemLightComponentsModel.Basic)
                     return "BasicLightDelegate.qml";
                 if (lightType == EditorSceneItemLightComponentsModel.Directional)
@@ -55,49 +94,6 @@ ComponentDelegate {
             }
 
             source: lightTypetoDelegateSource(lightType)
-        }
-    }
-
-    Menu {
-        id: selectLightMenu
-        title: qsTr("Select Light")
-
-        MenuItem {
-            text: qsTr("Basic")
-            iconSource: "qrc:/images/light_basic.png"
-            onTriggered: {
-                componentData.model.setLight(EditorSceneItemLightComponentsModel.Basic)
-            }
-        }
-        MenuItem {
-            text: qsTr("Directional")
-            iconSource: "qrc:/images/light_directional.png"
-            onTriggered: {
-                componentData.model.setLight(EditorSceneItemLightComponentsModel.Directional)
-            }
-        }
-        MenuItem {
-            text: qsTr("Point")
-            iconSource: "qrc:/images/light_point.png"
-            onTriggered: {
-                componentData.model.setLight(EditorSceneItemLightComponentsModel.Point)
-            }
-        }
-        MenuItem {
-            text: qsTr("Spot")
-            iconSource: "qrc:/images/light_spot.png"
-            onTriggered: {
-                componentData.model.setLight(EditorSceneItemLightComponentsModel.Spot)
-            }
-        }
-    }
-
-    Button {
-        id: changeLightButton
-        text: qsTr("Change Light")
-        anchors.horizontalCenter: parent.horizontalCenter
-        onClicked: {
-            selectLightMenu.popup()
         }
     }
 }

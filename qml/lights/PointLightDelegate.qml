@@ -28,30 +28,42 @@
 import QtQuick 2.4
 import com.theqtcompany.SceneEditor3D 1.0
 
-ComponentDelegate {
-    id: thisDelegate
-    componentType: EditorSceneItemComponentsModel.Light
-    title: qsTr("Point Light")
+Item {
+    id: thisItem
+    width: parent.width
+    height: columnLayout.y + columnLayout.height + 8
 
-    ColorPropertyInputField {
-        label: qsTr("Color")
-        propertyName: "color"
-        component: lightComponentData
-        componentType: thisDelegate.componentType
-    }
+    property int componentType: EditorSceneItemComponentsModel.Light
 
-    FloatPropertyInputField {
-        label: qsTr("Intensity")
-        propertyName: "intensity"
-        component: lightComponentData
-        componentType: thisDelegate.componentType
-    }
+    Column {
+        id: columnLayout
+        spacing: 4
+        anchors.top: parent.top
+        anchors.topMargin: 8
+        anchors.left: parent.left
+        anchors.leftMargin: 8
+        anchors.right: parent.right
+        anchors.rightMargin: 8
 
-    Vector3DPropertyInputField {
-        label: qsTr("Attenuation")
-        propertyName: "attenuation"
-        component: lightComponentData
-        componentType: thisDelegate.componentType
+        ColorPropertyInputField {
+            label: qsTr("Color")
+            propertyName: "color"
+            component: lightComponentData
+            componentType: thisItem.componentType
+        }
+
+        FloatPropertyInputField {
+            label: qsTr("Intensity")
+            propertyName: "intensity"
+            component: lightComponentData
+            componentType: thisItem.componentType
+        }
+
+        Vector3DPropertyInputField {
+            label: qsTr("Attenuation")
+            propertyName: "attenuation"
+            component: lightComponentData
+            componentType: thisItem.componentType
+        }
     }
 }
-

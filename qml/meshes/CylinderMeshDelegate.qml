@@ -31,7 +31,6 @@ import com.theqtcompany.SceneEditor3D 1.0
 MeshDelegate {
     id: thisDelegate
     componentType: EditorSceneItemComponentsModel.Mesh
-    title: qsTr("Cylinder")
 
     IntPropertyInputField {
         label: qsTr("Rings")

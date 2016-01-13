@@ -28,6 +28,5 @@
 import QtQuick 2.4
 
 MeshDelegate {
-    title: qsTr("Unknown Mesh")
 }
 

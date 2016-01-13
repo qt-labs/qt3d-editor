@@ -31,7 +31,6 @@ import com.theqtcompany.SceneEditor3D 1.0
 MaterialDelegate {
     id: thisDelegate
     componentType: EditorSceneItemComponentsModel.Material
-    title: qsTr("Normal & Diffuse Map Alpha")
 
     Connections {
         target: materialRepeater.model

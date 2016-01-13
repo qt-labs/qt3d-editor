@@ -4,17 +4,16 @@
 <context>
     <name>BasicLightDelegate</name>
     <message>
-        <location filename="qml/lights/BasicLightDelegate.qml" line="34"/>
         <source>Basic Light</source>
-        <translation>Basic Light</translation>
+        <translation type="vanished">Basic Light</translation>
     </message>
     <message>
-        <location filename="qml/lights/BasicLightDelegate.qml" line="37"/>
+        <location filename="qml/lights/BasicLightDelegate.qml" line="50"/>
         <source>Color</source>
         <translation>Color</translation>
     </message>
     <message>
-        <location filename="qml/lights/BasicLightDelegate.qml" line="44"/>
+        <location filename="qml/lights/BasicLightDelegate.qml" line="57"/>
         <source>Intensity</source>
         <translation>Intensity</translation>
     </message>
@@ -108,7 +107,7 @@
 <context>
     <name>ColorPropertyInputField</name>
     <message>
-        <location filename="qml/inputfields/ColorPropertyInputField.qml" line="85"/>
+        <location filename="qml/inputfields/ColorPropertyInputField.qml" line="86"/>
         <source>Color</source>
         <translation>Color</translation>
     </message>
@@ -149,55 +148,54 @@
 <context>
     <name>CuboidMeshDelegate</name>
     <message>
-        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="34"/>
         <source>Cuboid</source>
-        <translation>Cuboid</translation>
+        <translation type="vanished">Cuboid</translation>
     </message>
     <message>
-        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="37"/>
+        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="36"/>
         <source>X Extent</source>
         <translation>X Extent</translation>
     </message>
     <message>
-        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="45"/>
+        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="44"/>
         <source>Y Extent</source>
         <translation>Y Extent</translation>
     </message>
     <message>
-        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="53"/>
+        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="52"/>
         <source>Z Extent</source>
         <translation>Z Extent</translation>
     </message>
     <message>
-        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="61"/>
+        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="60"/>
         <source>YZ Resolution</source>
         <translation>YZ Resolution</translation>
     </message>
     <message>
-        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="62"/>
-        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="83"/>
+        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="61"/>
+        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="82"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="63"/>
-        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="73"/>
+        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="62"/>
+        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="72"/>
         <source>Z</source>
         <translation>Z</translation>
     </message>
     <message>
-        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="71"/>
+        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="70"/>
         <source>XZ Resolution</source>
         <translation>XZ Resolution</translation>
     </message>
     <message>
-        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="72"/>
-        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="82"/>
+        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="71"/>
+        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="81"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="81"/>
+        <location filename="qml/meshes/CuboidMeshDelegate.qml" line="80"/>
         <source>XY Resolution</source>
         <translation>XY Resolution</translation>
     </message>
@@ -205,17 +203,16 @@
 <context>
     <name>CustomMeshDelegate</name>
     <message>
-        <location filename="qml/meshes/CustomMeshDelegate.qml" line="34"/>
         <source>Custom Mesh</source>
-        <translation>Custom Mesh</translation>
+        <translation type="vanished">Custom Mesh</translation>
     </message>
     <message>
-        <location filename="qml/meshes/CustomMeshDelegate.qml" line="37"/>
+        <location filename="qml/meshes/CustomMeshDelegate.qml" line="36"/>
         <source>Source</source>
         <translation>Source</translation>
     </message>
     <message>
-        <location filename="qml/meshes/CustomMeshDelegate.qml" line="41"/>
+        <location filename="qml/meshes/CustomMeshDelegate.qml" line="40"/>
         <source>Wavefront files (*.obj)</source>
         <translation>Wavefront files (*.obj)</translation>
     </message>
@@ -223,27 +220,26 @@
 <context>
     <name>CylinderMeshDelegate</name>
     <message>
-        <location filename="qml/meshes/CylinderMeshDelegate.qml" line="34"/>
         <source>Cylinder</source>
-        <translation>Cylinder</translation>
+        <translation type="vanished">Cylinder</translation>
     </message>
     <message>
-        <location filename="qml/meshes/CylinderMeshDelegate.qml" line="37"/>
+        <location filename="qml/meshes/CylinderMeshDelegate.qml" line="36"/>
         <source>Rings</source>
         <translation>Rings</translation>
     </message>
     <message>
-        <location filename="qml/meshes/CylinderMeshDelegate.qml" line="45"/>
+        <location filename="qml/meshes/CylinderMeshDelegate.qml" line="44"/>
         <source>Slices</source>
         <translation>Slices</translation>
     </message>
     <message>
-        <location filename="qml/meshes/CylinderMeshDelegate.qml" line="53"/>
+        <location filename="qml/meshes/CylinderMeshDelegate.qml" line="52"/>
         <source>Radius</source>
         <translation>Radius</translation>
     </message>
     <message>
-        <location filename="qml/meshes/CylinderMeshDelegate.qml" line="60"/>
+        <location filename="qml/meshes/CylinderMeshDelegate.qml" line="59"/>
         <source>Length</source>
         <translation>Length</translation>
     </message>
@@ -251,28 +247,27 @@
 <context>
     <name>DiffuseMapMaterialDelegate</name>
     <message>
-        <location filename="qml/materials/DiffuseMapMaterialDelegate.qml" line="34"/>
-        <location filename="qml/materials/DiffuseMapMaterialDelegate.qml" line="46"/>
+        <location filename="qml/materials/DiffuseMapMaterialDelegate.qml" line="45"/>
         <source>Diffuse Map</source>
         <translation>Diffuse Map</translation>
     </message>
     <message>
-        <location filename="qml/materials/DiffuseMapMaterialDelegate.qml" line="53"/>
+        <location filename="qml/materials/DiffuseMapMaterialDelegate.qml" line="52"/>
         <source>Ambient Color</source>
         <translation>Ambient Color</translation>
     </message>
     <message>
-        <location filename="qml/materials/DiffuseMapMaterialDelegate.qml" line="60"/>
+        <location filename="qml/materials/DiffuseMapMaterialDelegate.qml" line="59"/>
         <source>Specular Color</source>
         <translation>Specular Color</translation>
     </message>
     <message>
-        <location filename="qml/materials/DiffuseMapMaterialDelegate.qml" line="67"/>
+        <location filename="qml/materials/DiffuseMapMaterialDelegate.qml" line="66"/>
         <source>Shininess</source>
         <translation>Shininess</translation>
     </message>
     <message>
-        <location filename="qml/materials/DiffuseMapMaterialDelegate.qml" line="76"/>
+        <location filename="qml/materials/DiffuseMapMaterialDelegate.qml" line="75"/>
         <source>Texture Scale</source>
         <translation>Texture Scale</translation>
     </message>
@@ -280,32 +275,31 @@
 <context>
     <name>DiffuseSpecularMapMaterialDelegate</name>
     <message>
-        <location filename="qml/materials/DiffuseSpecularMapMaterialDelegate.qml" line="34"/>
         <source>Diffuse &amp; Specular Map</source>
-        <translation>Diffuse &amp; Specular Map</translation>
+        <translation type="vanished">Diffuse &amp; Specular Map</translation>
     </message>
     <message>
-        <location filename="qml/materials/DiffuseSpecularMapMaterialDelegate.qml" line="48"/>
+        <location filename="qml/materials/DiffuseSpecularMapMaterialDelegate.qml" line="47"/>
         <source>Diffuse Map</source>
         <translation>Diffuse Map</translation>
     </message>
     <message>
-        <location filename="qml/materials/DiffuseSpecularMapMaterialDelegate.qml" line="56"/>
+        <location filename="qml/materials/DiffuseSpecularMapMaterialDelegate.qml" line="55"/>
         <source>Specular Map</source>
         <translation>Specular Map</translation>
     </message>
     <message>
-        <location filename="qml/materials/DiffuseSpecularMapMaterialDelegate.qml" line="63"/>
+        <location filename="qml/materials/DiffuseSpecularMapMaterialDelegate.qml" line="62"/>
         <source>Ambient Color</source>
         <translation>Ambient Color</translation>
     </message>
     <message>
-        <location filename="qml/materials/DiffuseSpecularMapMaterialDelegate.qml" line="70"/>
+        <location filename="qml/materials/DiffuseSpecularMapMaterialDelegate.qml" line="69"/>
         <source>Shininess</source>
         <translation>Shininess</translation>
     </message>
     <message>
-        <location filename="qml/materials/DiffuseSpecularMapMaterialDelegate.qml" line="77"/>
+        <location filename="qml/materials/DiffuseSpecularMapMaterialDelegate.qml" line="76"/>
         <source>Texture Scale</source>
         <translation>Texture Scale</translation>
     </message>
@@ -313,22 +307,21 @@
 <context>
     <name>DirectionalLightDelegate</name>
     <message>
-        <location filename="qml/lights/DirectionalLightDelegate.qml" line="34"/>
         <source>Directional Light</source>
-        <translation>Directional Light</translation>
+        <translation type="vanished">Directional Light</translation>
     </message>
     <message>
-        <location filename="qml/lights/DirectionalLightDelegate.qml" line="37"/>
+        <location filename="qml/lights/DirectionalLightDelegate.qml" line="48"/>
         <source>Color</source>
         <translation>Color</translation>
     </message>
     <message>
-        <location filename="qml/lights/DirectionalLightDelegate.qml" line="44"/>
+        <location filename="qml/lights/DirectionalLightDelegate.qml" line="55"/>
         <source>Intensity</source>
         <translation>Intensity</translation>
     </message>
     <message>
-        <location filename="qml/lights/DirectionalLightDelegate.qml" line="51"/>
+        <location filename="qml/lights/DirectionalLightDelegate.qml" line="62"/>
         <source>Direction</source>
         <translation>Direction</translation>
     </message>
@@ -468,7 +461,7 @@
 <context>
     <name>FilePropertyInputField</name>
     <message>
-        <location filename="qml/inputfields/FilePropertyInputField.qml" line="69"/>
+        <location filename="qml/inputfields/FilePropertyInputField.qml" line="70"/>
         <source>File</source>
         <translation>File</translation>
     </message>
@@ -476,7 +469,7 @@
 <context>
     <name>FloatPropertyInputField</name>
     <message>
-        <location filename="qml/inputfields/FloatPropertyInputField.qml" line="66"/>
+        <location filename="qml/inputfields/FloatPropertyInputField.qml" line="67"/>
         <source>Float Value</source>
         <translation>Float Value</translation>
     </message>
@@ -536,42 +529,41 @@
 <context>
     <name>GoochMaterialDelegate</name>
     <message>
-        <location filename="qml/materials/GoochMaterialDelegate.qml" line="34"/>
         <source>Gooch</source>
-        <translation>Gooch</translation>
+        <translation type="vanished">Gooch</translation>
     </message>
     <message>
-        <location filename="qml/materials/GoochMaterialDelegate.qml" line="37"/>
+        <location filename="qml/materials/GoochMaterialDelegate.qml" line="36"/>
         <source>Diffuse Color</source>
         <translation>Diffuse Color</translation>
     </message>
     <message>
-        <location filename="qml/materials/GoochMaterialDelegate.qml" line="44"/>
+        <location filename="qml/materials/GoochMaterialDelegate.qml" line="43"/>
         <source>Specular Color</source>
         <translation>Specular Color</translation>
     </message>
     <message>
-        <location filename="qml/materials/GoochMaterialDelegate.qml" line="51"/>
+        <location filename="qml/materials/GoochMaterialDelegate.qml" line="50"/>
         <source>Cool Color</source>
         <translation>Cool Color</translation>
     </message>
     <message>
-        <location filename="qml/materials/GoochMaterialDelegate.qml" line="59"/>
+        <location filename="qml/materials/GoochMaterialDelegate.qml" line="58"/>
         <source>Warm Color</source>
         <translation>Warm Color</translation>
     </message>
     <message>
-        <location filename="qml/materials/GoochMaterialDelegate.qml" line="66"/>
+        <location filename="qml/materials/GoochMaterialDelegate.qml" line="65"/>
         <source>Alpha</source>
         <translation>Alpha</translation>
     </message>
     <message>
-        <location filename="qml/materials/GoochMaterialDelegate.qml" line="73"/>
+        <location filename="qml/materials/GoochMaterialDelegate.qml" line="72"/>
         <source>Beta</source>
         <translation>Beta</translation>
     </message>
     <message>
-        <location filename="qml/materials/GoochMaterialDelegate.qml" line="80"/>
+        <location filename="qml/materials/GoochMaterialDelegate.qml" line="79"/>
         <source>Shininess</source>
         <translation>Shininess</translation>
     </message>
@@ -579,7 +571,7 @@
 <context>
     <name>IntPropertyInputField</name>
     <message>
-        <location filename="qml/inputfields/IntPropertyInputField.qml" line="57"/>
+        <location filename="qml/inputfields/IntPropertyInputField.qml" line="58"/>
         <source>Integer Value</source>
         <translation>Integer Value</translation>
     </message>
@@ -613,34 +605,48 @@
         <translation>Light</translation>
     </message>
     <message>
-        <location filename="qml/LightComponentDelegate.qml" line="63"/>
+        <location filename="qml/LightComponentDelegate.qml" line="56"/>
+        <source>Directional Light</source>
+        <translation>Directional Light</translation>
+    </message>
+    <message>
+        <location filename="qml/LightComponentDelegate.qml" line="57"/>
+        <source>Point Light</source>
+        <translation>Point Light</translation>
+    </message>
+    <message>
+        <location filename="qml/LightComponentDelegate.qml" line="58"/>
+        <source>Spot Light</source>
+        <translation>Spot Light</translation>
+    </message>
+    <message>
+        <location filename="qml/LightComponentDelegate.qml" line="59"/>
+        <source>Basic Light</source>
+        <translation>Basic Light</translation>
+    </message>
+    <message>
         <source>Select Light</source>
-        <translation>Select Light</translation>
+        <translation type="vanished">Select Light</translation>
     </message>
     <message>
-        <location filename="qml/LightComponentDelegate.qml" line="66"/>
         <source>Basic</source>
-        <translation>Basic</translation>
+        <translation type="vanished">Basic</translation>
     </message>
     <message>
-        <location filename="qml/LightComponentDelegate.qml" line="73"/>
         <source>Directional</source>
-        <translation>Directional</translation>
+        <translation type="vanished">Directional</translation>
     </message>
     <message>
-        <location filename="qml/LightComponentDelegate.qml" line="80"/>
         <source>Point</source>
-        <translation>Point</translation>
+        <translation type="vanished">Point</translation>
     </message>
     <message>
-        <location filename="qml/LightComponentDelegate.qml" line="87"/>
         <source>Spot</source>
-        <translation>Spot</translation>
+        <translation type="vanished">Spot</translation>
     </message>
     <message>
-        <location filename="qml/LightComponentDelegate.qml" line="97"/>
         <source>Change Light</source>
-        <translation>Change Light</translation>
+        <translation type="vanished">Change Light</translation>
     </message>
 </context>
 <context>
@@ -660,54 +666,53 @@
     </message>
     <message>
         <location filename="qml/MaterialComponentDelegate.qml" line="56"/>
-        <location filename="qml/MaterialComponentDelegate.qml" line="67"/>
-        <source>DiffuseMap</source>
+        <source>Diffuse Map</source>
+        <oldsource>DiffuseMap</oldsource>
         <translation>DiffuseMap</translation>
     </message>
     <message>
         <location filename="qml/MaterialComponentDelegate.qml" line="57"/>
-        <location filename="qml/MaterialComponentDelegate.qml" line="69"/>
-        <source>DiffuseSpecularMap</source>
+        <source>Diffuse &amp; Specular Map</source>
+        <oldsource>DiffuseSpecularMap</oldsource>
         <translation>DiffuseSpecularMap</translation>
     </message>
     <message>
         <location filename="qml/MaterialComponentDelegate.qml" line="58"/>
-        <location filename="qml/MaterialComponentDelegate.qml" line="71"/>
         <source>Gooch</source>
         <translation>Gooch</translation>
     </message>
     <message>
         <location filename="qml/MaterialComponentDelegate.qml" line="59"/>
-        <location filename="qml/MaterialComponentDelegate.qml" line="73"/>
-        <source>NormalDiffuseMap</source>
+        <source>Normal &amp; Diffuse Map</source>
+        <oldsource>NormalDiffuseMap</oldsource>
         <translation>NormalDiffuseMap</translation>
     </message>
     <message>
         <location filename="qml/MaterialComponentDelegate.qml" line="60"/>
-        <source>NormalDiffuseMapAlpha</source>
+        <source>Normal &amp; Diffuse Map Alpha</source>
+        <oldsource>NormalDiffuseMapAlpha</oldsource>
         <translation>NormalDiffuseMapAlpha</translation>
     </message>
     <message>
         <location filename="qml/MaterialComponentDelegate.qml" line="61"/>
-        <location filename="qml/MaterialComponentDelegate.qml" line="75"/>
-        <source>NormalDiffuseSpecularMap</source>
+        <source>Normal, Diffuse &amp; Specular Map</source>
+        <oldsource>NormalDiffuseSpecularMap</oldsource>
         <translation>NormalDiffuseSpecularMap</translation>
     </message>
     <message>
         <location filename="qml/MaterialComponentDelegate.qml" line="62"/>
-        <location filename="qml/MaterialComponentDelegate.qml" line="77"/>
-        <source>PerVertexColor</source>
+        <source>Per Vertex Color</source>
+        <oldsource>PerVertexColor</oldsource>
         <translation>PerVertexColor</translation>
     </message>
     <message>
         <location filename="qml/MaterialComponentDelegate.qml" line="63"/>
-        <location filename="qml/MaterialComponentDelegate.qml" line="79"/>
-        <source>PhongAlpha</source>
+        <source>Phong Alpha</source>
+        <oldsource>PhongAlpha</oldsource>
         <translation>PhongAlpha</translation>
     </message>
     <message>
         <location filename="qml/MaterialComponentDelegate.qml" line="64"/>
-        <location filename="qml/MaterialComponentDelegate.qml" line="81"/>
         <source>Phong</source>
         <translation>Phong</translation>
     </message>
@@ -723,12 +728,11 @@
 <context>
     <name>MatrixTransformDelegate</name>
     <message>
-        <location filename="qml/transforms/MatrixTransformDelegate.qml" line="37"/>
         <source>Matrix</source>
-        <translation>Matrix</translation>
+        <translation type="vanished">Matrix</translation>
     </message>
     <message>
-        <location filename="qml/transforms/MatrixTransformDelegate.qml" line="42"/>
+        <location filename="qml/transforms/MatrixTransformDelegate.qml" line="41"/>
         <source>Transform Matrix</source>
         <translation>Transform Matrix</translation>
     </message>
@@ -746,37 +750,31 @@
     </message>
     <message>
         <location filename="qml/MeshComponentDelegate.qml" line="55"/>
-        <location filename="qml/MeshComponentDelegate.qml" line="63"/>
         <source>Cube</source>
         <translation>Cube</translation>
     </message>
     <message>
         <location filename="qml/MeshComponentDelegate.qml" line="56"/>
-        <location filename="qml/MeshComponentDelegate.qml" line="65"/>
         <source>Custom</source>
         <translation>Custom</translation>
     </message>
     <message>
         <location filename="qml/MeshComponentDelegate.qml" line="57"/>
-        <location filename="qml/MeshComponentDelegate.qml" line="67"/>
         <source>Cylinder</source>
         <translation>Cylinder</translation>
     </message>
     <message>
         <location filename="qml/MeshComponentDelegate.qml" line="58"/>
-        <location filename="qml/MeshComponentDelegate.qml" line="69"/>
         <source>Plane</source>
         <translation>Plane</translation>
     </message>
     <message>
         <location filename="qml/MeshComponentDelegate.qml" line="59"/>
-        <location filename="qml/MeshComponentDelegate.qml" line="71"/>
         <source>Sphere</source>
         <translation>Sphere</translation>
     </message>
     <message>
         <location filename="qml/MeshComponentDelegate.qml" line="60"/>
-        <location filename="qml/MeshComponentDelegate.qml" line="73"/>
         <source>Torus</source>
         <translation>Torus</translation>
     </message>
@@ -792,37 +790,36 @@
 <context>
     <name>NormalDiffuseMapAlphaMaterialDelegate</name>
     <message>
-        <location filename="qml/materials/NormalDiffuseMapAlphaMaterialDelegate.qml" line="34"/>
         <source>Normal &amp; Diffuse Map Alpha</source>
-        <translation>Normal &amp; Diffuse Map Alpha</translation>
+        <translation type="vanished">Normal &amp; Diffuse Map Alpha</translation>
     </message>
     <message>
-        <location filename="qml/materials/NormalDiffuseMapAlphaMaterialDelegate.qml" line="48"/>
+        <location filename="qml/materials/NormalDiffuseMapAlphaMaterialDelegate.qml" line="47"/>
         <source>Normal Map</source>
         <translation>Normal Map</translation>
     </message>
     <message>
-        <location filename="qml/materials/NormalDiffuseMapAlphaMaterialDelegate.qml" line="56"/>
+        <location filename="qml/materials/NormalDiffuseMapAlphaMaterialDelegate.qml" line="55"/>
         <source>Diffuse Map</source>
         <translation>Diffuse Map</translation>
     </message>
     <message>
-        <location filename="qml/materials/NormalDiffuseMapAlphaMaterialDelegate.qml" line="66"/>
+        <location filename="qml/materials/NormalDiffuseMapAlphaMaterialDelegate.qml" line="65"/>
         <source>Ambient Color</source>
         <translation>Ambient Color</translation>
     </message>
     <message>
-        <location filename="qml/materials/NormalDiffuseMapAlphaMaterialDelegate.qml" line="73"/>
+        <location filename="qml/materials/NormalDiffuseMapAlphaMaterialDelegate.qml" line="72"/>
         <source>Specular Color</source>
         <translation>Specular Color</translation>
     </message>
     <message>
-        <location filename="qml/materials/NormalDiffuseMapAlphaMaterialDelegate.qml" line="80"/>
+        <location filename="qml/materials/NormalDiffuseMapAlphaMaterialDelegate.qml" line="79"/>
         <source>Shininess</source>
         <translation>Shininess</translation>
     </message>
     <message>
-        <location filename="qml/materials/NormalDiffuseMapAlphaMaterialDelegate.qml" line="87"/>
+        <location filename="qml/materials/NormalDiffuseMapAlphaMaterialDelegate.qml" line="86"/>
         <source>Texture Scale</source>
         <translation>Texture Scale</translation>
     </message>
@@ -830,32 +827,31 @@
 <context>
     <name>NormalDiffuseMapMaterialDelegate</name>
     <message>
-        <location filename="qml/materials/NormalDiffuseMapMaterialDelegate.qml" line="34"/>
         <source>Normal &amp; Diffuse Map</source>
-        <translation>Normal &amp; Diffuse Map</translation>
+        <translation type="vanished">Normal &amp; Diffuse Map</translation>
     </message>
     <message>
-        <location filename="qml/materials/NormalDiffuseMapMaterialDelegate.qml" line="48"/>
+        <location filename="qml/materials/NormalDiffuseMapMaterialDelegate.qml" line="47"/>
         <source>Normal Map</source>
         <translation>Normal Map</translation>
     </message>
     <message>
-        <location filename="qml/materials/NormalDiffuseMapMaterialDelegate.qml" line="56"/>
+        <location filename="qml/materials/NormalDiffuseMapMaterialDelegate.qml" line="55"/>
         <source>Diffuse Map</source>
         <translation>Diffuse Map</translation>
     </message>
     <message>
-        <location filename="qml/materials/NormalDiffuseMapMaterialDelegate.qml" line="63"/>
+        <location filename="qml/materials/NormalDiffuseMapMaterialDelegate.qml" line="62"/>
         <source>Ambient Color</source>
         <translation>Ambient Color</translation>
     </message>
     <message>
-        <location filename="qml/materials/NormalDiffuseMapMaterialDelegate.qml" line="70"/>
+        <location filename="qml/materials/NormalDiffuseMapMaterialDelegate.qml" line="69"/>
         <source>Shininess</source>
         <translation>Shininess</translation>
     </message>
     <message>
-        <location filename="qml/materials/NormalDiffuseMapMaterialDelegate.qml" line="77"/>
+        <location filename="qml/materials/NormalDiffuseMapMaterialDelegate.qml" line="76"/>
         <source>Texture Scale</source>
         <translation>Texture Scale</translation>
     </message>
@@ -863,37 +859,36 @@
 <context>
     <name>NormalDiffuseSpecularMapMaterialDelegate</name>
     <message>
-        <location filename="qml/materials/NormalDiffuseSpecularMapMaterialDelegate.qml" line="34"/>
         <source>Normal, Diffuse &amp; Specular Map</source>
-        <translation>Normal, Diffuse &amp; Specular Map</translation>
+        <translation type="vanished">Normal, Diffuse &amp; Specular Map</translation>
     </message>
     <message>
-        <location filename="qml/materials/NormalDiffuseSpecularMapMaterialDelegate.qml" line="50"/>
+        <location filename="qml/materials/NormalDiffuseSpecularMapMaterialDelegate.qml" line="49"/>
         <source>Normal Map</source>
         <translation>Normal Map</translation>
     </message>
     <message>
-        <location filename="qml/materials/NormalDiffuseSpecularMapMaterialDelegate.qml" line="58"/>
+        <location filename="qml/materials/NormalDiffuseSpecularMapMaterialDelegate.qml" line="57"/>
         <source>Diffuse Map</source>
         <translation>Diffuse Map</translation>
     </message>
     <message>
-        <location filename="qml/materials/NormalDiffuseSpecularMapMaterialDelegate.qml" line="66"/>
+        <location filename="qml/materials/NormalDiffuseSpecularMapMaterialDelegate.qml" line="65"/>
         <source>Specular Map</source>
         <translation>Specular Map</translation>
     </message>
     <message>
-        <location filename="qml/materials/NormalDiffuseSpecularMapMaterialDelegate.qml" line="73"/>
+        <location filename="qml/materials/NormalDiffuseSpecularMapMaterialDelegate.qml" line="72"/>
         <source>Ambient Color</source>
         <translation>Ambient Color</translation>
     </message>
     <message>
-        <location filename="qml/materials/NormalDiffuseSpecularMapMaterialDelegate.qml" line="80"/>
+        <location filename="qml/materials/NormalDiffuseSpecularMapMaterialDelegate.qml" line="79"/>
         <source>Shininess</source>
         <translation>Shininess</translation>
     </message>
     <message>
-        <location filename="qml/materials/NormalDiffuseSpecularMapMaterialDelegate.qml" line="87"/>
+        <location filename="qml/materials/NormalDiffuseSpecularMapMaterialDelegate.qml" line="86"/>
         <source>Texture Scale</source>
         <translation>Texture Scale</translation>
     </message>
@@ -914,40 +909,38 @@
 <context>
     <name>PerVertexColorMaterialDelegate</name>
     <message>
-        <location filename="qml/materials/PerVertexColorMaterialDelegate.qml" line="31"/>
         <source>Per Vertex Color</source>
-        <translation>Per Vertex Color</translation>
+        <translation type="vanished">Per Vertex Color</translation>
     </message>
 </context>
 <context>
     <name>PhongAlphaMaterialDelegate</name>
     <message>
-        <location filename="qml/materials/PhongAlphaMaterialDelegate.qml" line="34"/>
         <source>Phong Alpha</source>
-        <translation>Phong Alpha</translation>
+        <translation type="vanished">Phong Alpha</translation>
     </message>
     <message>
-        <location filename="qml/materials/PhongAlphaMaterialDelegate.qml" line="37"/>
+        <location filename="qml/materials/PhongAlphaMaterialDelegate.qml" line="36"/>
         <source>Ambient Color</source>
         <translation>Ambient Color</translation>
     </message>
     <message>
-        <location filename="qml/materials/PhongAlphaMaterialDelegate.qml" line="44"/>
+        <location filename="qml/materials/PhongAlphaMaterialDelegate.qml" line="43"/>
         <source>Diffuse Color</source>
         <translation>Diffuse Color</translation>
     </message>
     <message>
-        <location filename="qml/materials/PhongAlphaMaterialDelegate.qml" line="51"/>
+        <location filename="qml/materials/PhongAlphaMaterialDelegate.qml" line="50"/>
         <source>Specular Color</source>
         <translation>Specular Color</translation>
     </message>
     <message>
-        <location filename="qml/materials/PhongAlphaMaterialDelegate.qml" line="58"/>
+        <location filename="qml/materials/PhongAlphaMaterialDelegate.qml" line="57"/>
         <source>Shininess</source>
         <translation>Shininess</translation>
     </message>
     <message>
-        <location filename="qml/materials/PhongAlphaMaterialDelegate.qml" line="65"/>
+        <location filename="qml/materials/PhongAlphaMaterialDelegate.qml" line="64"/>
         <source>Alpha</source>
         <translation>Alpha</translation>
     </message>
@@ -955,27 +948,26 @@
 <context>
     <name>PhongMaterialDelegate</name>
     <message>
-        <location filename="qml/materials/PhongMaterialDelegate.qml" line="34"/>
         <source>Phong</source>
-        <translation>Phong</translation>
+        <translation type="vanished">Phong</translation>
     </message>
     <message>
-        <location filename="qml/materials/PhongMaterialDelegate.qml" line="37"/>
+        <location filename="qml/materials/PhongMaterialDelegate.qml" line="36"/>
         <source>Ambient Color</source>
         <translation>Ambient Color</translation>
     </message>
     <message>
-        <location filename="qml/materials/PhongMaterialDelegate.qml" line="44"/>
+        <location filename="qml/materials/PhongMaterialDelegate.qml" line="43"/>
         <source>Diffuse Color</source>
         <translation>Diffuse Color</translation>
     </message>
     <message>
-        <location filename="qml/materials/PhongMaterialDelegate.qml" line="51"/>
+        <location filename="qml/materials/PhongMaterialDelegate.qml" line="50"/>
         <source>Specular Color</source>
         <translation>Specular Color</translation>
     </message>
     <message>
-        <location filename="qml/materials/PhongMaterialDelegate.qml" line="58"/>
+        <location filename="qml/materials/PhongMaterialDelegate.qml" line="57"/>
         <source>Shininess</source>
         <translation>Shininess</translation>
     </message>
@@ -983,22 +975,21 @@
 <context>
     <name>PlaneMeshDelegate</name>
     <message>
-        <location filename="qml/meshes/PlaneMeshDelegate.qml" line="34"/>
         <source>Plane</source>
-        <translation>Plane</translation>
+        <translation type="vanished">Plane</translation>
     </message>
     <message>
-        <location filename="qml/meshes/PlaneMeshDelegate.qml" line="37"/>
+        <location filename="qml/meshes/PlaneMeshDelegate.qml" line="36"/>
         <source>Width</source>
         <translation>Width</translation>
     </message>
     <message>
-        <location filename="qml/meshes/PlaneMeshDelegate.qml" line="45"/>
+        <location filename="qml/meshes/PlaneMeshDelegate.qml" line="44"/>
         <source>Height</source>
         <translation>Height</translation>
     </message>
     <message>
-        <location filename="qml/meshes/PlaneMeshDelegate.qml" line="53"/>
+        <location filename="qml/meshes/PlaneMeshDelegate.qml" line="52"/>
         <source>Mesh Resolution</source>
         <translation>Mesh Resolution</translation>
     </message>
@@ -1006,22 +997,21 @@
 <context>
     <name>PointLightDelegate</name>
     <message>
-        <location filename="qml/lights/PointLightDelegate.qml" line="34"/>
         <source>Point Light</source>
-        <translation>Point Light</translation>
+        <translation type="vanished">Point Light</translation>
     </message>
     <message>
-        <location filename="qml/lights/PointLightDelegate.qml" line="37"/>
+        <location filename="qml/lights/PointLightDelegate.qml" line="49"/>
         <source>Color</source>
         <translation>Color</translation>
     </message>
     <message>
-        <location filename="qml/lights/PointLightDelegate.qml" line="44"/>
+        <location filename="qml/lights/PointLightDelegate.qml" line="56"/>
         <source>Intensity</source>
         <translation>Intensity</translation>
     </message>
     <message>
-        <location filename="qml/lights/PointLightDelegate.qml" line="51"/>
+        <location filename="qml/lights/PointLightDelegate.qml" line="63"/>
         <source>Attenuation</source>
         <translation>Attenuation</translation>
     </message>
@@ -1029,17 +1019,16 @@
 <context>
     <name>RotateTransformDelegate</name>
     <message>
-        <location filename="qml/transforms/RotateTransformDelegate.qml" line="37"/>
         <source>Rotate</source>
-        <translation>Rotate</translation>
+        <translation type="vanished">Rotate</translation>
     </message>
     <message>
-        <location filename="qml/transforms/RotateTransformDelegate.qml" line="43"/>
+        <location filename="qml/transforms/RotateTransformDelegate.qml" line="42"/>
         <source>Angle Degrees</source>
         <translation>Angle Degrees</translation>
     </message>
     <message>
-        <location filename="qml/transforms/RotateTransformDelegate.qml" line="52"/>
+        <location filename="qml/transforms/RotateTransformDelegate.qml" line="51"/>
         <source>Axis</source>
         <translation>Axis</translation>
     </message>
@@ -1060,17 +1049,16 @@
 <context>
     <name>SRTTransformDelegate</name>
     <message>
-        <location filename="qml/transforms/SRTTransformDelegate.qml" line="37"/>
         <source>Scale, Rotate &amp; Translate</source>
-        <translation>Scale, Rotate &amp; Translate</translation>
+        <translation type="vanished">Scale, Rotate &amp; Translate</translation>
     </message>
     <message>
-        <location filename="qml/transforms/SRTTransformDelegate.qml" line="41"/>
+        <location filename="qml/transforms/SRTTransformDelegate.qml" line="40"/>
         <source>Scale</source>
         <translation>Scale</translation>
     </message>
     <message>
-        <location filename="qml/transforms/SRTTransformDelegate.qml" line="57"/>
+        <location filename="qml/transforms/SRTTransformDelegate.qml" line="56"/>
         <source>Translate</source>
         <translation>Translate</translation>
     </message>
@@ -1078,12 +1066,11 @@
 <context>
     <name>ScaleTransformDelegate</name>
     <message>
-        <location filename="qml/transforms/ScaleTransformDelegate.qml" line="37"/>
         <source>Scale</source>
-        <translation>Scale</translation>
+        <translation type="vanished">Scale</translation>
     </message>
     <message>
-        <location filename="qml/transforms/ScaleTransformDelegate.qml" line="42"/>
+        <location filename="qml/transforms/ScaleTransformDelegate.qml" line="41"/>
         <source>Scale3D</source>
         <translation>Scale3D</translation>
     </message>
@@ -1091,17 +1078,17 @@
 <context>
     <name>SizePropertyInputField</name>
     <message>
-        <location filename="qml/inputfields/SizePropertyInputField.qml" line="62"/>
+        <location filename="qml/inputfields/SizePropertyInputField.qml" line="63"/>
         <source>Size</source>
         <translation>Size</translation>
     </message>
     <message>
-        <location filename="qml/inputfields/SizePropertyInputField.qml" line="76"/>
+        <location filename="qml/inputfields/SizePropertyInputField.qml" line="77"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="qml/inputfields/SizePropertyInputField.qml" line="98"/>
+        <location filename="qml/inputfields/SizePropertyInputField.qml" line="100"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
@@ -1109,27 +1096,26 @@
 <context>
     <name>SphereMeshDelegate</name>
     <message>
-        <location filename="qml/meshes/SphereMeshDelegate.qml" line="35"/>
         <source>Sphere</source>
-        <translation>Sphere</translation>
+        <translation type="vanished">Sphere</translation>
     </message>
     <message>
-        <location filename="qml/meshes/SphereMeshDelegate.qml" line="38"/>
+        <location filename="qml/meshes/SphereMeshDelegate.qml" line="37"/>
         <source>Rings</source>
         <translation>Rings</translation>
     </message>
     <message>
-        <location filename="qml/meshes/SphereMeshDelegate.qml" line="46"/>
+        <location filename="qml/meshes/SphereMeshDelegate.qml" line="45"/>
         <source>Slices</source>
         <translation>Slices</translation>
     </message>
     <message>
-        <location filename="qml/meshes/SphereMeshDelegate.qml" line="54"/>
+        <location filename="qml/meshes/SphereMeshDelegate.qml" line="53"/>
         <source>Radius</source>
         <translation>Radius</translation>
     </message>
     <message>
-        <location filename="qml/meshes/SphereMeshDelegate.qml" line="61"/>
+        <location filename="qml/meshes/SphereMeshDelegate.qml" line="60"/>
         <source>Generate Tangents</source>
         <translation>Generate Tangents</translation>
     </message>
@@ -1137,27 +1123,26 @@
 <context>
     <name>SpotLightDelegate</name>
     <message>
-        <location filename="qml/lights/SpotLightDelegate.qml" line="34"/>
         <source>Spot Light</source>
-        <translation>Spot Light</translation>
+        <translation type="vanished">Spot Light</translation>
     </message>
     <message>
-        <location filename="qml/lights/SpotLightDelegate.qml" line="37"/>
+        <location filename="qml/lights/SpotLightDelegate.qml" line="48"/>
         <source>Color</source>
         <translation>Color</translation>
     </message>
     <message>
-        <location filename="qml/lights/SpotLightDelegate.qml" line="44"/>
+        <location filename="qml/lights/SpotLightDelegate.qml" line="55"/>
         <source>Intensity</source>
         <translation>Intensity</translation>
     </message>
     <message>
-        <location filename="qml/lights/SpotLightDelegate.qml" line="51"/>
+        <location filename="qml/lights/SpotLightDelegate.qml" line="62"/>
         <source>Direction</source>
         <translation>Direction</translation>
     </message>
     <message>
-        <location filename="qml/lights/SpotLightDelegate.qml" line="58"/>
+        <location filename="qml/lights/SpotLightDelegate.qml" line="69"/>
         <source>Cut-Off Angle</source>
         <translation>Cut-Off Angle</translation>
     </message>
@@ -1181,27 +1166,26 @@
 <context>
     <name>TorusMeshDelegate</name>
     <message>
-        <location filename="qml/meshes/TorusMeshDelegate.qml" line="34"/>
         <source>Torus</source>
-        <translation>Torus</translation>
+        <translation type="vanished">Torus</translation>
     </message>
     <message>
-        <location filename="qml/meshes/TorusMeshDelegate.qml" line="37"/>
+        <location filename="qml/meshes/TorusMeshDelegate.qml" line="36"/>
         <source>Rings</source>
         <translation>Rings</translation>
     </message>
     <message>
-        <location filename="qml/meshes/TorusMeshDelegate.qml" line="45"/>
+        <location filename="qml/meshes/TorusMeshDelegate.qml" line="44"/>
         <source>Slices</source>
         <translation>Slices</translation>
     </message>
     <message>
-        <location filename="qml/meshes/TorusMeshDelegate.qml" line="53"/>
+        <location filename="qml/meshes/TorusMeshDelegate.qml" line="52"/>
         <source>Outer Radius</source>
         <translation>Outer Radius</translation>
     </message>
     <message>
-        <location filename="qml/meshes/TorusMeshDelegate.qml" line="60"/>
+        <location filename="qml/meshes/TorusMeshDelegate.qml" line="59"/>
         <source>Inner Radius</source>
         <translation>Inner Radius</translation>
     </message>
@@ -1215,13 +1199,11 @@
     </message>
     <message>
         <location filename="qml/TransformComponentDelegate.qml" line="55"/>
-        <location filename="qml/TransformComponentDelegate.qml" line="59"/>
         <source>Scale, Rotate &amp; Translate</source>
         <translation>Scale, Rotate &amp; Translate</translation>
     </message>
     <message>
         <location filename="qml/TransformComponentDelegate.qml" line="56"/>
-        <location filename="qml/TransformComponentDelegate.qml" line="61"/>
         <source>Matrix</source>
         <translation>Matrix</translation>
     </message>
@@ -1229,12 +1211,11 @@
 <context>
     <name>TranslateTransformDelegate</name>
     <message>
-        <location filename="qml/transforms/TranslateTransformDelegate.qml" line="37"/>
         <source>Translate</source>
-        <translation>Translate</translation>
+        <translation type="vanished">Translate</translation>
     </message>
     <message>
-        <location filename="qml/transforms/TranslateTransformDelegate.qml" line="42"/>
+        <location filename="qml/transforms/TranslateTransformDelegate.qml" line="41"/>
         <source>Translation</source>
         <translation>Translation</translation>
     </message>
@@ -1278,25 +1259,22 @@
 <context>
     <name>UnknownMaterialDelegate</name>
     <message>
-        <location filename="qml/materials/UnknownMaterialDelegate.qml" line="31"/>
         <source>No Material</source>
-        <translation>No Material</translation>
+        <translation type="vanished">No Material</translation>
     </message>
 </context>
 <context>
     <name>UnknownMeshDelegate</name>
     <message>
-        <location filename="qml/meshes/UnknownMeshDelegate.qml" line="31"/>
         <source>Unknown Mesh</source>
-        <translation>Unknown Mesh</translation>
+        <translation type="vanished">Unknown Mesh</translation>
     </message>
 </context>
 <context>
     <name>UnknownTransformDelegate</name>
     <message>
-        <location filename="qml/transforms/UnknownTransformDelegate.qml" line="31"/>
         <source>Unknown Transform</source>
-        <translation>Unknown Transform</translation>
+        <translation type="vanished">Unknown Transform</translation>
     </message>
 </context>
 <context>

@@ -34,7 +34,6 @@ import Qt3D.Core 2.0
 TransformDelegate {
     id: thisDelegate
     componentType: EditorSceneItemComponentsModel.Transform
-    title: qsTr("Matrix")
     editable: false
 
     Matrix4x4PropertyInputField {
