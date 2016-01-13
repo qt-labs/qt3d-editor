@@ -39,7 +39,8 @@ PropertyInputField {
     componentType: EditorSceneItemComponentsModel.GeneralEntity
 
     onComponentValueChanged: {
-        entityEnabled = component[propertyName]
+        if (component !== null)
+            entityEnabled = component[propertyName]
     }
 
     Image {

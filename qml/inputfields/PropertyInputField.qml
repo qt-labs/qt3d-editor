@@ -33,7 +33,7 @@ Item {
     property string entityName: selectedEntityName
     property var component: null
     property int componentType: EditorSceneItemComponentsModel.Unknown
-    property var componentValue: component[propertyName]
+    property var componentValue: (component === null) ? "" : component[propertyName]
 
     // Inserts property change command to undostack (which also executes the command).
     // oldValue parameter can be used by subclass to control the undo value in cases
