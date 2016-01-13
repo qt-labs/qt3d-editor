@@ -38,7 +38,8 @@ PropertyInputField {
     property int minimum: 0
 
     onComponentValueChanged: {
-        valueInput.text = component[propertyName]
+        if (component !== null)
+            valueInput.text = component[propertyName]
     }
 
     IntValidator {

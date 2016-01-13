@@ -41,7 +41,8 @@ PropertyInputField {
     property size newValue: Qt.size(0, 0)
 
     onComponentValueChanged: {
-        newValue = component[propertyName]
+        if (component !== null)
+            newValue = component[propertyName]
         widthInput.text = newValue.width
         heightInput.text = newValue.height
     }

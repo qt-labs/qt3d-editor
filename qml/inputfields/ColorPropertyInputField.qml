@@ -41,7 +41,8 @@ PropertyInputField {
     property color oldColor
 
     onComponentValueChanged: {
-        colorValue = component[propertyName]
+        if (component !== null)
+            colorValue = component[propertyName]
         if (colorDialog.visible && colorDialog.currentColor !== colorValue) {
             // The colorValue has changed without user input on color dialog, likely meaning
             // user had invoked undo affecting this property. We need to reset the

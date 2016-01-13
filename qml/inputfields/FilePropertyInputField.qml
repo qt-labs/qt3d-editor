@@ -41,7 +41,8 @@ PropertyInputField {
     property url defaultUrl: ""
 
     onComponentValueChanged: {
-        url = component[propertyName]
+        if (component !== null)
+            url = component[propertyName]
         if (fileButton.text === "")
             fileDialog.open()
     }

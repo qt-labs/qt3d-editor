@@ -41,7 +41,8 @@ PropertyInputField {
     property alias roundDigits: sliderInputfield.roundDigits
 
     onComponentValueChanged: {
-        sliderInputfield.value = component[propertyName]
+        if (component !== null)
+            sliderInputfield.value = component[propertyName]
     }
 
     FloatSliderInputField {

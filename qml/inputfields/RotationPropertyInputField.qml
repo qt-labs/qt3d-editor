@@ -54,7 +54,7 @@ PropertyInputField {
     }
 
     onComponentValueChanged: {
-        if (!blockValueChanges)
+        if (!blockValueChanges && component !== null)
             toAxisAndAngle(component[propertyName])
     }
 

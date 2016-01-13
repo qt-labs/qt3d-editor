@@ -39,7 +39,8 @@ PropertyInputField {
 
     onComponentValueChanged: {
         blockChanges = true
-        checkBox.checked = component[propertyName]
+        if (component !== null)
+            checkBox.checked = component[propertyName]
         blockChanges = false
     }
 

@@ -40,7 +40,8 @@ PropertyInputField {
     property int roundMultiplier: Math.pow(10, roundDigits) // Calculated from roundDigits, do not set directly
 
     onComponentValueChanged: {
-        valueInput.text = roundNumber(component[propertyName])
+        if (component !== null)
+            valueInput.text = roundNumber(component[propertyName])
     }
 
     function roundNumber(number) {

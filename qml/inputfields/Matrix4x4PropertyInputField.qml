@@ -40,7 +40,8 @@ PropertyInputField {
     property alias affine: matrix4x4InputField.affine
 
     onComponentValueChanged: {
-        matrix4x4InputField.value = component[propertyName]
+        if (component !== null)
+            matrix4x4InputField.value = component[propertyName]
     }
 
     Matrix4x4InputField {

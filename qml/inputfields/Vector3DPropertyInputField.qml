@@ -44,7 +44,8 @@ PropertyInputField {
         // TODO: Changing value to (0,0,0) via e.g. undo doesn't trigger this slot,
         // TODO: see: https://bugreports.qt.io/browse/QTBUG-50204
         // TODO: Some kind of workaround may be needed unless Qt bug is fixed.
-        vectorInputField.value = component[propertyName]
+        if (component !== null)
+            vectorInputField.value = component[propertyName]
     }
 
     Vector3DInputField {
