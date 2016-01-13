@@ -84,6 +84,7 @@ static const QString internalPrefix = QStringLiteral("__internal");
 EditorScene::EditorScene(QObject *parent)
     : QObject(parent)
     , m_rootEntity(Q_NULLPTR)
+    , m_componentCache(Q_NULLPTR)
     , m_rootItem(Q_NULLPTR)
     , m_sceneModel(new EditorSceneItemModel(this))
     , m_sceneParser(new EditorSceneParser(this))
@@ -117,7 +118,7 @@ EditorScene::~EditorScene()
     // TODO: Check if it is necessary to delete rootentity and associated components, or do they get
     // TODO: properly deleted by aspect engine shutdown?
 
-
+    delete m_componentCache;
 }
 
 Qt3DCore::QEntity *EditorScene::rootEntity()
@@ -613,6 +614,11 @@ void EditorScene::createRootEntity()
     m_rootEntity = new Qt3DCore::QEntity();
     m_rootEntity->setObjectName(QStringLiteral("__internal root entity"));
 
+    // Create a component cache for components that are needed after Load/New/possible other
+    // reason for deleting scene root (m_sceneEntity)
+    m_componentCache = new Qt3DCore::QEntity();
+    m_componentCache->setObjectName("__internal component cache");
+
     // Selection box material and mesh need to be created before any
     // EditorSceneItem are created
     Qt3DRender::QPhongAlphaMaterial *selectionBoxMaterial = new Qt3DRender::QPhongAlphaMaterial();
@@ -624,6 +630,10 @@ void EditorScene::createRootEntity()
     m_selectionBoxMaterial = selectionBoxMaterial;
 
     m_selectionBoxMesh = new Qt3DRender::QCuboidMesh();
+
+    // Save to cache, as these are needed after Load/New
+    m_componentCache->addComponent(m_selectionBoxMesh);
+    m_componentCache->addComponent(m_selectionBoxMaterial);
 
 //    // TODO: Prototype is done with transparent cuboids, todo a proper wireframe material
 //    Qt3DRender::QMaterial *wireframeMaterial = new Qt3DRender::QMaterial();

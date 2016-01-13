@@ -162,6 +162,7 @@ private:
     friend class EditorViewportItem;
 
     Qt3DCore::QEntity *m_rootEntity;
+    Qt3DCore::QEntity *m_componentCache;
     EditorSceneItem *m_rootItem;
     EditorSceneItemModel* m_sceneModel;
 
