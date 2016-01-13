@@ -60,6 +60,7 @@ ApplicationWindow {
                 onTriggered: {
                     editorScene.resetScene()
                     planeOrientationY.checked = true
+                    saveFileUrl = ""
                 }
             }
             MenuItem {
