@@ -36,6 +36,12 @@ ComponentDelegate {
 
     property int currentMesh: 0
 
+    viewTitleVisible: meshViewVisible
+
+    onChangeViewVisibity: {
+        meshViewVisible = viewVisibility
+    }
+
     Item {
         width: parent.width
         height: meshCombobox.height + 8

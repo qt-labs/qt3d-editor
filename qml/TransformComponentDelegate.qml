@@ -36,6 +36,12 @@ ComponentDelegate {
 
     property int currentTransform: 0
 
+    viewTitleVisible: transformViewVisible
+
+    onChangeViewVisibity: {
+        transformViewVisible = viewVisibility
+    }
+
     Item {
         width: parent.width
         height: transformCombobox.height + 8

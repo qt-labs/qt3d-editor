@@ -34,12 +34,16 @@ Rectangle {
     property bool viewVisible: true
     property int minimumHeaderHeight: viewHeaderText.implicitHeight + 12
 
-    signal showViewTitle()
-    signal hideViewTitle()
+    signal showViewTitle(bool showView)
+    signal viewHeaderClicked()
 
     height: minimumHeaderHeight
     width: parent.width
     color: "darkGray"
+
+    onViewVisibleChanged: {
+        showViewTitle(viewVisible)
+    }
 
     Label {
         id: viewHeaderText
@@ -53,13 +57,7 @@ Rectangle {
     MouseArea {
         anchors.fill: parent
         onClicked: {
-            if (viewVisible) {
-                viewVisible = false
-                hideViewTitle()
-            } else {
-                viewVisible = true
-                showViewTitle()
-            }
+            viewHeaderClicked()
         }
     }
 }

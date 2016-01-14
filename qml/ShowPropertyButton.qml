@@ -38,6 +38,9 @@ Item {
     property string hideIconSource
     property alias tooltip: propertyButton.tooltip
     property int propertyComponentType: EditorSceneItemComponentsModel.Unknown
+    property bool buttonEnabled
+
+    signal propertyButtonClicked()
 
     // Button style delegate
     Component {
@@ -56,11 +59,10 @@ Item {
     Button {
         id: propertyButton
         anchors.centerIn: parent.Center
-        iconSource: showIconSource //TODO: or hideIconSource if the properties are hidden
+        iconSource: buttonEnabled ? showIconSource : hideIconSource
         style: propertyButtonStyle
         onClicked: {
-            //TODO: show/hide properties view
-            console.log("Property button clicked")
+            propertyButtonClicked()
         }
     }
 }

@@ -129,19 +129,26 @@ Item {
                     Layout.alignment: Qt.AlignLeft
 
                     ShowPropertyButton {
-                        id: transformButton
-                        showIconSource: "/images/property_transform_shown.png"
-                        hideIconSource: "/images/property_transform_hidden.png"
-                        tooltip: qsTr("Show/Hide Transform Properties")
-                        propertyComponentType: EditorSceneItemComponentsModel.Transform
-                    }
-                    ShowPropertyButton {
                         id: meshButton
                         showIconSource: "/images/property_mesh_shown.png"
                         hideIconSource: "/images/property_mesh_hidden.png"
                         tooltip: qsTr("Show/Hide Mesh Properties")
                         propertyComponentType: EditorSceneItemComponentsModel.Mesh
-
+                        buttonEnabled: meshViewVisible
+                        onPropertyButtonClicked: {
+                            meshViewVisible = !meshViewVisible
+                        }
+                    }
+                    ShowPropertyButton {
+                        id: transformButton
+                        showIconSource: "/images/property_transform_shown.png"
+                        hideIconSource: "/images/property_transform_hidden.png"
+                        tooltip: qsTr("Show/Hide Transform Properties")
+                        propertyComponentType: EditorSceneItemComponentsModel.Transform
+                        buttonEnabled: transformViewVisible
+                        onPropertyButtonClicked: {
+                            transformViewVisible = !transformViewVisible
+                        }
                     }
                     ShowPropertyButton {
                         id: materialButton
@@ -149,7 +156,10 @@ Item {
                         hideIconSource: "/images/property_material_hidden.png"
                         tooltip: qsTr("Show/Hide Material Properties")
                         propertyComponentType: EditorSceneItemComponentsModel.Material
-
+                        buttonEnabled: materialViewVisible
+                        onPropertyButtonClicked: {
+                            materialViewVisible = !materialViewVisible
+                        }
                     }
                 }
             }

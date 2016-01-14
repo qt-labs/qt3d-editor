@@ -52,6 +52,10 @@ ApplicationWindow {
 
     property color labelTextColor: "white"
 
+    property bool transformViewVisible: true
+    property bool materialViewVisible: true
+    property bool meshViewVisible: true
+
     menuBar: MenuBar {
         Menu {
             title: qsTr("&File")

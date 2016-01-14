@@ -37,6 +37,12 @@ ComponentDelegate {
 
     property int currentMaterial: 0
 
+    viewTitleVisible: materialViewVisible
+
+    onChangeViewVisibity: {
+        materialViewVisible = viewVisibility
+    }
+
     Item {
         width: parent.width
         height: materialCombobox.height + 8
