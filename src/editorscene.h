@@ -89,10 +89,11 @@ public:
     const QMap<Qt3DCore::QNodeId, EditorSceneItem *> &items() const;
 
     Q_INVOKABLE void resetScene();
-    Q_INVOKABLE bool saveScene(const QUrl &fileUrl);
+    Q_INVOKABLE bool saveScene(const QUrl &fileUrl, bool autosave = false);
     Q_INVOKABLE bool loadScene(const QUrl &fileUrl);
     Q_INVOKABLE QString cameraName(int index) const;
     Q_INVOKABLE void resetFreeViewCamera();
+    Q_INVOKABLE void deleteScene(const QUrl &fileUrl, bool autosave = false);
 
     bool isRemovable(Qt3DCore::QEntity *entity) const;
 

@@ -76,10 +76,13 @@
 #include <QtGui/QWindow>
 #include <QtGui/QKeySequence>
 
+#include <QtCore/QDir>
+
 //#define TEST_SCENE // If a test scene is wanted instead of the default scene
 
 static const QString cameraConeName = QStringLiteral("__internal camera cone");
 static const QString internalPrefix = QStringLiteral("__internal");
+static const QString autoSavePostfix = QStringLiteral(".autosave");
 
 EditorScene::EditorScene(QObject *parent)
     : QObject(parent)
@@ -304,12 +307,12 @@ void EditorScene::resetScene()
     m_sceneModel->resetModel();
 }
 
-bool EditorScene::saveScene(const QUrl &fileUrl)
+bool EditorScene::saveScene(const QUrl &fileUrl, bool autosave)
 {
     Qt3DCore::QEntity *camera = Q_NULLPTR;
     if (m_activeSceneCameraIndex >= 0 && m_activeSceneCameraIndex < m_sceneCameras.size())
         camera = m_sceneCameras.at(m_activeSceneCameraIndex).entity;
-    bool retval = m_sceneParser->exportScene(m_sceneEntity, fileUrl, camera);
+    bool retval = m_sceneParser->exportScene(m_sceneEntity, fileUrl, camera, autosave);
     if (retval) {
         m_undoHandler->setClean();
     } else {
@@ -363,6 +366,25 @@ void EditorScene::resetFreeViewCamera()
     m_freeViewCameraEntity->setPosition(QVector3D(20.0f, 20.0f, 20.0f));
     m_freeViewCameraEntity->setUpVector(QVector3D(0, 1, 0));
     m_freeViewCameraEntity->setViewCenter(QVector3D(0, 0, 0));
+}
+
+void EditorScene::deleteScene(const QUrl &fileUrl, bool autosave)
+{
+    // Remove qml file
+    QString fileName = fileUrl.toLocalFile();
+    if (autosave)
+        fileName.append(autoSavePostfix);
+    QFile::remove(fileName);
+
+    // Remove resource directory
+    QString qmlFinalFileAbsoluteFilePath = fileUrl.toLocalFile();
+    QFile qmlFinalFile(qmlFinalFileAbsoluteFilePath);
+    QFileInfo qmlFinalFileInfo(qmlFinalFile);
+    QString resourceDirName = qmlFinalFileInfo.baseName() + QStringLiteral("_scene_res");
+    if (autosave)
+        resourceDirName.append(autoSavePostfix);
+    QDir dir = QDir(resourceDirName);
+    dir.removeRecursively();
 }
 
 void EditorScene::enableCameraCones(bool enable)

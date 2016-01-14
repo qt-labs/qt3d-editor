@@ -83,7 +83,7 @@ public:
     ~EditorSceneParser();
 
     bool exportScene(Qt3DCore::QEntity *sceneEntity, const QUrl &fileUrl,
-                     Qt3DCore::QEntity *activeSceneCamera);
+                     Qt3DCore::QEntity *activeSceneCamera, bool autosave = false);
     Qt3DCore::QEntity *importScene(const QUrl &fileUrl, Qt3DCore::QEntity *&cameraEntity);
 
 private:

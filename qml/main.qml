@@ -61,6 +61,7 @@ ApplicationWindow {
                     editorScene.resetScene()
                     planeOrientationY.checked = true
                     saveFileUrl = ""
+                    autoSave.checked = false
                 }
             }
             MenuItem {
@@ -71,6 +72,23 @@ ApplicationWindow {
             }
             MenuItem {
                 action: fileSaveAction
+            }
+            MenuItem {
+                id: autoSave
+                text: qsTr("Enable autosave")
+                checkable: true
+                checked: false
+                onTriggered: {
+                    if (checked) {
+                        if (saveFileUrl == "")
+                            saveFileDialog.open()
+                        autoSaveTimer.start()
+                    } else {
+                        autoSaveTimer.stop()
+                    }
+                }
+            }
+            MenuSeparator {
             }
             MenuItem {
                 text: qsTr("E&xit")
@@ -147,7 +165,7 @@ ApplicationWindow {
                     onCheckedChanged: {
                         if (checked) {
                             editorScene.helperPlaneTransform.rotation =
-                                editorScene.helperPlaneTransform.fromAxisAndAngle(0, 1, 0, 90)
+                                    editorScene.helperPlaneTransform.fromAxisAndAngle(0, 1, 0, 90)
                         }
                     }
                 }
@@ -160,7 +178,7 @@ ApplicationWindow {
                     onCheckedChanged: {
                         if (checked) {
                             editorScene.helperPlaneTransform.rotation =
-                                editorScene.helperPlaneTransform.fromAxisAndAngle(1, 0, 0, 90)
+                                    editorScene.helperPlaneTransform.fromAxisAndAngle(1, 0, 0, 90)
                         }
                     }
                 }
@@ -173,7 +191,7 @@ ApplicationWindow {
                     onCheckedChanged: {
                         if (checked) {
                             editorScene.helperPlaneTransform.rotation =
-                                editorScene.helperPlaneTransform.fromAxisAndAngle(0, 0, 1, 90)
+                                    editorScene.helperPlaneTransform.fromAxisAndAngle(0, 0, 1, 90)
                         }
                     }
                 }
@@ -220,23 +238,20 @@ ApplicationWindow {
         text: qsTr("L&oad")
         shortcut: StandardKey.Open
         onTriggered: loadFileDialog.open()
-//        onTriggered: {
-//            var success = editorScene.loadScene("file:///D:/dev/qt/apps/qt3deditor/Qt3DEditorTestApp/GeneratedScene.qml") // Debug
-//            if (success)
-//                entityTree.selectSceneRoot()
-//        }
-}
+    }
 
     Action {
         id: fileSaveAction
         text: qsTr("&Save")
         shortcut: StandardKey.Save
-//        onTriggered: editorScene.saveScene("file:///D:/dev/qt/apps/qt3deditor/Qt3DEditorTestApp/GeneratedScene.qml") // Debug
         onTriggered: {
-            if (saveFileUrl == "")
+            if (saveFileUrl == "") {
                 saveFileDialog.open()
-            else
+                // No previous autosave file, no need to delete anything
+            } else {
                 editorScene.saveScene(saveFileUrl)
+                editorScene.deleteScene(saveFileUrl, true)
+            }
         }
     }
 
@@ -244,7 +259,11 @@ ApplicationWindow {
         id: fileSaveAsAction
         text: qsTr("Save As")
         shortcut: StandardKey.SaveAs
-        onTriggered: saveFileDialog.open()
+        onTriggered: {
+            if (saveFileUrl != "")
+                editorScene.deleteScene(saveFileUrl, true)
+            saveFileDialog.open()
+        }
     }
 
     Action {
@@ -372,6 +391,16 @@ ApplicationWindow {
                     visible: generalPropertyView.viewTitleVisible
                 }
             }
+        }
+    }
+
+    Timer {
+        id: autoSaveTimer
+        running: false
+        interval: 600000 // 10 minutes
+        repeat: true
+        onTriggered: {
+            editorScene.saveScene(saveFileUrl, true)
         }
     }
 }

@@ -98,6 +98,7 @@ static const QString diffuseProperty = QStringLiteral("diffuse");
 static const QString specularProperty = QStringLiteral("specular");
 static const QString normalProperty = QStringLiteral("normal");
 static const QString enumPropertyTag = QStringLiteral(" // ENUM:");
+static const QString autoSavePostfix = QStringLiteral(".autosave");
 
 EditorSceneParser::EditorSceneParser(QObject *parent)
     : QObject(parent)
@@ -173,19 +174,23 @@ EditorSceneParser::~EditorSceneParser()
 
 // Caller retains ownership of sceneEntity and frameGraph
 bool EditorSceneParser::exportScene(Qt3DCore::QEntity *sceneEntity, const QUrl &fileUrl,
-                                    Qt3DCore::QEntity *activeSceneCamera)
+                                    Qt3DCore::QEntity *activeSceneCamera, bool autosave)
 {
     // TODO: Maybe change exporting so that use selects the target .qrc file, and generate
     // TODO: qml in the subdirectory? That way user only needs to add the .qrc to the project.
-    qDebug() << "Exporting scene to " << fileUrl;
     resetParser();
 
     // Figure out the final target qml file and directory
     QString qmlFinalFileAbsoluteFilePath = fileUrl.toLocalFile();
+    if (autosave)
+        qmlFinalFileAbsoluteFilePath.append(autoSavePostfix);
+    qDebug() << "Exporting scene to " << qmlFinalFileAbsoluteFilePath;
     QFile qmlFinalFile(qmlFinalFileAbsoluteFilePath);
     QFileInfo qmlFinalFileInfo(qmlFinalFile);
     QDir finalTargetDir = qmlFinalFileInfo.absoluteDir();
     m_resourceDirName = resourceDirTemplate.arg(qmlFinalFileInfo.baseName());
+    if (autosave)
+        m_resourceDirName.append(autoSavePostfix);
 
     QString finalResourceFileName = getAbsoluteResourceFileName(qmlFinalFileInfo,
                                                                 m_resourceDirName);
