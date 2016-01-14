@@ -353,21 +353,6 @@ bool EditorScene::loadScene(const QUrl &fileUrl)
     return bool(newSceneEntity);
 }
 
-QString EditorScene::cameraName(int index) const
-{
-    if (m_sceneCameras.size() < index)
-        return m_sceneCameras.at(index).entity->objectName();
-    else
-        return QString();
-}
-
-void EditorScene::resetFreeViewCamera()
-{
-    m_freeViewCameraEntity->setPosition(QVector3D(20.0f, 20.0f, 20.0f));
-    m_freeViewCameraEntity->setUpVector(QVector3D(0, 1, 0));
-    m_freeViewCameraEntity->setViewCenter(QVector3D(0, 0, 0));
-}
-
 void EditorScene::deleteScene(const QUrl &fileUrl, bool autosave)
 {
     // Remove qml file
@@ -385,6 +370,56 @@ void EditorScene::deleteScene(const QUrl &fileUrl, bool autosave)
         resourceDirName.append(autoSavePostfix);
     QDir dir = QDir(resourceDirName);
     dir.removeRecursively();
+}
+
+QString EditorScene::cameraName(int index) const
+{
+    if (m_sceneCameras.size() < index)
+        return m_sceneCameras.at(index).entity->objectName();
+    else
+        return QString();
+}
+
+void EditorScene::resetFreeViewCamera()
+{
+    if (m_viewport)
+        m_freeViewCameraEntity->setAspectRatio(m_viewport->width() / m_viewport->height());
+    else
+        m_freeViewCameraEntity->setAspectRatio(16.0f / 9.0f);
+    m_freeViewCameraEntity->setBottom(-0.5f);
+    m_freeViewCameraEntity->setFarPlane(1000.0f);
+    m_freeViewCameraEntity->setFieldOfView(45.0f);
+    m_freeViewCameraEntity->setLeft(-0.5f);
+    m_freeViewCameraEntity->setNearPlane(0.1f);
+    m_freeViewCameraEntity->setPosition(QVector3D(20.0f, 20.0f, 20.0f));
+    m_freeViewCameraEntity->setProjectionType(Qt3DCore::QCameraLens::PerspectiveProjection);
+    m_freeViewCameraEntity->setRight(0.5f);
+    m_freeViewCameraEntity->setTop(0.5f);
+    m_freeViewCameraEntity->setUpVector(QVector3D(0, 1, 0));
+    m_freeViewCameraEntity->setViewCenter(QVector3D(0, 0, 0));
+}
+
+void EditorScene::copyFreeViewToNewSceneCamera()
+{
+    // Set the new scene camera to freeview camera position
+    Qt3DCore::QCamera *newCam = qobject_cast<Qt3DCore::QCamera *>(m_sceneCameras.last().entity);
+    copyCameraProperties(newCam, m_freeViewCameraEntity);
+}
+
+void EditorScene::moveActiveSceneCameraToFreeView()
+{
+    // Set the active scene camera to freeview camera position
+    Qt3DCore::QCamera *newCam = qobject_cast<Qt3DCore::QCamera *>(
+                m_sceneCameras.at(m_activeSceneCameraIndex).entity);
+    copyCameraProperties(newCam, m_freeViewCameraEntity);
+}
+
+void EditorScene::snapFreeViewCameraToActiveSceneCamera()
+{
+    // Set the freeview camera position to the active scene camera position
+    Qt3DCore::QCamera *activeCam = qobject_cast<Qt3DCore::QCamera *>(
+                m_sceneCameras.at(m_activeSceneCameraIndex).entity);
+    copyCameraProperties(m_freeViewCameraEntity, activeCam);
 }
 
 void EditorScene::enableCameraCones(bool enable)
@@ -456,6 +491,22 @@ void EditorScene::updateCameraConeMatrix(Qt3DCore::QTransform *sourceTransform,
 {
     QMatrix4x4 coneMat = calculateCameraConeMatrix(sourceTransform);
     coneTransform->setMatrix(coneMat);
+}
+
+void EditorScene::copyCameraProperties(Qt3DCore::QCamera *target, Qt3DCore::QCamera *source)
+{
+    target->setAspectRatio(source->aspectRatio());
+    target->setBottom(source->bottom());
+    target->setFarPlane(source->farPlane());
+    target->setFieldOfView(source->fieldOfView());
+    target->setLeft(source->left());
+    target->setNearPlane(source->nearPlane());
+    target->setPosition(source->position());
+    target->setProjectionType(source->projectionType());
+    target->setRight(source->right());
+    target->setTop(source->top());
+    target->setUpVector(source->upVector());
+    target->setViewCenter(source->viewCenter());
 }
 
 Qt3DRender::QMaterial *EditorScene::selectionBoxMaterial() const

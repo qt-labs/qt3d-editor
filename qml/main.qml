@@ -142,11 +142,34 @@ ApplicationWindow {
                         editorScene.freeView = checked
                     }
                 }
-
                 MenuItem {
+                    enabled: freeViewCamera.checked
                     text: qsTr("Reset")
                     onTriggered: {
                         editorScene.resetFreeViewCamera()
+                    }
+                }
+                MenuItem {
+                    enabled: freeViewCamera.checked
+                    text: qsTr("Add scene camera here")
+                    onTriggered: {
+                        entityTree.selectSceneRoot()
+                        entityTree.addNewEntity(EditorSceneItemModel.CameraEntity)
+                        editorScene.copyFreeViewToNewSceneCamera()
+                    }
+                }
+                MenuItem {
+                    enabled: freeViewCamera.checked
+                    text: qsTr("Move active camera here")
+                    onTriggered: {
+                        editorScene.moveActiveSceneCameraToFreeView()
+                    }
+                }
+                MenuItem {
+                    enabled: freeViewCamera.checked
+                    text: qsTr("Snap to active camera")
+                    onTriggered: {
+                        editorScene.snapFreeViewCameraToActiveSceneCamera()
                     }
                 }
             }

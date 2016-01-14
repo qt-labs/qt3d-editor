@@ -91,9 +91,12 @@ public:
     Q_INVOKABLE void resetScene();
     Q_INVOKABLE bool saveScene(const QUrl &fileUrl, bool autosave = false);
     Q_INVOKABLE bool loadScene(const QUrl &fileUrl);
+    Q_INVOKABLE void deleteScene(const QUrl &fileUrl, bool autosave = false);
     Q_INVOKABLE QString cameraName(int index) const;
     Q_INVOKABLE void resetFreeViewCamera();
-    Q_INVOKABLE void deleteScene(const QUrl &fileUrl, bool autosave = false);
+    Q_INVOKABLE void copyFreeViewToNewSceneCamera();
+    Q_INVOKABLE void moveActiveSceneCameraToFreeView();
+    Q_INVOKABLE void snapFreeViewCameraToActiveSceneCamera();
 
     bool isRemovable(Qt3DCore::QEntity *entity) const;
 
@@ -159,6 +162,7 @@ private:
     Qt3DCore::QCameraLens *cameraLensForEntity(Qt3DCore::QEntity *entity);
     void updateCameraConeMatrix(Qt3DCore::QTransform *sourceTransform,
                                 Qt3DCore::QTransform *coneTransform);
+    void copyCameraProperties(Qt3DCore::QCamera *target, Qt3DCore::QCamera *source);
 
 private:
     friend class EditorViewportItem;

@@ -329,23 +329,23 @@
 <context>
     <name>EditorScene</name>
     <message>
-        <location filename="src/editorscene.cpp" line="571"/>
+        <location filename="src/editorscene.cpp" line="632"/>
         <source>Camera</source>
         <translation>Kamera</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="583"/>
+        <location filename="src/editorscene.cpp" line="644"/>
         <source>Cube</source>
         <translation>Kuutio</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="605"/>
+        <location filename="src/editorscene.cpp" line="666"/>
         <source>Light</source>
         <translation>Valo</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="289"/>
-        <location filename="src/editorscene.cpp" line="693"/>
+        <location filename="src/editorscene.cpp" line="292"/>
+        <location filename="src/editorscene.cpp" line="754"/>
         <source>Scene root</source>
         <translation>Maiseman Päätaso</translation>
     </message>
@@ -1319,113 +1319,133 @@
         <translation>&amp;Uusi</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="76"/>
+        <location filename="qml/main.qml" line="78"/>
+        <source>Enable autosave</source>
+        <translation>Salli Automaattitallennus</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="94"/>
         <source>E&amp;xit</source>
         <translation>&amp;Poistu</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="81"/>
+        <location filename="qml/main.qml" line="99"/>
         <source>&amp;Edit</source>
         <translation>&amp;Muokkaa</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="91"/>
+        <location filename="qml/main.qml" line="109"/>
         <source>&amp;View</source>
         <translation>&amp;Näytä</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="94"/>
+        <location filename="qml/main.qml" line="112"/>
         <source>&amp;Camera</source>
         <translation>&amp;Kamera</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="120"/>
+        <location filename="qml/main.qml" line="138"/>
         <source>Free viewing mode</source>
         <translation>Katsele Vapaasti</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="129"/>
+        <location filename="qml/main.qml" line="147"/>
         <source>Reset</source>
         <translation>Palauta Oletussijainti</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="137"/>
+        <location filename="qml/main.qml" line="154"/>
+        <source>Add scene camera here</source>
+        <translation>Lisää Kamera Tähän</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="163"/>
+        <source>Move active camera here</source>
+        <translation>Siirrä Aktiivinen Kamera Tähän</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="170"/>
+        <source>Snap to active camera</source>
+        <translation>Siirry Aktiiviseen Kameraan</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="178"/>
         <source>&amp;Helper Plane</source>
         <translation>&amp;Aputaso</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="143"/>
+        <location filename="qml/main.qml" line="184"/>
         <source>Normal &amp;X</source>
         <translation>&amp;X Normaali</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="156"/>
+        <location filename="qml/main.qml" line="197"/>
         <source>Normal &amp;Y</source>
         <translation>&amp;Y Normaali</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="169"/>
+        <location filename="qml/main.qml" line="210"/>
         <source>Normal &amp;Z</source>
         <translation>&amp;Z Normaali</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="182"/>
+        <location filename="qml/main.qml" line="223"/>
         <source>&amp;Hide</source>
         <translation>&amp;Piilota</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="198"/>
+        <location filename="qml/main.qml" line="239"/>
         <source>Load Scene</source>
         <translation>Lataa Maisema</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="199"/>
-        <location filename="qml/main.qml" line="211"/>
+        <location filename="qml/main.qml" line="240"/>
+        <location filename="qml/main.qml" line="252"/>
         <source>Qt3D Scenes (*.qml)</source>
         <translation>Qt 3D Maisemat (*.qml)</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="210"/>
+        <location filename="qml/main.qml" line="251"/>
         <source>Save Scene</source>
         <translation>Tallenna Maisema</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="220"/>
+        <location filename="qml/main.qml" line="261"/>
         <source>L&amp;oad</source>
         <translation>&amp;Lataa</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="232"/>
+        <location filename="qml/main.qml" line="268"/>
         <source>&amp;Save</source>
         <translation>&amp;Tallenna</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="245"/>
+        <location filename="qml/main.qml" line="283"/>
         <source>Save As</source>
         <translation>Tallenna Nimellä</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="252"/>
+        <location filename="qml/main.qml" line="294"/>
         <source>Undo</source>
         <translation>Peru</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="252"/>
+        <location filename="qml/main.qml" line="294"/>
         <source>Undo &apos;%1&apos;</source>
         <translation>Peru &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="260"/>
+        <location filename="qml/main.qml" line="302"/>
         <source>Redo</source>
         <translation>Toista</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="260"/>
+        <location filename="qml/main.qml" line="302"/>
         <source>Redo &apos;%1&apos;</source>
         <translation>Toista &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="285"/>
+        <location filename="qml/main.qml" line="327"/>
         <source>Error</source>
         <translation>Virhe</translation>
     </message>
