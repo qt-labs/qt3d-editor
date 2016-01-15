@@ -644,7 +644,7 @@ void EditorScene::setupDefaultScene()
     sceneCameraEntity->setObjectName(tr("Camera"));
 
     sceneCameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    sceneCameraEntity->setPosition(QVector3D(0, 0, -20.0f));
+    sceneCameraEntity->setPosition(QVector3D(0, 0, -15.0f));
     sceneCameraEntity->setUpVector(QVector3D(0, 1, 0));
     sceneCameraEntity->setViewCenter(QVector3D(0, 0, 0));
 
@@ -656,7 +656,7 @@ void EditorScene::setupDefaultScene()
     cubeEntity->setObjectName(tr("Cube"));
     Qt3DRender::QCuboidMesh *cubeMesh = new Qt3DRender::QCuboidMesh();
     Qt3DCore::QTransform *cubeTransform = new Qt3DCore::QTransform();
-    cubeTransform->setTranslation(QVector3D(0.0f, 0.0f, 0.0f));
+    cubeTransform->setTranslation(QVector3D(0.0f, 0.0f, 5.0f));
     cubeTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(0.0f, 0.0f, 1.0f), 180.0f));
     Qt3DRender::QDiffuseSpecularMapMaterial *cubeMaterial
             = new Qt3DRender::QDiffuseSpecularMapMaterial();
@@ -678,7 +678,7 @@ void EditorScene::setupDefaultScene()
     lightEntity->setObjectName(tr("Light"));
     Qt3DRender::QLight *light = new Qt3DRender::QLight(m_sceneEntity);
     Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform();
-    lightTransform->setTranslation(QVector3D(0.0f, 0.0f, -10.0f));
+    lightTransform->setTranslation(QVector3D(0.0f, 10.0f, -5.0f));
     lightEntity->addComponent(light);
     lightEntity->addComponent(lightTransform);
     addEntity(lightEntity);
