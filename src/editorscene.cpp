@@ -694,8 +694,9 @@ void EditorScene::createRootEntity()
 
     // Create a component cache for components that are needed after Load/New/possible other
     // reason for deleting scene root (m_sceneEntity)
-    m_componentCache = new Qt3DCore::QEntity();
+    m_componentCache = new Qt3DCore::QEntity(m_rootEntity);
     m_componentCache->setObjectName("__internal component cache");
+    m_componentCache->setEnabled(false);
 
     // Selection box material and mesh need to be created before any
     // EditorSceneItem are created
@@ -708,10 +709,6 @@ void EditorScene::createRootEntity()
     m_selectionBoxMaterial = selectionBoxMaterial;
 
     m_selectionBoxMesh = new Qt3DRender::QCuboidMesh();
-
-    // Save to cache, as these are needed after Load/New
-    m_componentCache->addComponent(m_selectionBoxMesh);
-    m_componentCache->addComponent(m_selectionBoxMaterial);
 
 //    // TODO: Prototype is done with transparent cuboids, todo a proper wireframe material
 //    Qt3DRender::QMaterial *wireframeMaterial = new Qt3DRender::QMaterial();
@@ -745,6 +742,10 @@ void EditorScene::createRootEntity()
 
 //    wireframeMaterial->addParameter(new Qt3DRender::QParameter(QStringLiteral("color"),
 //                                                               QColor(Qt::darkGray)));
+
+    // Save selection box mesh and material to cache, as these must be preserved over a scene reset
+    m_componentCache->addComponent(m_selectionBoxMesh);
+    m_componentCache->addComponent(m_selectionBoxMaterial);
 
     m_rootItem = new EditorSceneItem(this, m_rootEntity, Q_NULLPTR, -1, m_freeView, this);
 
