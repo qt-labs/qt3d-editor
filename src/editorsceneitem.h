@@ -95,6 +95,7 @@ private:
     void connectSelectionBoxTransformsRecursive(bool enabled);
     void composeSelectionBoxTransformRecursive(QMatrix4x4 &transformMatrix);
     void connectEntityMesh(bool enabled);
+    void recalculateCustomMeshExtents(Qt3DRender::QGeometryRenderer *mesh);
 
     Qt3DCore::QEntity *m_entity; // Not owned
 
@@ -114,6 +115,7 @@ private:
     EditorSceneItemMeshComponentsModel::MeshComponentTypes m_entityMeshType;
 
     QVector3D m_entityMeshExtents;
+    QVector3D m_entityMeshCenter;
 };
 
 Q_DECLARE_METATYPE(EditorSceneItem*)

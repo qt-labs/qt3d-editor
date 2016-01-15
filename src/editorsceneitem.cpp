@@ -33,6 +33,7 @@
 #include <Qt3DCore/QCamera>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QGeometryFunctor>
 #include <Qt3DRender/QCuboidMesh>
 #include <Qt3DRender/QMesh>
 #include <Qt3DRender/QCylinderMesh>
@@ -40,6 +41,8 @@
 #include <Qt3DRender/QSphereMesh>
 #include <Qt3DRender/QTorusMesh>
 #include <Qt3DRender/QLight>
+#include <Qt3DRender/QAbstractAttribute>
+#include <Qt3DRender/QAbstractBuffer>
 
 #include "editorsceneitemcomponentsmodel.h"
 
@@ -225,11 +228,10 @@ void EditorSceneItem::handleMeshChange(Qt3DRender::QGeometryRenderer *newMesh)
 
 void EditorSceneItem::recalculateMeshExtents()
 {
+    m_entityMeshCenter = QVector3D();
     switch (m_entityMeshType) {
     case EditorSceneItemMeshComponentsModel::Custom: {
-        //Qt3DRender::QMesh *mesh = qobject_cast<Qt3DRender::QMesh *>(m_entityMesh);
-        // TODO Calculate properly from geometry
-        m_entityMeshExtents = QVector3D(2, 2, 2);
+        recalculateCustomMeshExtents(m_entityMesh);
         break;
     }
     case EditorSceneItemMeshComponentsModel::Cuboid: {
@@ -272,6 +274,75 @@ void EditorSceneItem::recalculateMeshExtents()
         break;
     }
     updateSelectionBoxTransform();
+}
+
+void EditorSceneItem::recalculateCustomMeshExtents(Qt3DRender::QGeometryRenderer *mesh)
+{
+    // For custom meshes we need to calculate the extents from geometry
+    Qt3DRender::QGeometry *meshGeometry = Q_NULLPTR;
+    Qt3DRender::QGeometryFunctorPtr geometryFunctorPtr = mesh->geometryFunctor();
+
+    if (geometryFunctorPtr.data()) {
+        // Execute the geometry functor to get the geometry, since its not normally available
+        // on the application side.
+        meshGeometry = geometryFunctorPtr.data()->operator()();
+    }
+
+    if (meshGeometry) {
+        // Set default in case we can't determine the geometry: normalized mesh in range [-1,1]
+        m_entityMeshExtents = QVector3D(2.0f, 2.0f, 2.0f);
+        m_entityMeshCenter =  QVector3D();
+
+        Qt3DRender::QAbstractAttribute *vPosAttribute = Q_NULLPTR;
+        Q_FOREACH (Qt3DRender::QAbstractAttribute *attribute, meshGeometry->attributes()) {
+            if (attribute->name() == QStringLiteral("vertexPosition")) {
+                vPosAttribute = attribute;
+                break;
+            }
+        }
+        if (vPosAttribute) {
+            const float *bufferPtr =
+                    reinterpret_cast<const float *>(vPosAttribute->buffer()->data().constData());
+            uint stride = vPosAttribute->byteStride() / sizeof(float);
+            uint offset = vPosAttribute->byteOffset() / sizeof(float);
+            bufferPtr += offset;
+            uint vertexCount = vPosAttribute->count();
+            uint dataCount = vPosAttribute->buffer()->data().size() / sizeof(float);
+
+            // Make sure we have valid data
+            if (((vertexCount * stride) + offset) > dataCount)
+                return;
+
+            float minX = FLT_MAX;
+            float minY = FLT_MAX;
+            float minZ = FLT_MAX;
+            float maxX = FLT_MIN;
+            float maxY = FLT_MIN;
+            float maxZ = FLT_MIN;
+
+            if (stride)
+                stride = stride - 3; // Three floats per vertex
+            for (uint i = 0; i < vertexCount; i++) {
+                float xVal = *bufferPtr++;
+                minX = qMin(xVal, minX);
+                maxX = qMax(xVal, maxX);
+                float yVal = *bufferPtr++;
+                minY = qMin(yVal, minY);
+                maxY = qMax(yVal, maxY);
+                float zVal = *bufferPtr++;
+                minZ = qMin(zVal, minZ);
+                maxZ = qMax(zVal, maxZ);
+                bufferPtr += stride;
+            }
+            m_entityMeshExtents = QVector3D(maxX - minX, maxY - minY, maxZ - minZ);
+            m_entityMeshCenter = QVector3D(minX + m_entityMeshExtents.x() / 2.0f,
+                                           minY + m_entityMeshExtents.y() / 2.0f,
+                                           minZ + m_entityMeshExtents.z() / 2.0f);
+        }
+    } else {
+        m_entityMeshExtents = QVector3D();
+        m_entityMeshCenter =  QVector3D();
+    }
 }
 
 void EditorSceneItem::connectSelectionBoxTransformsRecursive(bool enabled)
@@ -440,6 +511,7 @@ void EditorSceneItem::updateSelectionBoxTransform()
     // Transform mesh extents, first scale, then translate
     QMatrix4x4 transformMatrix;
     composeSelectionBoxTransformRecursive(transformMatrix);
+    transformMatrix.translate(m_entityMeshCenter);
     transformMatrix.scale(m_entityMeshExtents + QVector3D(0.05f, 0.05f, 0.05f));
     m_selectionTransform->setMatrix(transformMatrix);
 
@@ -456,8 +528,13 @@ void EditorSceneItem::setShowSelectionBox(bool enabled)
         connectSelectionBoxTransformsRecursive(enabled);
         connectEntityMesh(enabled);
 
-        if (enabled)
-            updateSelectionBoxTransform();
+        if (enabled) {
+            // Update mesh extents if they are dirty, otherwise just update transform
+            if (m_entityMeshExtents.isNull())
+                recalculateMeshExtents();
+            else
+                updateSelectionBoxTransform();
+        }
 
         m_selectionBox->setEnabled(enabled);
     }
