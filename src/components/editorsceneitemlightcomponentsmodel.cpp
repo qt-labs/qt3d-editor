@@ -46,14 +46,7 @@ EditorSceneItemLightComponentsModel::EditorSceneItemLightComponentsModel(
     , m_sceneComponentsModel(sceneItemModel)
     , m_type(Unknown)
 {
-    if (qobject_cast<Qt3DRender::QDirectionalLight *>(lightComponent))
-        m_type = Directional;
-    else if (qobject_cast<Qt3DRender::QPointLight *>(lightComponent))
-        m_type = Point;
-    else if (qobject_cast<Qt3DRender::QSpotLight *>(lightComponent))
-        m_type = Spot;
-    else if (qobject_cast<Qt3DRender::QLight *>(lightComponent))
-        m_type = Basic;
+    m_type = lightType(lightComponent);
 }
 
 EditorSceneItemLightComponentsModel::~EditorSceneItemLightComponentsModel()

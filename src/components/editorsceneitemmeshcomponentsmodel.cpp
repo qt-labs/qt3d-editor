@@ -48,18 +48,7 @@ EditorSceneItemMeshComponentsModel::EditorSceneItemMeshComponentsModel(
     , m_sceneComponentsModel(sceneItemModel)
     , m_type(Unknown)
 {
-    if (qobject_cast<Qt3DRender::QMesh *>(meshComponent))
-        m_type = Custom;
-    else if (qobject_cast<Qt3DRender::QCuboidMesh *>(meshComponent))
-        m_type = Cuboid;
-    else if (qobject_cast<Qt3DRender::QCylinderMesh *>(meshComponent))
-        m_type = Cylinder;
-    else if (qobject_cast<Qt3DRender::QPlaneMesh *>(meshComponent))
-        m_type = Plane;
-    else if (qobject_cast<Qt3DRender::QSphereMesh *>(meshComponent))
-        m_type = Sphere;
-    else if (qobject_cast<Qt3DRender::QTorusMesh *>(meshComponent))
-        m_type = Torus;
+    m_type = meshType(meshComponent);
 }
 
 EditorSceneItemMeshComponentsModel::~EditorSceneItemMeshComponentsModel()

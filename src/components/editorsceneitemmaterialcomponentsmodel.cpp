@@ -55,24 +55,7 @@ EditorSceneItemMaterialComponentsModel::EditorSceneItemMaterialComponentsModel(
     , m_sceneComponentsModel(sceneItemModel)
     , m_type(Unknown)
 {
-    if (qobject_cast<Qt3DRender::QDiffuseMapMaterial *>(materialComponent))
-        m_type = DiffuseMap;
-    else if (qobject_cast<Qt3DRender::QDiffuseSpecularMapMaterial *>(materialComponent))
-        m_type = DiffuseSpecularMap;
-    else if (qobject_cast<Qt3DRender::QGoochMaterial *>(materialComponent))
-        m_type = Gooch;
-    else if (qobject_cast<Qt3DRender::QNormalDiffuseMapMaterial *>(materialComponent))
-        m_type = NormalDiffuseMap;
-    else if (qobject_cast<Qt3DRender::QNormalDiffuseMapAlphaMaterial *>(materialComponent))
-        m_type = NormalDiffuseMapAlpha;
-    else if (qobject_cast<Qt3DRender::QNormalDiffuseSpecularMapMaterial *>(materialComponent))
-        m_type = NormalDiffuseSpecularMap;
-    else if (qobject_cast<Qt3DRender::QPerVertexColorMaterial *>(materialComponent))
-        m_type = PerVertexColor;
-    else if (qobject_cast<Qt3DRender::QPhongAlphaMaterial *>(materialComponent))
-        m_type = PhongAlpha;
-    else if (qobject_cast<Qt3DRender::QPhongMaterial *>(materialComponent))
-        m_type = Phong;
+    m_type = materialType(materialComponent);
 }
 
 EditorSceneItemMaterialComponentsModel::~EditorSceneItemMaterialComponentsModel()
@@ -316,6 +299,7 @@ EditorSceneItemMaterialComponentsModel::materialType(Qt3DRender::QMaterial *mate
         return DiffuseSpecularMap;
     else if (qobject_cast<Qt3DRender::QGoochMaterial *>(material))
         return Gooch;
+    // QNormalDiffuseMapAlphaMaterial inherits QNormalDiffuseMapMaterial, so it must be first
     else if (qobject_cast<Qt3DRender::QNormalDiffuseMapAlphaMaterial *>(material))
         return NormalDiffuseMapAlpha;
     else if (qobject_cast<Qt3DRender::QNormalDiffuseMapMaterial *>(material))
