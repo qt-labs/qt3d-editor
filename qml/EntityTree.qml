@@ -247,12 +247,12 @@ Item {
                 } else {
                     entityTreeView.sceneRootSelected =
                         (editorScene.sceneModel.sceneEntityIndex() === entityTreeView.selection.currentIndex)
-                    var currentItem = editorScene.sceneModel.editorSceneItemFromIndex(entityTreeView.selection.currentIndex)
-                    if (currentItem) {
-                        componentPropertiesView.model = currentItem.componentsModel
+                    selectedEntity = editorScene.sceneModel.editorSceneItemFromIndex(entityTreeView.selection.currentIndex)
+                    if (selectedEntity) {
+                        componentPropertiesView.model = selectedEntity.componentsModel
                         selectedEntityName = editorScene.sceneModel.entityName(entityTreeView.selection.currentIndex)
                         editorScene.clearSelectionBoxes()
-                        currentItem.showSelectionBox = true
+                        selectedEntity.showSelectionBox = true
                     } else {
                         // Should never get here
                         selectedEntityName = ""

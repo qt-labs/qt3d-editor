@@ -5,6 +5,7 @@ QT += qml quick widgets 3dcore 3drender 3dinput 3dlogic 3dquick
 SOURCES += src/main.cpp \
     src/editorviewportitem.cpp \
     src/editorscene.cpp \
+    src/editorutils.cpp \
     src/editorsceneitemmodel.cpp \
     src/editorsceneitem.cpp \
     src/editorsceneitemcomponentsmodel.cpp \
@@ -43,6 +44,7 @@ INCLUDEPATH += src src/components src/undohandler
 HEADERS += \
     src/editorviewportitem.h \
     src/editorscene.h \
+    src/editorutils.h \
     src/editorsceneitemmodel.h \
     src/editorsceneitem.h \
     src/editorsceneitemcomponentsmodel.h \
@@ -71,5 +73,7 @@ SOURCES = qml/*.qml \
     qml/materials/*.qml \
     qml/meshes/*.qml \
     qml/transforms/*.qml \
-    src/editorscene.cpp
+    src/editorscene.cpp \
+    src/editorsceneitemmodel.cpp \
+    src/editorutils.cpp
 }

@@ -121,4 +121,15 @@ Menu {
 //            componentPropertiesView.model.appendNewComponent(sceneModel.Transform)
 //        }
 //    }
+    MenuSeparator {}
+    MenuItem {
+        text: qsTr("Duplicate")
+        enabled: !entityTreeView.sceneRootSelected
+        iconSource: "qrc:/images/cross.png" // TODO: Replace with a real icon
+        onTriggered: {
+            // TODO: Must be added to Undo -list
+            editorScene.duplicateEntity(selectedEntity.entity())
+        }
+    }
+
 }

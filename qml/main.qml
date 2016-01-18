@@ -46,6 +46,7 @@ ApplicationWindow {
         hoverEnabled: true
     }
 
+    property var selectedEntity: null
     property string selectedEntityName: ""
     property var sceneModel: EditorSceneItemComponentsModel
     property url saveFileUrl: ""

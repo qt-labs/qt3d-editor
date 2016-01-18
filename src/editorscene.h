@@ -40,6 +40,7 @@ namespace Qt3DCore {
     class QCamera;
     class QTransform;
     class QCameraLens;
+    class QComponent;
 }
 
 namespace Qt3DRender {
@@ -55,6 +56,7 @@ class EditorSceneItem;
 class EditorSceneParser;
 class EditorViewportItem;
 class UndoHandler;
+class EditorUtils;
 
 class EditorScene : public QObject
 {
@@ -97,6 +99,7 @@ public:
     Q_INVOKABLE void copyFreeViewToNewSceneCamera();
     Q_INVOKABLE void moveActiveSceneCameraToFreeView();
     Q_INVOKABLE void snapFreeViewCameraToActiveSceneCamera();
+    Q_INVOKABLE void duplicateEntity(Qt3DCore::QEntity *entity);
 
     bool isRemovable(Qt3DCore::QEntity *entity) const;
 
@@ -233,6 +236,8 @@ private:
 
     Qt3DRender::QMaterial *m_selectionBoxMaterial;
     Qt3DRender::QGeometryRenderer *m_selectionBoxMesh;
+
+    EditorUtils *m_editorUtils;
 };
 
 #endif // EDITORSCENE_H

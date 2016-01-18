@@ -26,6 +26,7 @@
 **
 ****************************************************************************/
 #include "editorscene.h"
+#include "editorutils.h"
 #include "editorsceneitem.h"
 #include "editorsceneitemmodel.h"
 #include "editorsceneparser.h"
@@ -33,40 +34,23 @@
 #include "editorviewportitem.h"
 #include "undohandler.h"
 
-#include <Qt3DCore/QNodeId>
-
 #include <Qt3DCore/QCamera>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QCameraLens>
 
-#include <Qt3DRender/QCylinderMesh>
-#include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DRender/QMesh>
-#include <Qt3DRender/QTechnique>
-#include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QEffect>
 #include <Qt3DRender/QTexture>
-#include <Qt3DRender/QRenderPass>
-#include <Qt3DRender/QShaderProgram>
-#include <Qt3DRender/QGraphicsApiFilter>
-#include <Qt3DRender/QRenderState>
-#include <Qt3DRender/QParameter>
-#include <Qt3DRender/QBlendState>
-#include <Qt3DRender/QBlendEquation>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QAttribute>
-
-#include <Qt3DCore/QTransform>
 
 #include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QForwardRenderer>
 
+#include <Qt3DCore/QTransform>
+#include <Qt3DRender/QMesh>
 #include <Qt3DRender/QCuboidMesh>
-#include <Qt3DRender/QPhongMaterial>
-#include <Qt3DRender/QPhongAlphaMaterial>
-#include <Qt3DRender/QDiffuseMapMaterial>
 #include <Qt3DRender/QDiffuseSpecularMapMaterial>
-#include <Qt3DRender/QNormalDiffuseSpecularMapMaterial>
+#include <Qt3DRender/QPhongAlphaMaterial>
+#include <Qt3DRender/QPhongMaterial>
 #include <Qt3DRender/QLight>
 
 #include <Qt3DRender/QObjectPicker>
@@ -79,6 +63,11 @@
 #include <QtCore/QDir>
 
 //#define TEST_SCENE // If a test scene is wanted instead of the default scene
+
+#ifdef TEST_SCENE
+#include <Qt3DRender/QCylinderMesh>
+#include <Qt3DRender/QNormalDiffuseSpecularMapMaterial>
+#endif
 
 static const QString cameraConeName = QStringLiteral("__internal camera cone");
 static const QString internalPrefix = QStringLiteral("__internal");
@@ -103,6 +92,7 @@ EditorScene::EditorScene(QObject *parent)
     , m_undoHandler(new UndoHandler(this))
     , m_helperPlane(Q_NULLPTR)
     , m_helperPlaneTransform(Q_NULLPTR)
+    , m_editorUtils(new EditorUtils(this))
 {
     createRootEntity();
     setupDefaultScene();
@@ -316,7 +306,7 @@ bool EditorScene::saveScene(const QUrl &fileUrl, bool autosave)
     if (retval) {
         m_undoHandler->setClean();
     } else {
-        m_errorString = QStringLiteral("Failed to save the scene");
+        m_errorString = tr("Failed to save the scene");
         emit errorChanged(m_errorString);
         qWarning() << m_errorString;
     }
@@ -345,7 +335,7 @@ bool EditorScene::loadScene(const QUrl &fileUrl)
 
         m_sceneModel->resetModel();
     } else {
-        m_errorString = QStringLiteral("Failed to load a new scene");
+        m_errorString = tr("Failed to load a new scene");
         emit errorChanged(m_errorString);
         qWarning() << m_errorString;
     }
@@ -422,11 +412,40 @@ void EditorScene::snapFreeViewCameraToActiveSceneCamera()
     copyCameraProperties(m_freeViewCameraEntity, activeCam);
 }
 
+void EditorScene::duplicateEntity(Qt3DCore::QEntity *entity)
+{
+    Qt3DCore::QEntity *newEntity = Q_NULLPTR;
+
+    // Check if it's a camera
+    if (qobject_cast<Qt3DCore::QCamera *>(entity)) {
+        Qt3DCore::QCamera *newCam = new Qt3DCore::QCamera(m_sceneEntity);
+        copyCameraProperties(newCam, qobject_cast<Qt3DCore::QCamera *>(entity));
+        newEntity = newCam;
+    } else {
+        newEntity = new Qt3DCore::QEntity(m_sceneEntity);
+        // Duplicate components
+        Q_FOREACH (Qt3DCore::QComponent *component, entity->components()) {
+            Qt3DCore::QComponent *newComponent = m_editorUtils->duplicateComponent(component,
+                                                                                   newEntity,
+                                                                                   m_sceneModel);
+            if (newComponent)
+                newEntity->addComponent(newComponent);
+        }
+    }
+
+    // Set name and add to scene
+    m_editorUtils->nameDuplicate(newEntity, entity, newEntity, m_sceneModel);
+    addEntity(newEntity);
+
+    // Refresh entity tree
+    m_sceneModel->resetModel();
+}
+
 void EditorScene::enableCameraCones(bool enable)
 {
     for (int i = 0; i < m_sceneCameras.size(); i++) {
         m_sceneCameras.at(i).cone->setEnabled(enable);
-       // Odd that picker doesn't get disabled with the entity - we have to delete it to disable
+        // Odd that picker doesn't get disabled with the entity - we have to delete it to disable
         if (enable) {
             m_sceneCameras[i].picker = createObjectPickerForEntity(m_sceneCameras.at(i).cone);
         } else {
@@ -710,42 +729,42 @@ void EditorScene::createRootEntity()
 
     m_selectionBoxMesh = new Qt3DRender::QCuboidMesh();
 
-//    // TODO: Prototype is done with transparent cuboids, todo a proper wireframe material
-//    Qt3DRender::QMaterial *wireframeMaterial = new Qt3DRender::QMaterial();
-//    Qt3DRender::QEffect *wireframeEffect = new Qt3DRender::QEffect();
-//    Qt3DRender::QTechnique *wireframeTechnique = new Qt3DRender::QTechnique();
-//    Qt3DRender::QRenderPass *wireframeRenderPass = new Qt3DRender::QRenderPass();
-//    Qt3DRender::QShaderProgram *wireframeShader = new Qt3DRender::QShaderProgram();
-//    Qt3DRender::QBlendState *wireframeBlend = new Qt3DRender::QBlendState();
-//    Qt3DRender::QBlendEquation *wireframeBlendEq = new Qt3DRender::QBlendEquation();
-
-//    wireframeShader->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(
-//                                        QUrl(QStringLiteral("qrc:/shaders/wireframe.vert"))));
-//    wireframeShader->setFragmentShaderCode(Qt3DRender::QShaderProgram::loadSource(
-//                                          QUrl(QStringLiteral("qrc:/shaders/wireframe.frag"))));
-
-//    wireframeTechnique->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
-//    wireframeTechnique->graphicsApiFilter()->setMajorVersion(2);
-//    wireframeTechnique->graphicsApiFilter()->setMinorVersion(0);
-//    wireframeTechnique->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::NoProfile);
-
-//    wireframeBlend->setSrcRGB(Qt3DRender::QBlendState::SrcAlpha);
-//    wireframeBlend->setDstRGB(Qt3DRender::QBlendState::OneMinusSrcAlpha);
-//    wireframeBlendEq->setMode(Qt3DRender::QBlendEquation::FuncAdd);
-
-//    wireframeRenderPass->setShaderProgram(wireframeShader);
-//    wireframeRenderPass->addRenderState(wireframeBlend);
-//    wireframeRenderPass->addRenderState(wireframeBlendEq);
-//    wireframeTechnique->addPass(wireframeRenderPass);
-//    wireframeEffect->addTechnique(wireframeTechnique);
-//    wireframeMaterial->setEffect(wireframeEffect);
-
-//    wireframeMaterial->addParameter(new Qt3DRender::QParameter(QStringLiteral("color"),
-//                                                               QColor(Qt::darkGray)));
-
-    // Save selection box mesh and material to cache, as these must be preserved over a scene reset
+    // Save to cache, as these are needed after Load/New
     m_componentCache->addComponent(m_selectionBoxMesh);
     m_componentCache->addComponent(m_selectionBoxMaterial);
+
+    //    // TODO: Prototype is done with transparent cuboids, todo a proper wireframe material
+    //    Qt3DRender::QMaterial *wireframeMaterial = new Qt3DRender::QMaterial();
+    //    Qt3DRender::QEffect *wireframeEffect = new Qt3DRender::QEffect();
+    //    Qt3DRender::QTechnique *wireframeTechnique = new Qt3DRender::QTechnique();
+    //    Qt3DRender::QRenderPass *wireframeRenderPass = new Qt3DRender::QRenderPass();
+    //    Qt3DRender::QShaderProgram *wireframeShader = new Qt3DRender::QShaderProgram();
+    //    Qt3DRender::QBlendState *wireframeBlend = new Qt3DRender::QBlendState();
+    //    Qt3DRender::QBlendEquation *wireframeBlendEq = new Qt3DRender::QBlendEquation();
+
+    //    wireframeShader->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(
+    //                                        QUrl(QStringLiteral("qrc:/shaders/wireframe.vert"))));
+    //    wireframeShader->setFragmentShaderCode(Qt3DRender::QShaderProgram::loadSource(
+    //                                          QUrl(QStringLiteral("qrc:/shaders/wireframe.frag"))));
+
+    //    wireframeTechnique->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
+    //    wireframeTechnique->graphicsApiFilter()->setMajorVersion(2);
+    //    wireframeTechnique->graphicsApiFilter()->setMinorVersion(0);
+    //    wireframeTechnique->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::NoProfile);
+
+    //    wireframeBlend->setSrcRGB(Qt3DRender::QBlendState::SrcAlpha);
+    //    wireframeBlend->setDstRGB(Qt3DRender::QBlendState::OneMinusSrcAlpha);
+    //    wireframeBlendEq->setMode(Qt3DRender::QBlendEquation::FuncAdd);
+
+    //    wireframeRenderPass->setShaderProgram(wireframeShader);
+    //    wireframeRenderPass->addRenderState(wireframeBlend);
+    //    wireframeRenderPass->addRenderState(wireframeBlendEq);
+    //    wireframeTechnique->addPass(wireframeRenderPass);
+    //    wireframeEffect->addTechnique(wireframeTechnique);
+    //    wireframeMaterial->setEffect(wireframeEffect);
+
+    //    wireframeMaterial->addParameter(new Qt3DRender::QParameter(QStringLiteral("color"),
+    //                                                               QColor(Qt::darkGray)));
 
     m_rootItem = new EditorSceneItem(this, m_rootEntity, Q_NULLPTR, -1, m_freeView, this);
 

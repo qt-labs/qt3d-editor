@@ -85,6 +85,7 @@ public:
     Q_INVOKABLE QModelIndex sceneEntityIndex();
     Q_INVOKABLE QModelIndex getModelIndex(Qt3DCore::QEntity *entity);
     QModelIndex getModelIndexByName(const QString &entityName);
+    QString generateValidName(const QString &desiredName, const Qt3DCore::QEntity *skipEntity);
 
 signals:
     void freeViewChanged(bool enabled);
@@ -93,7 +94,6 @@ public slots:
     void handleEntityNameChange();
 
 private:
-    QString generateValidName(const QString &desiredName, const Qt3DCore::QEntity *skipEntity);
     QString fixEntityName(const QString &desiredName);
     void collectEntityNames(QStringList &nameList, const Qt3DCore::QEntity *entity,
                             const Qt3DCore::QEntity *skipEntity);
