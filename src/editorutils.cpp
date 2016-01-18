@@ -57,6 +57,9 @@
 #include <Qt3DRender/QPointLight>
 #include <Qt3DRender/QSpotLight>
 
+#include <Qt3DRender/QBuffer>
+#include <Qt3DRender/QAttribute>
+
 #include <Qt3DCore/QCameraLens>
 #include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QLayer>
@@ -403,6 +406,135 @@ void EditorUtils::nameDuplicate(QObject *duplicate, QObject *original, Qt3DCore:
     QString newName = sceneModel->generateValidName(original->objectName() + tr("_Copy"),
                                                     parent);
     duplicate->setObjectName(newName);
+}
+
+Qt3DRender::QGeometryRenderer *EditorUtils::createWireframeBoxMesh()
+{
+    // Creates a box 'mesh' that is is made up of 12 GL_LINES between 8 vertices
+    Qt3DRender::QGeometryRenderer *boxMesh = new Qt3DRender::QGeometryRenderer();
+    Qt3DRender::QGeometry *boxGeometry = new Qt3DRender::QGeometry(boxMesh);
+    Qt3DRender::QBuffer *boxDataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer,
+                                                                 boxGeometry);
+    Qt3DRender::QBuffer *indexDataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer,
+                                                                   boxGeometry);
+    QByteArray vertexBufferData;
+    QByteArray indexBufferData;
+    QVector<QVector3D> vertices;
+
+    vertexBufferData.resize(8 * 3 * sizeof(float));
+    indexBufferData.resize(12 * 2 * sizeof(ushort));
+
+    float *vPtr = reinterpret_cast<float *>(vertexBufferData.data());
+    vPtr[0]  = -0.5f; vPtr[1]  = -0.5f; vPtr[2]  = -0.5f;
+    vPtr[3]  = 0.5f;  vPtr[4]  = -0.5f; vPtr[5]  = -0.5f;
+    vPtr[6]  = 0.5f;  vPtr[7]  = -0.5f; vPtr[8]  = 0.5f;
+    vPtr[9]  = -0.5f; vPtr[10] = -0.5f; vPtr[11] = 0.5f;
+    vPtr[12] = -0.5f; vPtr[13] = 0.5f;  vPtr[14] = -0.5f;
+    vPtr[15] = 0.5f;  vPtr[16] = 0.5f;  vPtr[17] = -0.5f;
+    vPtr[18] = 0.5f;  vPtr[19] = 0.5f;  vPtr[20] = 0.5f;
+    vPtr[21] = 0.5f;  vPtr[22] = 0.5f;  vPtr[23] = 0.5f;
+    vPtr[24] = -0.5f; vPtr[25] = 0.5f;  vPtr[26] = 0.5f;
+
+    ushort *iPtr = reinterpret_cast<ushort *>(indexBufferData.data());
+    iPtr[0]  = 0; iPtr[1]  = 1;
+    iPtr[2]  = 1; iPtr[3]  = 2;
+    iPtr[4]  = 2; iPtr[5]  = 3;
+    iPtr[6]  = 3; iPtr[7]  = 0;
+    iPtr[8]  = 0; iPtr[9]  = 4;
+    iPtr[10] = 1; iPtr[11] = 5;
+    iPtr[12] = 2; iPtr[13] = 6;
+    iPtr[14] = 3; iPtr[15] = 7;
+    iPtr[16] = 4; iPtr[17] = 5;
+    iPtr[18] = 5; iPtr[19] = 6;
+    iPtr[20] = 6; iPtr[21] = 7;
+    iPtr[22] = 7; iPtr[23] = 4;
+
+    boxDataBuffer->setData(vertexBufferData);
+    indexDataBuffer->setData(indexBufferData);
+
+    Qt3DRender::QAttribute *boxPosAttribute = new Qt3DRender::QAttribute();
+    boxPosAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+    boxPosAttribute->setBuffer(boxDataBuffer);
+    boxPosAttribute->setDataType(Qt3DRender::QAttribute::Float);
+    boxPosAttribute->setDataSize(3);
+    boxPosAttribute->setByteOffset(0);
+    boxPosAttribute->setByteStride(0);
+    boxPosAttribute->setCount(8);
+    boxPosAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
+
+    Qt3DRender::QAttribute *boxIndexAttribute = new Qt3DRender::QAttribute();
+    boxIndexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
+    boxIndexAttribute->setBuffer(indexDataBuffer);
+    boxIndexAttribute->setDataType(Qt3DRender::QAttribute::UnsignedShort);
+    boxIndexAttribute->setDataSize(1);
+    boxIndexAttribute->setByteOffset(0);
+    boxIndexAttribute->setByteStride(0);
+    boxIndexAttribute->setCount(24);
+
+    boxGeometry->addAttribute(boxPosAttribute);
+    boxGeometry->addAttribute(boxIndexAttribute);
+
+    boxMesh->setInstanceCount(1);
+    boxMesh->setBaseVertex(0);
+    boxMesh->setBaseInstance(0);
+    boxMesh->setPrimitiveCount(12);
+    boxMesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
+    boxMesh->setGeometry(boxGeometry);
+
+    return boxMesh;
+}
+
+Qt3DRender::QGeometryRenderer *EditorUtils::createWireframePlaneMesh(int lineCount)
+{
+    Qt3DRender::QGeometryRenderer *planeMesh = new Qt3DRender::QGeometryRenderer();
+    Qt3DRender::QGeometry *planeGeometry = new Qt3DRender::QGeometry(planeMesh);
+    Qt3DRender::QBuffer *planeDataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer,
+                                                                    planeGeometry);
+    QByteArray vertexBufferData;
+    QVector<QVector3D> vertices;
+
+    // lineCount lines on x and z directions, each with two vector3Ds
+    vertices.resize(lineCount * 2 * 2);
+    vertexBufferData.resize(vertices.size() * 3 * sizeof(float));
+
+    for (int i = 0; i < lineCount; i++) {
+        int index = i * 2;
+        vertices[index] = QVector3D(-1.0f + (float(i) * (2.0 / (lineCount - 1))), -1.0f, 0.0f);
+        vertices[index + 1] = QVector3D(-1.0f + (float(i) * (2.0 / (lineCount - 1))), 1.0f, 0.0f);
+        vertices[index + lineCount * 2] = QVector3D(-1.0f, -1.0f + (float(i) * (2.0 / (lineCount - 1))), 0.0f);
+        vertices[index + lineCount * 2 + 1] = QVector3D(1.0f, -1.0f + (float(i) * (2.0 / (lineCount - 1))), 0.0f);
+    }
+
+    float *rawVertexArray = reinterpret_cast<float *>(vertexBufferData.data());
+    int idx = 0;
+    Q_FOREACH (const QVector3D &v, vertices) {
+        rawVertexArray[idx++] = v.x();
+        rawVertexArray[idx++] = v.y();
+        rawVertexArray[idx++] = v.z();
+    }
+
+    planeDataBuffer->setData(vertexBufferData);
+
+    Qt3DRender::QAttribute *planePosAttribute = new Qt3DRender::QAttribute();
+    planePosAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+    planePosAttribute->setBuffer(planeDataBuffer);
+    planePosAttribute->setDataType(Qt3DRender::QAttribute::Float);
+    planePosAttribute->setDataSize(3);
+    planePosAttribute->setByteOffset(0);
+    planePosAttribute->setByteStride(0);
+    planePosAttribute->setCount(lineCount * 4);
+    planePosAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
+
+    planeGeometry->addAttribute(planePosAttribute);
+
+    planeMesh->setInstanceCount(1);
+    planeMesh->setBaseVertex(0);
+    planeMesh->setBaseInstance(0);
+    planeMesh->setPrimitiveCount(lineCount * 4);
+    planeMesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
+    planeMesh->setGeometry(planeGeometry);
+
+    return planeMesh;
 }
 
 EditorUtils::ComponentTypes EditorUtils::componentType(Qt3DCore::QComponent *component) const

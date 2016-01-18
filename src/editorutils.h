@@ -34,6 +34,9 @@ namespace Qt3DCore {
 class QEntity;
 class QComponent;
 }
+namespace Qt3DRender {
+class QGeometryRenderer;
+}
 
 class EditorSceneItemModel;
 
@@ -84,6 +87,9 @@ public:
                                              EditorSceneItemModel *sceneModel);
     void nameDuplicate(QObject *duplicate, QObject *original, Qt3DCore::QEntity *parent,
                        EditorSceneItemModel *sceneModel);
+
+    Qt3DRender::QGeometryRenderer *createWireframeBoxMesh();
+    Qt3DRender::QGeometryRenderer *createWireframePlaneMesh(int lineCount);
 
 private:
     ComponentTypes componentType(Qt3DCore::QComponent *component) const;

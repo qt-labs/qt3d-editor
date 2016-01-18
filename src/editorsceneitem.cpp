@@ -89,22 +89,21 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
         // Separate inner and outer boxes used to simulate two-sided material
         m_selectionBox = new Qt3DCore::QEntity(m_scene->rootEntity());
         Qt3DCore::QEntity *outerBox = new Qt3DCore::QEntity(m_selectionBox);
-        // TODO: Inner box is not needed until wireframe material is implemented for box
-        //Qt3DCore::QEntity *innerBox = new Qt3DCore::QEntity(m_selectionBox);
+        Qt3DCore::QEntity *innerBox = new Qt3DCore::QEntity(m_selectionBox);
 
         m_selectionBox->setObjectName(QStringLiteral("__internal selection box"));
         outerBox->setObjectName(QStringLiteral("__internal selection box outside"));
-        //innerBox->setObjectName(QStringLiteral("__internal selection box inside"));
+        innerBox->setObjectName(QStringLiteral("__internal selection box inside"));
 
-        //Qt3DCore::QTransform *insideOutTransform = new Qt3DCore::QTransform();
-        //insideOutTransform->setScale(-1.0f);
-        //innerBox->addComponent(insideOutTransform);
+        Qt3DCore::QTransform *insideOutTransform = new Qt3DCore::QTransform();
+        insideOutTransform->setScale(-1.0f);
+        innerBox->addComponent(insideOutTransform);
 
         m_selectionBox->addComponent(m_selectionTransform);
 
-        //innerBox->addComponent(m_scene->selectionBoxMaterial());
+        innerBox->addComponent(m_scene->selectionBoxMaterial());
         outerBox->addComponent(m_scene->selectionBoxMaterial());
-        //innerBox->addComponent(m_scene->selectionBoxMesh());
+        innerBox->addComponent(m_scene->selectionBoxMesh());
         outerBox->addComponent(m_scene->selectionBoxMesh());
 
         m_selectionBox->setEnabled(false);
@@ -522,7 +521,7 @@ void EditorSceneItem::updateSelectionBoxTransform()
     QMatrix4x4 transformMatrix;
     composeSelectionBoxTransformRecursive(transformMatrix);
     transformMatrix.translate(m_entityMeshCenter);
-    transformMatrix.scale(m_entityMeshExtents + QVector3D(0.05f, 0.05f, 0.05f));
+    transformMatrix.scale(m_entityMeshExtents + QVector3D(0.002f, 0.002f, 0.002f));
     m_selectionTransform->setMatrix(transformMatrix);
 
     // TODO: How to handle group selection?

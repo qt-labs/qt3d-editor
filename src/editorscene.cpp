@@ -39,8 +39,6 @@
 #include <Qt3DCore/QCameraLens>
 
 #include <Qt3DRender/QTexture>
-#include <Qt3DRender/QBuffer>
-#include <Qt3DRender/QAttribute>
 
 #include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QForwardRenderer>
@@ -719,52 +717,17 @@ void EditorScene::createRootEntity()
 
     // Selection box material and mesh need to be created before any
     // EditorSceneItem are created
-    Qt3DRender::QPhongAlphaMaterial *selectionBoxMaterial = new Qt3DRender::QPhongAlphaMaterial();
-    selectionBoxMaterial->setAmbient(QColor(Qt::darkGray));
+    Qt3DRender::QPhongMaterial *selectionBoxMaterial = new Qt3DRender::QPhongMaterial();
+    selectionBoxMaterial->setAmbient(QColor(Qt::yellow));
     selectionBoxMaterial->setDiffuse(QColor(Qt::black));
     selectionBoxMaterial->setSpecular(QColor(Qt::black));
     selectionBoxMaterial->setShininess(0);
-    selectionBoxMaterial->setAlpha(0.2f);
     m_selectionBoxMaterial = selectionBoxMaterial;
-
-    m_selectionBoxMesh = new Qt3DRender::QCuboidMesh();
+    m_selectionBoxMesh = m_editorUtils->createWireframeBoxMesh();
 
     // Save to cache, as these are needed after Load/New
     m_componentCache->addComponent(m_selectionBoxMesh);
     m_componentCache->addComponent(m_selectionBoxMaterial);
-
-    //    // TODO: Prototype is done with transparent cuboids, todo a proper wireframe material
-    //    Qt3DRender::QMaterial *wireframeMaterial = new Qt3DRender::QMaterial();
-    //    Qt3DRender::QEffect *wireframeEffect = new Qt3DRender::QEffect();
-    //    Qt3DRender::QTechnique *wireframeTechnique = new Qt3DRender::QTechnique();
-    //    Qt3DRender::QRenderPass *wireframeRenderPass = new Qt3DRender::QRenderPass();
-    //    Qt3DRender::QShaderProgram *wireframeShader = new Qt3DRender::QShaderProgram();
-    //    Qt3DRender::QBlendState *wireframeBlend = new Qt3DRender::QBlendState();
-    //    Qt3DRender::QBlendEquation *wireframeBlendEq = new Qt3DRender::QBlendEquation();
-
-    //    wireframeShader->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(
-    //                                        QUrl(QStringLiteral("qrc:/shaders/wireframe.vert"))));
-    //    wireframeShader->setFragmentShaderCode(Qt3DRender::QShaderProgram::loadSource(
-    //                                          QUrl(QStringLiteral("qrc:/shaders/wireframe.frag"))));
-
-    //    wireframeTechnique->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGL);
-    //    wireframeTechnique->graphicsApiFilter()->setMajorVersion(2);
-    //    wireframeTechnique->graphicsApiFilter()->setMinorVersion(0);
-    //    wireframeTechnique->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::NoProfile);
-
-    //    wireframeBlend->setSrcRGB(Qt3DRender::QBlendState::SrcAlpha);
-    //    wireframeBlend->setDstRGB(Qt3DRender::QBlendState::OneMinusSrcAlpha);
-    //    wireframeBlendEq->setMode(Qt3DRender::QBlendEquation::FuncAdd);
-
-    //    wireframeRenderPass->setShaderProgram(wireframeShader);
-    //    wireframeRenderPass->addRenderState(wireframeBlend);
-    //    wireframeRenderPass->addRenderState(wireframeBlendEq);
-    //    wireframeTechnique->addPass(wireframeRenderPass);
-    //    wireframeEffect->addTechnique(wireframeTechnique);
-    //    wireframeMaterial->setEffect(wireframeEffect);
-
-    //    wireframeMaterial->addParameter(new Qt3DRender::QParameter(QStringLiteral("color"),
-    //                                                               QColor(Qt::darkGray)));
 
     m_rootItem = new EditorSceneItem(this, m_rootEntity, Q_NULLPTR, -1, m_freeView, this);
 
@@ -808,53 +771,7 @@ void EditorScene::createRootEntity()
     flipTransform->setMatrix(Qt3DCore::QTransform::rotateAround(QVector3D(), 180.0f, QVector3D(1.0f, 0, 0)));
     backPlane->addComponent(flipTransform);
 
-    int lineCount = 50;
-    Qt3DRender::QGeometryRenderer *planeMesh = new Qt3DRender::QGeometryRenderer();
-    Qt3DRender::QGeometry *planeGeometry = new Qt3DRender::QGeometry(planeMesh);
-    Qt3DRender::QBuffer *vertexDataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer,
-                                                                    planeGeometry);
-    QByteArray vertexBufferData;
-    QVector<QVector3D> vertices;
-    // lineCount lines on x and z directions, each with two vector3Ds
-    vertices.resize(lineCount * 2 * 2);
-    vertexBufferData.resize(vertices.size() * 3 * sizeof(float));
-
-    for (int i = 0; i < lineCount; i++) {
-        int index = i * 2;
-        vertices[index] = QVector3D(-1.0f + (float(i) * (2.0 / (lineCount - 1))), -1.0f, 0.0f);
-        vertices[index + 1] = QVector3D(-1.0f + (float(i) * (2.0 / (lineCount - 1))), 1.0f, 0.0f);
-        vertices[index + lineCount * 2] = QVector3D(-1.0f, -1.0f + (float(i) * (2.0 / (lineCount - 1))), 0.0f);
-        vertices[index + lineCount * 2 + 1] = QVector3D(1.0f, -1.0f + (float(i) * (2.0 / (lineCount - 1))), 0.0f);
-    }
-    float *rawVertexArray = reinterpret_cast<float *>(vertexBufferData.data());
-    int idx = 0;
-
-    Q_FOREACH (const QVector3D &v, vertices) {
-        rawVertexArray[idx++] = v.x();
-        rawVertexArray[idx++] = v.y();
-        rawVertexArray[idx++] = v.z();
-    }
-
-    vertexDataBuffer->setData(vertexBufferData);
-
-    Qt3DRender::QAttribute *positionAttribute = new Qt3DRender::QAttribute();
-    positionAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
-    positionAttribute->setBuffer(vertexDataBuffer);
-    positionAttribute->setDataType(Qt3DRender::QAttribute::Float);
-    positionAttribute->setDataSize(3);
-    positionAttribute->setByteOffset(0);
-    positionAttribute->setByteStride(0);
-    positionAttribute->setCount(lineCount * 4);
-    positionAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-
-    planeGeometry->addAttribute(positionAttribute);
-
-    planeMesh->setInstanceCount(1);
-    planeMesh->setBaseVertex(0);
-    planeMesh->setBaseInstance(0);
-    planeMesh->setPrimitiveCount(lineCount * 4);
-    planeMesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
-    planeMesh->setGeometry(planeGeometry);
+    Qt3DRender::QGeometryRenderer *planeMesh = m_editorUtils->createWireframePlaneMesh(50);
 
     Qt3DRender::QPhongMaterial *helperPlaneMaterial = new Qt3DRender::QPhongMaterial();
     helperPlaneMaterial->setAmbient(QColor(Qt::darkGray));
