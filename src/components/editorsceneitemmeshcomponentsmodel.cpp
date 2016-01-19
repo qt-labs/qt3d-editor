@@ -29,6 +29,7 @@
 #include "editorsceneitemcomponentsmodel.h"
 #include "editorsceneitem.h"
 #include "editorscene.h"
+#include "editorutils.h"
 #include "undohandler.h"
 #include "meshcomponentproxyitem.h"
 #include <Qt3DRender/QMesh>
@@ -93,7 +94,7 @@ void EditorSceneItemMeshComponentsModel::setMesh(MeshComponentTypes type)
         Qt3DRender::QGeometryRenderer *mesh = Q_NULLPTR;
         switch (type) {
         case Custom:
-            mesh = new Qt3DRender::QMesh();
+            mesh = EditorUtils::createDefaultCustomMesh();
             break;
         case Cuboid:
             mesh = new Qt3DRender::QCuboidMesh();

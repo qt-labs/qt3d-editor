@@ -163,6 +163,8 @@ ApplicationWindow {
                         entityTree.selectSceneRoot()
                         entityTree.addNewEntity(EditorSceneItemModel.CameraEntity)
                         editorScene.copyFreeViewToNewSceneCamera()
+                        // TODO: Needs undo/redo support.
+                        // TODO: Also, adding and copying should be undone/redone in a single step
                     }
                 }
                 MenuItem {
@@ -170,6 +172,7 @@ ApplicationWindow {
                     text: qsTr("Move active camera here")
                     onTriggered: {
                         editorScene.moveActiveSceneCameraToFreeView()
+                        // TODO: Needs undo/redo support.
                     }
                 }
                 MenuItem {

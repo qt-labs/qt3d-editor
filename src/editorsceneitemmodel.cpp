@@ -28,6 +28,7 @@
 #include "editorsceneitemmodel.h"
 #include "editorsceneitem.h"
 #include "editorscene.h"
+#include "editorutils.h"
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QCamera>
 #include <Qt3DCore/QNodeId>
@@ -255,7 +256,7 @@ Qt3DCore::QEntity *EditorSceneItemModel::insertEntity(InsertableEntities type,
     }
     case CustomEntity: {
         newEntity->setObjectName(generateValidName(tr("New Custom"), newEntity));
-        newEntity->addComponent(new Qt3DRender::QMesh);
+        newEntity->addComponent(EditorUtils::createDefaultCustomMesh());
         newEntity->addComponent(new Qt3DCore::QTransform());
         newEntity->addComponent(new Qt3DRender::QPhongMaterial());
         break;

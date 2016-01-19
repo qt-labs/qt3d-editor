@@ -40,7 +40,7 @@ class QGeometryRenderer;
 
 class EditorSceneItemModel;
 
-class EditorUtils : public QObject
+class EditorUtils
 {
     enum ComponentTypes {
         // Lights
@@ -79,20 +79,18 @@ class EditorUtils : public QObject
     };
 
 public:
-    explicit EditorUtils(QObject *parent = 0);
-    ~EditorUtils();
+    static Qt3DCore::QComponent *duplicateComponent(Qt3DCore::QComponent *component,
+                                                    Qt3DCore::QEntity *parent,
+                                                    EditorSceneItemModel *sceneModel);
+    static void nameDuplicate(QObject *duplicate, QObject *original, Qt3DCore::QEntity *parent,
+                              EditorSceneItemModel *sceneModel);
 
-    Qt3DCore::QComponent *duplicateComponent(Qt3DCore::QComponent *component,
-                                             Qt3DCore::QEntity *parent,
-                                             EditorSceneItemModel *sceneModel);
-    void nameDuplicate(QObject *duplicate, QObject *original, Qt3DCore::QEntity *parent,
-                       EditorSceneItemModel *sceneModel);
-
-    Qt3DRender::QGeometryRenderer *createWireframeBoxMesh();
-    Qt3DRender::QGeometryRenderer *createWireframePlaneMesh(int lineCount);
+    static Qt3DRender::QGeometryRenderer *createWireframeBoxMesh();
+    static Qt3DRender::QGeometryRenderer *createWireframePlaneMesh(int lineCount);
+    static Qt3DRender::QGeometryRenderer *createDefaultCustomMesh();
 
 private:
-    ComponentTypes componentType(Qt3DCore::QComponent *component) const;
+    static ComponentTypes componentType(Qt3DCore::QComponent *component);
 };
 
 #endif // EDITORUTILS_H

@@ -90,7 +90,6 @@ EditorScene::EditorScene(QObject *parent)
     , m_undoHandler(new UndoHandler(this))
     , m_helperPlane(Q_NULLPTR)
     , m_helperPlaneTransform(Q_NULLPTR)
-    , m_editorUtils(new EditorUtils(this))
 {
     createRootEntity();
     setupDefaultScene();
@@ -423,16 +422,16 @@ void EditorScene::duplicateEntity(Qt3DCore::QEntity *entity)
         newEntity = new Qt3DCore::QEntity(m_sceneEntity);
         // Duplicate components
         Q_FOREACH (Qt3DCore::QComponent *component, entity->components()) {
-            Qt3DCore::QComponent *newComponent = m_editorUtils->duplicateComponent(component,
-                                                                                   newEntity,
-                                                                                   m_sceneModel);
+            Qt3DCore::QComponent *newComponent = EditorUtils::duplicateComponent(component,
+                                                                                 newEntity,
+                                                                                 m_sceneModel);
             if (newComponent)
                 newEntity->addComponent(newComponent);
         }
     }
 
     // Set name and add to scene
-    m_editorUtils->nameDuplicate(newEntity, entity, newEntity, m_sceneModel);
+    EditorUtils::nameDuplicate(newEntity, entity, newEntity, m_sceneModel);
     addEntity(newEntity);
 
     // Refresh entity tree
@@ -723,7 +722,7 @@ void EditorScene::createRootEntity()
     selectionBoxMaterial->setSpecular(QColor(Qt::black));
     selectionBoxMaterial->setShininess(0);
     m_selectionBoxMaterial = selectionBoxMaterial;
-    m_selectionBoxMesh = m_editorUtils->createWireframeBoxMesh();
+    m_selectionBoxMesh = EditorUtils::createWireframeBoxMesh();
 
     // Save to cache, as these are needed after Load/New
     m_componentCache->addComponent(m_selectionBoxMesh);
@@ -771,7 +770,7 @@ void EditorScene::createRootEntity()
     flipTransform->setMatrix(Qt3DCore::QTransform::rotateAround(QVector3D(), 180.0f, QVector3D(1.0f, 0, 0)));
     backPlane->addComponent(flipTransform);
 
-    Qt3DRender::QGeometryRenderer *planeMesh = m_editorUtils->createWireframePlaneMesh(50);
+    Qt3DRender::QGeometryRenderer *planeMesh = EditorUtils::createWireframePlaneMesh(50);
 
     Qt3DRender::QPhongMaterial *helperPlaneMaterial = new Qt3DRender::QPhongMaterial();
     helperPlaneMaterial->setAmbient(QColor(Qt::darkGray));

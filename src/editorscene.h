@@ -236,8 +236,6 @@ private:
 
     Qt3DRender::QMaterial *m_selectionBoxMaterial;
     Qt3DRender::QGeometryRenderer *m_selectionBoxMesh;
-
-    EditorUtils *m_editorUtils;
 };
 
 #endif // EDITORSCENE_H

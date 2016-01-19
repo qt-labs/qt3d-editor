@@ -67,15 +67,6 @@
 #include <Qt3DInput/QMouseInput>
 #include <Qt3DLogic/QLogicComponent>
 
-EditorUtils::EditorUtils(QObject *parent)
-    : QObject(parent)
-{
-}
-
-EditorUtils::~EditorUtils()
-{
-}
-
 Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *component,
                                                       Qt3DCore::QEntity *parent,
                                                       EditorSceneItemModel *sceneModel)
@@ -403,7 +394,7 @@ void EditorUtils::nameDuplicate(QObject *duplicate, QObject *original, Qt3DCore:
     if (original->objectName().isEmpty())
         return;
 
-    QString newName = sceneModel->generateValidName(original->objectName() + tr("_Copy"),
+    QString newName = sceneModel->generateValidName(original->objectName() + QObject::tr("_Copy"),
                                                     parent);
     duplicate->setObjectName(newName);
 }
@@ -537,7 +528,14 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createWireframePlaneMesh(int lineCou
     return planeMesh;
 }
 
-EditorUtils::ComponentTypes EditorUtils::componentType(Qt3DCore::QComponent *component) const
+Qt3DRender::QGeometryRenderer *EditorUtils::createDefaultCustomMesh()
+{
+    Qt3DRender::QMesh *customMesh = new Qt3DRender::QMesh();
+    customMesh->setSource(QUrl(QStringLiteral("qrc:/meshes/defaultmesh.obj")));
+    return customMesh;
+}
+
+EditorUtils::ComponentTypes EditorUtils::componentType(Qt3DCore::QComponent *component)
 {
     ComponentTypes componentType = Unknown;
 
