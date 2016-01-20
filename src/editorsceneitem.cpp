@@ -523,8 +523,13 @@ void EditorSceneItem::updateSelectionBoxTransform()
     QMatrix4x4 transformMatrix;
     composeSelectionBoxTransformRecursive(transformMatrix);
     transformMatrix.translate(m_entityMeshCenter);
-    transformMatrix.scale(m_entityMeshExtents + QVector3D(0.002f, 0.002f, 0.002f));
+    m_selectionBoxCenter = transformMatrix * QVector3D();
+    m_selectionBoxExtents = m_entityMeshExtents + QVector3D(0.002f, 0.002f, 0.002f);
+    transformMatrix.scale(m_selectionBoxExtents);
+    if (m_entityTransform)
+        m_selectionBoxExtents *= m_entityTransform->scale3D();
     m_selectionTransform->setMatrix(transformMatrix);
+    emit selectionBoxTransformChanged(this);
 
     // TODO: How to handle group selection?
     // TODO: Currently there is no box for entity, unless it has a mesh.

@@ -31,6 +31,8 @@
 #include <QtCore/QObject>
 #include <QtCore/QMap>
 #include <QtCore/QUrl>
+#include <QtGui/QVector3D>
+#include <QtGui/QQuaternion>
 #include <Qt3DCore/QNodeId>
 
 #include <QStringListModel>
@@ -58,12 +60,13 @@ class EditorSceneParser;
 class EditorViewportItem;
 class UndoHandler;
 class EditorUtils;
+class QMouseEvent;
 
 class EditorScene : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(EditorSceneItemModel *sceneModel READ sceneModel CONSTANT)
-    Q_PROPERTY(Qt3DCore::QEntity *selection READ selection NOTIFY selectionChanged)
+    Q_PROPERTY(Qt3DCore::QEntity *selection READ selection WRITE setSelection NOTIFY selectionChanged)
     Q_PROPERTY(QString error READ error NOTIFY errorChanged)
     Q_PROPERTY(int activeSceneCameraIndex READ activeSceneCameraIndex WRITE setActiveSceneCameraIndex NOTIFY activeSceneCameraIndexChanged)
     Q_PROPERTY(EditorViewportItem *viewport READ viewport WRITE setViewport NOTIFY viewportChanged)
@@ -106,6 +109,7 @@ public:
 
     bool isRemovable(Qt3DCore::QEntity *entity) const;
 
+    void setSelection(Qt3DCore::QEntity *entity);
     Qt3DCore::QEntity *selection() const;
     const QString &error() const;
 
@@ -135,11 +139,7 @@ public:
     QMatrix4x4 calculateCameraConeMatrix(Qt3DCore::QTransform *sourceTransform) const;
 
 public slots:
-    void handleClick(Qt3DRender::QPickEvent *event);
     void handlePress(Qt3DRender::QPickEvent *event);
-    void handleRelease(Qt3DRender::QPickEvent *event);
-    void handleEnter();
-    void handleExit();
     void handleCameraAdded(Qt3DCore::QEntity *camera);
     void handleCameraRemoved(Qt3DCore::QEntity *camera);
     void handleCameraTransformChange(Qt3DCore::QEntity *camera);
@@ -161,12 +161,16 @@ signals:
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
 
+private slots:
+    void endSelectionHandling(Qt3DCore::QEntity *selectedEntity);
+    void handleSelectionTransformChange();
+
 private:
     void removeEntityItem(const Qt3DCore::QNodeId &id);
     void setupDefaultScene();
     void createRootEntity();
     void setFrameGraphCamera(Qt3DCore::QEntity *cameraEntity);
-    Qt3DCore::QEntity *frameGraphCamera() const;
+    Qt3DCore::QCamera *frameGraphCamera() const;
     void enableCameraCones(bool enable);
     void clearSceneCameras();
     void resetSceneCamera(Qt3DCore::QEntity *sceneCameraEntity);
@@ -177,6 +181,17 @@ private:
                                 Qt3DCore::QTransform *coneTransform);
     void copyCameraProperties(Qt3DCore::QCamera *target, Qt3DCore::QCamera *source);
     void retranslateUi();
+    void connectDragHandles(EditorSceneItem *item, bool enable);
+    void dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown);
+    void dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown);
+    void dragRotateSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown);
+    QVector3D dragHandlePositionOffset(const QPoint &newPos);
+    bool handleMousePress(QMouseEvent *event);
+    bool handleMouseRelease(QMouseEvent *event);
+    bool handleMouseMove(QMouseEvent *event);
+    QVector3D helperPlaneNormal() const;
+    QVector3D projectVectorOnCameraPlane(const QVector3D &vector) const;
+    QVector3D frameGraphCameraNormal() const;
 
 private:
     friend class EditorViewportItem;
@@ -193,7 +208,8 @@ private:
     Qt3DCore::QEntity *m_sceneEntity;
     EditorSceneItem *m_sceneEntityItem;
     Qt3DCore::QEntity *m_selectedEntity;
-    bool m_activeSelection;
+    Qt3DCore::QTransform *m_selectedEntityTransform;
+    bool m_handlingSelection;
 
     QString m_errorString;
 
@@ -259,6 +275,29 @@ private:
     QString m_cameraString;
     QString m_cubeString;
     QString m_lightString;
+    enum DragMode {
+        DragNone = 0,
+        DragTranslate,
+        DragScale,
+        DragRotate
+    };
+
+    Qt3DCore::QEntity *m_dragHandles;
+    Qt3DCore::QEntity *m_dragHandleScale;
+    Qt3DCore::QEntity *m_dragHandleRotate;
+    Qt3DCore::QTransform *m_dragHandlesTransform;
+    Qt3DCore::QTransform *m_dragHandleScaleTransform;
+    Qt3DCore::QTransform *m_dragHandleRotationTransform;
+    QVector3D m_dragScaleHandleCornerTranslation;
+    QVector3D m_dragRotationHandleCornerTranslation;
+    DragMode m_dragMode;
+    QPoint m_previousMousePosition;
+    QVector3D m_dragInitialTranslationValue;
+    QVector3D m_dragInitialScaleValue;
+    QQuaternion m_dragInitialRotationValue;
+    QVector3D m_dragInitialHandleTranslation;
+    QVector3D m_dragInitialHandleCornerTranslation;
+    bool m_ignoringInitialDrag;
 };
 
 #endif // EDITORSCENE_H

@@ -92,6 +92,11 @@ public:
 
     Q_INVOKABLE bool setCustomProperty(const QString name, const QVariant &value);
     Q_INVOKABLE QVariant customProperty(const QString name) const;
+    Qt3DCore::QTransform *selectionTransform() const { return m_selectionTransform; }
+    Qt3DCore::QTransform *entityTransform() const { return m_entityTransform; }
+    QVector3D selectionBoxExtents() const { return m_selectionBoxExtents; }
+    QVector3D entityMeshExtents() const { return m_entityMeshExtents; }
+    QVector3D selectionBoxCenter() const { return m_selectionBoxCenter; }
 
 public slots:
     void updateSelectionBoxTransform();
@@ -104,6 +109,7 @@ signals:
     void cameraRemoved(Qt3DCore::QEntity *camera);
     void cameraTransformChanged(Qt3DCore::QEntity *camera);
     void showSelectionBoxChanged(bool enabled);
+    void selectionBoxTransformChanged(EditorSceneItem *item);
 
 private:
     void connectSelectionBoxTransformsRecursive(bool enabled);
@@ -131,6 +137,8 @@ private:
 
     QVector3D m_entityMeshExtents;
     QVector3D m_entityMeshCenter;
+    QVector3D m_selectionBoxExtents;
+    QVector3D m_selectionBoxCenter;
 };
 
 Q_DECLARE_METATYPE(EditorSceneItem*)

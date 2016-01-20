@@ -61,6 +61,7 @@
 #include <QtCore/QDir>
 #include <QtCore/QLibraryInfo>
 #include <QtCore/QCoreApplication>
+#include <QtCore/QtMath>
 
 //#define TEST_SCENE // If a test scene is wanted instead of the default scene
 
@@ -84,7 +85,8 @@ EditorScene::EditorScene(QObject *parent)
     , m_sceneEntity(Q_NULLPTR)
     , m_sceneEntityItem(Q_NULLPTR)
     , m_selectedEntity(Q_NULLPTR)
-    , m_activeSelection(false)
+    , m_selectedEntityTransform(Q_NULLPTR)
+    , m_handlingSelection(false)
     , m_activeSceneCameraIndex(-1)
     , m_freeView(false)
     , m_freeViewCameraEntity(Q_NULLPTR)
@@ -94,6 +96,14 @@ EditorScene::EditorScene(QObject *parent)
     , m_helperPlaneTransform(Q_NULLPTR)
     , m_qtTranslator(new QTranslator(this))
     , m_appTranslator(new QTranslator(this))
+    , m_dragHandles(Q_NULLPTR)
+    , m_dragHandleScale(Q_NULLPTR)
+    , m_dragHandleRotate(Q_NULLPTR)
+    , m_dragHandlesTransform(Q_NULLPTR)
+    , m_dragHandleScaleTransform(Q_NULLPTR)
+    , m_dragHandleRotationTransform(Q_NULLPTR)
+    , m_dragMode(DragNone)
+    , m_ignoringInitialDrag(true)
 {
     retranslateUi();
     createRootEntity();
@@ -516,14 +526,10 @@ void EditorScene::clearSceneCameras()
 Qt3DRender::QObjectPicker * EditorScene::createObjectPickerForEntity(Qt3DCore::QEntity *entity)
 {
     Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker(entity);
-    picker->setHoverEnabled(true);
+    picker->setHoverEnabled(false);
     picker->setObjectName(QStringLiteral("__internal object picker ") + entity->objectName());
     entity->addComponent(picker);
-    connect(picker, &Qt3DRender::QObjectPicker::clicked, this, &EditorScene::handleClick);
     connect(picker, &Qt3DRender::QObjectPicker::pressed, this, &EditorScene::handlePress);
-    connect(picker, &Qt3DRender::QObjectPicker::released, this,
-            &EditorScene::handleRelease);
-    connect(picker, &Qt3DRender::QObjectPicker::entered, this, &EditorScene::handleEnter);
 
     return picker;
 }
@@ -575,6 +581,204 @@ void EditorScene::copyCameraProperties(Qt3DCore::QCamera *target, Qt3DCore::QCam
     target->setTop(source->top());
     target->setUpVector(source->upVector());
     target->setViewCenter(source->viewCenter());
+}
+
+void EditorScene::connectDragHandles(EditorSceneItem *item, bool enable)
+{
+    if (item) {
+        if (enable) {
+            connect(item, &EditorSceneItem::selectionBoxTransformChanged,
+                    this, &EditorScene::handleSelectionTransformChange);
+        } else {
+            disconnect(item, &EditorSceneItem::selectionBoxTransformChanged,
+                       this, &EditorScene::handleSelectionTransformChange);
+        }
+    }
+}
+
+void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown)
+{
+    Q_UNUSED(ctrlDown)
+
+    // By default, translate along helper plane
+    // When shift is pressed, translate along camera plane
+    // TODO: Snap to grid with ctrl down?
+
+    Qt3DCore::QCamera *camera = frameGraphCamera();
+    if (camera) {
+        // For cameras, we need to use position instead of translation for correct results
+        QVector3D entityTranslation = m_selectedEntityTransform->translation();
+        Qt3DCore::QCamera *cameraEntity = qobject_cast<Qt3DCore::QCamera *>(m_selectedEntity);
+        if (cameraEntity)
+            entityTranslation = cameraEntity->position();
+
+        QVector3D planeOrigin = m_dragInitialTranslationValue;
+        QVector3D planeNormal;
+        if (shiftDown)
+            planeNormal = frameGraphCameraNormal();
+        else
+            planeNormal = helperPlaneNormal();
+
+        float cosAngle = QVector3D::dotProduct(planeOrigin.normalized(), planeNormal);
+        float planeOffset = planeOrigin.length() * cosAngle;
+
+        QVector3D ray = EditorUtils::unprojectRay(camera->viewMatrix(), camera->projectionMatrix(),
+                                                  m_viewport->width(), m_viewport->height(),
+                                                  newPos);
+        float t = 0.0f;
+        QVector3D intersection = EditorUtils::findIntersection(camera->position(), ray,
+                                                               planeOffset, planeNormal, t);
+        if (t > camera->nearPlane()) {
+            EditorSceneItemComponentsModel::EditorSceneItemComponentTypes componentType =
+                    EditorSceneItemComponentsModel::Transform;
+            QString propertyName;
+
+            if (cameraEntity) {
+                componentType = EditorSceneItemComponentsModel::CameraEntity;
+                propertyName = QStringLiteral("position");
+            } else {
+                propertyName = QStringLiteral("translation");
+            }
+            m_undoHandler->createChangePropertyCommand(m_selectedEntity->objectName(), componentType,
+                                                       propertyName, intersection,
+                                                       entityTranslation, true);
+        }
+    }
+}
+
+void EditorScene::dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown)
+{
+    Q_UNUSED(ctrlDown)
+
+    // By default, scale each dimension individually
+    // When shift is pressed, scale uniformly
+    // TODO: Scale in discrete increments when ctrl down?
+
+    QVector3D posOffset = dragHandlePositionOffset(newPos);
+    if (!posOffset.isNull()) {
+        QVector3D moveFactors =
+                EditorUtils::absVector3D(
+                    QVector3D(m_dragInitialHandleCornerTranslation
+                              + (m_dragHandlesTransform->rotation().inverted() * posOffset))
+                    / m_dragInitialHandleCornerTranslation);
+
+        if (shiftDown) {
+            float averageFactor = (moveFactors.x() + moveFactors.y() + moveFactors.z()) / 3.0f;
+            moveFactors = QVector3D(averageFactor, averageFactor, averageFactor);
+        }
+        QVector3D newScale = m_dragInitialScaleValue * EditorUtils::maxVector3D(moveFactors, 0.0001f);
+
+        m_undoHandler->createChangePropertyCommand(m_selectedEntity->objectName(),
+                                                   EditorSceneItemComponentsModel::Transform,
+                                                   QStringLiteral("scale3D"), newScale,
+                                                   m_selectedEntityTransform->scale3D(), true);
+    }
+}
+
+void EditorScene::dragRotateSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown)
+{
+    // By default, rotate around helper plane
+    // When shift is pressed, rotate around camera plane.
+    // When ctrl is pressed, rotate in 22.5 degree increments
+
+    // TODO: Camera item rotations. Rotating a camera should probably only rotate the upVector.
+
+    QVector3D posOffset = dragHandlePositionOffset(newPos);
+    if (!posOffset.isNull()) {
+        QVector3D unrotatedHandlePos = m_dragInitialHandleTranslation;
+        QVector3D desiredPos = unrotatedHandlePos + posOffset;
+        unrotatedHandlePos = projectVectorOnCameraPlane(unrotatedHandlePos);
+        desiredPos = projectVectorOnCameraPlane(desiredPos);
+        unrotatedHandlePos.normalize();
+        desiredPos.normalize();
+        QQuaternion newRotation;
+        float d = QVector3D::dotProduct(unrotatedHandlePos, desiredPos) + 1.0f;
+        if (ctrlDown) {
+            // Rotate in larger increments
+            // We need an additional check vector to determine which way the angle points
+            QVector3D checkVec = EditorUtils::rotateVector(unrotatedHandlePos,
+                                                           frameGraphCameraNormal(),
+                                                           M_PI / 2.0);
+            bool largeAngle = QVector3D::dotProduct(checkVec, desiredPos) > 0.0f;
+            qreal radsOrig = qAcos(d - 1.0f);
+            if (largeAngle)
+                radsOrig = (2.0 * M_PI) - radsOrig;
+            qreal radsAdjusted = -(qreal(qRound(radsOrig * 8.0 / M_PI)) / 8.0) * M_PI;
+            if (radsAdjusted == 0.0) {
+                // Indicate rotation of 0 degrees
+                d = 2.0f;
+            } else if (radsAdjusted == -M_PI) {
+                // Indicate rotation of 180 degrees
+                d = 0.0f;
+            } else {
+                desiredPos = EditorUtils::rotateVector(unrotatedHandlePos,
+                                                       frameGraphCameraNormal(),
+                                                       radsAdjusted);
+            }
+        }
+        if (qFuzzyIsNull(d)) {
+            // Rotation of 180 degrees
+            QVector3D rotationAxis;
+            if (shiftDown)
+                rotationAxis = frameGraphCameraNormal();
+            else
+                rotationAxis = helperPlaneNormal();
+            newRotation = QQuaternion::fromAxisAndAngle(rotationAxis, 180.0f)
+                    * m_dragInitialRotationValue;
+        } else if (qFuzzyCompare(d, 2.0f)) {
+            // Rotation of zero degrees
+            newRotation = m_dragInitialRotationValue;
+        } else {
+            if (!shiftDown) {
+                // Rotate vectors so that they lie on helper plane instead of camera plane
+                QQuaternion planeRotation = QQuaternion::rotationTo(frameGraphCameraNormal(),
+                                                                    helperPlaneNormal());
+
+                unrotatedHandlePos = planeRotation.rotatedVector(unrotatedHandlePos);
+                desiredPos = planeRotation.rotatedVector(desiredPos);
+            }
+            newRotation = QQuaternion::rotationTo(unrotatedHandlePos, desiredPos)
+                    * m_dragInitialRotationValue;
+        }
+
+        m_undoHandler->createChangePropertyCommand(m_selectedEntity->objectName(),
+                                                   EditorSceneItemComponentsModel::Transform,
+                                                   QStringLiteral("rotation"), newRotation,
+                                                   m_selectedEntityTransform->rotation(), true);
+    }
+}
+
+// Returns world coordinate offset from drag handle position to cursor position on a plane
+// that is defined by middle of selection box and reverse camera view direction.
+QVector3D EditorScene::dragHandlePositionOffset(const QPoint &newPos)
+{
+    QVector3D posOffset;
+    Qt3DCore::QCamera *camera = frameGraphCamera();
+    if (camera) {
+        // Find out a camera oriented plane that intersects middle of selection box
+        QVector3D planeNormal = camera->position() - camera->viewCenter();
+        planeNormal.normalize();
+
+        QVector3D planeOrigin = m_dragHandlesTransform->translation();
+
+        float cosAngle = QVector3D::dotProduct(planeOrigin.normalized(), planeNormal);
+        float planeOffset = planeOrigin.length() * cosAngle;
+
+        // Calculate intersection with plane and newPos
+        QVector3D rayToNewPos = EditorUtils::unprojectRay(camera->viewMatrix(),
+                                                          camera->projectionMatrix(),
+                                                          m_viewport->width(), m_viewport->height(),
+                                                          newPos);
+        float t = 0.0f;
+        QVector3D intersection = EditorUtils::findIntersection(camera->position(), rayToNewPos,
+                                                               planeOffset, planeNormal, t);
+
+        if (t > 0.0f) {
+            posOffset = intersection - (m_dragHandlesTransform->translation()
+                                        + m_dragInitialHandleTranslation);
+        }
+    }
+    return posOffset;
 }
 
 Qt3DRender::QMaterial *EditorScene::selectionBoxMaterial() const
@@ -840,24 +1044,112 @@ void EditorScene::createRootEntity()
     backPlane->addComponent(helperPlaneMaterial);
     m_helperPlane->addComponent(m_helperPlaneTransform);
     m_helperPlane->setParent(m_rootEntity);
+
+    // Drag handles for selected item
+    m_dragHandles = new Qt3DCore::QEntity(m_rootEntity);
+    m_dragHandles->setObjectName(QStringLiteral("__internal draghandles root entity"));
+    m_dragHandleScale = new Qt3DCore::QEntity(m_dragHandles);
+    m_dragHandleRotate = new Qt3DCore::QEntity(m_dragHandles);
+    m_dragHandleScale->setObjectName(QStringLiteral("__internal draghandle: scale"));
+    m_dragHandleRotate->setObjectName(QStringLiteral("__internal draghandle: rotate"));
+
+    // The drag handles translation is same as the selection box + a specified distance
+    // depending on the scale of the box.
+    m_dragHandlesTransform = new Qt3DCore::QTransform();
+    m_dragHandleScaleTransform = new Qt3DCore::QTransform();
+    m_dragHandleRotationTransform = new Qt3DCore::QTransform();
+    m_dragHandleScale->addComponent(m_dragHandleScaleTransform);
+    m_dragHandleRotate->addComponent(m_dragHandleRotationTransform);
+    m_dragHandles->addComponent(m_dragHandlesTransform);
+
+    Qt3DRender::QPhongMaterial *dragHandleMaterial = new Qt3DRender::QPhongMaterial();
+    dragHandleMaterial->setAmbient(QColor(Qt::yellow));
+    dragHandleMaterial->setDiffuse(QColor(Qt::black));
+    dragHandleMaterial->setSpecular(QColor(Qt::black));
+    m_dragHandleScale->addComponent(dragHandleMaterial);
+    m_dragHandleRotate->addComponent(dragHandleMaterial);
+
+    Qt3DRender::QGeometryRenderer *scaleHandleMesh =
+            EditorUtils::createScaleHandleMesh(1.0f);
+    Qt3DRender::QGeometryRenderer *rotateHandleMesh =
+            EditorUtils::createRotateHandleMesh(1.0f);
+    m_dragHandleScale->addComponent(scaleHandleMesh);
+    m_dragHandleRotate->addComponent(rotateHandleMesh);
+
+    createObjectPickerForEntity(m_dragHandleScale);
+    createObjectPickerForEntity(m_dragHandleRotate);
+
+    m_dragHandles->setEnabled(false);
 }
 
 void EditorScene::setFrameGraphCamera(Qt3DCore::QEntity *cameraEntity)
 {
     Qt3DRender::QForwardRenderer *forwardRenderer =
             qobject_cast<Qt3DRender::QForwardRenderer *>(m_frameGraph->activeFrameGraph());
-    if (forwardRenderer)
+    if (forwardRenderer) {
+        Qt3DCore::QCamera *currentCamera =
+                qobject_cast<Qt3DCore::QCamera *>(forwardRenderer->camera());
+        if (currentCamera) {
+            disconnect(currentCamera, &Qt3DCore::QCamera::viewMatrixChanged,
+                       this, &EditorScene::handleSelectionTransformChange);
+        }
         forwardRenderer->setCamera(cameraEntity);
+        currentCamera = qobject_cast<Qt3DCore::QCamera *>(cameraEntity);
+        if (cameraEntity) {
+            connect(currentCamera, &Qt3DCore::QCamera::viewMatrixChanged,
+                    this, &EditorScene::handleSelectionTransformChange);
+        }
+    }
 }
 
-Qt3DCore::QEntity *EditorScene::frameGraphCamera() const
+Qt3DCore::QCamera *EditorScene::frameGraphCamera() const
 {
     Qt3DRender::QForwardRenderer *forwardRenderer =
             qobject_cast<Qt3DRender::QForwardRenderer *>(m_frameGraph->activeFrameGraph());
     if (forwardRenderer)
-        return forwardRenderer->camera();
+        return qobject_cast<Qt3DCore::QCamera *>(forwardRenderer->camera());
     else
         return Q_NULLPTR;
+}
+
+void EditorScene::setSelection(Qt3DCore::QEntity *entity)
+{
+    EditorSceneItem *item = m_sceneItems.value(entity->id(), Q_NULLPTR);
+    if (item) {
+        if (entity != m_selectedEntity) {
+            if (m_selectedEntity)
+                connectDragHandles(m_sceneItems.value(m_selectedEntity->id(), Q_NULLPTR), false);
+
+            m_selectedEntity = entity;
+
+            if (m_selectedEntity) {
+                connectDragHandles(item, true);
+                m_selectedEntityTransform = EditorUtils::entityTransform(m_selectedEntity);
+            }
+
+            // Emit signal to highlight the entity from the list
+            emit selectionChanged(m_selectedEntity);
+        }
+        m_dragHandles->setEnabled(item->isSelectionBoxShowing());
+
+        if (item->itemType() == EditorSceneItem::Light) {
+            // Disable scale and rotate handles for lights
+            m_dragHandleScale->setEnabled(false);
+            m_dragHandleRotate->setEnabled(false);
+        } else if (item->itemType() == EditorSceneItem::Camera) {
+            // Disable scale handles for cameras
+            m_dragHandleScale->setEnabled(false);
+            m_dragHandleRotate->setEnabled(true);
+        } else {
+            m_dragHandleScale->setEnabled(true);
+            m_dragHandleRotate->setEnabled(true);
+        }
+
+        // Update drag handles transforms to initial state
+        handleSelectionTransformChange();
+    } else {
+        m_dragHandles->setEnabled(false);
+    }
 }
 
 Qt3DCore::QEntity *EditorScene::selection() const
@@ -971,54 +1263,235 @@ void EditorScene::clearSelectionBoxes()
         item->setShowSelectionBox(false);
 }
 
-void EditorScene::handleClick(Qt3DRender::QPickEvent *event)
+void EditorScene::endSelectionHandling(Qt3DCore::QEntity *selectedEntity)
 {
-    Q_UNUSED(event)
-    //qDebug() << __FUNCTION__ << sender() << sender()->parent();
+    if (m_dragMode == DragNone && m_handlingSelection && selectedEntity) {
+        m_dragMode = DragTranslate;
+        m_previousMousePosition = QCursor::pos();
+        m_dragInitialTranslationValue = m_dragHandlesTransform->translation();
+        setSelection(selectedEntity);
+    }
+    m_handlingSelection = false;
+}
+
+void EditorScene::handleSelectionTransformChange()
+{
+    EditorSceneItem *item = m_sceneItems.value(m_selectedEntity->id(), Q_NULLPTR);
+    if (item) {
+        QVector3D dragHandleScaleAdjustment(1.0f, 1.0f, 1.0f);
+        QVector3D dragHandleRotationAdjustment(1.0f, -1.0f, -1.0f);
+        // Update drag handles rotation so that they are always facing camera the same way
+        Qt3DCore::QCamera *camera = frameGraphCamera();
+        QVector3D cameraPos;
+        if (camera) {
+            // Drag handles should be on the side of the selection box that is most
+            // towards the camera.
+            cameraPos = camera->position();
+            QVector3D ray = item->selectionTransform()->translation() - cameraPos;
+            ray = item->selectionTransform()->rotation().inverted().rotatedVector(ray);
+            float max = qMax(qAbs(ray.x()), qMax(qAbs(ray.y()), qAbs(ray.z())));
+            if (qAbs(ray.x()) == max) {
+                if (ray.x() > 0.0f) {
+                    dragHandleScaleAdjustment = QVector3D(-1.0f, 1.0f, -1.0f);
+                    dragHandleRotationAdjustment = QVector3D(-1.0f, -1.0f, 1.0f);
+                } else {
+                    dragHandleScaleAdjustment = QVector3D(1.0f, 1.0f, 1.0f);
+                    dragHandleRotationAdjustment = QVector3D(1.0f, -1.0f, -1.0f);
+                }
+            } else if (qAbs(ray.y()) == max) {
+                if (ray.y() > 0.0f) {
+                    dragHandleScaleAdjustment = QVector3D(1.0f, -1.0f, -1.0f);
+                    dragHandleRotationAdjustment = QVector3D(-1.0f, -1.0f, 1.0f);
+                } else {
+                    dragHandleScaleAdjustment = QVector3D(-1.0f, 1.0f, -1.0f);
+                    dragHandleRotationAdjustment = QVector3D(1.0f, 1.0f, 1.0f);
+                }
+            } else {
+                if (ray.z() > 0.0f) {
+                    dragHandleScaleAdjustment = QVector3D(-1.0f, 1.0f, -1.0f);
+                    dragHandleRotationAdjustment = QVector3D(1.0f, -1.0f, -1.0f);
+                } else {
+                    dragHandleScaleAdjustment = QVector3D(1.0f, 1.0f, 1.0f);
+                    dragHandleRotationAdjustment = QVector3D(-1.0f, -1.0f, 1.0f);
+                }
+            }
+        }
+
+        // Scale handles so that they look okay and are usable on any distance the object
+        // itself can reasonably be manipulated.
+        // - Handle rendered exactly the same size regardless of distance
+        // - Handle edge distance from corner is constant
+
+        QVector3D translation = (item->selectionBoxExtents() / 2.0f);
+
+        // These are approximate distances to drag handles used for sizing of the handles
+        float distanceToScale = ((translation * dragHandleScaleAdjustment
+                    + m_dragHandlesTransform->translation())
+                   - cameraPos).length();
+        float distanceToRotate = ((translation * dragHandleRotationAdjustment
+                    + m_dragHandlesTransform->translation())
+                   - cameraPos).length();
+
+        // We want the size to be constant on screen, so the angle for the handle radius
+        // must be constant.
+        const float dragHandleAngle = 0.006f;
+        float scaleScale = dragHandleAngle * distanceToScale;
+        float rotateScale = dragHandleAngle * distanceToRotate;
+
+        m_dragHandleScaleTransform->setScale(scaleScale * 2.0f);
+        m_dragHandleRotationTransform->setScale(rotateScale * 2.0f);
+
+        m_dragHandleScaleTransform->setTranslation(
+                    (QVector3D(scaleScale, scaleScale, scaleScale) + translation)
+                    * dragHandleScaleAdjustment);
+        m_dragScaleHandleCornerTranslation =
+                item->entityMeshExtents() * dragHandleScaleAdjustment / 2.0f;
+        m_dragHandleRotationTransform->setTranslation(
+                    (QVector3D(rotateScale, rotateScale, rotateScale) + translation)
+                    * dragHandleRotationAdjustment);
+        m_dragRotationHandleCornerTranslation =
+                item->entityMeshExtents() * dragHandleRotationAdjustment / 2.0f;
+
+        m_dragHandlesTransform->setTranslation(item->selectionBoxCenter());
+        m_dragHandlesTransform->setRotation(item->selectionTransform()->rotation());
+    }
 }
 
 void EditorScene::handlePress(Qt3DRender::QPickEvent *event)
 {
     Q_UNUSED(event)
-    //qDebug() << __FUNCTION__ << sender() << sender()->parent();
-    if (!m_activeSelection) {
-        m_activeSelection = true;
-        Qt3DCore::QEntity *selectedEntity = qobject_cast<Qt3DCore::QEntity *>(sender()->parent());
-        if (selectedEntity) {
-            // Check if it's the camera cone. Select camera if it is.
-            if (m_freeView && (selectedEntity->objectName() == cameraConeName)) {
+    if (m_dragMode == DragNone) {
+        Qt3DCore::QEntity *pressedEntity = qobject_cast<Qt3DCore::QEntity *>(sender()->parent());
+        m_ignoringInitialDrag = true;
+        if (pressedEntity == m_dragHandleScale) {
+            EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(), Q_NULLPTR);
+            if (selectedItem) {
+                m_dragMode = DragScale;
+                m_dragInitialScaleValue = selectedItem->entityTransform()->scale3D();
+                m_dragInitialHandleTranslation = m_dragHandlesTransform->rotation()
+                        * m_dragHandleScaleTransform->translation();
+                m_dragInitialHandleCornerTranslation =
+                        m_dragInitialScaleValue * m_dragScaleHandleCornerTranslation;
+            }
+        } else if (pressedEntity == m_dragHandleRotate) {
+            EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(), Q_NULLPTR);
+            if (selectedItem) {
+                m_dragMode = DragRotate;
+                m_dragInitialRotationValue = selectedItem->entityTransform()->rotation();
+                m_dragInitialHandleTranslation = m_dragHandlesTransform->rotation()
+                        * m_dragHandleRotationTransform->translation();
+            }
+        } else if (!m_handlingSelection && pressedEntity) {
+            bool select = false;
+            EditorSceneItem *item = m_sceneItems.value(pressedEntity->id(), Q_NULLPTR);
+            if (item) {
+                select = true;
+            } else if (m_freeView && (pressedEntity->objectName() == cameraConeName)) {
+                // Select the camera instead if clicked on camera cone
                 for (int i = 0; i < m_sceneCameras.size(); i++) {
-                    if (m_sceneCameras.at(i).cone == selectedEntity) {
-                        selectedEntity = m_sceneCameras.at(i).entity;
+                    if (m_sceneCameras.at(i).cone == pressedEntity) {
+                        pressedEntity = m_sceneCameras.at(i).entity;
+                        select = true;
                         break;
                     }
                 }
             }
-        }
-
-        if (selectedEntity) {
-            // Emit signal to highlight the entity from the list
-            m_selectedEntity = selectedEntity;
-            emit selectionChanged(m_selectedEntity);
+            if (select) {
+                m_handlingSelection = true;
+                QMetaObject::invokeMethod(this, "endSelectionHandling", Qt::QueuedConnection,
+                                          Q_ARG(Qt3DCore::QEntity *, pressedEntity));
+            }
         }
     }
 }
 
-void EditorScene::handleRelease(Qt3DRender::QPickEvent *event)
+bool EditorScene::handleMousePress(QMouseEvent *event)
 {
     Q_UNUSED(event)
-    //qDebug() << __FUNCTION__ << sender() << sender()->parent();
-    m_activeSelection = false;
+    m_dragMode = DragNone;
+    m_handlingSelection = false;
+    return false; // Never consume press event
 }
 
-void EditorScene::handleEnter()
+bool EditorScene::handleMouseRelease(QMouseEvent *event)
 {
-    //qDebug() << __FUNCTION__ << sender() << sender()->parent();
+    Q_UNUSED(event)
+    m_dragMode = DragNone;
+    m_handlingSelection = false;
+    return false; // Never consume release event
 }
 
-void EditorScene::handleExit()
+bool EditorScene::handleMouseMove(QMouseEvent *event)
 {
-    //qDebug() << __FUNCTION__ << sender() << sender()->parent();
+    // Ignore initial minor drags
+    if (m_ignoringInitialDrag) {
+        QPoint delta = event->globalPos() - m_previousMousePosition;
+        if (delta.manhattanLength() > 10)
+            m_ignoringInitialDrag = false;
+    }
+    if (!m_ignoringInitialDrag) {
+        bool shiftDown = event->modifiers() & Qt::ShiftModifier;
+        bool ctrlDown = event->modifiers() & Qt::ControlModifier;
+        switch (m_dragMode) {
+        case DragTranslate: {
+            dragTranslateSelectedEntity(event->pos(), shiftDown, ctrlDown);
+            break;
+        }
+        case DragScale: {
+            dragScaleSelectedEntity(event->pos(), shiftDown, ctrlDown);
+            break;
+        }
+        case DragRotate: {
+            dragRotateSelectedEntity(event->pos(), shiftDown, ctrlDown);
+            break;
+        }
+        default:
+            break;
+        }
+        m_previousMousePosition = event->globalPos();
+    }
+
+    return (m_dragMode != DragNone);
+}
+
+// Find out the normal of the helper plane.
+QVector3D EditorScene::helperPlaneNormal() const
+{
+    QVector3D helperPlaneNormal = m_helperPlaneTransform->matrix() * QVector3D(0.0f, 0.0f, 1.0f);
+    helperPlaneNormal.setX(qAbs(helperPlaneNormal.x()));
+    helperPlaneNormal.setY(qAbs(helperPlaneNormal.y()));
+    helperPlaneNormal.setZ(qAbs(helperPlaneNormal.z()));
+    return helperPlaneNormal.normalized();
+}
+
+// Projects vector to a plane defined by active frame graph camera
+QVector3D EditorScene::projectVectorOnCameraPlane(const QVector3D &vector) const
+{
+    QVector3D projectionVector;
+    Qt3DCore::QCamera *camera = frameGraphCamera();
+    if (camera) {
+        QVector3D planeNormal = camera->position() - camera->viewCenter();
+        planeNormal.normalize();
+        float distance = vector.distanceToPlane(QVector3D(), planeNormal);
+        projectionVector = vector - distance * planeNormal;
+        // Have some valid vector at least if vector is too close to zero
+        if (projectionVector.length() < 0.00001f) {
+            projectionVector = QVector3D::crossProduct(planeNormal,
+                                                       camera->upVector().normalized());
+        }
+    }
+    return projectionVector;
+}
+
+QVector3D EditorScene::frameGraphCameraNormal() const
+{
+    QVector3D planeNormal;
+    Qt3DCore::QCamera *camera = frameGraphCamera();
+    if (camera) {
+        planeNormal = camera->position() - camera->viewCenter();
+        planeNormal.normalize();
+    }
+    return planeNormal;
 }
 
 void EditorScene::handleCameraAdded(Qt3DCore::QEntity *camera)
@@ -1131,7 +1604,8 @@ bool EditorScene::eventFilter(QObject *obj, QEvent *event)
 {
     Q_UNUSED(obj)
     // Filter undo and redo keysequences so TextFields don't get them
-    if (event->type() == QEvent::KeyPress) {
+    switch (event->type()) {
+        case QEvent::KeyPress: {
         QKeyEvent *ke = static_cast<QKeyEvent *>(event);
         if (ke == QKeySequence::Redo) {
             if (m_undoHandler->canRedo())
@@ -1142,6 +1616,23 @@ bool EditorScene::eventFilter(QObject *obj, QEvent *event)
                 m_undoHandler->undo();
             return true;
         }
+        break;
     }
+    case QEvent::MouseButtonPress:
+        if (obj == m_viewport)
+            return handleMousePress(static_cast<QMouseEvent *>(event));
+        break;
+    case QEvent::MouseButtonRelease:
+        if (obj == m_viewport)
+            return handleMouseRelease(static_cast<QMouseEvent *>(event));
+        break;
+    case QEvent::MouseMove:
+        if (obj == m_viewport)
+            return handleMouseMove(static_cast<QMouseEvent *>(event));
+        break;
+    default:
+        break;
+    }
+
     return false;
 }

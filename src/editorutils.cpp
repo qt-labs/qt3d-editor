@@ -67,6 +67,8 @@
 #include <Qt3DInput/QMouseInput>
 #include <Qt3DLogic/QLogicComponent>
 
+#include <QtCore/QtMath>
+
 Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *component,
                                                       Qt3DCore::QEntity *parent,
                                                       EditorSceneItemModel *sceneModel)
@@ -535,6 +537,88 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createDefaultCustomMesh()
     return customMesh;
 }
 
+Qt3DRender::QGeometryRenderer *EditorUtils::createRotateHandleMesh(float size)
+{
+    // TODO_ proper mesh
+    Qt3DRender::QSphereMesh *mesh = new Qt3DRender::QSphereMesh;
+    mesh->setRadius(size / 2.0f);
+    return mesh;
+}
+
+Qt3DRender::QGeometryRenderer *EditorUtils::createScaleHandleMesh(float size)
+{
+    // TODO_ proper mesh
+    Qt3DRender::QCuboidMesh *mesh = new Qt3DRender::QCuboidMesh;
+    mesh->setXExtent(size);
+    mesh->setYExtent(size);
+    mesh->setZExtent(size);
+    return mesh;
+}
+
+Qt3DCore::QTransform *EditorUtils::entityTransform(Qt3DCore::QEntity *entity)
+{
+    Qt3DCore::QComponentList components = entity->components();
+    for (int i = 0; i < components.size(); i++) {
+        Qt3DCore::QTransform *transform = qobject_cast<Qt3DCore::QTransform *>(components.value(i));
+        if (transform)
+            return transform;
+    }
+
+    return Q_NULLPTR;
+}
+
+// Returns the intersection point of a plane and a ray.
+// Parameter t returns the distance in ray lengths. If t is negative, intersection
+// is behind rayOrigin.
+// If there is no intersection, i.e. plane and the ray are paraller, t is set to -1 and
+// rayOrigin is returned.
+QVector3D EditorUtils::findIntersection(const QVector3D &rayOrigin, const QVector3D &ray,
+                                        float planeOffset, const QVector3D &planeNormal,
+                                        float &t)
+{
+    float divisor = QVector3D::dotProduct(ray, planeNormal);
+    if (qFuzzyCompare(1.0f, 1.0f + divisor)) {
+        t = -1.0f;
+        return rayOrigin;
+    }
+
+    t = -(QVector3D::dotProduct(rayOrigin, planeNormal) - planeOffset) / divisor;
+
+    return rayOrigin + ray * t;
+
+}
+
+// Returns a direction vector from camera origin to viewport pixel in world coordinates
+QVector3D EditorUtils::unprojectRay(const QMatrix4x4 &viewMatrix,
+                                    const QMatrix4x4 &projectionMatrix,
+                                    int viewPortWidth, int viewPortHeight,
+                                    const QPoint &pos)
+{
+    float x = ((2.0f * pos.x()) / viewPortWidth) - 1.0f;
+    float y = 1.0f - ((2.0f * pos.y()) / viewPortHeight);
+
+    // Figure out the ray to the screen position
+    QVector4D ray = projectionMatrix.inverted() * QVector4D(x, y, -1.0f, 1.0f);
+    ray.setZ(-1.0f);
+    ray.setW(0.0f);
+    ray = viewMatrix.inverted() * ray;
+    return ray.toVector3D().normalized();
+}
+
+QVector3D EditorUtils::absVector3D(const QVector3D &vector)
+{
+    return QVector3D(qAbs(vector.x()),
+                     qAbs(vector.y()),
+                     qAbs(vector.z()));
+}
+
+QVector3D EditorUtils::maxVector3D(const QVector3D &vector, float minValue)
+{
+    return QVector3D(qMax(minValue, vector.x()),
+                     qMax(minValue, vector.y()),
+                     qMax(minValue, vector.z()));
+}
+
 EditorUtils::ComponentTypes EditorUtils::componentType(Qt3DCore::QComponent *component)
 {
     ComponentTypes componentType = Unknown;
@@ -600,4 +684,17 @@ EditorUtils::ComponentTypes EditorUtils::componentType(Qt3DCore::QComponent *com
     }
 
     return componentType;
+}
+
+// Rotates vector around rotationAxis. The rotationAxis must be normalized.
+QVector3D EditorUtils::rotateVector(const QVector3D &vector,
+                                    const QVector3D &rotationAxis,
+                                    qreal radians)
+{
+    const qreal cosAngle = qCos(radians);
+
+    // Use Rodrigues' rotation formula to find rotated vector
+    return (vector * cosAngle
+            + (QVector3D::crossProduct(rotationAxis, vector) * qSin(radians))
+            + rotationAxis * QVector3D::dotProduct(rotationAxis, vector) * (1.0 - cosAngle));
 }

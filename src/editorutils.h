@@ -33,6 +33,7 @@
 namespace Qt3DCore {
 class QEntity;
 class QComponent;
+class QTransform;
 }
 namespace Qt3DRender {
 class QGeometryRenderer;
@@ -88,7 +89,21 @@ public:
     static Qt3DRender::QGeometryRenderer *createWireframeBoxMesh();
     static Qt3DRender::QGeometryRenderer *createWireframePlaneMesh(int lineCount);
     static Qt3DRender::QGeometryRenderer *createDefaultCustomMesh();
+    static Qt3DRender::QGeometryRenderer *createRotateHandleMesh(float size);
+    static Qt3DRender::QGeometryRenderer *createScaleHandleMesh(float size);
 
+    static Qt3DCore::QTransform *entityTransform(Qt3DCore::QEntity *entity);
+    static QVector3D findIntersection(const QVector3D &rayOrigin, const QVector3D &ray,
+                                      float planeOffset, const QVector3D &planeNormal,
+                                      float &t);
+    static QVector3D unprojectRay(const QMatrix4x4 &modelView,
+                                  const QMatrix4x4 &projectionMatrix,
+                                  int viewPortWidth, int viewPortHeight, const QPoint &pos);
+    static QVector3D absVector3D(const QVector3D &vector);
+    static QVector3D maxVector3D(const QVector3D &vector, float minValue);
+
+    static QVector3D rotateVector(const QVector3D &vector, const QVector3D &rotationAxis,
+                                  qreal radians);
 private:
     static ComponentTypes componentType(Qt3DCore::QComponent *component);
     QString m_copyString;

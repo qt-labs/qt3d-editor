@@ -258,6 +258,7 @@ Item {
                         selectedEntityName = ""
                         editorScene.clearSelectionBoxes()
                     }
+                    editorScene.selection = selectedEntity.entity()
                 }
             }
         }

@@ -79,6 +79,7 @@ PropertyInputField {
         label: qsTr("Rotation Angle") + editorScene.emptyString
         anchors.top: vectorInputField.bottom
         anchors.topMargin: 4
+        roundDigits: 2
         onValueChanged: {
             if (!blockValueChanges) {
                 angle = value
@@ -104,7 +105,7 @@ PropertyInputField {
             }
             // quaternion was normalized in Qt3D, so axis may not be the same as it was when set.
             // -> normalize axis
-            var divider = Math.max(axis.x, Math.max(axis.y, axis.z))
+            var divider = Math.max(Math.abs(axis.x), Math.max(Math.abs(axis.y), Math.abs(axis.z)))
             if (divider !== 0) {
                 axis.x /= divider
                 axis.y /= divider
