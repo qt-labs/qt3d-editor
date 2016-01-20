@@ -56,6 +56,8 @@ ApplicationWindow {
     property bool transformViewVisible: true
     property bool materialViewVisible: true
     property bool meshViewVisible: true
+    property bool lightViewVisible: true
+    property bool cameraViewVisible: true
 
     menuBar: MenuBar {
         Menu {
@@ -401,6 +403,7 @@ ApplicationWindow {
                 GeneralPropertyView {
                     id: generalPropertyView
                     entityName: selectedEntityName
+                    entityType: editorScene.sceneModel.editorSceneItemFromIndex(entityTree.view.selection.currentIndex).itemType()
                     propertiesButtonVisible: {
                         (entityTree.view.selection.currentIndex
                          !== editorScene.sceneModel.sceneEntityIndex())

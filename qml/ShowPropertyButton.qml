@@ -37,7 +37,6 @@ Item {
     property string showIconSource
     property string hideIconSource
     property alias tooltip: propertyButton.tooltip
-    property int propertyComponentType: EditorSceneItemComponentsModel.Unknown
     property bool buttonEnabled
 
     signal propertyButtonClicked()

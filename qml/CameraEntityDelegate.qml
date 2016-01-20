@@ -36,6 +36,17 @@ ComponentDelegate {
     componentType: EditorSceneItemComponentsModel.CameraEntity
     title: qsTr("Camera")
 
+    viewTitleVisible: cameraViewVisible
+
+    onChangeViewVisibity: {
+        cameraViewVisible = viewVisibility
+    }
+
+    Component.onCompleted: {
+        if (!cameraViewVisible)
+            height = minimumComponentHeight
+    }
+
     // Need this separate connection as any checked property binding will not persist
     // over user clicking on the radio buttons.
     Connections {

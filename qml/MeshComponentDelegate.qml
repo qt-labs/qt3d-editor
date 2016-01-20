@@ -42,6 +42,11 @@ ComponentDelegate {
         meshViewVisible = viewVisibility
     }
 
+    Component.onCompleted: {
+        if (!meshViewVisible)
+            height = minimumComponentHeight
+    }
+
     Item {
         width: parent.width
         height: meshCombobox.height + 8

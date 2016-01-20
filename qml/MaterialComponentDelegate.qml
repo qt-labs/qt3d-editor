@@ -43,6 +43,11 @@ ComponentDelegate {
         materialViewVisible = viewVisibility
     }
 
+    Component.onCompleted: {
+        if (!transformViewVisible)
+            height = minimumComponentHeight
+    }
+
     Item {
         width: parent.width
         height: materialCombobox.height + 8

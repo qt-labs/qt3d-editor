@@ -55,5 +55,9 @@
         <file>images/property_mesh_shown.png</file>
         <file>images/property_transform_hidden.png</file>
         <file>images/property_transform_shown.png</file>
+        <file>images/property_light_hidden.png</file>
+        <file>images/property_light_shown.png</file>
+        <file>images/property_camera_hidden.png</file>
+        <file>images/property_camera_shown.png</file>
     </qresource>
 </RCC>

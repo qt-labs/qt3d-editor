@@ -48,9 +48,18 @@ class EditorSceneItemComponentsModel;
 class EditorSceneItem : public QObject
 {
     Q_OBJECT
+    Q_ENUMS(ItemType)
+
     Q_PROPERTY(EditorSceneItemComponentsModel* componentsModel READ componentsModel CONSTANT)
     Q_PROPERTY(bool showSelectionBox READ isSelectionBoxShowing WRITE setShowSelectionBox NOTIFY showSelectionBoxChanged)
 public:
+    enum ItemType {
+        Camera = 1,
+        Light,
+        Mesh,
+        Other
+    };
+
     EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
                     EditorSceneItem *parentItem = Q_NULLPTR,
                     int index = -1, bool freeView = false, QObject *parent = Q_NULLPTR);
@@ -78,6 +87,8 @@ public:
     bool isSelectionBoxShowing() const;
 
     EditorScene *scene() const;
+
+    Q_INVOKABLE ItemType itemType() { return m_itemType; }
 
 public slots:
     void updateSelectionBoxTransform();
@@ -113,6 +124,7 @@ private:
     Qt3DCore::QTransform *m_entityTransform; // Not owned
     Qt3DRender::QGeometryRenderer *m_entityMesh; // Not owned
     EditorSceneItemMeshComponentsModel::MeshComponentTypes m_entityMeshType;
+    ItemType m_itemType;
 
     QVector3D m_entityMeshExtents;
     QVector3D m_entityMeshCenter;

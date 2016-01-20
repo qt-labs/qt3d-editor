@@ -36,6 +36,17 @@ ComponentDelegate {
 
     property int currentLight: 0
 
+    viewTitleVisible: lightViewVisible
+
+    onChangeViewVisibity: {
+        lightViewVisible = viewVisibility
+    }
+
+    Component.onCompleted: {
+        if (!lightViewVisible)
+            height = minimumComponentHeight
+    }
+
     Item {
         id: comboboxItem
         width: parent.width

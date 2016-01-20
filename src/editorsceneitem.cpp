@@ -120,6 +120,16 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
         updateSelectionBoxTransform();
     }
 
+    // Save entity item type
+    if (isLight)
+        m_itemType = EditorSceneItem::Light;
+    else if (isCamera)
+        m_itemType = EditorSceneItem::Camera;
+    else if (entityMesh)
+        m_itemType = EditorSceneItem::Mesh;
+    else
+        m_itemType = EditorSceneItem::Other;
+
     connect(this, &EditorSceneItem::freeViewChanged, this, &EditorSceneItem::setFreeViewFlag);
 }
 

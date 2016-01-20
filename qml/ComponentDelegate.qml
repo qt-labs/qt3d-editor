@@ -38,6 +38,7 @@ Item {
     property alias viewTitleVisible: componentTitle.viewVisible
     property int componentType: EditorSceneItemComponentsModel.Unknown
     property int componentHeight: columnLayout.y + columnLayout.height
+    property int minimumComponentHeight: componentTitle.minimumHeaderHeight
 
     signal changeViewVisibity(bool viewVisibility)
 
@@ -57,6 +58,8 @@ Item {
 
             onShowViewTitle: {
                 if (viewVisible) {
+                    if (componentHeight === 0)
+                        componentHeight = columnLayout.y + columnLayout.height
                     componentDelegate.height = componentHeight
                 } else {
                     componentHeight = componentDelegate.height

@@ -40,6 +40,7 @@ Item {
     property alias title: componentTitle.headerText
     property alias viewTitleVisible: columnLayout.visible
 
+    property int entityType: 0
     property int componentHeight: componentTitle.minimumHeaderHeight
 
     Layout.minimumHeight: componentHeight
@@ -129,37 +130,64 @@ Item {
                     Layout.alignment: Qt.AlignLeft
 
                     ShowPropertyButton {
+                        id: lightButton
+                        showIconSource: "/images/property_light_shown.png"
+                        hideIconSource: "/images/property_light_hidden.png"
+                        tooltip: qsTr("Show/Hide Light Properties")
+                        buttonEnabled: lightViewVisible
+                        onPropertyButtonClicked: {
+                            lightViewVisible = !lightViewVisible
+                        }
+                        visible: (entityType === EditorSceneItem.Light) ? true : false
+                    }
+                    ShowPropertyButton {
                         id: meshButton
                         showIconSource: "/images/property_mesh_shown.png"
                         hideIconSource: "/images/property_mesh_hidden.png"
                         tooltip: qsTr("Show/Hide Mesh Properties")
-                        propertyComponentType: EditorSceneItemComponentsModel.Mesh
                         buttonEnabled: meshViewVisible
                         onPropertyButtonClicked: {
                             meshViewVisible = !meshViewVisible
                         }
+                        visible: (entityType === EditorSceneItem.Mesh) ? true : false
                     }
                     ShowPropertyButton {
                         id: transformButton
                         showIconSource: "/images/property_transform_shown.png"
                         hideIconSource: "/images/property_transform_hidden.png"
                         tooltip: qsTr("Show/Hide Transform Properties")
-                        propertyComponentType: EditorSceneItemComponentsModel.Transform
                         buttonEnabled: transformViewVisible
                         onPropertyButtonClicked: {
                             transformViewVisible = !transformViewVisible
                         }
+                        visible: (entityType === EditorSceneItem.Mesh
+                                  || entityType === EditorSceneItem.Light) ? true : false
                     }
                     ShowPropertyButton {
                         id: materialButton
                         showIconSource: "/images/property_material_shown.png"
                         hideIconSource: "/images/property_material_hidden.png"
                         tooltip: qsTr("Show/Hide Material Properties")
-                        propertyComponentType: EditorSceneItemComponentsModel.Material
                         buttonEnabled: materialViewVisible
                         onPropertyButtonClicked: {
                             materialViewVisible = !materialViewVisible
                         }
+                        visible: (entityType === EditorSceneItem.Mesh) ? true : false
+                    }
+                    ShowPropertyButton {
+                        id: cameraButton
+                        showIconSource: "/images/property_camera_shown.png"
+                        hideIconSource: "/images/property_camera_hidden.png"
+                        tooltip: qsTr("Show/Hide Camera Properties")
+                        buttonEnabled: cameraViewVisible
+                        onPropertyButtonClicked: {
+                            cameraViewVisible = !cameraViewVisible
+                        }
+                        visible: (entityType === EditorSceneItem.Camera) ? true : false
+                    }
+                    Item {
+                        width: 1
+                        height: lightButton.height
                     }
                 }
             }
