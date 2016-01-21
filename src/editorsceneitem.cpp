@@ -44,6 +44,8 @@
 #include <Qt3DRender/QAbstractAttribute>
 #include <Qt3DRender/QAbstractBuffer>
 
+#include <cfloat>
+
 #include "editorsceneitemcomponentsmodel.h"
 
 EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
