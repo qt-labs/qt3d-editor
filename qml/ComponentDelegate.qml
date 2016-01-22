@@ -80,6 +80,15 @@ Item {
             anchors.right: parent.right
             anchors.rightMargin: 8
             visible: componentTitle.viewVisible
+
+            onHeightChanged: {
+                if (componentTitle.viewHeaderInitialized)
+                        componentHeight = columnLayout.y + columnLayout.height
+                    else
+                        componentHeight = columnLayout.y + columnLayout.height
+                                            + componentTitle.minimumHeaderHeight
+                componentDelegate.height = componentHeight
+            }
         }
     }
 }

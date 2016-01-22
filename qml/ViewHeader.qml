@@ -33,6 +33,7 @@ Rectangle {
     property string headerText
     property bool viewVisible: true
     property int minimumHeaderHeight: viewHeaderText.implicitHeight + 12
+    property bool viewHeaderInitialized: viewHeaderText.implicitHeight === 0 ? false : true
 
     signal showViewTitle(bool showView)
     signal viewHeaderClicked()
