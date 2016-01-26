@@ -28,22 +28,21 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.3
 import QtQuick.Controls.Styles 1.4
-import com.theqtcompany.SceneEditor3D 1.0
 
 Item {
     height: 24
     width: 24
 
-    property string showIconSource
-    property string hideIconSource
+    property string enabledIconSource
+    property string disabledIconSource
     property alias tooltip: propertyButton.tooltip
     property bool buttonEnabled
 
-    signal propertyButtonClicked()
+    signal enabledButtonClicked()
 
     // Button style delegate
     Component {
-        id: propertyButtonStyle
+        id: enabledButtonStyle
         ButtonStyle {
             padding.top: 0
             padding.bottom: 0
@@ -51,6 +50,7 @@ Item {
             padding.left: 0
             background: Rectangle {
                 border.width: 0
+                color: "transparent"
             }
         }
     }
@@ -58,10 +58,10 @@ Item {
     Button {
         id: propertyButton
         anchors.centerIn: parent.Center
-        iconSource: buttonEnabled ? showIconSource : hideIconSource
-        style: propertyButtonStyle
+        iconSource: buttonEnabled ? enabledIconSource : disabledIconSource
+        style: enabledButtonStyle
         onClicked: {
-            propertyButtonClicked()
+            enabledButtonClicked()
         }
     }
 }

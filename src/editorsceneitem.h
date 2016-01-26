@@ -90,6 +90,9 @@ public:
 
     Q_INVOKABLE ItemType itemType() { return m_itemType; }
 
+    Q_INVOKABLE bool setCustomProperty(const QString name, const QVariant &value);
+    Q_INVOKABLE QVariant customProperty(const QString name) const;
+
 public slots:
     void updateSelectionBoxTransform();
     void handleMeshChange(Qt3DRender::QGeometryRenderer *newMesh);

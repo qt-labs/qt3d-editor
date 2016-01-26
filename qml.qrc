@@ -76,7 +76,7 @@
         <file>shaders/wireframe.frag</file>
         <file>shaders/wireframe.vert</file>
         <file alias="VisiblePropertyInputField.qml">qml/inputfields/VisiblePropertyInputField.qml</file>
-        <file alias="ShowPropertyButton.qml">qml/ShowPropertyButton.qml</file>
+        <file alias="EnableButton.qml">qml/EnableButton.qml</file>
         <file alias="GeneralPropertyView.qml">qml/GeneralPropertyView.qml</file>
         <file>qt3dsceneeditor_en.qm</file>
         <file>qt3dsceneeditor_fi.qm</file>

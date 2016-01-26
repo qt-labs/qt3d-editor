@@ -559,3 +559,24 @@ bool EditorSceneItem::isSelectionBoxShowing() const
         return false;
 }
 
+bool EditorSceneItem::setCustomProperty(const QString name, const QVariant &value)
+{
+    // Sets the name property to value. If the property is defined using Q_PROPERTY, returns true
+    // on success, else returns false. This complies with QObject::property().
+    QByteArray nameArray = name.toLocal8Bit();
+    const char *propertyName = nameArray.constData();
+    return setProperty(propertyName, value);
+}
+
+QVariant EditorSceneItem::customProperty(const QString name) const
+{
+    // Returns the value of the name property. If the property doesn't exist, the returned variant
+    // is invalid. This complies with QObject::property().
+    QByteArray nameArray = name.toLocal8Bit();
+    const char *propertyName = nameArray.constData();
+    QVariant propertyVariant = property(propertyName);
+    if (propertyVariant.isValid())
+        return propertyVariant;
+    else
+        return NULL;
+}

@@ -129,58 +129,58 @@ Item {
                     id: propertiesLayout
                     Layout.alignment: Qt.AlignLeft
 
-                    ShowPropertyButton {
+                    EnableButton {
                         id: lightButton
-                        showIconSource: "/images/property_light_shown.png"
-                        hideIconSource: "/images/property_light_hidden.png"
+                        enabledIconSource: "/images/property_light_shown.png"
+                        disabledIconSource: "/images/property_light_hidden.png"
                         tooltip: qsTr("Show/Hide Light Properties")
                         buttonEnabled: lightViewVisible
-                        onPropertyButtonClicked: {
+                        onEnabledButtonClicked: {
                             lightViewVisible = !lightViewVisible
                         }
                         visible: (entityType === EditorSceneItem.Light) ? true : false
                     }
-                    ShowPropertyButton {
+                    EnableButton {
                         id: meshButton
-                        showIconSource: "/images/property_mesh_shown.png"
-                        hideIconSource: "/images/property_mesh_hidden.png"
+                        enabledIconSource: "/images/property_mesh_shown.png"
+                        disabledIconSource: "/images/property_mesh_hidden.png"
                         tooltip: qsTr("Show/Hide Mesh Properties")
                         buttonEnabled: meshViewVisible
-                        onPropertyButtonClicked: {
+                        onEnabledButtonClicked: {
                             meshViewVisible = !meshViewVisible
                         }
                         visible: (entityType === EditorSceneItem.Mesh) ? true : false
                     }
-                    ShowPropertyButton {
+                    EnableButton {
                         id: transformButton
-                        showIconSource: "/images/property_transform_shown.png"
-                        hideIconSource: "/images/property_transform_hidden.png"
+                        enabledIconSource: "/images/property_transform_shown.png"
+                        disabledIconSource: "/images/property_transform_hidden.png"
                         tooltip: qsTr("Show/Hide Transform Properties")
                         buttonEnabled: transformViewVisible
-                        onPropertyButtonClicked: {
+                        onEnabledButtonClicked: {
                             transformViewVisible = !transformViewVisible
                         }
                         visible: (entityType === EditorSceneItem.Mesh
                                   || entityType === EditorSceneItem.Light) ? true : false
                     }
-                    ShowPropertyButton {
+                    EnableButton {
                         id: materialButton
-                        showIconSource: "/images/property_material_shown.png"
-                        hideIconSource: "/images/property_material_hidden.png"
+                        enabledIconSource: "/images/property_material_shown.png"
+                        disabledIconSource: "/images/property_material_hidden.png"
                         tooltip: qsTr("Show/Hide Material Properties")
                         buttonEnabled: materialViewVisible
-                        onPropertyButtonClicked: {
+                        onEnabledButtonClicked: {
                             materialViewVisible = !materialViewVisible
                         }
                         visible: (entityType === EditorSceneItem.Mesh) ? true : false
                     }
-                    ShowPropertyButton {
+                    EnableButton {
                         id: cameraButton
-                        showIconSource: "/images/property_camera_shown.png"
-                        hideIconSource: "/images/property_camera_hidden.png"
+                        enabledIconSource: "/images/property_camera_shown.png"
+                        disabledIconSource: "/images/property_camera_hidden.png"
                         tooltip: qsTr("Show/Hide Camera Properties")
                         buttonEnabled: cameraViewVisible
-                        onPropertyButtonClicked: {
+                        onEnabledButtonClicked: {
                             cameraViewVisible = !cameraViewVisible
                         }
                         visible: (entityType === EditorSceneItem.Camera) ? true : false

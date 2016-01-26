@@ -59,5 +59,6 @@
         <file>images/property_light_shown.png</file>
         <file>images/property_camera_hidden.png</file>
         <file>images/property_camera_shown.png</file>
+        <file>images/property_grouping_line.png</file>
     </qresource>
 </RCC>

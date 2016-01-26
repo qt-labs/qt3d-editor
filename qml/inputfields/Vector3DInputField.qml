@@ -43,6 +43,14 @@ Item {
     property int roundMultiplier: Math.pow(10, roundDigits) // Calculated from roundDigits, do not set directly
     property real inputCellWidth: vectorInput.width * 0.6
 
+    Component.onCompleted: {
+        if (selectedEntity) {
+            var propertyLocked = selectedEntity.customProperty(label)
+            if (propertyLocked !== 0)
+                lockButton.buttonEnabled = propertyLocked
+        }
+    }
+
     property vector3d value: Qt.vector3d(0, 0, 0)
 
     signal valueEdited
@@ -70,84 +78,114 @@ Item {
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
-        columns: 2
+        Layout.rightMargin: 1
+        columns: 3
 
-            Label {
-                id: xLabel
-                Layout.alignment: Qt.AlignLeft
-                text: label + " " + qsTr("X")
-                color: labelTextColor
-            }
+        Label {
+            id: xLabel
+            Layout.alignment: Qt.AlignLeft
+            text: label + " " + qsTr("X")
+            color: labelTextColor
+        }
 
-            TextField {
-                id: xInput
-                Layout.alignment: Qt.AlignRight
-                inputMethodHints: Qt.ImhFormattedNumbersOnly
-                implicitWidth: inputCellWidth
-                validator: doubleValidator
+        TextField {
+            id: xInput
+            Layout.alignment: Qt.AlignRight
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
+            implicitWidth: inputCellWidth
+            validator: doubleValidator
+            enabled: lockButton.buttonEnabled
 
-                onEditingFinished: {
-                    if (text !== "") {
-                        var oldValue = vectorInput.value.x
-                        vectorInput.value.x = text
-                        if (oldValue !== vectorInput.value.x)
-                            valueEdited()
-                    }
+            onEditingFinished: {
+                if (text !== "") {
+                    var oldValue = vectorInput.value.x
+                    vectorInput.value.x = text
+                    if (oldValue !== vectorInput.value.x)
+                        valueEdited()
                 }
-
-                Component.onCompleted: text = roundNumber(vectorInput.value.x)
             }
 
-            Label {
-                id: yLabel
-                Layout.alignment: Qt.AlignLeft
-                text: label + " " + qsTr("Y")
-                color: labelTextColor
-            }
+            Component.onCompleted: text = roundNumber(vectorInput.value.x)
+        }
 
-            TextField {
-                id: yInput
-                Layout.alignment: Qt.AlignRight
-                inputMethodHints: Qt.ImhFormattedNumbersOnly
-                validator: doubleValidator
-                implicitWidth: inputCellWidth
+        Image {
+            Layout.alignment: Qt.AlignHCenter
+            Layout.maximumWidth: 16
+            source: "/images/property_grouping_line.png"
+        }
 
-                onEditingFinished: {
-                    if (text !== "") {
-                        var oldValue = vectorInput.value.y
-                        vectorInput.value.y = text
-                        if (oldValue !== vectorInput.value.y)
-                            valueEdited()
-                    }
+        Label {
+            id: yLabel
+            Layout.alignment: Qt.AlignLeft
+            text: label + " " + qsTr("Y")
+            color: labelTextColor
+        }
+
+        TextField {
+            id: yInput
+            Layout.alignment: Qt.AlignRight
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
+            validator: doubleValidator
+            implicitWidth: inputCellWidth
+            enabled: lockButton.buttonEnabled
+
+            onEditingFinished: {
+                if (text !== "") {
+                    var oldValue = vectorInput.value.y
+                    vectorInput.value.y = text
+                    if (oldValue !== vectorInput.value.y)
+                        valueEdited()
                 }
-
-                Component.onCompleted: text = roundNumber(vectorInput.value.y)
             }
 
-            Label {
-                id: zLabel
-                Layout.alignment: Qt.AlignLeft
-                text: label + " " + qsTr("Z")
-                color: labelTextColor
+            Component.onCompleted: text = roundNumber(vectorInput.value.y)
+        }
+
+        EnableButton {
+            id: lockButton
+            Layout.alignment: Qt.AlignVCenter
+            Layout.maximumWidth: 16
+            enabledIconSource: "/images/lock_open.png"
+            disabledIconSource: "/images/lock_locked.png"
+            tooltip: qsTr("Lock '%1' Properties").arg(label)
+            buttonEnabled: true
+            onEnabledButtonClicked: {
+                buttonEnabled = !buttonEnabled
+                selectedEntity.setCustomProperty(label, buttonEnabled)
             }
+        }
 
-            TextField {
-                id: zInput
-                Layout.alignment: Qt.AlignRight
-                inputMethodHints: Qt.ImhFormattedNumbersOnly
-                validator: doubleValidator
-                implicitWidth: inputCellWidth
+        Label {
+            id: zLabel
+            Layout.alignment: Qt.AlignLeft
+            text: label + " " + qsTr("Z")
+            color: labelTextColor
+        }
 
-                onEditingFinished: {
-                    if (text !== "") {
-                        var oldValue = vectorInput.value.z
-                        vectorInput.value.z = text
-                        if (oldValue !== vectorInput.value.z)
-                            valueEdited()
-                    }
+        TextField {
+            id: zInput
+            Layout.alignment: Qt.AlignRight
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
+            validator: doubleValidator
+            implicitWidth: inputCellWidth
+            enabled: lockButton.buttonEnabled
+
+            onEditingFinished: {
+                if (text !== "") {
+                    var oldValue = vectorInput.value.z
+                    vectorInput.value.z = text
+                    if (oldValue !== vectorInput.value.z)
+                        valueEdited()
                 }
-
-                Component.onCompleted: text = roundNumber(vectorInput.value.z)
             }
+
+            Component.onCompleted: text = roundNumber(vectorInput.value.z)
+        }
+
+        Image {
+            Layout.alignment: Qt.AlignHCenter
+            Layout.maximumWidth: 16
+            source: "/images/property_grouping_line.png"
+        }
     }
 }
