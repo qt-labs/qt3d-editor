@@ -40,6 +40,14 @@ PropertyInputField {
     property color colorValue: component[propertyName]
     property color oldColor
 
+    Component.onCompleted: {
+        if (selectedEntity) {
+            var propertyLocked = selectedEntity.customProperty(label)
+            if (propertyLocked !== 0)
+                lockButton.buttonEnabled = propertyLocked
+        }
+    }
+
     onComponentValueChanged: {
         if (component !== null)
             colorValue = component[propertyName]
@@ -91,6 +99,7 @@ PropertyInputField {
         Button {
             id: colorButton
             Layout.alignment: Qt.AlignRight
+            enabled: lockButton.buttonEnabled
             style: ButtonStyle {
                 background: Rectangle {
                     implicitWidth: colorInput.width * 0.6
@@ -101,6 +110,20 @@ PropertyInputField {
                 }
             }
             onClicked: colorDialog.open()
+        }
+
+        EnableButton {
+            id: lockButton
+            Layout.alignment: Qt.AlignVCenter
+            Layout.maximumWidth: 16
+            enabledIconSource: "/images/lock_open.png"
+            disabledIconSource: "/images/lock_locked.png"
+            tooltip: qsTr("Lock '%1' Properties").arg(label)
+            buttonEnabled: true
+            onEnabledButtonClicked: {
+                buttonEnabled = !buttonEnabled
+                selectedEntity.setCustomProperty(label, buttonEnabled)
+            }
         }
     }
 }

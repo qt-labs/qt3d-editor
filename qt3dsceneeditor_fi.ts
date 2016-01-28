@@ -107,9 +107,14 @@
 <context>
     <name>ColorPropertyInputField</name>
     <message>
-        <location filename="qml/inputfields/ColorPropertyInputField.qml" line="86"/>
+        <location filename="qml/inputfields/ColorPropertyInputField.qml" line="94"/>
         <source>Color</source>
         <translation>Väri</translation>
+    </message>
+    <message>
+        <location filename="qml/inputfields/ColorPropertyInputField.qml" line="121"/>
+        <source>Lock &apos;%1&apos; Properties</source>
+        <translation>Lukitse Ominaisuus &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -334,33 +339,33 @@
 <context>
     <name>EditorScene</name>
     <message>
-        <location filename="src/editorscene.cpp" line="309"/>
+        <location filename="src/editorscene.cpp" line="306"/>
         <source>Failed to save the scene</source>
         <translation>Maiseman tallennus epäonnistui</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="338"/>
+        <location filename="src/editorscene.cpp" line="335"/>
         <source>Failed to load a new scene</source>
         <translation>Maiseman lataus epäonnistui</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="663"/>
+        <location filename="src/editorscene.cpp" line="660"/>
         <source>Camera</source>
         <translation>Kamera</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="675"/>
+        <location filename="src/editorscene.cpp" line="672"/>
         <source>Cube</source>
         <translation>Kuutio</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="697"/>
+        <location filename="src/editorscene.cpp" line="694"/>
         <source>Light</source>
         <translation>Valo</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="282"/>
-        <location filename="src/editorscene.cpp" line="786"/>
+        <location filename="src/editorscene.cpp" line="279"/>
+        <location filename="src/editorscene.cpp" line="748"/>
         <source>Scene root</source>
         <translation>Maiseman Päätaso</translation>
     </message>
@@ -368,47 +373,47 @@
 <context>
     <name>EditorSceneItemModel</name>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="222"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="223"/>
         <source>New Cube</source>
         <translation>Uusi Kuutio</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="229"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="230"/>
         <source>New Cylinder</source>
         <translation>Uusi Sylinteri</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="236"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="237"/>
         <source>New Plane</source>
         <translation>Uusi Levy</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="243"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="244"/>
         <source>New Sphere</source>
         <translation>Uusi Pallo</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="250"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="251"/>
         <source>New Torus</source>
         <translation>Uusi Torus</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="257"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="258"/>
         <source>New Custom</source>
         <translation>Uusi Oma</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="264"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="265"/>
         <source>New Camera</source>
         <translation>Uusi Kamera</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="268"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="269"/>
         <source>New Light</source>
         <translation>Uusi Valo</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="274"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="275"/>
         <source>New Empty Entity</source>
         <translation>Uusi Tyhjä Entiteetti</translation>
     </message>
@@ -416,9 +421,8 @@
 <context>
     <name>EditorUtils</name>
     <message>
-        <location filename="src/editorutils.cpp" line="403"/>
         <source>_Copy</source>
-        <translation>_Kopio</translation>
+        <translation type="vanished">_Kopio</translation>
     </message>
 </context>
 <context>
@@ -540,17 +544,27 @@
 <context>
     <name>FloatPropertyInputField</name>
     <message>
-        <location filename="qml/inputfields/FloatPropertyInputField.qml" line="67"/>
+        <location filename="qml/inputfields/FloatPropertyInputField.qml" line="75"/>
         <source>Float Value</source>
         <translation>Liukuluku</translation>
+    </message>
+    <message>
+        <location filename="qml/inputfields/FloatPropertyInputField.qml" line="107"/>
+        <source>Lock &apos;%1&apos; Properties</source>
+        <translation>Lukitse Ominaisuus &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
     <name>FloatSliderInputField</name>
     <message>
-        <location filename="qml/inputfields/FloatSliderInputField.qml" line="79"/>
+        <location filename="qml/inputfields/FloatSliderInputField.qml" line="87"/>
         <source>Float Slider</source>
         <translation>Liukusäädin (Liukuluku)</translation>
+    </message>
+    <message>
+        <location filename="qml/inputfields/FloatSliderInputField.qml" line="159"/>
+        <source>Lock &apos;%1&apos; Properties</source>
+        <translation>Lukitse Ominaisuus &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -652,9 +666,14 @@
 <context>
     <name>IntPropertyInputField</name>
     <message>
-        <location filename="qml/inputfields/IntPropertyInputField.qml" line="58"/>
+        <location filename="qml/inputfields/IntPropertyInputField.qml" line="66"/>
         <source>Integer Value</source>
         <translation>Kokonaisluku</translation>
+    </message>
+    <message>
+        <location filename="qml/inputfields/IntPropertyInputField.qml" line="94"/>
+        <source>Lock &apos;%1&apos; Properties</source>
+        <translation>Lukitse Ominaisuus &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -1098,6 +1117,14 @@
     </message>
 </context>
 <context>
+    <name>QObject</name>
+    <message>
+        <location filename="src/editorutils.cpp" line="397"/>
+        <source>_Copy</source>
+        <translation>_Kopio</translation>
+    </message>
+</context>
+<context>
     <name>RotateTransformDelegate</name>
     <message>
         <source>Rotate</source>
@@ -1159,19 +1186,24 @@
 <context>
     <name>SizePropertyInputField</name>
     <message>
-        <location filename="qml/inputfields/SizePropertyInputField.qml" line="63"/>
+        <location filename="qml/inputfields/SizePropertyInputField.qml" line="71"/>
         <source>Size</source>
         <translation>Koko</translation>
     </message>
     <message>
-        <location filename="qml/inputfields/SizePropertyInputField.qml" line="77"/>
+        <location filename="qml/inputfields/SizePropertyInputField.qml" line="85"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="qml/inputfields/SizePropertyInputField.qml" line="100"/>
+        <location filename="qml/inputfields/SizePropertyInputField.qml" line="109"/>
         <source>Y</source>
         <translation>Y</translation>
+    </message>
+    <message>
+        <location filename="qml/inputfields/SizePropertyInputField.qml" line="137"/>
+        <source>Lock &apos;%1&apos; Properties</source>
+        <translation>Lukitse Ominaisuus &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -1366,17 +1398,22 @@
         <translation>3D Vektori</translation>
     </message>
     <message>
-        <location filename="qml/inputfields/Vector3DInputField.qml" line="78"/>
+        <location filename="qml/inputfields/Vector3DInputField.qml" line="87"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="qml/inputfields/Vector3DInputField.qml" line="104"/>
+        <location filename="qml/inputfields/Vector3DInputField.qml" line="120"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location filename="qml/inputfields/Vector3DInputField.qml" line="130"/>
+        <location filename="qml/inputfields/Vector3DInputField.qml" line="150"/>
+        <source>Lock &apos;%1&apos; Properties</source>
+        <translation>Lukitse Ominaisuus &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <location filename="qml/inputfields/Vector3DInputField.qml" line="161"/>
         <source>Z</source>
         <translation>Z</translation>
     </message>
@@ -1440,93 +1477,93 @@
         <translation>Lisää Kamera Tähän</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="170"/>
+        <location filename="qml/main.qml" line="172"/>
         <source>Move active camera here</source>
         <translation>Siirrä Aktiivinen Kamera Tähän</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="177"/>
+        <location filename="qml/main.qml" line="180"/>
         <source>Snap to active camera</source>
         <translation>Siirry Aktiiviseen Kameraan</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="185"/>
+        <location filename="qml/main.qml" line="188"/>
         <source>&amp;Helper Plane</source>
         <translation>&amp;Aputaso</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="191"/>
+        <location filename="qml/main.qml" line="194"/>
         <source>Normal &amp;X</source>
         <translation>&amp;X Normaali</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="204"/>
+        <location filename="qml/main.qml" line="207"/>
         <source>Normal &amp;Y</source>
         <translation>&amp;Y Normaali</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="217"/>
+        <location filename="qml/main.qml" line="220"/>
         <source>Normal &amp;Z</source>
         <translation>&amp;Z Normaali</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="230"/>
+        <location filename="qml/main.qml" line="233"/>
         <source>&amp;Hide</source>
         <translation>&amp;Piilota</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="246"/>
+        <location filename="qml/main.qml" line="249"/>
         <source>Load Scene</source>
         <translation>Lataa Maisema</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="247"/>
-        <location filename="qml/main.qml" line="259"/>
+        <location filename="qml/main.qml" line="250"/>
+        <location filename="qml/main.qml" line="262"/>
         <source>Qt3D Scenes (*.qml)</source>
         <translation>Qt 3D Maisemat (*.qml)</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="258"/>
+        <location filename="qml/main.qml" line="261"/>
         <source>Save Scene</source>
         <translation>Tallenna Maisema</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="268"/>
+        <location filename="qml/main.qml" line="271"/>
         <source>L&amp;oad</source>
         <translation>&amp;Lataa</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="275"/>
+        <location filename="qml/main.qml" line="278"/>
         <source>&amp;Save</source>
         <translation>&amp;Tallenna</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="290"/>
+        <location filename="qml/main.qml" line="293"/>
         <source>Save As</source>
         <translation>Tallenna Nimellä</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="301"/>
+        <location filename="qml/main.qml" line="304"/>
         <source>Undo</source>
         <translation>Peru</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="301"/>
+        <location filename="qml/main.qml" line="304"/>
         <source>Undo &apos;%1&apos;</source>
         <translation>Peru &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="309"/>
+        <location filename="qml/main.qml" line="312"/>
         <source>Redo</source>
         <translation>Toista</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="309"/>
+        <location filename="qml/main.qml" line="312"/>
         <source>Redo &apos;%1&apos;</source>
         <translation>Toista &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="334"/>
+        <location filename="qml/main.qml" line="337"/>
         <source>Error</source>
         <translation>Virhe</translation>
     </message>

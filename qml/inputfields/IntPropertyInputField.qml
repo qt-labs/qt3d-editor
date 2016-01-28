@@ -37,6 +37,14 @@ PropertyInputField {
     property alias label: intLabel.text
     property int minimum: 0
 
+    Component.onCompleted: {
+        if (selectedEntity) {
+            var propertyLocked = selectedEntity.customProperty(label)
+            if (propertyLocked !== 0)
+                lockButton.buttonEnabled = propertyLocked
+        }
+    }
+
     onComponentValueChanged: {
         if (component !== null)
             valueInput.text = component[propertyName]
@@ -66,6 +74,7 @@ PropertyInputField {
             validator: intValidator
             implicitWidth: intInput.width * 0.6
             text: ""
+            enabled: lockButton.buttonEnabled
 
             onEditingFinished: {
                 var newValue = component[propertyName]
@@ -73,6 +82,20 @@ PropertyInputField {
                     newValue = text
                 newValue = Math.max(newValue, minimum)
                 handleEditingFinished(newValue)
+            }
+        }
+
+        EnableButton {
+            id: lockButton
+            Layout.alignment: Qt.AlignVCenter
+            Layout.maximumWidth: 16
+            enabledIconSource: "/images/lock_open.png"
+            disabledIconSource: "/images/lock_locked.png"
+            tooltip: qsTr("Lock '%1' Properties").arg(label)
+            buttonEnabled: true
+            onEnabledButtonClicked: {
+                buttonEnabled = !buttonEnabled
+                selectedEntity.setCustomProperty(label, buttonEnabled)
             }
         }
     }

@@ -42,6 +42,14 @@ Item {
     property int roundDigits: 4 // TODO: Determine nice default rounding
     property int roundMultiplier: Math.pow(10, roundDigits) // Calculated from roundDigits, do not set directly
 
+    Component.onCompleted: {
+        if (selectedEntity) {
+            var propertyLocked = selectedEntity.customProperty(label)
+            if (propertyLocked !== 0)
+                lockButton.buttonEnabled = propertyLocked
+        }
+    }
+
     function roundNumber(number) {
         if (roundDigits >= 0)
             return Math.round(number * roundMultiplier) / roundMultiplier
@@ -97,6 +105,7 @@ Item {
                 minimumValue: minimum
                 maximumValue: maximum
                 implicitWidth: floatSliderInputField.width * 0.4 - 4 // 4 = column spacing
+                enabled: lockButton.buttonEnabled
 
                 onValueChanged: {
                     if (!blockCommit) {
@@ -134,9 +143,24 @@ Item {
                 implicitWidth: floatSliderInputField.width * 0.2 - 4 // 4 = column spacing
                 validator: doubleValidator
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
+                enabled: lockButton.buttonEnabled
 
                 onEditingFinished: {
                     tryCommitValue(floatInput.text)
+                }
+            }
+
+            EnableButton {
+                id: lockButton
+                Layout.alignment: Qt.AlignVCenter
+                Layout.maximumWidth: 16
+                enabledIconSource: "/images/lock_open.png"
+                disabledIconSource: "/images/lock_locked.png"
+                tooltip: qsTr("Lock '%1' Properties").arg(label)
+                buttonEnabled: true
+                onEnabledButtonClicked: {
+                    buttonEnabled = !buttonEnabled
+                    selectedEntity.setCustomProperty(label, buttonEnabled)
                 }
             }
         }

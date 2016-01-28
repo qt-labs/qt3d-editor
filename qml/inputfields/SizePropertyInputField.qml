@@ -40,6 +40,14 @@ PropertyInputField {
     property int minimum: 0
     property size newValue: Qt.size(0, 0)
 
+    Component.onCompleted: {
+        if (selectedEntity) {
+            var propertyLocked = selectedEntity.customProperty(label)
+            if (propertyLocked !== 0)
+                lockButton.buttonEnabled = propertyLocked
+        }
+    }
+
     onComponentValueChanged: {
         if (component !== null)
             newValue = component[propertyName]
@@ -83,6 +91,7 @@ PropertyInputField {
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
                 implicitWidth: parent.cellwidth
                 validator: intValidator
+                enabled: lockButton.buttonEnabled
 
                 onEditingFinished: {
                     newValue.height = component[propertyName].height
@@ -106,6 +115,7 @@ PropertyInputField {
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
                 validator: intValidator
                 implicitWidth: parent.cellwidth
+                enabled: lockButton.buttonEnabled
 
                 onEditingFinished: {
                     newValue.width = component[propertyName].width
@@ -115,6 +125,20 @@ PropertyInputField {
                         newValue.height = component[propertyName].height
                     newValue.height = Math.max(newValue.height, minimum)
                     handleEditingFinished(newValue)
+                }
+            }
+
+            EnableButton {
+                id: lockButton
+                Layout.alignment: Qt.AlignVCenter
+                Layout.maximumWidth: 16
+                enabledIconSource: "/images/lock_open.png"
+                disabledIconSource: "/images/lock_locked.png"
+                tooltip: qsTr("Lock '%1' Properties").arg(label)
+                buttonEnabled: true
+                onEnabledButtonClicked: {
+                    buttonEnabled = !buttonEnabled
+                    selectedEntity.setCustomProperty(label, buttonEnabled)
                 }
             }
         }

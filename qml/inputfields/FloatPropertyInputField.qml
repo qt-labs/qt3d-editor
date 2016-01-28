@@ -39,6 +39,14 @@ PropertyInputField {
     property int roundDigits: 4 // TODO: Determine nice default rounding
     property int roundMultiplier: Math.pow(10, roundDigits) // Calculated from roundDigits, do not set directly
 
+    Component.onCompleted: {
+        if (selectedEntity) {
+            var propertyLocked = selectedEntity.customProperty(label)
+            if (propertyLocked !== 0)
+                lockButton.buttonEnabled = propertyLocked
+        }
+    }
+
     onComponentValueChanged: {
         if (component !== null)
             valueInput.text = roundNumber(component[propertyName])
@@ -75,6 +83,7 @@ PropertyInputField {
             validator: doubleValidator
             implicitWidth: floatInput.width * 0.6
             text: ""
+            enabled: lockButton.buttonEnabled
 
             onEditingFinished: {
                 var newValue
@@ -86,6 +95,20 @@ PropertyInputField {
                 handleEditingFinished(newValue, roundNumber(component[propertyName]))
                 if (text != newValue)
                     text = newValue
+            }
+        }
+
+        EnableButton {
+            id: lockButton
+            Layout.alignment: Qt.AlignVCenter
+            Layout.maximumWidth: 16
+            enabledIconSource: "/images/lock_open.png"
+            disabledIconSource: "/images/lock_locked.png"
+            tooltip: qsTr("Lock '%1' Properties").arg(label)
+            buttonEnabled: true
+            onEnabledButtonClicked: {
+                buttonEnabled = !buttonEnabled
+                selectedEntity.setCustomProperty(label, buttonEnabled)
             }
         }
     }
