@@ -195,49 +195,44 @@ ApplicationWindow {
                     id: planeOrientationX
                     text: qsTr("Normal &X") + editorScene.emptyString
                     checkable: true
-                    checked: false
+                    checked: helperPlaneComboBox.currentIndex === 0 ? true : false
                     exclusiveGroup: helperPlaneOrientationGroup
                     onCheckedChanged: {
-                        if (checked) {
-                            editorScene.helperPlaneTransform.rotation =
-                                    editorScene.helperPlaneTransform.fromAxisAndAngle(0, 1, 0, 90)
-                        }
+                        if (checked)
+                            helperPlaneComboBox.currentIndex = 0
                     }
                 }
                 MenuItem {
                     id: planeOrientationY
                     text: qsTr("Normal &Y") + editorScene.emptyString
                     checkable: true
-                    checked: true
+                    checked: helperPlaneComboBox.currentIndex === 1 ? true : false
                     exclusiveGroup: helperPlaneOrientationGroup
                     onCheckedChanged: {
-                        if (checked) {
-                            editorScene.helperPlaneTransform.rotation =
-                                    editorScene.helperPlaneTransform.fromAxisAndAngle(1, 0, 0, 90)
-                        }
+                        if (checked)
+                            helperPlaneComboBox.currentIndex = 1
                     }
                 }
                 MenuItem {
                     id: planeOrientationZ
                     text: qsTr("Normal &Z") + editorScene.emptyString
                     checkable: true
-                    checked: false
+                    checked: helperPlaneComboBox.currentIndex === 2 ? true : false
                     exclusiveGroup: helperPlaneOrientationGroup
                     onCheckedChanged: {
-                        if (checked) {
-                            editorScene.helperPlaneTransform.rotation =
-                                    editorScene.helperPlaneTransform.fromAxisAndAngle(0, 0, 1, 90)
-                        }
+                        if (checked)
+                            helperPlaneComboBox.currentIndex = 2
                     }
                 }
                 MenuItem {
                     id: planeDisabled
                     text: qsTr("&Hide") + editorScene.emptyString
                     checkable: true
-                    checked: false
+                    checked: helperPlaneComboBox.currentIndex === 3 ? true : false
                     exclusiveGroup: helperPlaneOrientationGroup
                     onCheckedChanged: {
-                        editorScene.helperPlane.enabled = !checked
+                        if (checked)
+                            helperPlaneComboBox.currentIndex = 3
                     }
                 }
             }
@@ -346,6 +341,55 @@ ApplicationWindow {
         enabled: editorScene.undoHandler.canRedo
         shortcut: StandardKey.Redo
         onTriggered: editorScene.undoHandler.redo()
+    }
+
+    toolBar: ToolBar {
+        height: 24
+        RowLayout {
+            ComboBox {
+                id: helperPlaneComboBox
+                model: ListModel {
+                    property string language: systemLanguage
+
+                    function retranslateUi() {
+                        // Repopulate list to change the current text as well
+                        clear()
+                        append({text: qsTr("Normal X")})
+                        append({text: qsTr("Normal Y")})
+                        append({text: qsTr("Normal Z")})
+                        append({text: qsTr("Hide Helper Plane")})
+                    }
+
+                    Component.onCompleted: retranslateUi()
+
+                    onLanguageChanged: retranslateUi()
+                }
+
+                currentIndex: 1
+
+                onCurrentIndexChanged: {
+                    if (currentIndex === 3) {
+                        editorScene.helperPlane.enabled = false
+                    } else {
+                        editorScene.helperPlane.enabled = true
+                        if (currentIndex === 0) {
+                            editorScene.helperPlaneTransform.rotation =
+                                    editorScene.helperPlaneTransform.fromAxisAndAngle(0, 1, 0, 90)
+                        } else if (currentIndex === 1) {
+                            editorScene.helperPlaneTransform.rotation =
+                                    editorScene.helperPlaneTransform.fromAxisAndAngle(1, 0, 0, 90)
+                        } else if (currentIndex === 2) {
+                            editorScene.helperPlaneTransform.rotation =
+                                    editorScene.helperPlaneTransform.fromAxisAndAngle(0, 0, 1, 90)
+                        }
+                    }
+                }
+            }
+            ToolButton {
+                text: qsTr("Reset to Default") + editorScene.emptyString
+                onClicked: editorScene.resetFreeViewCamera()
+            }
+        }
     }
 
     EditorScene {

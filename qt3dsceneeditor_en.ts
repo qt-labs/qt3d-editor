@@ -1496,88 +1496,112 @@
         <translation>Normal &amp;X</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="209"/>
+        <location filename="qml/main.qml" line="207"/>
         <source>Normal &amp;Y</source>
         <translation>Normal &amp;Y</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="222"/>
+        <location filename="qml/main.qml" line="218"/>
         <source>Normal &amp;Z</source>
         <translation>Normal &amp;Z</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="235"/>
+        <location filename="qml/main.qml" line="229"/>
         <source>&amp;Hide</source>
         <translation>&amp;Hide</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="246"/>
+        <location filename="qml/main.qml" line="241"/>
         <source>&amp;Language</source>
         <translation>Language</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="252"/>
+        <location filename="qml/main.qml" line="247"/>
         <source>English</source>
         <translation>English</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="264"/>
+        <location filename="qml/main.qml" line="259"/>
         <source>Finnish</source>
         <translation>Finnish</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="282"/>
+        <location filename="qml/main.qml" line="277"/>
         <source>Load Scene</source>
         <translation>Load Scene</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="283"/>
-        <location filename="qml/main.qml" line="295"/>
+        <location filename="qml/main.qml" line="278"/>
+        <location filename="qml/main.qml" line="290"/>
         <source>Qt3D Scenes (*.qml)</source>
         <translation>Qt 3D Scenes (*.qml)</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="294"/>
+        <location filename="qml/main.qml" line="289"/>
         <source>Save Scene</source>
         <translation>Save Scene</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="304"/>
+        <location filename="qml/main.qml" line="299"/>
         <source>L&amp;oad</source>
         <translation>L&amp;oad</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="311"/>
+        <location filename="qml/main.qml" line="306"/>
         <source>&amp;Save</source>
         <translation>&amp;Save</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="326"/>
+        <location filename="qml/main.qml" line="321"/>
         <source>Save As</source>
         <translation>Save As</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="337"/>
+        <location filename="qml/main.qml" line="332"/>
         <source>Undo</source>
         <translation>Undo</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="337"/>
+        <location filename="qml/main.qml" line="332"/>
         <source>Undo &apos;%1&apos;</source>
         <translation>Undo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="345"/>
+        <location filename="qml/main.qml" line="340"/>
         <source>Redo</source>
         <translation>Redo</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="345"/>
+        <location filename="qml/main.qml" line="340"/>
         <source>Redo &apos;%1&apos;</source>
         <translation>Redo &apos;%1&apos;</translation>
     </message>
     <message>
+        <location filename="qml/main.qml" line="356"/>
+        <location filename="qml/main.qml" line="375"/>
+        <source>Normal X</source>
+        <translation>Normal X</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="357"/>
+        <location filename="qml/main.qml" line="378"/>
+        <source>Normal Y</source>
+        <translation>Normal Y</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="358"/>
+        <location filename="qml/main.qml" line="381"/>
+        <source>Normal Z</source>
+        <translation>Normal Z</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="359"/>
         <location filename="qml/main.qml" line="370"/>
+        <source>Hide Helper Plane</source>
+        <translation>Hide Helper Plane</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="411"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
