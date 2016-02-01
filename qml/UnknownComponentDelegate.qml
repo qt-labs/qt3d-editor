@@ -33,59 +33,59 @@ import QtQuick.Layouts 1.2
 ComponentDelegate {
     function componentTypeToString(componentType) {
         if (componentType == EditorSceneItemComponentsModel.Transform)
-            return qsTr("Transform")
+            return qsTr("Transform") + editorScene.emptyString
         if (componentType == EditorSceneItemComponentsModel.Mesh)
-            return qsTr("Mesh")
+            return qsTr("Mesh") + editorScene.emptyString
         if (componentType == EditorSceneItemComponentsModel.Material)
-            return qsTr("Material")
+            return qsTr("Material") + editorScene.emptyString
 //        if (componentType == EditorSceneItemComponentsModel.CameraLens)
-//            return qsTr("Camera lens")
+//            return qsTr("Camera lens") + editorScene.emptyString
 //        if (componentType == EditorSceneItemComponentsModel.FrameGraph)
-//            return qsTr("Frame graph")
+//            return qsTr("Frame graph") + editorScene.emptyString
         if (componentType == EditorSceneItemComponentsModel.Layer)
-            return qsTr("Layer")
+            return qsTr("Layer") + editorScene.emptyString
 
-        return qsTr("Unknown")
+        return qsTr("Unknown") + editorScene.emptyString
     }
 
     title: componentTypeToString(type)
 
 //    Menu {
 //        id: addComponentMenu
-//        title: qsTr("Add Component")
+//        title: qsTr("Add Component") + editorScene.emptyString
 
 //        MenuItem {
-//            text: qsTr("Transform")
+//            text: qsTr("Transform") + editorScene.emptyString
 //            onTriggered: {
 //                componentData.model.appendNewComponent(EditorSceneItemComponentsModel.Transform)
 //            }
 //        }
 //        MenuItem {
-//            text: qsTr("Mesh")
+//            text: qsTr("Mesh") + editorScene.emptyString
 //            onTriggered: {
 //                componentData.model.appendNewComponent(EditorSceneItemComponentsModel.Mesh)
 //            }
 //        }
 //        MenuItem {
-//            text: qsTr("Material")
+//            text: qsTr("Material") + editorScene.emptyString
 //            onTriggered: {
 //                componentData.model.appendNewComponent(EditorSceneItemComponentsModel.Material)
 //            }
 //        }
 //        MenuItem {
-//            text: qsTr("Camera Lens")
+//            text: qsTr("Camera Lens") + editorScene.emptyString
 //            onTriggered: {
 //                componentData.model.appendNewComponent(EditorSceneItemComponentsModel.CameraLens)
 //            }
 //        }
 //        MenuItem {
-//            text: qsTr("Frame Graph")
+//            text: qsTr("Frame Graph") + editorScene.emptyString
 //            onTriggered: {
 //                componentData.model.appendNewComponent(EditorSceneItemComponentsModel.FrameGraph)
 //            }
 //        }
 //        MenuItem {
-//            text: qsTr("Layer")
+//            text: qsTr("Layer") + editorScene.emptyString
 //            onTriggered: {
 //                componentData.model.appendNewComponent(EditorSceneItemComponentsModel.Layer)
 //            }
@@ -94,7 +94,7 @@ ComponentDelegate {
 
 //    Button {
 //        id: addComponentButton
-//        text: qsTr("Add Component")
+//        text: qsTr("Add Component") + editorScene.emptyString
 //        anchors.horizontalCenter: parent.horizontalCenter
 //        onClicked: {
 //            addComponentMenu.popup();

@@ -66,7 +66,7 @@ PropertyInputField {
 
     Vector3DInputField {
         id: vectorInputField
-        label: qsTr("Rotate")
+        label: qsTr("Rotate") + editorScene.emptyString
         onValueEdited: {
             axis = value
             handleRotationChangeFinished()
@@ -76,7 +76,7 @@ PropertyInputField {
     FloatSliderInputField {
         id: sliderInputfield
         value: 0
-        label: qsTr("Rotation Angle")
+        label: qsTr("Rotation Angle") + editorScene.emptyString
         anchors.top: vectorInputField.bottom
         anchors.topMargin: 4
         onValueChanged: {

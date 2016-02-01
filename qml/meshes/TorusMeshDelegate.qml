@@ -33,7 +33,7 @@ MeshDelegate {
     componentType: EditorSceneItemComponentsModel.Mesh
 
     IntPropertyInputField {
-        label: qsTr("Rings")
+        label: qsTr("Rings") + editorScene.emptyString
         propertyName: "rings"
         component: meshComponentData
         componentType: thisDelegate.componentType
@@ -41,7 +41,7 @@ MeshDelegate {
     }
 
     IntPropertyInputField {
-        label: qsTr("Slices")
+        label: qsTr("Slices") + editorScene.emptyString
         propertyName: "slices"
         component: meshComponentData
         componentType: thisDelegate.componentType
@@ -49,14 +49,14 @@ MeshDelegate {
     }
 
     FloatPropertyInputField {
-        label: qsTr("Outer Radius")
+        label: qsTr("Outer Radius") + editorScene.emptyString
         propertyName: "radius"
         component: meshComponentData
         componentType: thisDelegate.componentType
     }
 
     FloatPropertyInputField {
-        label: qsTr("Inner Radius")
+        label: qsTr("Inner Radius") + editorScene.emptyString
         propertyName: "minorRadius"
         component: meshComponentData
         componentType: thisDelegate.componentType

@@ -54,7 +54,7 @@ Item {
 
         Label {
             id: textLabel
-            text: qsTr("Text")
+            text: qsTr("Text") + editorScene.emptyString
             Layout.alignment: Qt.AlignLeft
         }
 

@@ -31,7 +31,7 @@ import QtQuick.Controls 1.3
 import QtQuick.Layouts 1.1
 
 ComponentDelegate {
-    title: qsTr("Layer")
+    title: qsTr("Layer") + editorScene.emptyString
 
     // TODO (What does a layer in Qt3D actually do?)
     RowLayout {
@@ -40,7 +40,7 @@ ComponentDelegate {
         height: parent.height
 
         Label {
-            text: qsTr("Names")
+            text: qsTr("Names") + editorScene.emptyString
             Layout.alignment: Qt.AlignLeft
         }
 

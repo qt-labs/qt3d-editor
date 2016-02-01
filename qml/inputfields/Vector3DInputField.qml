@@ -34,7 +34,7 @@ Item {
     width: parent.width
     height: mainLayout.height
 
-    property string label: qsTr("Vector3D")
+    property string label: qsTr("Vector3D") + editorScene.emptyString
     property alias xLabel: xLabel.text
     property alias yLabel: yLabel.text
     property alias zLabel: zLabel.text
@@ -84,7 +84,7 @@ Item {
         Label {
             id: xLabel
             Layout.alignment: Qt.AlignLeft
-            text: label + " " + qsTr("X")
+            text: label + " " + qsTr("X") + editorScene.emptyString
             color: labelTextColor
         }
 
@@ -117,7 +117,7 @@ Item {
         Label {
             id: yLabel
             Layout.alignment: Qt.AlignLeft
-            text: label + " " + qsTr("Y")
+            text: label + " " + qsTr("Y") + editorScene.emptyString
             color: labelTextColor
         }
 
@@ -147,7 +147,7 @@ Item {
             Layout.maximumWidth: 16
             enabledIconSource: "/images/lock_open.png"
             disabledIconSource: "/images/lock_locked.png"
-            tooltip: qsTr("Lock '%1' Properties").arg(label)
+            tooltip: qsTr("Lock '%1' Properties").arg(label) + editorScene.emptyString
             buttonEnabled: true
             onEnabledButtonClicked: {
                 buttonEnabled = !buttonEnabled
@@ -158,7 +158,7 @@ Item {
         Label {
             id: zLabel
             Layout.alignment: Qt.AlignLeft
-            text: label + " " + qsTr("Z")
+            text: label + " " + qsTr("Z") + editorScene.emptyString
             color: labelTextColor
         }
 

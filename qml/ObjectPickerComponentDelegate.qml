@@ -32,10 +32,10 @@ import QtQuick.Controls 1.4
 ComponentDelegate {
     id: thisDelegate
     componentType: EditorSceneItemComponentsModel.ObjectPicker
-    title: qsTr("Object Picker")
+    title: qsTr("Object Picker") + editorScene.emptyString
 
     CheckBoxPropertyInputField {
-        checkBoxLabel: qsTr("Hover Enabled")
+        checkBoxLabel: qsTr("Hover Enabled") + editorScene.emptyString
         propertyName: "hoverEnabled"
         component: componentData
         componentType: thisDelegate.componentType

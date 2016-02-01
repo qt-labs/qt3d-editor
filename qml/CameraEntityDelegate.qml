@@ -34,7 +34,7 @@ import Qt3D.Core 2.0
 ComponentDelegate {
     id: thisDelegate
     componentType: EditorSceneItemComponentsModel.CameraEntity
-    title: qsTr("Camera")
+    title: qsTr("Camera") + editorScene.emptyString
 
     viewTitleVisible: cameraViewVisible
 
@@ -69,12 +69,12 @@ ComponentDelegate {
     }
 
     GroupBox {
-        title: qsTr("Projection Type")
+        title: qsTr("Projection Type") + editorScene.emptyString
         RowLayout {
             ExclusiveGroup { id: projectionTypeGroup }
             RadioButton {
                 id: orthoButton
-                text: qsTr("Orthographic")
+                text: qsTr("Orthographic") + editorScene.emptyString
                 checked: componentData.projectionType === CameraLens.OrthographicProjection
                 exclusiveGroup: projectionTypeGroup
                 onCheckedChanged: {
@@ -84,7 +84,7 @@ ComponentDelegate {
             }
             RadioButton {
                 id: perspectiveButton
-                text: qsTr("Perspective")
+                text: qsTr("Perspective") + editorScene.emptyString
                 checked: componentData.projectionType === CameraLens.PerspectiveProjection
                 exclusiveGroup: projectionTypeGroup
                 onCheckedChanged: {
@@ -97,7 +97,7 @@ ComponentDelegate {
 
     FloatPropertyInputField {
         id: nearPlaneField
-        label: qsTr("Near Plane")
+        label: qsTr("Near Plane") + editorScene.emptyString
         propertyName: "nearPlane"
         component: componentData
         componentType: thisDelegate.componentType
@@ -105,7 +105,7 @@ ComponentDelegate {
 
     FloatPropertyInputField {
         id: farPlaneField
-        label: qsTr("Far Plane")
+        label: qsTr("Far Plane") + editorScene.emptyString
         propertyName: "farPlane"
         component: componentData
         componentType: thisDelegate.componentType
@@ -114,7 +114,7 @@ ComponentDelegate {
     FloatSliderPropertyInputField {
         id: fieldOfViewField
         visible: componentData.projectionType === CameraLens.PerspectiveProjection
-        label: qsTr("Field of View")
+        label: qsTr("Field of View") + editorScene.emptyString
         propertyName: "fieldOfView"
         component: componentData
         componentType: thisDelegate.componentType
@@ -126,7 +126,7 @@ ComponentDelegate {
     FloatPropertyInputField {
         id: aspectRatioField
         visible: componentData.projectionType === CameraLens.PerspectiveProjection
-        label: qsTr("Aspect Ratio")
+        label: qsTr("Aspect Ratio") + editorScene.emptyString
         propertyName: "aspectRatio"
         component: componentData
         componentType: thisDelegate.componentType
@@ -134,7 +134,7 @@ ComponentDelegate {
 
     FloatPropertyInputField {
         id: leftField
-        label: qsTr("Left")
+        label: qsTr("Left") + editorScene.emptyString
         visible: componentData.projectionType === CameraLens.OrthographicProjection
         propertyName: "left"
         component: componentData
@@ -143,7 +143,7 @@ ComponentDelegate {
 
     FloatPropertyInputField {
         id: rightField
-        label: qsTr("Right")
+        label: qsTr("Right") + editorScene.emptyString
         visible: componentData.projectionType === CameraLens.OrthographicProjection
         propertyName: "right"
         component: componentData
@@ -152,7 +152,7 @@ ComponentDelegate {
 
     FloatPropertyInputField {
         id: bottomField
-        label: qsTr("Bottom")
+        label: qsTr("Bottom") + editorScene.emptyString
         visible: componentData.projectionType === CameraLens.OrthographicProjection
         propertyName: "bottom"
         component: componentData
@@ -161,7 +161,7 @@ ComponentDelegate {
 
     FloatPropertyInputField {
         id: topField
-        label: qsTr("Top")
+        label: qsTr("Top") + editorScene.emptyString
         visible: componentData.projectionType === CameraLens.OrthographicProjection
         propertyName: "top"
         component: componentData
@@ -170,7 +170,7 @@ ComponentDelegate {
 
     Vector3DPropertyInputField {
         id: positionVectorField
-        label: qsTr("Position")
+        label: qsTr("Position") + editorScene.emptyString
         propertyName: "position"
         component: componentData
         componentType: thisDelegate.componentType
@@ -178,7 +178,7 @@ ComponentDelegate {
 
     Vector3DPropertyInputField {
         id: upVectorField
-        label: qsTr("Up")
+        label: qsTr("Up") + editorScene.emptyString
         propertyName: "upVector"
         component: componentData
         componentType: thisDelegate.componentType
@@ -187,7 +187,7 @@ ComponentDelegate {
 
     Vector3DPropertyInputField {
         id: viewCenterVectorField
-        label: qsTr("View Center")
+        label: qsTr("View Center") + editorScene.emptyString
         propertyName: "viewCenter"
         component: componentData
         componentType: thisDelegate.componentType

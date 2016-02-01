@@ -29,6 +29,6 @@ import QtQuick 2.4
 import com.theqtcompany.SceneEditor3D 1.0
 
 ComponentDelegate {
-    title: qsTr("Logic")
+    title: qsTr("Logic") + editorScene.emptyString
 }
 

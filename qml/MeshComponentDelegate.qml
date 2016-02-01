@@ -63,12 +63,25 @@ ComponentDelegate {
             anchors.verticalCenter: parent.verticalCenter
 
             model: ListModel {
-                ListElement { text: qsTr("Cube") }
-                ListElement { text: qsTr("Custom") }
-                ListElement { text: qsTr("Cylinder") }
-                ListElement { text: qsTr("Plane") }
-                ListElement { text: qsTr("Sphere") }
-                ListElement { text: qsTr("Torus") }
+                property string language: systemLanguage
+
+                function retranslateUi() {
+                    clear()
+                    append({text: qsTr("Cube")})
+                    append({text: qsTr("Custom")})
+                    append({text: qsTr("Cylinder")})
+                    append({text: qsTr("Plane")})
+                    append({text: qsTr("Sphere")})
+                    append({text: qsTr("Torus")})
+                }
+
+                Component.onCompleted: {
+                    retranslateUi()
+                }
+
+                onLanguageChanged: {
+                    retranslateUi()
+                }
             }
             onCurrentIndexChanged: {
                 if (currentIndex === EditorSceneItemMeshComponentsModel.Cuboid - 1)

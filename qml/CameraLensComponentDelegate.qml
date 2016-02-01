@@ -34,7 +34,7 @@ import Qt3D.Core 2.0
 ComponentDelegate {
     id: thisDelegate
     componentType: EditorSceneItemComponentsModel.CameraLens
-    title: qsTr("Camera Lens")
+    title: qsTr("Camera Lens") + editorScene.emptyString
 
     // TODO: This component is not supported. Should probably be removed
 
@@ -45,7 +45,7 @@ ComponentDelegate {
 //        RowLayout {
 //            ExclusiveGroup { id: projectionTypeGroup }
 //            RadioButton {
-//                text: qsTr("Orthographic")
+//                text: qsTr("Orthographic") + editorScene.emptyString
 //                checked: componentData.projectionType === CameraLens.OrthographicProjection ? true : false
 //                exclusiveGroup: projectionTypeGroup
 //                onCheckedChanged: {
@@ -56,7 +56,7 @@ ComponentDelegate {
 
 //            }
 //            RadioButton {
-//                text: qsTr("Perspective")
+//                text: qsTr("Perspective") + editorScene.emptyString
 //                checked: componentData.projectionType === CameraLens.PerspectiveProjection ? true : false
 //                exclusiveGroup: projectionTypeGroup
 //                onCheckedChanged: {
@@ -71,7 +71,7 @@ ComponentDelegate {
 //    // TODO: Undo support for this field
 //    FloatPropertyInputField {
 //        id: nearPlaneField
-//        label: qsTr("Near Plane")
+//        label: qsTr("Near Plane") + editorScene.emptyString
 //        value: componentData.nearPlane
 //        onValueChanged: {
 //            componentData.nearPlane = value
@@ -81,7 +81,7 @@ ComponentDelegate {
 //    // TODO: Undo support for this field
 //    FloatPropertyInputField {
 //        id: farPlaneField
-//        label: qsTr("Far Plane")
+//        label: qsTr("Far Plane") + editorScene.emptyString
 //        value: componentData.farPlane
 //        onValueChanged: {
 //            componentData.farPlane = value
@@ -93,7 +93,7 @@ ComponentDelegate {
 //        id: fieldOfViewField
 //        visible: componentData.projectionType === CameraLens.PerspectiveProjection
 
-//        label: qsTr("Field of View")
+//        label: qsTr("Field of View") + editorScene.emptyString
 //        value: componentData.fieldOfView
 //        minimum: 0
 //        maximum: 180
@@ -106,7 +106,7 @@ ComponentDelegate {
 //    // TODO: Undo support for this field
 //    FloatPropertyInputField {
 //        id: aspectRatioField
-//        label: qsTr("Aspect Ratio")
+//        label: qsTr("Aspect Ratio") + editorScene.emptyString
 //        value: componentData.aspectRatio
 //        onValueChanged: {
 //            componentData.aspectRatio = value
@@ -116,7 +116,7 @@ ComponentDelegate {
 //    // TODO: Undo support for this field
 //    FloatPropertyInputField {
 //        id: leftField
-//        label: qsTr("Left")
+//        label: qsTr("Left") + editorScene.emptyString
 //        visible: componentData.projectionType === CameraLens.OrthographicProjection
 //        value: componentData.left
 //        onValueChanged: {
@@ -127,7 +127,7 @@ ComponentDelegate {
 //    // TODO: Undo support for this field
 //    FloatPropertyInputField {
 //        id: rightField
-//        label: qsTr("Right")
+//        label: qsTr("Right") + editorScene.emptyString
 //        visible: componentData.projectionType === CameraLens.OrthographicProjection
 //        value: componentData.right
 //        onValueChanged: {
@@ -138,7 +138,7 @@ ComponentDelegate {
 //    // TODO: Undo support for this field
 //    FloatPropertyInputField {
 //        id: bottomField
-//        label: qsTr("Bottom")
+//        label: qsTr("Bottom") + editorScene.emptyString
 //        visible: componentData.projectionType === CameraLens.OrthographicProjection
 //        value: componentData.bottom
 //        onValueChanged: {
@@ -149,7 +149,7 @@ ComponentDelegate {
 //    // TODO: Undo support for this field
 //    FloatPropertyInputField {
 //        id: topField
-//        label: qsTr("Top")
+//        label: qsTr("Top") + editorScene.emptyString
 //        visible: componentData.projectionType === CameraLens.OrthographicProjection
 //        value: componentData.top
 //        onValueChanged: {

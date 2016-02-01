@@ -84,7 +84,7 @@ Item {
 
         Label {
             id: title
-            text: qsTr("Float Slider")
+            text: qsTr("Float Slider") + editorScene.emptyString
             Layout.alignment: Qt.AlignLeft
             color: labelTextColor
         }
@@ -156,7 +156,7 @@ Item {
                 Layout.maximumWidth: 16
                 enabledIconSource: "/images/lock_open.png"
                 disabledIconSource: "/images/lock_locked.png"
-                tooltip: qsTr("Lock '%1' Properties").arg(label)
+                tooltip: qsTr("Lock '%1' Properties").arg(label) + editorScene.emptyString
                 buttonEnabled: true
                 onEnabledButtonClicked: {
                     buttonEnabled = !buttonEnabled

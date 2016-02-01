@@ -29,51 +29,64 @@ import QtQuick 2.5
 import com.theqtcompany.SceneEditor3D 1.0
 
 ListModel {
+    property string language: systemLanguage
+
+    function retranslateUi() {
+        setProperty(0, "meshString", qsTr("Cube"))
+        setProperty(1, "meshString", qsTr("Cylinder"))
+        setProperty(2, "meshString", qsTr("Plane"))
+        setProperty(3, "meshString", qsTr("Sphere"))
+        setProperty(4, "meshString", qsTr("Torus"))
+        setProperty(5, "meshString", qsTr("Custom"))
+        setProperty(6, "meshString", qsTr("Camera"))
+        setProperty(7, "meshString", qsTr("Light"))
+    }
+
+    Component.onCompleted: {
+        retranslateUi()
+    }
+
+    onLanguageChanged: {
+        retranslateUi()
+    }
+
     ListElement {
         meshType: EditorSceneItemModel.CuboidEntity
-        meshString: qsTr("Cube")
         meshImage: "images/mesh_cuboid-large.png"
         meshDragImage: "images/mesh_cuboid-large.png"
     }
     ListElement {
         meshType: EditorSceneItemModel.CylinderEntity
-        meshString: qsTr("Cylinder")
         meshImage: "images/mesh_cylinder-large.png"
         meshDragImage: "images/mesh_cylinder-large.png"
     }
     ListElement {
         meshType: EditorSceneItemModel.PlaneEntity
-        meshString: qsTr("Plane")
         meshImage: "images/mesh_plane-large.png"
         meshDragImage: "images/mesh_plane-large.png"
     }
     ListElement {
         meshType: EditorSceneItemModel.SphereEntity
-        meshString: qsTr("Sphere")
         meshImage: "images/mesh_sphere-large.png"
         meshDragImage: "images/mesh_sphere-large.png"
     }
     ListElement {
         meshType: EditorSceneItemModel.TorusEntity
-        meshString: qsTr("Torus")
         meshImage: "images/mesh_torus-large.png"
         meshDragImage: "images/mesh_torus-large.png"
     }
     ListElement {
         meshType: EditorSceneItemModel.CustomEntity
-        meshString: qsTr("Custom")
         meshImage: "images/mesh_custom-large.png"
         meshDragImage: "images/mesh_custom-large.png"
     }
     ListElement {
         meshType: EditorSceneItemModel.CameraEntity
-        meshString: qsTr("Camera")
         meshImage: "images/camera-large.png"
         meshDragImage: "images/camera-large.png"
     }
     ListElement {
         meshType: EditorSceneItemModel.LightEntity
-        meshString: qsTr("Light")
         meshImage: "images/light-large.png"
         meshDragImage: "images/light-large.png"
     }

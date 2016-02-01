@@ -68,7 +68,7 @@ PropertyInputField {
 
         Label {
             id: sizeLabel
-            text: qsTr("Size")
+            text: qsTr("Size") + editorScene.emptyString
             color: labelTextColor
             Layout.alignment: Qt.AlignLeft
         }
@@ -82,7 +82,7 @@ PropertyInputField {
 
             Label {
                 id: widthLabel
-                text: qsTr("X")
+                text: qsTr("X") + editorScene.emptyString
                 color: labelTextColor
             }
 
@@ -106,7 +106,7 @@ PropertyInputField {
 
             Label {
                 id: heightLabel
-                text: qsTr("Y")
+                text: qsTr("Y") + editorScene.emptyString
                 color: labelTextColor
             }
 
@@ -134,7 +134,7 @@ PropertyInputField {
                 Layout.maximumWidth: 16
                 enabledIconSource: "/images/lock_open.png"
                 disabledIconSource: "/images/lock_locked.png"
-                tooltip: qsTr("Lock '%1' Properties").arg(label)
+                tooltip: qsTr("Lock '%1' Properties").arg(label) + editorScene.emptyString
                 buttonEnabled: true
                 onEnabledButtonClicked: {
                     buttonEnabled = !buttonEnabled

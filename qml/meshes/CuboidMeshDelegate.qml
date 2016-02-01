@@ -33,7 +33,7 @@ MeshDelegate {
     componentType: EditorSceneItemComponentsModel.Mesh
 
     FloatPropertyInputField {
-        label: qsTr("X Extent")
+        label: qsTr("X Extent") + editorScene.emptyString
         propertyName: "xExtent"
         component: meshComponentData
         componentType: thisDelegate.componentType
@@ -41,7 +41,7 @@ MeshDelegate {
     }
 
     FloatPropertyInputField {
-        label: qsTr("Y Extent")
+        label: qsTr("Y Extent") + editorScene.emptyString
         propertyName: "yExtent"
         component: meshComponentData
         componentType: thisDelegate.componentType
@@ -49,7 +49,7 @@ MeshDelegate {
     }
 
     FloatPropertyInputField {
-        label: qsTr("Z Extent")
+        label: qsTr("Z Extent") + editorScene.emptyString
         propertyName: "zExtent"
         component: meshComponentData
         componentType: thisDelegate.componentType
@@ -57,9 +57,9 @@ MeshDelegate {
     }
 
     SizePropertyInputField {
-        label: qsTr("YZ Resolution")
-        widthLabel: qsTr("Y")
-        heightLabel: qsTr("Z")
+        label: qsTr("YZ Resolution") + editorScene.emptyString
+        widthLabel: qsTr("Y") + editorScene.emptyString
+        heightLabel: qsTr("Z") + editorScene.emptyString
         propertyName: "yzMeshResolution"
         component: meshComponentData
         componentType: thisDelegate.componentType
@@ -67,9 +67,9 @@ MeshDelegate {
     }
 
     SizePropertyInputField {
-        label: qsTr("XZ Resolution")
-        widthLabel: qsTr("X")
-        heightLabel: qsTr("Z")
+        label: qsTr("XZ Resolution") + editorScene.emptyString
+        widthLabel: qsTr("X") + editorScene.emptyString
+        heightLabel: qsTr("Z") + editorScene.emptyString
         propertyName: "xzMeshResolution"
         component: meshComponentData
         componentType: thisDelegate.componentType
@@ -77,9 +77,9 @@ MeshDelegate {
     }
 
     SizePropertyInputField {
-        label: qsTr("XY Resolution")
-        widthLabel: qsTr("X")
-        heightLabel: qsTr("Y")
+        label: qsTr("XY Resolution") + editorScene.emptyString
+        widthLabel: qsTr("X") + editorScene.emptyString
+        heightLabel: qsTr("Y") + editorScene.emptyString
         propertyName: "xyMeshResolution"
         component: meshComponentData
         componentType: thisDelegate.componentType

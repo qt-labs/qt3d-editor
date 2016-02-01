@@ -38,7 +38,7 @@ TransformDelegate {
     // TODO: Is this delegate even needed anymore?
 
     Vector3DPropertyInputField {
-        label: qsTr("Translation")
+        label: qsTr("Translation") + editorScene.emptyString
         propertyName: "translation"
         component: transformComponentData
         componentType: thisDelegate.componentType

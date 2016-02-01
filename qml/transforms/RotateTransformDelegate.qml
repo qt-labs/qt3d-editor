@@ -39,7 +39,7 @@ TransformDelegate {
 
     FloatSliderPropertyInputField {
         id: angleDegField
-        label: qsTr("Angle Degrees")
+        label: qsTr("Angle Degrees") + editorScene.emptyString
         propertyName: "angle"
         component: transformComponentData
         componentType: thisDelegate.componentType
@@ -48,7 +48,7 @@ TransformDelegate {
     }
 
     Vector3DPropertyInputField {
-        label: qsTr("Axis")
+        label: qsTr("Axis") + editorScene.emptyString
         propertyName: "axis"
         component: transformComponentData
         componentType: thisDelegate.componentType

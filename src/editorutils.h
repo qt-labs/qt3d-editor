@@ -91,6 +91,7 @@ public:
 
 private:
     static ComponentTypes componentType(Qt3DCore::QComponent *component);
+    QString m_copyString;
 };
 
 #endif // EDITORUTILS_H

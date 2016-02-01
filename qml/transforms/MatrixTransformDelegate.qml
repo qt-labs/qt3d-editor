@@ -38,7 +38,7 @@ TransformDelegate {
 
     Matrix4x4PropertyInputField {
         id: positionVectorField
-        label: qsTr("Transform Matrix")
+        label: qsTr("Transform Matrix") + editorScene.emptyString
         propertyName: "matrix"
         component: transformComponentData
         componentType: thisDelegate.componentType

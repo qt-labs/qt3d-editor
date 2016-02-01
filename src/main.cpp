@@ -45,15 +45,6 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    QTranslator qtTranslator;
-    qtTranslator.load("qt_" + QLocale::system().name(),
-                      QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    app.installTranslator(&qtTranslator);
-
-    QTranslator appTranslator;
-    appTranslator.load(":/qt3dsceneeditor_" + QLocale::system().name());
-    app.installTranslator(&appTranslator);
-
     qmlRegisterType<EditorScene>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorScene");
     qmlRegisterType<EditorViewportItem>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorViewport");
     qmlRegisterUncreatableType<EditorSceneItemModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemModel", "Created by EditorScene");

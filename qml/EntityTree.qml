@@ -84,7 +84,7 @@ Item {
             anchors.left: parent.left
             anchors.leftMargin: 8
             anchors.verticalCenter: parent.verticalCenter
-            text: qsTr("Entities")
+            text: qsTr("Entities") + editorScene.emptyString
         }
         ToolButton {
             id: removeEntityButton
@@ -119,7 +119,7 @@ Item {
     ButtonViewHeader {
         id: treeViewHeader
         anchors.top: treeViewHeaderBackground.bottom
-        headerText: qsTr("Scene")
+        headerText: qsTr("Scene") + editorScene.emptyString
 
         onShowViewButtonPressed: {
             treeViewSplit.height = splitHeight
@@ -205,12 +205,12 @@ Item {
         }
 
         TableViewColumn {
-            title: qsTr("Entities")
+            title: qsTr("Entities") + editorScene.emptyString
             role: "name"
             width: parent.width - 50
         }
         TableViewColumn {
-            title: qsTr("Visibility")
+            title: qsTr("Visibility") + editorScene.emptyString
             role: "visibility"
             width: 18
             delegate: VisiblePropertyInputField {

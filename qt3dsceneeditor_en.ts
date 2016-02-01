@@ -339,33 +339,32 @@
 <context>
     <name>EditorScene</name>
     <message>
-        <location filename="src/editorscene.cpp" line="306"/>
+        <location filename="src/editorscene.cpp" line="481"/>
         <source>Failed to save the scene</source>
         <translation>Failed to save the scene</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="335"/>
+        <location filename="src/editorscene.cpp" line="482"/>
         <source>Failed to load a new scene</source>
         <translation>Failed to load the scene</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="660"/>
+        <location filename="src/editorscene.cpp" line="483"/>
         <source>Camera</source>
         <translation>Camera</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="672"/>
+        <location filename="src/editorscene.cpp" line="484"/>
         <source>Cube</source>
         <translation>Cube</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="694"/>
+        <location filename="src/editorscene.cpp" line="485"/>
         <source>Light</source>
         <translation>Light</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="279"/>
-        <location filename="src/editorscene.cpp" line="748"/>
+        <location filename="src/editorscene.cpp" line="480"/>
         <source>Scene root</source>
         <translation>Scene Root</translation>
     </message>
@@ -474,42 +473,42 @@
 <context>
     <name>EntityModel</name>
     <message>
-        <location filename="qml/EntityModel.qml" line="34"/>
+        <location filename="qml/EntityModel.qml" line="35"/>
         <source>Cube</source>
         <translation>Cube</translation>
     </message>
     <message>
-        <location filename="qml/EntityModel.qml" line="40"/>
+        <location filename="qml/EntityModel.qml" line="36"/>
         <source>Cylinder</source>
         <translation>Cylinder</translation>
     </message>
     <message>
-        <location filename="qml/EntityModel.qml" line="46"/>
+        <location filename="qml/EntityModel.qml" line="37"/>
         <source>Plane</source>
         <translation>Plane</translation>
     </message>
     <message>
-        <location filename="qml/EntityModel.qml" line="52"/>
+        <location filename="qml/EntityModel.qml" line="38"/>
         <source>Sphere</source>
         <translation>Sphere</translation>
     </message>
     <message>
-        <location filename="qml/EntityModel.qml" line="58"/>
+        <location filename="qml/EntityModel.qml" line="39"/>
         <source>Torus</source>
         <translation>Torus</translation>
     </message>
     <message>
-        <location filename="qml/EntityModel.qml" line="64"/>
+        <location filename="qml/EntityModel.qml" line="40"/>
         <source>Custom</source>
         <translation>Custom</translation>
     </message>
     <message>
-        <location filename="qml/EntityModel.qml" line="70"/>
+        <location filename="qml/EntityModel.qml" line="41"/>
         <source>Camera</source>
         <translation>Camera</translation>
     </message>
     <message>
-        <location filename="qml/EntityModel.qml" line="76"/>
+        <location filename="qml/EntityModel.qml" line="42"/>
         <source>Light</source>
         <translation>Light</translation>
     </message>
@@ -705,22 +704,22 @@
         <translation>Light</translation>
     </message>
     <message>
-        <location filename="qml/LightComponentDelegate.qml" line="67"/>
+        <location filename="qml/LightComponentDelegate.qml" line="72"/>
         <source>Directional Light</source>
         <translation>Directional Light</translation>
     </message>
     <message>
-        <location filename="qml/LightComponentDelegate.qml" line="68"/>
+        <location filename="qml/LightComponentDelegate.qml" line="73"/>
         <source>Point Light</source>
         <translation>Point Light</translation>
     </message>
     <message>
-        <location filename="qml/LightComponentDelegate.qml" line="69"/>
+        <location filename="qml/LightComponentDelegate.qml" line="74"/>
         <source>Spot Light</source>
         <translation>Spot Light</translation>
     </message>
     <message>
-        <location filename="qml/LightComponentDelegate.qml" line="70"/>
+        <location filename="qml/LightComponentDelegate.qml" line="75"/>
         <source>Basic Light</source>
         <translation>Basic Light</translation>
     </message>
@@ -765,54 +764,54 @@
         <translation>Material</translation>
     </message>
     <message>
-        <location filename="qml/MaterialComponentDelegate.qml" line="67"/>
+        <location filename="qml/MaterialComponentDelegate.qml" line="71"/>
         <source>Diffuse Map</source>
         <oldsource>DiffuseMap</oldsource>
-        <translation>DiffuseMap</translation>
+        <translation>Diffuse Map</translation>
     </message>
     <message>
-        <location filename="qml/MaterialComponentDelegate.qml" line="68"/>
+        <location filename="qml/MaterialComponentDelegate.qml" line="72"/>
         <source>Diffuse &amp; Specular Map</source>
         <oldsource>DiffuseSpecularMap</oldsource>
-        <translation>DiffuseSpecularMap</translation>
+        <translation>Diffuse &amp; Specular Map</translation>
     </message>
     <message>
-        <location filename="qml/MaterialComponentDelegate.qml" line="69"/>
+        <location filename="qml/MaterialComponentDelegate.qml" line="73"/>
         <source>Gooch</source>
         <translation>Gooch</translation>
     </message>
     <message>
-        <location filename="qml/MaterialComponentDelegate.qml" line="70"/>
+        <location filename="qml/MaterialComponentDelegate.qml" line="74"/>
         <source>Normal &amp; Diffuse Map</source>
         <oldsource>NormalDiffuseMap</oldsource>
-        <translation>NormalDiffuseMap</translation>
-    </message>
-    <message>
-        <location filename="qml/MaterialComponentDelegate.qml" line="71"/>
-        <source>Normal &amp; Diffuse Map Alpha</source>
-        <oldsource>NormalDiffuseMapAlpha</oldsource>
-        <translation>NormalDiffuseMapAlpha</translation>
-    </message>
-    <message>
-        <location filename="qml/MaterialComponentDelegate.qml" line="72"/>
-        <source>Normal, Diffuse &amp; Specular Map</source>
-        <oldsource>NormalDiffuseSpecularMap</oldsource>
-        <translation>NormalDiffuseSpecularMap</translation>
-    </message>
-    <message>
-        <location filename="qml/MaterialComponentDelegate.qml" line="73"/>
-        <source>Per Vertex Color</source>
-        <oldsource>PerVertexColor</oldsource>
-        <translation>PerVertexColor</translation>
-    </message>
-    <message>
-        <location filename="qml/MaterialComponentDelegate.qml" line="74"/>
-        <source>Phong Alpha</source>
-        <oldsource>PhongAlpha</oldsource>
-        <translation>PhongAlpha</translation>
+        <translation>Normal &amp; Diffuse Map</translation>
     </message>
     <message>
         <location filename="qml/MaterialComponentDelegate.qml" line="75"/>
+        <source>Normal &amp; Diffuse Map Alpha</source>
+        <oldsource>NormalDiffuseMapAlpha</oldsource>
+        <translation>Normal &amp; Diffuse Map Alpha</translation>
+    </message>
+    <message>
+        <location filename="qml/MaterialComponentDelegate.qml" line="76"/>
+        <source>Normal, Diffuse &amp; Specular Map</source>
+        <oldsource>NormalDiffuseSpecularMap</oldsource>
+        <translation>Normal, Diffuse &amp; Specular Map</translation>
+    </message>
+    <message>
+        <location filename="qml/MaterialComponentDelegate.qml" line="77"/>
+        <source>Per Vertex Color</source>
+        <oldsource>PerVertexColor</oldsource>
+        <translation>Per Vertex Color</translation>
+    </message>
+    <message>
+        <location filename="qml/MaterialComponentDelegate.qml" line="78"/>
+        <source>Phong Alpha</source>
+        <oldsource>PhongAlpha</oldsource>
+        <translation>Phong Alpha</translation>
+    </message>
+    <message>
+        <location filename="qml/MaterialComponentDelegate.qml" line="79"/>
         <source>Phong</source>
         <translation>Phong</translation>
     </message>
@@ -849,32 +848,32 @@
         <translation type="vanished">Static Mesh</translation>
     </message>
     <message>
-        <location filename="qml/MeshComponentDelegate.qml" line="66"/>
+        <location filename="qml/MeshComponentDelegate.qml" line="70"/>
         <source>Cube</source>
         <translation>Cube</translation>
     </message>
     <message>
-        <location filename="qml/MeshComponentDelegate.qml" line="67"/>
+        <location filename="qml/MeshComponentDelegate.qml" line="71"/>
         <source>Custom</source>
         <translation>Custom</translation>
     </message>
     <message>
-        <location filename="qml/MeshComponentDelegate.qml" line="68"/>
+        <location filename="qml/MeshComponentDelegate.qml" line="72"/>
         <source>Cylinder</source>
         <translation>Cylinder</translation>
     </message>
     <message>
-        <location filename="qml/MeshComponentDelegate.qml" line="69"/>
+        <location filename="qml/MeshComponentDelegate.qml" line="73"/>
         <source>Plane</source>
         <translation>Plane</translation>
     </message>
     <message>
-        <location filename="qml/MeshComponentDelegate.qml" line="70"/>
+        <location filename="qml/MeshComponentDelegate.qml" line="74"/>
         <source>Sphere</source>
         <translation>Sphere</translation>
     </message>
     <message>
-        <location filename="qml/MeshComponentDelegate.qml" line="71"/>
+        <location filename="qml/MeshComponentDelegate.qml" line="75"/>
         <source>Torus</source>
         <translation>Torus</translation>
     </message>
@@ -1311,12 +1310,12 @@
         <translation>Transform</translation>
     </message>
     <message>
-        <location filename="qml/TransformComponentDelegate.qml" line="66"/>
+        <location filename="qml/TransformComponentDelegate.qml" line="70"/>
         <source>Scale, Rotate &amp; Translate</source>
         <translation>Scale, Rotate &amp; Translate</translation>
     </message>
     <message>
-        <location filename="qml/TransformComponentDelegate.qml" line="67"/>
+        <location filename="qml/TransformComponentDelegate.qml" line="71"/>
         <source>Matrix</source>
         <translation>Matrix</translation>
     </message>
@@ -1427,143 +1426,158 @@
         <translation>Qt 3D Scene Editor</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="64"/>
+        <location filename="qml/main.qml" line="66"/>
         <source>&amp;File</source>
         <translation>&amp;File</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="66"/>
+        <location filename="qml/main.qml" line="68"/>
         <source>&amp;New</source>
         <translation>&amp;New</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="85"/>
+        <location filename="qml/main.qml" line="87"/>
         <source>Enable autosave</source>
         <translation>Enable Autosave</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="101"/>
+        <location filename="qml/main.qml" line="103"/>
         <source>E&amp;xit</source>
         <translation>E&amp;xit</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="106"/>
+        <location filename="qml/main.qml" line="108"/>
         <source>&amp;Edit</source>
         <translation>&amp;Edit</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="116"/>
+        <location filename="qml/main.qml" line="118"/>
         <source>&amp;View</source>
         <translation>&amp;View</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="119"/>
+        <location filename="qml/main.qml" line="121"/>
         <source>&amp;Camera</source>
         <translation>&amp;Camera</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="145"/>
+        <location filename="qml/main.qml" line="147"/>
         <source>Free viewing mode</source>
         <translation>Free Viewing Mode</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="154"/>
+        <location filename="qml/main.qml" line="156"/>
         <source>Reset</source>
         <translation>Reset to Default</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="161"/>
+        <location filename="qml/main.qml" line="163"/>
         <source>Add scene camera here</source>
         <translation>Add Scene Camera Here</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="172"/>
+        <location filename="qml/main.qml" line="174"/>
         <source>Move active camera here</source>
         <translation>Move Active Camera Here</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="180"/>
+        <location filename="qml/main.qml" line="182"/>
         <source>Snap to active camera</source>
         <translation>Snap to Active Camera</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="188"/>
+        <location filename="qml/main.qml" line="190"/>
         <source>&amp;Helper Plane</source>
         <translation>&amp;Helper Plane</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="194"/>
+        <location filename="qml/main.qml" line="196"/>
         <source>Normal &amp;X</source>
         <translation>Normal &amp;X</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="207"/>
+        <location filename="qml/main.qml" line="209"/>
         <source>Normal &amp;Y</source>
         <translation>Normal &amp;Y</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="220"/>
+        <location filename="qml/main.qml" line="222"/>
         <source>Normal &amp;Z</source>
         <translation>Normal &amp;Z</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="233"/>
+        <location filename="qml/main.qml" line="235"/>
         <source>&amp;Hide</source>
         <translation>&amp;Hide</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="249"/>
+        <location filename="qml/main.qml" line="246"/>
+        <source>&amp;Language</source>
+        <translation>Language</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="252"/>
+        <source>English</source>
+        <translation>English</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="264"/>
+        <source>Finnish</source>
+        <translation>Finnish</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="282"/>
         <source>Load Scene</source>
         <translation>Load Scene</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="250"/>
-        <location filename="qml/main.qml" line="262"/>
+        <location filename="qml/main.qml" line="283"/>
+        <location filename="qml/main.qml" line="295"/>
         <source>Qt3D Scenes (*.qml)</source>
         <translation>Qt 3D Scenes (*.qml)</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="261"/>
+        <location filename="qml/main.qml" line="294"/>
         <source>Save Scene</source>
         <translation>Save Scene</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="271"/>
+        <location filename="qml/main.qml" line="304"/>
         <source>L&amp;oad</source>
         <translation>L&amp;oad</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="278"/>
+        <location filename="qml/main.qml" line="311"/>
         <source>&amp;Save</source>
         <translation>&amp;Save</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="293"/>
+        <location filename="qml/main.qml" line="326"/>
         <source>Save As</source>
         <translation>Save As</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="304"/>
+        <location filename="qml/main.qml" line="337"/>
         <source>Undo</source>
         <translation>Undo</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="304"/>
+        <location filename="qml/main.qml" line="337"/>
         <source>Undo &apos;%1&apos;</source>
         <translation>Undo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="312"/>
+        <location filename="qml/main.qml" line="345"/>
         <source>Redo</source>
         <translation>Redo</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="312"/>
+        <location filename="qml/main.qml" line="345"/>
         <source>Redo &apos;%1&apos;</source>
         <translation>Redo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="337"/>
+        <location filename="qml/main.qml" line="370"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>

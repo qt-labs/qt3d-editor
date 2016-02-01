@@ -33,21 +33,21 @@ MaterialDelegate {
     componentType: EditorSceneItemComponentsModel.Material
 
     ColorPropertyInputField {
-        label: qsTr("Diffuse Color")
+        label: qsTr("Diffuse Color") + editorScene.emptyString
         propertyName: "diffuse"
         component: materialComponentData
         componentType: thisDelegate.componentType
     }
 
     ColorPropertyInputField {
-        label: qsTr("Specular Color")
+        label: qsTr("Specular Color") + editorScene.emptyString
         propertyName: "specular"
         component: materialComponentData
         componentType: thisDelegate.componentType
     }
 
     ColorPropertyInputField {
-        label: qsTr("Cool Color")
+        label: qsTr("Cool Color") + editorScene.emptyString
         propertyName: "cool"
         component: materialComponentData
         componentType: thisDelegate.componentType
@@ -55,28 +55,28 @@ MaterialDelegate {
     }
 
     ColorPropertyInputField {
-        label: qsTr("Warm Color")
+        label: qsTr("Warm Color") + editorScene.emptyString
         propertyName: "warm"
         component: materialComponentData
         componentType: thisDelegate.componentType
     }
 
     FloatPropertyInputField {
-        label: qsTr("Alpha")
+        label: qsTr("Alpha") + editorScene.emptyString
         propertyName: "alpha"
         component: materialComponentData
         componentType: thisDelegate.componentType
     }
 
     FloatPropertyInputField {
-        label: qsTr("Beta")
+        label: qsTr("Beta") + editorScene.emptyString
         propertyName: "beta"
         component: materialComponentData
         componentType: thisDelegate.componentType
     }
 
     FloatPropertyInputField {
-        label: qsTr("Shininess")
+        label: qsTr("Shininess") + editorScene.emptyString
         propertyName: "shininess"
         component: materialComponentData
         componentType: thisDelegate.componentType

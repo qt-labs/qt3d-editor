@@ -86,7 +86,7 @@ Item {
 
         Label {
             id: matrixLabel
-            text: qsTr("Matrix4x4")
+            text: qsTr("Matrix4x4") + editorScene.emptyString
             Layout.alignment: Qt.AlignLeft
             color: labelTextColor
         }

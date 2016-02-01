@@ -29,7 +29,7 @@ import QtQuick 2.4
 import com.theqtcompany.SceneEditor3D 1.0
 
 ComponentDelegate {
-    title: qsTr("Keyboard Input")
+    title: qsTr("Keyboard Input") + editorScene.emptyString
 
     // bool focus
     // KeyboardController controller

@@ -61,7 +61,7 @@ Item {
             id: componentTitle
             anchors.top: parent.top
             visibleEntityButtonShown: true
-            headerText: qsTr("Properties")
+            headerText: qsTr("Properties") + editorScene.emptyString
 
             function showView() {
                 columnLayout.visible = true
@@ -94,7 +94,7 @@ Item {
 
             TextInputField {
                 id: textInputField
-                label: qsTr("Entity name")
+                label: qsTr("Entity name") + editorScene.emptyString
                 displayText: componentData.objectName
 
                 onDesiredTextChanged: {
@@ -121,7 +121,7 @@ Item {
                 Label {
                     id: showLabel
                     visible: propertiesLayout.visible
-                    text: qsTr("Show Properties:")
+                    text: qsTr("Show Properties:") + editorScene.emptyString
                     Layout.alignment: Qt.AlignLeft
                 }
 
@@ -133,7 +133,7 @@ Item {
                         id: lightButton
                         enabledIconSource: "/images/property_light_shown.png"
                         disabledIconSource: "/images/property_light_hidden.png"
-                        tooltip: qsTr("Show/Hide Light Properties")
+                        tooltip: qsTr("Show/Hide Light Properties") + editorScene.emptyString
                         buttonEnabled: lightViewVisible
                         onEnabledButtonClicked: {
                             lightViewVisible = !lightViewVisible
@@ -144,7 +144,7 @@ Item {
                         id: meshButton
                         enabledIconSource: "/images/property_mesh_shown.png"
                         disabledIconSource: "/images/property_mesh_hidden.png"
-                        tooltip: qsTr("Show/Hide Mesh Properties")
+                        tooltip: qsTr("Show/Hide Mesh Properties") + editorScene.emptyString
                         buttonEnabled: meshViewVisible
                         onEnabledButtonClicked: {
                             meshViewVisible = !meshViewVisible
@@ -155,7 +155,7 @@ Item {
                         id: transformButton
                         enabledIconSource: "/images/property_transform_shown.png"
                         disabledIconSource: "/images/property_transform_hidden.png"
-                        tooltip: qsTr("Show/Hide Transform Properties")
+                        tooltip: qsTr("Show/Hide Transform Properties") + editorScene.emptyString
                         buttonEnabled: transformViewVisible
                         onEnabledButtonClicked: {
                             transformViewVisible = !transformViewVisible
@@ -167,7 +167,7 @@ Item {
                         id: materialButton
                         enabledIconSource: "/images/property_material_shown.png"
                         disabledIconSource: "/images/property_material_hidden.png"
-                        tooltip: qsTr("Show/Hide Material Properties")
+                        tooltip: qsTr("Show/Hide Material Properties") + editorScene.emptyString
                         buttonEnabled: materialViewVisible
                         onEnabledButtonClicked: {
                             materialViewVisible = !materialViewVisible
@@ -178,7 +178,7 @@ Item {
                         id: cameraButton
                         enabledIconSource: "/images/property_camera_shown.png"
                         disabledIconSource: "/images/property_camera_hidden.png"
-                        tooltip: qsTr("Show/Hide Camera Properties")
+                        tooltip: qsTr("Show/Hide Camera Properties") + editorScene.emptyString
                         buttonEnabled: cameraViewVisible
                         onEnabledButtonClicked: {
                             cameraViewVisible = !cameraViewVisible

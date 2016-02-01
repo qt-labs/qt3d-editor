@@ -59,6 +59,8 @@
 #include <QtGui/QKeySequence>
 
 #include <QtCore/QDir>
+#include <QtCore/QLibraryInfo>
+#include <QtCore/QCoreApplication>
 
 //#define TEST_SCENE // If a test scene is wanted instead of the default scene
 
@@ -90,7 +92,10 @@ EditorScene::EditorScene(QObject *parent)
     , m_undoHandler(new UndoHandler(this))
     , m_helperPlane(Q_NULLPTR)
     , m_helperPlaneTransform(Q_NULLPTR)
+    , m_qtTranslator(new QTranslator(this))
+    , m_appTranslator(new QTranslator(this))
 {
+    retranslateUi();
     createRootEntity();
     setupDefaultScene();
 
@@ -276,7 +281,7 @@ void EditorScene::resetScene()
 
     // Create new scene root
     m_sceneEntity = new Qt3DCore::QEntity();
-    m_sceneEntity->setObjectName(tr("Scene root"));
+    m_sceneEntity->setObjectName(m_sceneRootString);
     addEntity(m_sceneEntity);
 
     // Set up default scene
@@ -303,7 +308,7 @@ bool EditorScene::saveScene(const QUrl &fileUrl, bool autosave)
     if (retval) {
         m_undoHandler->setClean();
     } else {
-        m_errorString = tr("Failed to save the scene");
+        m_errorString = m_saveFailString;
         emit errorChanged(m_errorString);
         qWarning() << m_errorString;
     }
@@ -332,7 +337,7 @@ bool EditorScene::loadScene(const QUrl &fileUrl)
 
         m_sceneModel->resetModel();
     } else {
-        m_errorString = tr("Failed to load a new scene");
+        m_errorString = m_loadFailString;
         emit errorChanged(m_errorString);
         qWarning() << m_errorString;
     }
@@ -436,6 +441,53 @@ void EditorScene::duplicateEntity(Qt3DCore::QEntity *entity)
 
     // Refresh entity tree
     m_sceneModel->resetModel();
+}
+
+const QString EditorScene::language() const
+{
+    if (m_language.isEmpty())
+        return QLocale::system().name().left(2);
+    else
+        return m_language;
+}
+
+void EditorScene::setLanguage(const QString &language)
+{
+    if (!m_qtTranslator->isEmpty())
+        QCoreApplication::removeTranslator(m_qtTranslator);
+    if (!m_appTranslator->isEmpty())
+        QCoreApplication::removeTranslator(m_appTranslator);
+
+    if (m_qtTranslator->load("qt_" + language,
+                             QLibraryInfo::location(QLibraryInfo::TranslationsPath))) {
+        QCoreApplication::installTranslator(m_qtTranslator);
+    }
+
+    if (m_appTranslator->load(":/qt3dsceneeditor_" + language)) {
+        QCoreApplication::installTranslator(m_appTranslator);
+        m_language = language;
+    } else {
+        m_language = "C";
+    }
+
+    emit languageChanged(m_language);
+    emit translationChanged("");
+    retranslateUi();
+}
+
+void EditorScene::retranslateUi()
+{
+    m_sceneRootString = tr("Scene root");
+    m_saveFailString = tr("Failed to save the scene");
+    m_loadFailString = tr("Failed to load a new scene");
+    m_cameraString = tr("Camera");
+    m_cubeString = tr("Cube");
+    m_lightString = tr("Light");
+}
+
+const QString EditorScene::emptyString() const
+{
+    return QStringLiteral("");
 }
 
 void EditorScene::enableCameraCones(bool enable)
@@ -657,7 +709,7 @@ void EditorScene::setupDefaultScene()
 #else
     // Camera
     Qt3DCore::QCamera *sceneCameraEntity = new Qt3DCore::QCamera(m_sceneEntity);
-    sceneCameraEntity->setObjectName(tr("Camera"));
+    sceneCameraEntity->setObjectName(m_cameraString);
 
     sceneCameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
     sceneCameraEntity->setPosition(QVector3D(0, 0, -15.0f));
@@ -669,7 +721,7 @@ void EditorScene::setupDefaultScene()
 
     // Cube
     Qt3DCore::QEntity *cubeEntity = new Qt3DCore::QEntity(m_sceneEntity);
-    cubeEntity->setObjectName(tr("Cube"));
+    cubeEntity->setObjectName(m_cubeString);
     Qt3DRender::QCuboidMesh *cubeMesh = new Qt3DRender::QCuboidMesh();
     Qt3DCore::QTransform *cubeTransform = new Qt3DCore::QTransform();
     cubeTransform->setTranslation(QVector3D(0.0f, 0.0f, 5.0f));
@@ -691,7 +743,7 @@ void EditorScene::setupDefaultScene()
 
     // Light
     Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity(m_sceneEntity);
-    lightEntity->setObjectName(tr("Light"));
+    lightEntity->setObjectName(m_lightString);
     Qt3DRender::QLight *light = new Qt3DRender::QLight(m_sceneEntity);
     Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform();
     lightTransform->setTranslation(QVector3D(0.0f, 10.0f, -5.0f));
@@ -745,7 +797,7 @@ void EditorScene::createRootEntity()
 
     // Scene entity (i.e. the visible root)
     m_sceneEntity = new Qt3DCore::QEntity();
-    m_sceneEntity->setObjectName(tr("Scene root"));
+    m_sceneEntity->setObjectName(m_sceneRootString);
 
     // Free view camera
     m_freeViewCameraEntity = new Qt3DCore::QCamera(m_rootEntity);

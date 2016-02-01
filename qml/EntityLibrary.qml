@@ -42,7 +42,7 @@ Item {
 
     ButtonViewHeader {
         id: entityViewHeader
-        headerText: qsTr("Shapes")
+        headerText: qsTr("Shapes") + editorScene.emptyString
 
         onShowViewButtonPressed: {
             entityLibrary.height = splitHeight

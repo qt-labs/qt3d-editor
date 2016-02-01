@@ -34,7 +34,7 @@ MeshDelegate {
     componentType: EditorSceneItemComponentsModel.Mesh
 
     IntPropertyInputField {
-        label: qsTr("Rings")
+        label: qsTr("Rings") + editorScene.emptyString
         propertyName: "rings"
         component: meshComponentData
         componentType: thisDelegate.componentType
@@ -42,7 +42,7 @@ MeshDelegate {
     }
 
     IntPropertyInputField {
-        label: qsTr("Slices")
+        label: qsTr("Slices") + editorScene.emptyString
         propertyName: "slices"
         component: meshComponentData
         componentType: thisDelegate.componentType
@@ -50,14 +50,14 @@ MeshDelegate {
     }
 
     FloatPropertyInputField {
-        label: qsTr("Radius")
+        label: qsTr("Radius") + editorScene.emptyString
         propertyName: "radius"
         component: meshComponentData
         componentType: thisDelegate.componentType
     }
 
     CheckBoxPropertyInputField {
-        checkBoxLabel: qsTr("Generate Tangents")
+        checkBoxLabel: qsTr("Generate Tangents") + editorScene.emptyString
         propertyName: "generateTangents"
         component: meshComponentData
         componentType: thisDelegate.componentType

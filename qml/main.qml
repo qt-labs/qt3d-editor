@@ -35,7 +35,7 @@ import com.theqtcompany.SceneEditor3D 1.0
 
 ApplicationWindow {
     id: mainwindow
-    title: qsTr("Qt 3D Scene Editor")
+    title: qsTr("Qt 3D Scene Editor") + editorScene.emptyString
     width: 1280
     height: 700
     visible: true
@@ -59,11 +59,13 @@ ApplicationWindow {
     property bool lightViewVisible: true
     property bool cameraViewVisible: true
 
+    property string systemLanguage: editorScene.language
+
     menuBar: MenuBar {
         Menu {
-            title: qsTr("&File")
+            title: qsTr("&File") + editorScene.emptyString
             MenuItem {
-                text: qsTr("&New")
+                text: qsTr("&New") + editorScene.emptyString
                 onTriggered: {
                     editorScene.resetScene()
                     planeOrientationY.checked = true
@@ -82,7 +84,7 @@ ApplicationWindow {
             }
             MenuItem {
                 id: autoSave
-                text: qsTr("Enable autosave")
+                text: qsTr("Enable autosave") + editorScene.emptyString
                 checkable: true
                 checked: false
                 onTriggered: {
@@ -98,12 +100,12 @@ ApplicationWindow {
             MenuSeparator {
             }
             MenuItem {
-                text: qsTr("E&xit")
+                text: qsTr("E&xit") + editorScene.emptyString
                 onTriggered: Qt.quit()
             }
         }
         Menu {
-            title: qsTr("&Edit")
+            title: qsTr("&Edit") + editorScene.emptyString
             MenuItem {
                 action: undoAction
             }
@@ -113,10 +115,10 @@ ApplicationWindow {
         }
         Menu {
             id: viewMenu
-            title: qsTr("&View")
+            title: qsTr("&View") + editorScene.emptyString
             Menu {
                 id: cameraMenu
-                title: qsTr("&Camera")
+                title: qsTr("&Camera") + editorScene.emptyString
                 ExclusiveGroup {
                     id: sceneCamerasGroup
                 }
@@ -142,7 +144,7 @@ ApplicationWindow {
 
                 MenuItem {
                     id: freeViewCamera
-                    text: qsTr("Free viewing mode")
+                    text: qsTr("Free viewing mode") + editorScene.emptyString
                     checkable: true
                     checked: editorScene.freeView
                     onTriggered: {
@@ -151,14 +153,14 @@ ApplicationWindow {
                 }
                 MenuItem {
                     enabled: freeViewCamera.checked
-                    text: qsTr("Reset")
+                    text: qsTr("Reset") + editorScene.emptyString
                     onTriggered: {
                         editorScene.resetFreeViewCamera()
                     }
                 }
                 MenuItem {
                     enabled: freeViewCamera.checked
-                    text: qsTr("Add scene camera here")
+                    text: qsTr("Add scene camera here") + editorScene.emptyString
                     onTriggered: {
                         entityTree.selectSceneRoot()
                         entityTree.addNewEntity(EditorSceneItemModel.CameraEntity)
@@ -169,7 +171,7 @@ ApplicationWindow {
                 }
                 MenuItem {
                     enabled: freeViewCamera.checked
-                    text: qsTr("Move active camera here")
+                    text: qsTr("Move active camera here") + editorScene.emptyString
                     onTriggered: {
                         editorScene.moveActiveSceneCameraToFreeView()
                         // TODO: Needs undo/redo support.
@@ -177,7 +179,7 @@ ApplicationWindow {
                 }
                 MenuItem {
                     enabled: freeViewCamera.checked
-                    text: qsTr("Snap to active camera")
+                    text: qsTr("Snap to active camera") + editorScene.emptyString
                     onTriggered: {
                         editorScene.snapFreeViewCameraToActiveSceneCamera()
                     }
@@ -185,13 +187,13 @@ ApplicationWindow {
             }
             Menu {
                 id: helperPlaneMenu
-                title: qsTr("&Helper Plane")
+                title: qsTr("&Helper Plane") + editorScene.emptyString
                 ExclusiveGroup {
                     id: helperPlaneOrientationGroup
                 }
                 MenuItem {
                     id: planeOrientationX
-                    text: qsTr("Normal &X")
+                    text: qsTr("Normal &X") + editorScene.emptyString
                     checkable: true
                     checked: false
                     exclusiveGroup: helperPlaneOrientationGroup
@@ -204,7 +206,7 @@ ApplicationWindow {
                 }
                 MenuItem {
                     id: planeOrientationY
-                    text: qsTr("Normal &Y")
+                    text: qsTr("Normal &Y") + editorScene.emptyString
                     checkable: true
                     checked: true
                     exclusiveGroup: helperPlaneOrientationGroup
@@ -217,7 +219,7 @@ ApplicationWindow {
                 }
                 MenuItem {
                     id: planeOrientationZ
-                    text: qsTr("Normal &Z")
+                    text: qsTr("Normal &Z") + editorScene.emptyString
                     checkable: true
                     checked: false
                     exclusiveGroup: helperPlaneOrientationGroup
@@ -230,12 +232,43 @@ ApplicationWindow {
                 }
                 MenuItem {
                     id: planeDisabled
-                    text: qsTr("&Hide")
+                    text: qsTr("&Hide") + editorScene.emptyString
                     checkable: true
                     checked: false
                     exclusiveGroup: helperPlaneOrientationGroup
                     onCheckedChanged: {
                         editorScene.helperPlane.enabled = !checked
+                    }
+                }
+            }
+            Menu {
+                id: languageMenu
+                title: qsTr("&Language") + editorScene.emptyString
+                ExclusiveGroup {
+                    id: languageGroup
+                }
+                MenuItem {
+                    id: languageEnglish
+                    text: qsTr("English") + editorScene.emptyString
+                    checkable: true
+                    checked: (systemLanguage == "en")
+                    exclusiveGroup: languageGroup
+                    onCheckedChanged: {
+                        if (checked) {
+                            editorScene.language = "en"
+                        }
+                    }
+                }
+                MenuItem {
+                    id: languageFinnish
+                    text: qsTr("Finnish") + editorScene.emptyString
+                    checkable: true
+                    checked: (systemLanguage == "fi")
+                    exclusiveGroup: languageGroup
+                    onCheckedChanged: {
+                        if (checked) {
+                            editorScene.language = "fi"
+                        }
                     }
                 }
             }
@@ -246,8 +279,8 @@ ApplicationWindow {
         id: loadFileDialog
         selectMultiple: false
         selectExisting: true
-        title: qsTr("Load Scene")
-        nameFilters: [qsTr("Qt3D Scenes (*.qml)")]
+        title: qsTr("Load Scene") + editorScene.emptyString
+        nameFilters: [qsTr("Qt3D Scenes (*.qml)") + editorScene.emptyString]
         onAccepted: {
             if (editorScene.loadScene(fileUrl))
                 entityTree.selectSceneRoot()
@@ -258,8 +291,8 @@ ApplicationWindow {
         id: saveFileDialog
         selectMultiple: false
         selectExisting: false
-        title: qsTr("Save Scene")
-        nameFilters: [qsTr("Qt3D Scenes (*.qml)")]
+        title: qsTr("Save Scene") + editorScene.emptyString
+        nameFilters: [qsTr("Qt3D Scenes (*.qml)") + editorScene.emptyString]
         onAccepted: {
             editorScene.saveScene(fileUrl)
             saveFileUrl = fileUrl
@@ -268,14 +301,14 @@ ApplicationWindow {
 
     Action {
         id: fileLoadAction
-        text: qsTr("L&oad")
+        text: qsTr("L&oad") + editorScene.emptyString
         shortcut: StandardKey.Open
         onTriggered: loadFileDialog.open()
     }
 
     Action {
         id: fileSaveAction
-        text: qsTr("&Save")
+        text: qsTr("&Save") + editorScene.emptyString
         shortcut: StandardKey.Save
         onTriggered: {
             if (saveFileUrl == "") {
@@ -290,7 +323,7 @@ ApplicationWindow {
 
     Action {
         id: fileSaveAsAction
-        text: qsTr("Save As")
+        text: qsTr("Save As") + editorScene.emptyString
         shortcut: StandardKey.SaveAs
         onTriggered: {
             if (saveFileUrl != "")
@@ -301,7 +334,7 @@ ApplicationWindow {
 
     Action {
         id: undoAction
-        text: editorScene.undoHandler.undoText === "" ? qsTr ("Undo") : qsTr ("Undo '%1'").arg(_undoHandler.undoText)
+        text: editorScene.undoHandler.undoText === "" ? qsTr ("Undo") + editorScene.emptyString : qsTr ("Undo '%1'").arg(_undoHandler.undoText) + editorScene.emptyString
         enabled: editorScene.undoHandler.canUndo
         shortcut: StandardKey.Undo
         onTriggered: editorScene.undoHandler.undo()
@@ -309,7 +342,7 @@ ApplicationWindow {
 
     Action {
         id: redoAction
-        text: editorScene.undoHandler.redoText === "" ? qsTr ("Redo") : qsTr ("Redo '%1'").arg(_undoHandler.redoText)
+        text: editorScene.undoHandler.redoText === "" ? qsTr ("Redo") + editorScene.emptyString : qsTr ("Redo '%1'").arg(_undoHandler.redoText) + editorScene.emptyString
         enabled: editorScene.undoHandler.canRedo
         shortcut: StandardKey.Redo
         onTriggered: editorScene.undoHandler.redo()
@@ -334,7 +367,7 @@ ApplicationWindow {
         }
 
         onErrorChanged: {
-            notification.title = qsTr("Error")
+            notification.title = qsTr("Error") + editorScene.emptyString
             notification.icon = StandardIcon.Warning
             notification.text = error
             notification.open()

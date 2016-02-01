@@ -33,11 +33,11 @@ MeshDelegate {
     componentType: EditorSceneItemComponentsModel.Mesh
 
     FilePropertyInputField {
-        label: qsTr("Source")
+        label: qsTr("Source") + editorScene.emptyString
         propertyName: "source"
         component: meshComponentData
         componentType: thisDelegate.componentType
-        dialog.nameFilters: [qsTr("Wavefront files (*.obj)")]
+        dialog.nameFilters: [qsTr("Wavefront files (*.obj)") + editorScene.emptyString]
         defaultUrl: "qrc:/meshes/defaultmesh.obj"
     }
 }

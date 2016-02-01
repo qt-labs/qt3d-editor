@@ -42,28 +42,28 @@ MaterialDelegate {
 
     TextureInputField {
         id: diffuseTextureInputField
-        label: qsTr("Diffuse Map")
+        label: qsTr("Diffuse Map") + editorScene.emptyString
         componentType: thisDelegate.componentType
         modelRole: EditorSceneItemMaterialComponentsModel.MaterialDiffuseTextureUrl
         currentValue: materialDiffuseTextureUrl
     }
 
     ColorPropertyInputField {
-        label: qsTr("Ambient Color")
+        label: qsTr("Ambient Color") + editorScene.emptyString
         propertyName: "ambient"
         component: materialComponentData
         componentType: thisDelegate.componentType
     }
 
     ColorPropertyInputField {
-        label: qsTr("Specular Color")
+        label: qsTr("Specular Color") + editorScene.emptyString
         propertyName: "specular"
         component: materialComponentData
         componentType: thisDelegate.componentType
     }
 
     FloatPropertyInputField {
-        label: qsTr("Shininess")
+        label: qsTr("Shininess") + editorScene.emptyString
         propertyName: "shininess"
         component: materialComponentData
         componentType: thisDelegate.componentType
@@ -72,7 +72,7 @@ MaterialDelegate {
     }
 
     FloatPropertyInputField {
-        label: qsTr("Texture Scale")
+        label: qsTr("Texture Scale") + editorScene.emptyString
         propertyName: "textureScale"
         component: materialComponentData
         componentType: thisDelegate.componentType

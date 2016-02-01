@@ -33,7 +33,7 @@ MeshDelegate {
     componentType: EditorSceneItemComponentsModel.Mesh
 
     FloatPropertyInputField {
-        label: qsTr("Width")
+        label: qsTr("Width") + editorScene.emptyString
         propertyName: "width"
         component: meshComponentData
         componentType: thisDelegate.componentType
@@ -41,7 +41,7 @@ MeshDelegate {
     }
 
     FloatPropertyInputField {
-        label: qsTr("Height")
+        label: qsTr("Height") + editorScene.emptyString
         propertyName: "height"
         component: meshComponentData
         componentType: thisDelegate.componentType
@@ -49,7 +49,7 @@ MeshDelegate {
     }
 
     SizePropertyInputField {
-        label: qsTr("Mesh Resolution")
+        label: qsTr("Mesh Resolution") + editorScene.emptyString
         widthLabel: "Width"
         heightLabel: "Height"
         propertyName: "meshResolution"

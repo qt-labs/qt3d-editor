@@ -37,7 +37,7 @@ TransformDelegate {
     editable: false
 
     Vector3DPropertyInputField {
-        label: qsTr("Scale")
+        label: qsTr("Scale") + editorScene.emptyString
         propertyName: "scale3D"
         component: transformComponentData
         componentType: thisDelegate.componentType
@@ -53,7 +53,7 @@ TransformDelegate {
     }
 
     Vector3DPropertyInputField {
-        label: qsTr("Translate")
+        label: qsTr("Translate") + editorScene.emptyString
         propertyName: "translation"
         component: transformComponentData
         componentType: thisDelegate.componentType

@@ -31,38 +31,38 @@ import QtQml.Models 2.2
 import com.theqtcompany.SceneEditor3D 1.0
 
 Menu {
-    title: qsTr("Add Entity")
+    title: qsTr("Add Entity") + editorScene.emptyString
 
     MenuItem {
-        text: selectedEntityName === "" ? qsTr("Add new entity") : qsTr("Add new entity under '%1'").arg(selectedEntityName)
+        text: selectedEntityName === "" ? qsTr("Add new entity") + editorScene.emptyString : qsTr("Add new entity under '%1'").arg(selectedEntityName) + editorScene.emptyString
         enabled: false
     }
 
     MenuSeparator {}
 
     MenuItem {
-        text: qsTr("Mesh")
+        text: qsTr("Mesh") + editorScene.emptyString
         iconSource: "qrc:/images/mesh.png"
         onTriggered: {
             entityTree.addNewEntity(EditorSceneItemModel.MeshEntity)
         }
     }
     MenuItem {
-        text: qsTr("Camera")
+        text: qsTr("Camera") + editorScene.emptyString
         iconSource: "qrc:/images/camera.png"
         onTriggered: {
             entityTree.addNewEntity(EditorSceneItemModel.CameraEntity)
         }
     }
     MenuItem {
-        text: qsTr("Light")
+        text: qsTr("Light") + editorScene.emptyString
         iconSource: "qrc:/images/light.png"
         onTriggered: {
             entityTree.addNewEntity(EditorSceneItemModel.LightEntity)
         }
     }
     MenuItem {
-        text: qsTr("Empty")
+        text: qsTr("Empty") + editorScene.emptyString
         iconSource: "qrc:/images/cross.png"
         onTriggered: {
             entityTree.addNewEntity(EditorSceneItemModel.GenericEntity)

@@ -72,7 +72,7 @@ PropertyInputField {
 
         Label {
             id: floatLabel
-            text: qsTr("Float Value")
+            text: qsTr("Float Value") + editorScene.emptyString
             color: labelTextColor
             Layout.alignment: Qt.AlignLeft
         }
@@ -104,7 +104,7 @@ PropertyInputField {
             Layout.maximumWidth: 16
             enabledIconSource: "/images/lock_open.png"
             disabledIconSource: "/images/lock_locked.png"
-            tooltip: qsTr("Lock '%1' Properties").arg(label)
+            tooltip: qsTr("Lock '%1' Properties").arg(label) + editorScene.emptyString
             buttonEnabled: true
             onEnabledButtonClicked: {
                 buttonEnabled = !buttonEnabled

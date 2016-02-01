@@ -46,21 +46,21 @@ Item {
         anchors.rightMargin: 8
 
         ColorPropertyInputField {
-            label: qsTr("Color")
+            label: qsTr("Color") + editorScene.emptyString
             propertyName: "color"
             component: lightComponentData
             componentType: thisItem.componentType
         }
 
         FloatPropertyInputField {
-            label: qsTr("Intensity")
+            label: qsTr("Intensity") + editorScene.emptyString
             propertyName: "intensity"
             component: lightComponentData
             componentType: thisItem.componentType
         }
 
         Vector3DPropertyInputField {
-            label: qsTr("Attenuation")
+            label: qsTr("Attenuation") + editorScene.emptyString
             propertyName: "attenuation"
             component: lightComponentData
             componentType: thisItem.componentType

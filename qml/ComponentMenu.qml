@@ -29,7 +29,7 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 
 Menu {
-    title: qsTr("Add Component")
+    title: qsTr("Add Component") + editorScene.emptyString
 
     MenuItem {
         text: selectedEntityName
@@ -42,7 +42,7 @@ Menu {
 
     // Custom camera entities via CameraLens not supported, only QCamera entities are
 //    MenuItem {
-//        text: qsTr("Camera Lens")
+//        text: qsTr("Camera Lens") + editorScene.emptyString
 //        iconSource: "qrc:/images/camera.png"
 //        onTriggered: {
 //            componentPropertiesView.model.appendNewComponent(sceneModel.CameraLens)
@@ -50,21 +50,21 @@ Menu {
 //    }
     // Adding frame graphs is not supported
 //    MenuItem {
-//        text: qsTr("Frame Graph")
+//        text: qsTr("Frame Graph") + editorScene.emptyString
 //        iconSource: "qrc:/images/cross.png" // TODO: Missing its own icon
 //        onTriggered: {
 //            componentPropertiesView.model.appendNewComponent(sceneModel.FrameGraph)
 //        }
 //    }
     MenuItem {
-        text: qsTr("Keyboard Input")
+        text: qsTr("Keyboard Input") + editorScene.emptyString
         iconSource: "qrc:/images/keyboard_input.png"
         onTriggered: {
             componentPropertiesView.model.appendNewComponent(sceneModel.KeyboardInput)
         }
     }
     MenuItem {
-        text: qsTr("Layer")
+        text: qsTr("Layer") + editorScene.emptyString
         iconSource: "qrc:/images/layer.png"
         onTriggered: {
             componentPropertiesView.model.appendNewComponent(sceneModel.Layer)
@@ -72,35 +72,35 @@ Menu {
     }
     // Adding material, mesh, transform, or light to an existing entity is not supported
 //    MenuItem {
-//        text: qsTr("Light")
+//        text: qsTr("Light") + editorScene.emptyString
 //        iconSource: "qrc:/images/light.png"
 //        onTriggered: {
 //            componentPropertiesView.model.appendNewComponent(sceneModel.Light)
 //        }
 //    }
     MenuItem {
-        text: qsTr("Logic")
+        text: qsTr("Logic") + editorScene.emptyString
         iconSource: "qrc:/images/logic.png"
         onTriggered: {
             componentPropertiesView.model.appendNewComponent(sceneModel.Logic)
         }
     }
 //    MenuItem {
-//        text: qsTr("Material")
+//        text: qsTr("Material") + editorScene.emptyString
 //        iconSource: "qrc:/images/material.png"
 //        onTriggered: {
 //            componentPropertiesView.model.appendNewComponent(sceneModel.Material)
 //        }
 //    }
 //    MenuItem {
-//        text: qsTr("Mesh")
+//        text: qsTr("Mesh") + editorScene.emptyString
 //        iconSource: "qrc:/images/mesh.png"
 //        onTriggered: {
 //            componentPropertiesView.model.appendNewComponent(sceneModel.Mesh)
 //        }
 //    }
     MenuItem {
-        text: qsTr("Mouse Input")
+        text: qsTr("Mouse Input") + editorScene.emptyString
         iconSource: "qrc:/images/cross.png" // TODO: Missing its own icon
         onTriggered: {
             // TODO: Crashes, investigate
@@ -108,14 +108,14 @@ Menu {
         }
     }
     MenuItem {
-        text: qsTr("Object Picker")
+        text: qsTr("Object Picker") + editorScene.emptyString
         iconSource: "qrc:/images/picker.png"
         onTriggered: {
             componentPropertiesView.model.appendNewComponent(sceneModel.ObjectPicker)
         }
     }
 //    MenuItem {
-//        text: qsTr("Transform")
+//        text: qsTr("Transform") + editorScene.emptyString
 //        iconSource: "qrc:/images/transform.png"
 //        onTriggered: {
 //            componentPropertiesView.model.appendNewComponent(sceneModel.Transform)
@@ -123,7 +123,7 @@ Menu {
 //    }
     MenuSeparator {}
     MenuItem {
-        text: qsTr("Duplicate")
+        text: qsTr("Duplicate") + editorScene.emptyString
         enabled: !entityTreeView.sceneRootSelected
         iconSource: "qrc:/images/cross.png" // TODO: Replace with a real icon
         onTriggered: {

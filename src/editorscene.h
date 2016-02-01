@@ -34,6 +34,7 @@
 #include <Qt3DCore/QNodeId>
 
 #include <QStringListModel>
+#include <QtCore/QTranslator>
 
 namespace Qt3DCore {
     class QEntity;
@@ -71,6 +72,8 @@ class EditorScene : public QObject
     Q_PROPERTY(UndoHandler *undoHandler READ undoHandler CONSTANT)
     Q_PROPERTY(Qt3DCore::QEntity *helperPlane READ helperPlane CONSTANT)
     Q_PROPERTY(Qt3DCore::QTransform *helperPlaneTransform READ helperPlaneTransform CONSTANT)
+    Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)
+    Q_PROPERTY(QString emptyString READ emptyString NOTIFY translationChanged)
 
 public:
     explicit EditorScene(QObject *parent = 0);
@@ -112,6 +115,11 @@ public:
     void setFreeView(bool enable);
     bool freeView() const;
 
+    void setLanguage(const QString &language);
+    const QString language() const;
+
+    const QString emptyString() const;
+
     void setViewport(EditorViewportItem *viewport);
     EditorViewportItem *viewport() const;
 
@@ -147,6 +155,8 @@ signals:
     void activeSceneCameraIndexChanged(int index);
     void viewportChanged(EditorViewportItem *viewport);
     void sceneCamerasModelChanged();
+    void languageChanged(const QString &language);
+    void translationChanged(const QString &translation);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
@@ -166,6 +176,7 @@ private:
     void updateCameraConeMatrix(Qt3DCore::QTransform *sourceTransform,
                                 Qt3DCore::QTransform *coneTransform);
     void copyCameraProperties(Qt3DCore::QCamera *target, Qt3DCore::QCamera *source);
+    void retranslateUi();
 
 private:
     friend class EditorViewportItem;
@@ -236,6 +247,18 @@ private:
 
     Qt3DRender::QMaterial *m_selectionBoxMaterial;
     Qt3DRender::QGeometryRenderer *m_selectionBoxMesh;
+
+    QTranslator *m_qtTranslator;
+    QTranslator *m_appTranslator;
+
+    QString m_language;
+
+    QString m_sceneRootString;
+    QString m_saveFailString;
+    QString m_loadFailString;
+    QString m_cameraString;
+    QString m_cubeString;
+    QString m_lightString;
 };
 
 #endif // EDITORSCENE_H

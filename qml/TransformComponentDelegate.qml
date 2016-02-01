@@ -32,7 +32,7 @@ import QtQuick.Layouts 1.2
 
 ComponentDelegate {
     id: transformDelegate
-    title: qsTr("Transform")
+    title: qsTr("Transform") + editorScene.emptyString
 
     property int currentTransform: 0
 
@@ -63,8 +63,21 @@ ComponentDelegate {
             anchors.verticalCenter: parent.verticalCenter
 
             model: ListModel {
-                ListElement { text: qsTr("Scale, Rotate & Translate") }
-                ListElement { text: qsTr("Matrix") }
+                property string language: systemLanguage
+
+                function retranslateUi() {
+                    clear()
+                    append({text: qsTr("Scale, Rotate & Translate")})
+                    append({text: qsTr("Matrix")})
+                }
+
+                Component.onCompleted: {
+                    retranslateUi()
+                }
+
+                onLanguageChanged: {
+                    retranslateUi()
+                }
             }
             onCurrentIndexChanged: {
                 if (currentIndex === EditorSceneItemTransformComponentsModel.SRT - 1)

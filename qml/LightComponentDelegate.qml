@@ -32,7 +32,7 @@ import QtQuick.Layouts 1.2
 
 ComponentDelegate {
     id: lightDelegate
-    title: qsTr("Light")
+    title: qsTr("Light") + editorScene.emptyString
 
     property int currentLight: 0
 
@@ -64,10 +64,24 @@ ComponentDelegate {
             anchors.verticalCenter: parent.verticalCenter
 
             model: ListModel {
-                ListElement { text: qsTr("Directional Light") }
-                ListElement { text: qsTr("Point Light") }
-                ListElement { text: qsTr("Spot Light") }
-                ListElement { text: qsTr("Basic Light") }
+                property string language: systemLanguage
+
+                function retranslateUi() {
+                    // Repopulate list to change the current text as well
+                    clear()
+                    append({text: qsTr("Directional Light")})
+                    append({text: qsTr("Point Light")})
+                    append({text: qsTr("Spot Light")})
+                    append({text: qsTr("Basic Light")})
+                }
+
+                Component.onCompleted: {
+                    retranslateUi()
+                }
+
+                onLanguageChanged: {
+                    retranslateUi()
+                }
             }
             onCurrentIndexChanged: {
                 if (currentIndex === EditorSceneItemLightComponentsModel.Directional - 1)

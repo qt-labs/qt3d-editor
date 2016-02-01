@@ -33,7 +33,7 @@ import Qt3D.Render 2.0
 
 ComponentDelegate {
     id: materialDelegate
-    title: qsTr("Material")
+    title: qsTr("Material") + editorScene.emptyString
 
     property int currentMaterial: 0
 
@@ -64,15 +64,28 @@ ComponentDelegate {
             anchors.verticalCenter: parent.verticalCenter
 
             model: ListModel {
-                ListElement { text: qsTr("Diffuse Map") }
-                ListElement { text: qsTr("Diffuse & Specular Map") }
-                ListElement { text: qsTr("Gooch") }
-                ListElement { text: qsTr("Normal & Diffuse Map") }
-                ListElement { text: qsTr("Normal & Diffuse Map Alpha") }
-                ListElement { text: qsTr("Normal, Diffuse & Specular Map") }
-                ListElement { text: qsTr("Per Vertex Color") }
-                ListElement { text: qsTr("Phong Alpha") }
-                ListElement { text: qsTr("Phong") }
+                property string language: systemLanguage
+
+                function retranslateUi() {
+                    clear()
+                    append({text: qsTr("Diffuse Map")})
+                    append({text: qsTr("Diffuse & Specular Map")})
+                    append({text: qsTr("Gooch")})
+                    append({text: qsTr("Normal & Diffuse Map")})
+                    append({text: qsTr("Normal & Diffuse Map Alpha")})
+                    append({text: qsTr("Normal, Diffuse & Specular Map")})
+                    append({text: qsTr("Per Vertex Color")})
+                    append({text: qsTr("Phong Alpha")})
+                    append({text: qsTr("Phong")})
+                }
+
+                Component.onCompleted: {
+                    retranslateUi()
+                }
+
+                onLanguageChanged: {
+                    retranslateUi()
+                }
             }
             onCurrentIndexChanged: {
                 if (currentIndex === EditorSceneItemMaterialComponentsModel.DiffuseMap - 1)
