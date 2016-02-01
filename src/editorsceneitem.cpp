@@ -578,5 +578,5 @@ QVariant EditorSceneItem::customProperty(const QString name) const
     if (propertyVariant.isValid())
         return propertyVariant;
     else
-        return NULL;
+        return QVariant();
 }
