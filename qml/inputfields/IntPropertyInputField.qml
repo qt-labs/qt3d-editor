@@ -40,7 +40,7 @@ PropertyInputField {
     Component.onCompleted: {
         if (selectedEntity) {
             var propertyLocked = selectedEntity.customProperty(label)
-            if (propertyLocked !== 0)
+            if (propertyLocked)
                 lockButton.buttonEnabled = propertyLocked
         }
     }
