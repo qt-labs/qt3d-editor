@@ -368,19 +368,21 @@ ApplicationWindow {
                 currentIndex: 1
 
                 onCurrentIndexChanged: {
-                    if (currentIndex === 3) {
-                        editorScene.helperPlane.enabled = false
-                    } else {
-                        editorScene.helperPlane.enabled = true
-                        if (currentIndex === 0) {
-                            editorScene.helperPlaneTransform.rotation =
+                    if (editorScene) {
+                        if (currentIndex === 3) {
+                            editorScene.helperPlane.enabled = false
+                        } else {
+                            editorScene.helperPlane.enabled = true
+                            if (currentIndex === 0) {
+                                editorScene.helperPlaneTransform.rotation =
                                     editorScene.helperPlaneTransform.fromAxisAndAngle(0, 1, 0, 90)
-                        } else if (currentIndex === 1) {
-                            editorScene.helperPlaneTransform.rotation =
+                            } else if (currentIndex === 1) {
+                                editorScene.helperPlaneTransform.rotation =
                                     editorScene.helperPlaneTransform.fromAxisAndAngle(1, 0, 0, 90)
-                        } else if (currentIndex === 2) {
-                            editorScene.helperPlaneTransform.rotation =
+                            } else if (currentIndex === 2) {
+                                editorScene.helperPlaneTransform.rotation =
                                     editorScene.helperPlaneTransform.fromAxisAndAngle(0, 0, 1, 90)
+                            }
                         }
                     }
                 }

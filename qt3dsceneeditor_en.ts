@@ -1577,31 +1577,32 @@
         <translation>Redo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="356"/>
-        <location filename="qml/main.qml" line="375"/>
+        <location filename="qml/main.qml" line="357"/>
         <source>Normal X</source>
         <translation>Normal X</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="357"/>
-        <location filename="qml/main.qml" line="378"/>
+        <location filename="qml/main.qml" line="358"/>
         <source>Normal Y</source>
         <translation>Normal Y</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="358"/>
-        <location filename="qml/main.qml" line="381"/>
+        <location filename="qml/main.qml" line="359"/>
         <source>Normal Z</source>
         <translation>Normal Z</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="359"/>
-        <location filename="qml/main.qml" line="370"/>
+        <location filename="qml/main.qml" line="360"/>
         <source>Hide Helper Plane</source>
         <translation>Hide Helper Plane</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="411"/>
+        <location filename="qml/main.qml" line="391"/>
+        <source>Reset to Default</source>
+        <translation>Reset to Default</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="416"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
