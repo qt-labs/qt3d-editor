@@ -30,6 +30,7 @@
 #include "qdummyobjectpicker.h"
 
 #include <Qt3DCore/QEntity>
+#include <Qt3DCore/QCamera>
 #include <Qt3DRender/QAbstractTextureProvider>
 #include <Qt3DRender/QTextureImage>
 
@@ -401,7 +402,7 @@ void EditorUtils::nameDuplicate(QObject *duplicate, QObject *original, Qt3DCore:
     duplicate->setObjectName(newName);
 }
 
-Qt3DRender::QGeometryRenderer *EditorUtils::createWireframeBoxMesh()
+Qt3DRender::QGeometryRenderer *EditorUtils::createWireframeBoxMesh(float extent)
 {
     // Creates a box 'mesh' that is is made up of 12 GL_LINES between 8 vertices
     Qt3DRender::QGeometryRenderer *boxMesh = new Qt3DRender::QGeometryRenderer();
@@ -412,21 +413,21 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createWireframeBoxMesh()
                                                                    boxGeometry);
     QByteArray vertexBufferData;
     QByteArray indexBufferData;
-    QVector<QVector3D> vertices;
 
     vertexBufferData.resize(8 * 3 * sizeof(float));
     indexBufferData.resize(12 * 2 * sizeof(ushort));
 
+    float dimension = extent / 2.0f;
+
     float *vPtr = reinterpret_cast<float *>(vertexBufferData.data());
-    vPtr[0]  = -0.5f; vPtr[1]  = -0.5f; vPtr[2]  = -0.5f;
-    vPtr[3]  = 0.5f;  vPtr[4]  = -0.5f; vPtr[5]  = -0.5f;
-    vPtr[6]  = 0.5f;  vPtr[7]  = -0.5f; vPtr[8]  = 0.5f;
-    vPtr[9]  = -0.5f; vPtr[10] = -0.5f; vPtr[11] = 0.5f;
-    vPtr[12] = -0.5f; vPtr[13] = 0.5f;  vPtr[14] = -0.5f;
-    vPtr[15] = 0.5f;  vPtr[16] = 0.5f;  vPtr[17] = -0.5f;
-    vPtr[18] = 0.5f;  vPtr[19] = 0.5f;  vPtr[20] = 0.5f;
-    vPtr[21] = 0.5f;  vPtr[22] = 0.5f;  vPtr[23] = 0.5f;
-    vPtr[24] = -0.5f; vPtr[25] = 0.5f;  vPtr[26] = 0.5f;
+    vPtr[0]  = -dimension; vPtr[1]  = -dimension; vPtr[2]  = -dimension;
+    vPtr[3]  = dimension;  vPtr[4]  = -dimension; vPtr[5]  = -dimension;
+    vPtr[6]  = dimension;  vPtr[7]  = -dimension; vPtr[8]  = dimension;
+    vPtr[9]  = -dimension; vPtr[10] = -dimension; vPtr[11] = dimension;
+    vPtr[12] = -dimension; vPtr[13] = dimension;  vPtr[14] = -dimension;
+    vPtr[15] = dimension;  vPtr[16] = dimension;  vPtr[17] = -dimension;
+    vPtr[18] = dimension;  vPtr[19] = dimension;  vPtr[20] = dimension;
+    vPtr[21] = -dimension; vPtr[22] = dimension;  vPtr[23] = dimension;
 
     ushort *iPtr = reinterpret_cast<ushort *>(indexBufferData.data());
     iPtr[0]  = 0; iPtr[1]  = 1;
@@ -445,32 +446,13 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createWireframeBoxMesh()
     boxDataBuffer->setData(vertexBufferData);
     indexDataBuffer->setData(indexBufferData);
 
-    Qt3DRender::QAttribute *boxPosAttribute = new Qt3DRender::QAttribute();
-    boxPosAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
-    boxPosAttribute->setBuffer(boxDataBuffer);
-    boxPosAttribute->setDataType(Qt3DRender::QAttribute::Float);
-    boxPosAttribute->setDataSize(3);
-    boxPosAttribute->setByteOffset(0);
-    boxPosAttribute->setByteStride(0);
-    boxPosAttribute->setCount(8);
-    boxPosAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-
-    Qt3DRender::QAttribute *boxIndexAttribute = new Qt3DRender::QAttribute();
-    boxIndexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
-    boxIndexAttribute->setBuffer(indexDataBuffer);
-    boxIndexAttribute->setDataType(Qt3DRender::QAttribute::UnsignedShort);
-    boxIndexAttribute->setDataSize(1);
-    boxIndexAttribute->setByteOffset(0);
-    boxIndexAttribute->setByteStride(0);
-    boxIndexAttribute->setCount(24);
-
-    boxGeometry->addAttribute(boxPosAttribute);
-    boxGeometry->addAttribute(boxIndexAttribute);
+    addPositionAttributeToGeometry(boxGeometry, boxDataBuffer, 8);
+    addIndexAttributeToGeometry(boxGeometry, indexDataBuffer, 24);
 
     boxMesh->setInstanceCount(1);
     boxMesh->setBaseVertex(0);
     boxMesh->setBaseInstance(0);
-    boxMesh->setPrimitiveCount(12);
+    boxMesh->setPrimitiveCount(24);
     boxMesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
     boxMesh->setGeometry(boxGeometry);
 
@@ -508,17 +490,7 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createWireframePlaneMesh(int lineCou
 
     planeDataBuffer->setData(vertexBufferData);
 
-    Qt3DRender::QAttribute *planePosAttribute = new Qt3DRender::QAttribute();
-    planePosAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
-    planePosAttribute->setBuffer(planeDataBuffer);
-    planePosAttribute->setDataType(Qt3DRender::QAttribute::Float);
-    planePosAttribute->setDataSize(3);
-    planePosAttribute->setByteOffset(0);
-    planePosAttribute->setByteStride(0);
-    planePosAttribute->setCount(lineCount * 4);
-    planePosAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
-
-    planeGeometry->addAttribute(planePosAttribute);
+    addPositionAttributeToGeometry(planeGeometry, planeDataBuffer, lineCount * 4);
 
     planeMesh->setInstanceCount(1);
     planeMesh->setBaseVertex(0);
@@ -539,7 +511,7 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createDefaultCustomMesh()
 
 Qt3DRender::QGeometryRenderer *EditorUtils::createRotateHandleMesh(float size)
 {
-    // TODO_ proper mesh
+    // TODO: proper mesh
     Qt3DRender::QSphereMesh *mesh = new Qt3DRender::QSphereMesh;
     mesh->setRadius(size / 2.0f);
     return mesh;
@@ -547,12 +519,183 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createRotateHandleMesh(float size)
 
 Qt3DRender::QGeometryRenderer *EditorUtils::createScaleHandleMesh(float size)
 {
-    // TODO_ proper mesh
+    // TODO: proper mesh
     Qt3DRender::QCuboidMesh *mesh = new Qt3DRender::QCuboidMesh;
     mesh->setXExtent(size);
     mesh->setYExtent(size);
     mesh->setZExtent(size);
     return mesh;
+}
+
+Qt3DRender::QGeometryRenderer *EditorUtils::createVisibleCameraMesh()
+{
+    // Creates a camera 'mesh' that is is made up of GL_LINES
+    // TODO: Perhaps create a nice custom mesh for camera instead?
+    Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer();
+    Qt3DRender::QGeometry *geometry = new Qt3DRender::QGeometry(mesh);
+    Qt3DRender::QBuffer *dataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer,
+                                                              geometry);
+    Qt3DRender::QBuffer *indexDataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer,
+                                                                   geometry);
+    QByteArray vertexBufferData;
+    QByteArray indexBufferData;
+
+    vertexBufferData.resize(8 * 3 * sizeof(float));
+    indexBufferData.resize(10 * 2 * sizeof(ushort));
+
+    float *vPtr = reinterpret_cast<float *>(vertexBufferData.data());
+    vPtr[0]  = -0.5f; vPtr[1]  = 0.5f;  vPtr[2]  = -0.5f;
+    vPtr[3]  = -0.5f; vPtr[4]  = -0.5f; vPtr[5]  = -0.5f;
+    vPtr[6]  = 0.5f;  vPtr[7]  = -0.5f; vPtr[8]  = -0.5f;
+    vPtr[9]  = 0.5f;  vPtr[10] = 0.5f;  vPtr[11] = -0.5f;
+    vPtr[12] = 0.0f;  vPtr[13] = 0.0f;  vPtr[14] = 0.5f;
+    vPtr[15] = -0.1f; vPtr[16] = 0.5f;  vPtr[17] = -0.5f;
+    vPtr[18] = 0.1f;  vPtr[19] = 0.5f;  vPtr[20] = -0.5f;
+    vPtr[21] = 0.0f;  vPtr[22] = 0.7f;  vPtr[23] = -0.5f;
+
+    ushort *iPtr = reinterpret_cast<ushort *>(indexBufferData.data());
+    iPtr[0]  = 0; iPtr[1]  = 1;
+    iPtr[2]  = 1; iPtr[3]  = 2;
+    iPtr[4]  = 2; iPtr[5]  = 3;
+    iPtr[6]  = 3; iPtr[7]  = 0;
+    iPtr[8]  = 0; iPtr[9]  = 4;
+    iPtr[10] = 1; iPtr[11] = 4;
+    iPtr[12] = 2; iPtr[13] = 4;
+    iPtr[14] = 3; iPtr[15] = 4;
+    iPtr[16] = 5; iPtr[17] = 7;
+    iPtr[18] = 6; iPtr[19] = 7;
+
+    dataBuffer->setData(vertexBufferData);
+    indexDataBuffer->setData(indexBufferData);
+
+    addPositionAttributeToGeometry(geometry, dataBuffer, 8);
+    addIndexAttributeToGeometry(geometry, indexDataBuffer, 20);
+
+    mesh->setInstanceCount(1);
+    mesh->setBaseVertex(0);
+    mesh->setBaseInstance(0);
+    mesh->setPrimitiveCount(20);
+    mesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
+    mesh->setGeometry(geometry);
+
+    return mesh;
+}
+
+Qt3DRender::QGeometryRenderer *EditorUtils::createCameraViewVectorMesh()
+{
+    // Creates a camera target indicator 'mesh' that is is made up of GL_LINES
+    Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer();
+    Qt3DRender::QGeometry *geometry = new Qt3DRender::QGeometry(mesh);
+    Qt3DRender::QBuffer *dataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer,
+                                                              geometry);
+    Qt3DRender::QBuffer *indexDataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer,
+                                                                   geometry);
+    QByteArray vertexBufferData;
+    QByteArray indexBufferData;
+
+    vertexBufferData.resize(2 * 3 * sizeof(float));
+    indexBufferData.resize(1 * 2 * sizeof(ushort));
+
+    float *vPtr = reinterpret_cast<float *>(vertexBufferData.data());
+    vPtr[0]  = 0.0f;  vPtr[1]  = 0.0f;  vPtr[2]  = 0.0f;
+    vPtr[3]  = 0.0f;  vPtr[4]  = 0.0f;  vPtr[5]  = -1.0f;
+
+    ushort *iPtr = reinterpret_cast<ushort *>(indexBufferData.data());
+    iPtr[0]  = 0; iPtr[1]  = 1;
+
+    dataBuffer->setData(vertexBufferData);
+    indexDataBuffer->setData(indexBufferData);
+
+    addPositionAttributeToGeometry(geometry, dataBuffer, 2);
+    addIndexAttributeToGeometry(geometry, indexDataBuffer, 2);
+
+    mesh->setInstanceCount(1);
+    mesh->setBaseVertex(0);
+    mesh->setBaseInstance(0);
+    mesh->setPrimitiveCount(2);
+    mesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
+    mesh->setGeometry(geometry);
+
+    return mesh;
+}
+
+Qt3DRender::QGeometryRenderer *EditorUtils::createCameraViewCenterMesh(float size)
+{
+    // TODO: proper mesh
+    Qt3DRender::QSphereMesh *mesh = new Qt3DRender::QSphereMesh;
+    mesh->setRadius(size / 2.0f);
+    return mesh;
+}
+
+void EditorUtils::addPositionAttributeToGeometry(Qt3DRender::QGeometry *geometry,
+                                                 Qt3DRender::QBuffer *buffer, int count)
+{
+    Qt3DRender::QAttribute *posAttribute = new Qt3DRender::QAttribute();
+    posAttribute->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+    posAttribute->setBuffer(buffer);
+    posAttribute->setDataType(Qt3DRender::QAttribute::Float);
+    posAttribute->setDataSize(3);
+    posAttribute->setByteOffset(0);
+    posAttribute->setByteStride(0);
+    posAttribute->setCount(count);
+    posAttribute->setName(Qt3DRender::QAttribute::defaultPositionAttributeName());
+
+    geometry->addAttribute(posAttribute);
+}
+
+void EditorUtils::addIndexAttributeToGeometry(Qt3DRender::QGeometry *geometry,
+                                              Qt3DRender::QBuffer *buffer, int count)
+{
+    Qt3DRender::QAttribute *indexAttribute = new Qt3DRender::QAttribute();
+    indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
+    indexAttribute->setBuffer(buffer);
+    indexAttribute->setDataType(Qt3DRender::QAttribute::UnsignedShort);
+    indexAttribute->setDataSize(1);
+    indexAttribute->setByteOffset(0);
+    indexAttribute->setByteStride(0);
+    indexAttribute->setCount(count);
+
+    geometry->addAttribute(indexAttribute);
+}
+
+void EditorUtils::updateCameraFrustumMesh(Qt3DRender::QGeometryRenderer *mesh,
+                                           Qt3DCore::QCamera *camera)
+{
+    QMatrix4x4 projectionMatrix = camera->projectionMatrix().inverted();
+
+    Qt3DRender::QGeometry *geometry = mesh->geometry();
+
+    Qt3DRender::QAbstractBuffer *dataBuffer = Q_NULLPTR;
+    Q_FOREACH (Qt3DRender::QAbstractAttribute *attribute, geometry->attributes()) {
+        if (attribute->name() == Qt3DRender::QAttribute::defaultPositionAttributeName()) {
+            dataBuffer = attribute->buffer();
+            break;
+        }
+    }
+
+    if (dataBuffer) {
+        QByteArray newData;
+        newData.resize(dataBuffer->data().size());
+        float *vPtr = reinterpret_cast<float *>(newData.data());
+
+        vPtr[0]  = -1.0f; vPtr[1]  = -1.0f; vPtr[2]  = -1.0f;
+        vPtr[3]  = 1.0f;  vPtr[4]  = -1.0f; vPtr[5]  = -1.0f;
+        vPtr[6]  = 1.0f;  vPtr[7]  = 1.0f;  vPtr[8]  = -1.0f;
+        vPtr[9]  = -1.0f; vPtr[10] = 1.0f;  vPtr[11] = -1.0f;
+        vPtr[12] = -1.0f; vPtr[13] = -1.0f; vPtr[14] = 1.0f;
+        vPtr[15] = 1.0f;  vPtr[16] = -1.0f; vPtr[17] = 1.0f;
+        vPtr[18] = 1.0f;  vPtr[19] = 1.0f;  vPtr[20] = 1.0f;
+        vPtr[21] = -1.0f; vPtr[22] = 1.0f;  vPtr[23] = 1.0f;
+
+        for (int i = 0; i < 24; i += 3) {
+            QVector3D vertex(vPtr[i], vPtr[i + 1], vPtr[i + 2]);
+            vertex = projectionMatrix * vertex;
+            vPtr[i] = vertex.x();
+            vPtr[i + 1] = vertex.y();
+            vPtr[i + 2] = vertex.z();
+        }
+        dataBuffer->setData(newData);
+    }
 }
 
 Qt3DCore::QTransform *EditorUtils::entityTransform(Qt3DCore::QEntity *entity)
@@ -697,4 +840,10 @@ QVector3D EditorUtils::rotateVector(const QVector3D &vector,
     return (vector * cosAngle
             + (QVector3D::crossProduct(rotationAxis, vector) * qSin(radians))
             + rotationAxis * QVector3D::dotProduct(rotationAxis, vector) * (1.0 - cosAngle));
+}
+
+QVector3D EditorUtils::projectVectorOnPlane(const QVector3D &vector, const QVector3D &planeNormal)
+{
+    float distance = vector.distanceToPlane(QVector3D(), planeNormal);
+    return vector - distance * planeNormal;
 }

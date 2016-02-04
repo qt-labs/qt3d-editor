@@ -34,9 +34,12 @@ namespace Qt3DCore {
 class QEntity;
 class QComponent;
 class QTransform;
+class QCamera;
 }
 namespace Qt3DRender {
 class QGeometryRenderer;
+class QGeometry;
+class QBuffer;
 }
 
 class EditorSceneItemModel;
@@ -86,11 +89,22 @@ public:
     static void nameDuplicate(QObject *duplicate, QObject *original, Qt3DCore::QEntity *parent,
                               EditorSceneItemModel *sceneModel);
 
-    static Qt3DRender::QGeometryRenderer *createWireframeBoxMesh();
+    static Qt3DRender::QGeometryRenderer *createWireframeBoxMesh(float extent = 1.0f);
     static Qt3DRender::QGeometryRenderer *createWireframePlaneMesh(int lineCount);
     static Qt3DRender::QGeometryRenderer *createDefaultCustomMesh();
     static Qt3DRender::QGeometryRenderer *createRotateHandleMesh(float size);
     static Qt3DRender::QGeometryRenderer *createScaleHandleMesh(float size);
+    static Qt3DRender::QGeometryRenderer *createVisibleCameraMesh();
+    static Qt3DRender::QGeometryRenderer *createCameraViewVectorMesh();
+    static Qt3DRender::QGeometryRenderer *createCameraViewCenterMesh(float size);
+    static void addPositionAttributeToGeometry(Qt3DRender::QGeometry *geometry,
+                                               Qt3DRender::QBuffer *buffer,
+                                               int count);
+    static void addIndexAttributeToGeometry(Qt3DRender::QGeometry *geometry,
+                                            Qt3DRender::QBuffer *buffer,
+                                            int count);
+    static void updateCameraFrustumMesh(Qt3DRender::QGeometryRenderer *mesh,
+                                         Qt3DCore::QCamera *camera);
 
     static Qt3DCore::QTransform *entityTransform(Qt3DCore::QEntity *entity);
     static QVector3D findIntersection(const QVector3D &rayOrigin, const QVector3D &ray,
@@ -104,6 +118,7 @@ public:
 
     static QVector3D rotateVector(const QVector3D &vector, const QVector3D &rotationAxis,
                                   qreal radians);
+    static QVector3D projectVectorOnPlane(const QVector3D &vector, const QVector3D &planeNormal);
 private:
     static ComponentTypes componentType(Qt3DCore::QComponent *component);
     QString m_copyString;

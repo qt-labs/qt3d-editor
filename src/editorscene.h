@@ -78,6 +78,71 @@ class EditorScene : public QObject
     Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)
     Q_PROPERTY(QString emptyString READ emptyString NOTIFY translationChanged)
 
+private:
+    struct CameraFrustumData {
+        CameraFrustumData() :
+            frustumEntity(Q_NULLPTR)
+          , viewVectorEntity(Q_NULLPTR)
+          , viewCenterEntity(Q_NULLPTR)
+          , frustumTransform(Q_NULLPTR)
+          , viewVectorTransform(Q_NULLPTR)
+          , viewCenterTransform(Q_NULLPTR)
+          , frustumMesh(Q_NULLPTR)
+          , viewCenterPicker(Q_NULLPTR)
+        {}
+
+        Qt3DCore::QEntity *frustumEntity;
+        Qt3DCore::QEntity *viewVectorEntity;
+        Qt3DCore::QEntity *viewCenterEntity;
+        Qt3DCore::QTransform *frustumTransform;
+        Qt3DCore::QTransform *viewVectorTransform;
+        Qt3DCore::QTransform *viewCenterTransform;
+        Qt3DRender::QGeometryRenderer *frustumMesh;
+        Qt3DRender::QObjectPicker *viewCenterPicker;
+    };
+
+    struct CameraData {
+        CameraData() :
+            cameraEntity(Q_NULLPTR)
+          , visibleEntity(Q_NULLPTR)
+          , visibleTransform(Q_NULLPTR)
+          , cameraPicker(Q_NULLPTR)
+        {}
+        CameraData(Qt3DCore::QCamera *camera,
+                   Qt3DCore::QEntity *visible,
+                   Qt3DCore::QTransform *visibleTrans,
+                   Qt3DRender::QObjectPicker *picker) :
+            cameraEntity(camera)
+          , visibleEntity(visible)
+          , visibleTransform(visibleTrans)
+          , cameraPicker(picker)
+        {}
+
+        Qt3DCore::QCamera *cameraEntity;
+        Qt3DCore::QEntity *visibleEntity;
+        Qt3DCore::QTransform *visibleTransform;
+        Qt3DRender::QObjectPicker *cameraPicker;
+    };
+
+    struct DragHandleData {
+        DragHandleData() :
+            entity(Q_NULLPTR)
+          , transform(Q_NULLPTR)
+          , picker(Q_NULLPTR)
+        {}
+
+        Qt3DCore::QEntity *entity;
+        Qt3DCore::QTransform *transform;
+        Qt3DRender::QObjectPicker *picker;
+    };
+
+    enum DragMode {
+        DragNone = 0,
+        DragTranslate,
+        DragScale,
+        DragRotate
+    };
+
 public:
     explicit EditorScene(QObject *parent = 0);
     ~EditorScene();
@@ -136,16 +201,9 @@ public:
     Qt3DRender::QMaterial *selectionBoxMaterial() const;
     Qt3DRender::QGeometryRenderer *selectionBoxMesh() const;
 
-    QMatrix4x4 calculateCameraConeMatrix(Qt3DCore::QTransform *sourceTransform) const;
+    QMatrix4x4 calculateVisibleSceneCameraMatrix(Qt3DCore::QCamera *camera) const;
 
 public slots:
-    void handlePress(Qt3DRender::QPickEvent *event);
-    void handleCameraAdded(Qt3DCore::QEntity *camera);
-    void handleCameraRemoved(Qt3DCore::QEntity *camera);
-    void handleCameraTransformChange(Qt3DCore::QEntity *camera);
-    void handleCameraMatrixChange();
-    void handleViewportSizeChange();
-    void handleEntityNameChange();
     void clearSelectionBoxes();
 
 signals:
@@ -162,10 +220,17 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:
+    void handlePress(Qt3DRender::QPickEvent *event);
+    void handleCameraMatrixChange();
+    void handleViewportSizeChange();
+    void handleEntityNameChange();
     void endSelectionHandling(Qt3DCore::QEntity *selectedEntity);
     void handleSelectionTransformChange();
 
 private:
+    void handleCameraAdded(Qt3DCore::QCamera *camera);
+    void handleCameraRemoved(Qt3DCore::QCamera *camera);
+    void connectSceneCamera(const CameraData &cameraData);
     void removeEntityItem(const Qt3DCore::QNodeId &id);
     void setupDefaultScene();
     void createRootEntity();
@@ -176,9 +241,7 @@ private:
     void resetSceneCamera(Qt3DCore::QEntity *sceneCameraEntity);
     Qt3DRender::QObjectPicker *createObjectPickerForEntity(Qt3DCore::QEntity *entity);
     int cameraIndexForEntity(Qt3DCore::QEntity *entity);
-    Qt3DCore::QCameraLens *cameraLensForEntity(Qt3DCore::QEntity *entity);
-    void updateCameraConeMatrix(Qt3DCore::QTransform *sourceTransform,
-                                Qt3DCore::QTransform *coneTransform);
+    void updateVisibleSceneCameraMatrix(const CameraData &cameraData);
     void copyCameraProperties(Qt3DCore::QCamera *target, Qt3DCore::QCamera *source);
     void retranslateUi();
     void connectDragHandles(EditorSceneItem *item, bool enable);
@@ -192,6 +255,8 @@ private:
     QVector3D helperPlaneNormal() const;
     QVector3D projectVectorOnCameraPlane(const QVector3D &vector) const;
     QVector3D frameGraphCameraNormal() const;
+    void updateDragHandlePickers();
+    void resizeCameraViewCenterEntity();
 
 private:
     friend class EditorViewportItem;
@@ -210,35 +275,12 @@ private:
     Qt3DCore::QEntity *m_selectedEntity;
     Qt3DCore::QTransform *m_selectedEntityTransform;
     bool m_handlingSelection;
+    bool m_cameraViewCenterSelected;
 
     QString m_errorString;
 
-    struct CameraData {
-        CameraData() :
-            entity(Q_NULLPTR)
-          , cone(Q_NULLPTR)
-          , coneTransform(Q_NULLPTR)
-          , lens(Q_NULLPTR)
-          , picker(Q_NULLPTR)
-        {}
-        CameraData(Qt3DCore::QEntity *cameraEntity, Qt3DCore::QEntity *cameraCone,
-                   Qt3DCore::QTransform *cameraConeTransform, Qt3DCore::QCameraLens *cameraLens,
-                   Qt3DRender::QObjectPicker *cameraPicker) :
-            entity(cameraEntity)
-          , cone(cameraCone)
-          , coneTransform(cameraConeTransform)
-          , lens(cameraLens)
-          , picker(cameraPicker)
-        {}
-
-        Qt3DCore::QEntity *entity;
-        Qt3DCore::QEntity *cone;
-        Qt3DCore::QTransform *coneTransform;
-        Qt3DCore::QCameraLens *lens;
-        Qt3DRender::QObjectPicker *picker;
-    };
-
     QList<CameraData> m_sceneCameras;
+    CameraFrustumData m_activeSceneCameraFrustumData;
     int m_activeSceneCameraIndex;
     bool m_freeView;
     Qt3DCore::QCamera *m_freeViewCameraEntity;
@@ -275,26 +317,17 @@ private:
     QString m_cameraString;
     QString m_cubeString;
     QString m_lightString;
-    enum DragMode {
-        DragNone = 0,
-        DragTranslate,
-        DragScale,
-        DragRotate
-    };
 
-    Qt3DCore::QEntity *m_dragHandles;
-    Qt3DCore::QEntity *m_dragHandleScale;
-    Qt3DCore::QEntity *m_dragHandleRotate;
-    Qt3DCore::QTransform *m_dragHandlesTransform;
-    Qt3DCore::QTransform *m_dragHandleScaleTransform;
-    Qt3DCore::QTransform *m_dragHandleRotationTransform;
-    QVector3D m_dragScaleHandleCornerTranslation;
-    QVector3D m_dragRotationHandleCornerTranslation;
+    DragHandleData m_dragHandles;
+    DragHandleData m_dragHandleScale;
+    DragHandleData m_dragHandleRotate;
     DragMode m_dragMode;
     QPoint m_previousMousePosition;
+    QVector3D m_dragHandleScaleCornerTranslation;
     QVector3D m_dragInitialTranslationValue;
     QVector3D m_dragInitialScaleValue;
     QQuaternion m_dragInitialRotationValue;
+    QVector3D m_dragInitialUpVector;
     QVector3D m_dragInitialHandleTranslation;
     QVector3D m_dragInitialHandleCornerTranslation;
     bool m_ignoringInitialDrag;

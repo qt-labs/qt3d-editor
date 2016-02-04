@@ -41,7 +41,7 @@
 #include <Qt3DRender/QSphereMesh>
 #include <Qt3DRender/QTorusMesh>
 #include <Qt3DRender/QLight>
-#include <Qt3DRender/QAbstractAttribute>
+#include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QAbstractBuffer>
 
 #include <cfloat>
@@ -81,32 +81,21 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
     }
     bool isCamera = qobject_cast<Qt3DCore::QCamera *>(entity);
     if (isCamera)
-        m_entityMeshExtents = QVector3D(1.5f, 1.5f, 2.0f);
+        m_entityMeshExtents = QVector3D(1.4f, 1.4f, 1.4f);
 
     // Selection transform is need for child items, even if we don't have a box
     m_selectionTransform = new Qt3DCore::QTransform;
 
     // Don't show box itself unless the entity has mesh
     if (entityMesh || isLight || isCamera) {
-        // Separate inner and outer boxes used to simulate two-sided material
         m_selectionBox = new Qt3DCore::QEntity(m_scene->rootEntity());
-        Qt3DCore::QEntity *outerBox = new Qt3DCore::QEntity(m_selectionBox);
-        Qt3DCore::QEntity *innerBox = new Qt3DCore::QEntity(m_selectionBox);
 
         m_selectionBox->setObjectName(QStringLiteral("__internal selection box"));
-        outerBox->setObjectName(QStringLiteral("__internal selection box outside"));
-        innerBox->setObjectName(QStringLiteral("__internal selection box inside"));
-
-        Qt3DCore::QTransform *insideOutTransform = new Qt3DCore::QTransform();
-        insideOutTransform->setScale(-1.0f);
-        innerBox->addComponent(insideOutTransform);
 
         m_selectionBox->addComponent(m_selectionTransform);
 
-        innerBox->addComponent(m_scene->selectionBoxMaterial());
-        outerBox->addComponent(m_scene->selectionBoxMaterial());
-        innerBox->addComponent(m_scene->selectionBoxMesh());
-        outerBox->addComponent(m_scene->selectionBoxMesh());
+        m_selectionBox->addComponent(m_scene->selectionBoxMaterial());
+        m_selectionBox->addComponent(m_scene->selectionBoxMesh());
 
         m_selectionBox->setEnabled(false);
 
@@ -306,7 +295,7 @@ void EditorSceneItem::recalculateCustomMeshExtents(Qt3DRender::QGeometryRenderer
 
         Qt3DRender::QAbstractAttribute *vPosAttribute = Q_NULLPTR;
         Q_FOREACH (Qt3DRender::QAbstractAttribute *attribute, meshGeometry->attributes()) {
-            if (attribute->name() == QStringLiteral("vertexPosition")) {
+            if (attribute->name() == Qt3DRender::QAttribute::defaultPositionAttributeName()) {
                 vPosAttribute = attribute;
                 break;
             }
@@ -391,8 +380,9 @@ void EditorSceneItem::composeSelectionBoxTransformRecursive(QMatrix4x4 &transfor
         m_parentItem->composeSelectionBoxTransformRecursive(transformMatrix);
 
     if (m_entityTransform) {
-        if (qobject_cast<Qt3DCore::QCamera *>(m_entity))
-            transformMatrix *= m_scene->calculateCameraConeMatrix(m_entityTransform);
+        Qt3DCore::QCamera *camera = qobject_cast<Qt3DCore::QCamera *>(m_entity);
+        if (camera)
+            transformMatrix *= m_scene->calculateVisibleSceneCameraMatrix(camera);
         else
             transformMatrix *= m_entityTransform->matrix();
     }

@@ -105,9 +105,6 @@ public slots:
 
 signals:
     void freeViewChanged(bool enabled);
-    void cameraAdded(Qt3DCore::QEntity *camera);
-    void cameraRemoved(Qt3DCore::QEntity *camera);
-    void cameraTransformChanged(Qt3DCore::QEntity *camera);
     void showSelectionBoxChanged(bool enabled);
     void selectionBoxTransformChanged(EditorSceneItem *item);
 

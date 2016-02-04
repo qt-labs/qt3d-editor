@@ -93,7 +93,6 @@ public:
     EditorSceneItem *sceneItem() const { return m_sceneItem; }
 
 private:
-    bool isGenericCamera();
     void createLightMesh(Qt3DRender::QLight *lightComponent);
 
     EditorSceneItem *m_sceneItem;

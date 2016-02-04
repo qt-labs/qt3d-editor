@@ -142,20 +142,6 @@ void EditorSceneItemComponentsModel::initializeModel()
     }
 }
 
-bool EditorSceneItemComponentsModel::isGenericCamera()
-{
-    if (qobject_cast<Qt3DCore::QCamera *>(m_sceneItem->entity()))
-        return false;
-
-    Qt3DCore::QComponentList components = m_sceneItem->entity()->components();
-    for (int i = 0; i < components.size(); i++) {
-        Qt3DCore::QCameraLens *lens = qobject_cast<Qt3DCore::QCameraLens *>(components.value(i));
-        if (lens)
-            return true;
-    }
-    return false;
-}
-
 void EditorSceneItemComponentsModel::createLightMesh(Qt3DRender::QLight *lightComponent)
 {
     // Add an internal mesh at the same time, to be used as the light placeholder in
@@ -388,11 +374,6 @@ void EditorSceneItemComponentsModel::appendNewComponent(EditorSceneItemComponent
     m_sceneItem->entity()->addComponent(component);
 
     endInsertRows();
-
-    if (type == CameraLens)
-        emit m_sceneItem->cameraAdded(m_sceneItem->entity());
-    else if (type == Transform && isGenericCamera())
-        emit m_sceneItem->cameraTransformChanged(m_sceneItem->entity());
 }
 
 void EditorSceneItemComponentsModel::removeComponent(int index)
@@ -432,11 +413,6 @@ void EditorSceneItemComponentsModel::removeComponent(int index)
 
     if (componentInfo.component->entities().size() == 0)
         componentInfo.component->deleteLater();
-
-    if (componentInfo.type == CameraLens)
-        emit m_sceneItem->cameraRemoved(m_sceneItem->entity());
-    else if (componentInfo.type == Transform && isGenericCamera())
-        m_sceneItem->cameraTransformChanged(m_sceneItem->entity());
 }
 
 void EditorSceneItemComponentsModel::removeComponent(Qt3DCore::QComponent *component)
