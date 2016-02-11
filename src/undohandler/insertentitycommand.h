@@ -52,7 +52,7 @@ private:
     EditorSceneItemModel *m_sceneModel;
     EditorSceneItemModel::InsertableEntities m_type;
     QString m_parentName;
-    Qt3DCore::QEntity *m_insertedEntity;
+    QString m_insertedEntityName;
 };
 
 #endif // INSERTENTITYCOMMAND_H

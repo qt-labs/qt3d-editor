@@ -44,7 +44,7 @@ Menu {
         text: qsTr("Mesh") + editorScene.emptyString
         iconSource: "qrc:/images/mesh.png"
         onTriggered: {
-            entityTree.addNewEntity(EditorSceneItemModel.MeshEntity)
+            entityTree.addNewEntity(EditorSceneItemModel.CuboidEntity)
         }
     }
     MenuItem {

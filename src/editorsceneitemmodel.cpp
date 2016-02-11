@@ -316,27 +316,20 @@ QModelIndex EditorSceneItemModel::lastInsertedIndex()
     return m_lastInsertedIndex;
 }
 
-// removeEntity doesn't delete the entity or its contents. It will clean all internal components
-// and related EditorSceneItems, and remove the entity from the scene entity tree.
-Qt3DCore::QEntity *EditorSceneItemModel::removeEntity(const QModelIndex &index)
+// RemoveEntity removes the entity from scene entity tree, which also deletes it.
+void EditorSceneItemModel::removeEntity(const QModelIndex &index)
 {
     QModelIndex parentIndex = parent(index);
-
-    EditorSceneItem *item = editorSceneItemFromIndex(this->index(index.row(), 0, parentIndex));
+    EditorSceneItem *item = editorSceneItemFromIndex(index);
     Qt3DCore::QEntity *entity = item->entity();
 
     if (m_scene->isRemovable(entity)) {
         beginRemoveRows(parentIndex, index.row(), index.row());
 
-        m_scene->removeEntity(entity, false);
+        m_scene->removeEntity(entity);
 
         endRemoveRows();
-
-        disconnectEntity(entity);
-
-        return entity;
     }
-    return Q_NULLPTR;
 }
 
 const QString EditorSceneItemModel::setEntityName(const QModelIndex &index, const QString &name)

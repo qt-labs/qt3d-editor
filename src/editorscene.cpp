@@ -71,7 +71,6 @@
 #endif
 
 static const QString cameraVisibleEntityName = QStringLiteral("__internal camera visible entity");
-static const QString internalPrefix = QStringLiteral("__internal");
 static const QString autoSavePostfix = QStringLiteral(".autosave");
 
 EditorScene::EditorScene(QObject *parent)
@@ -112,7 +111,7 @@ EditorScene::EditorScene(QObject *parent)
 EditorScene::~EditorScene()
 {
     // Remove all entities recursively to ensure the root item is last one to be deleted
-    removeEntity(m_sceneEntity, true);
+    removeEntity(m_sceneEntity);
 
     // TODO: Check if it is necessary to delete rootentity and associated components, or do they get
     // TODO: properly deleted by aspect engine shutdown?
@@ -197,8 +196,8 @@ void EditorScene::moveEntity(Qt3DCore::QEntity *entity, Qt3DCore::QEntity *newPa
     entity->setParent(targetParent);
 }
 
-// When deleteEntity is false, caller assumes ownership of the removed entity
-void EditorScene::removeEntity(Qt3DCore::QEntity *entity, bool deleteEntity, bool recursiveCall)
+// Removed entity is deleted
+void EditorScene::removeEntity(Qt3DCore::QEntity *entity)
 {
     if (entity == Q_NULLPTR || entity == m_rootEntity)
         return;
@@ -208,14 +207,12 @@ void EditorScene::removeEntity(Qt3DCore::QEntity *entity, bool deleteEntity, boo
         m_sceneEntityItem = Q_NULLPTR;
     }
 
-    // Top level removal, initialize relation map
-    if (!recursiveCall)
-        m_entityRelations.clear();
+    disconnect(entity, 0, this, 0);
 
     foreach (QObject *child, entity->children()) {
         Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
         // Don't deparent child entities to preserve removed entity tree
-        removeEntity(childEntity, deleteEntity, true);
+        removeEntity(childEntity);
     }
 
     Qt3DCore::QCamera *camera = qobject_cast<Qt3DCore::QCamera *>(entity);
@@ -224,38 +221,7 @@ void EditorScene::removeEntity(Qt3DCore::QEntity *entity, bool deleteEntity, boo
 
     removeEntityItem(entity->id());
 
-    disconnect(entity, 0, this, 0);
-
-    // Remove and delete any internal components
-    foreach (Qt3DCore::QComponent *component, entity->components()) {
-        if (component) {
-            if (component->objectName().startsWith(internalPrefix)) {
-                entity->removeComponent(component);
-                delete component;
-            } else {
-                disconnect(component, 0, this, 0);
-            }
-        }
-    }
-
-    if (deleteEntity) {
-        delete entity;
-    } else {
-        Qt3DCore::QEntity *oldParent = entity->parentEntity();
-        // We need to deparent every entity to properly remove them from the scene, since
-        // we are not actually deleting them
-        entity->setParent(static_cast<Qt3DCore::QEntity *>(Q_NULLPTR));
-
-        if (recursiveCall) {
-            // Add relation to map so we can reconstruct the parent/child tree later
-            m_entityRelations.append(EntityRelationship(oldParent, entity));
-        } else {
-            // Top level entity, reconstruct the parent-child tree for possible undo later
-            foreach (EntityRelationship relationship, m_entityRelations)
-                relationship.child->setParent(relationship.parent);
-            m_entityRelations.clear();
-        }
-    }
+    delete entity;
 }
 
 void EditorScene::removeEntityItem(const Qt3DCore::QNodeId &id)
@@ -276,7 +242,7 @@ void EditorScene::resetScene()
     setFrameGraphCamera(Q_NULLPTR);
     m_undoHandler->clear();
     clearSceneCameras();
-    removeEntity(m_sceneEntity, true);
+    removeEntity(m_sceneEntity);
 
     // Create new scene root
     m_sceneEntity = new Qt3DCore::QEntity();
@@ -324,7 +290,7 @@ bool EditorScene::loadScene(const QUrl &fileUrl)
             setFrameGraphCamera(Q_NULLPTR);
         m_undoHandler->clear();
         clearSceneCameras();
-        removeEntity(m_sceneEntity, true);
+        removeEntity(m_sceneEntity);
         m_sceneEntity = newSceneEntity;
         addEntity(newSceneEntity);
         enableCameraCones(m_freeView);
@@ -394,7 +360,7 @@ void EditorScene::copyFreeViewToNewSceneCamera()
 {
     // Set the new scene camera to freeview camera position
     Qt3DCore::QCamera *newCam = qobject_cast<Qt3DCore::QCamera *>(m_sceneCameras.last().cameraEntity);
-    copyCameraProperties(newCam, m_freeViewCameraEntity);
+    EditorUtils::copyCameraProperties(newCam, m_freeViewCameraEntity);
 }
 
 void EditorScene::moveActiveSceneCameraToFreeView()
@@ -402,7 +368,7 @@ void EditorScene::moveActiveSceneCameraToFreeView()
     // Set the active scene camera to freeview camera position
     Qt3DCore::QCamera *newCam = qobject_cast<Qt3DCore::QCamera *>(
                 m_sceneCameras.at(m_activeSceneCameraIndex).cameraEntity);
-    copyCameraProperties(newCam, m_freeViewCameraEntity);
+    EditorUtils::copyCameraProperties(newCam, m_freeViewCameraEntity);
 }
 
 void EditorScene::snapFreeViewCameraToActiveSceneCamera()
@@ -410,32 +376,15 @@ void EditorScene::snapFreeViewCameraToActiveSceneCamera()
     // Set the freeview camera position to the active scene camera position
     Qt3DCore::QCamera *activeCam = qobject_cast<Qt3DCore::QCamera *>(
                 m_sceneCameras.at(m_activeSceneCameraIndex).cameraEntity);
-    copyCameraProperties(m_freeViewCameraEntity, activeCam);
+   EditorUtils::copyCameraProperties(m_freeViewCameraEntity, activeCam);
 }
 
 void EditorScene::duplicateEntity(Qt3DCore::QEntity *entity)
 {
-    Qt3DCore::QEntity *newEntity = Q_NULLPTR;
-
-    // Check if it's a camera
-    if (qobject_cast<Qt3DCore::QCamera *>(entity)) {
-        Qt3DCore::QCamera *newCam = new Qt3DCore::QCamera(m_sceneEntity);
-        copyCameraProperties(newCam, qobject_cast<Qt3DCore::QCamera *>(entity));
-        newEntity = newCam;
-    } else {
-        newEntity = new Qt3DCore::QEntity(m_sceneEntity);
-        // Duplicate components
-        Q_FOREACH (Qt3DCore::QComponent *component, entity->components()) {
-            Qt3DCore::QComponent *newComponent = EditorUtils::duplicateComponent(component,
-                                                                                 newEntity,
-                                                                                 m_sceneModel);
-            if (newComponent)
-                newEntity->addComponent(newComponent);
-        }
-    }
+    Qt3DCore::QEntity *newEntity = EditorUtils::duplicateEntity(entity, m_sceneEntity);
 
     // Set name and add to scene
-    EditorUtils::nameDuplicate(newEntity, entity, newEntity, m_sceneModel);
+    EditorUtils::nameDuplicate(newEntity, entity, m_sceneModel);
     addEntity(newEntity);
 
     // Refresh entity tree
@@ -578,22 +527,6 @@ void EditorScene::updateVisibleSceneCameraMatrix(const EditorScene::CameraData &
                     cameraData.cameraEntity->viewCenter());
         resizeCameraViewCenterEntity();
     }
-}
-
-void EditorScene::copyCameraProperties(Qt3DCore::QCamera *target, Qt3DCore::QCamera *source)
-{
-    target->setAspectRatio(source->aspectRatio());
-    target->setBottom(source->bottom());
-    target->setFarPlane(source->farPlane());
-    target->setFieldOfView(source->fieldOfView());
-    target->setLeft(source->left());
-    target->setNearPlane(source->nearPlane());
-    target->setPosition(source->position());
-    target->setProjectionType(source->projectionType());
-    target->setRight(source->right());
-    target->setTop(source->top());
-    target->setUpVector(source->upVector());
-    target->setViewCenter(source->viewCenter());
 }
 
 void EditorScene::connectDragHandles(EditorSceneItem *item, bool enable)

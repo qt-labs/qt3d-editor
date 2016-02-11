@@ -79,7 +79,7 @@ public:
     void insertExistingEntity(Qt3DCore::QEntity *entity, int row,
                               const QModelIndex &parentIndex = QModelIndex());
     Q_INVOKABLE QModelIndex lastInsertedIndex();
-    Qt3DCore::QEntity *removeEntity(const QModelIndex &index = QModelIndex());
+    void removeEntity(const QModelIndex &index = QModelIndex());
     const QString setEntityName(const QModelIndex &index, const QString &name);
     Q_INVOKABLE const QString entityName(const QModelIndex &index) const;
     Q_INVOKABLE QModelIndex sceneEntityIndex();

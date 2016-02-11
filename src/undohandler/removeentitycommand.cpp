@@ -28,7 +28,9 @@
 #include "removeentitycommand.h"
 
 #include "editorscene.h"
+#include "editorsceneitem.h"
 #include "editorsceneitemmodel.h"
+#include "editorutils.h"
 
 #include <Qt3DCore/QEntity>
 
@@ -64,5 +66,7 @@ void RemoveEntityCommand::redo()
     QModelIndex parentIndex = m_sceneModel->parent(index);
     m_parentEntityName = m_sceneModel->entityName(parentIndex);
     m_row = index.row();
-    m_removedEntity = m_sceneModel->removeEntity(index);
+    EditorSceneItem *item = m_sceneModel->editorSceneItemFromIndex(index);
+    m_removedEntity = EditorUtils::duplicateEntity(item->entity(), Q_NULLPTR);
+    m_sceneModel->removeEntity(index);
 }

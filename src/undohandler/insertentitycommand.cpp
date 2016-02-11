@@ -37,20 +37,19 @@ InsertEntityCommand::InsertEntityCommand(EditorSceneItemModel *sceneModel,
                                          const QString &parentName) :
     m_sceneModel(sceneModel),
     m_type(type),
-    m_parentName(parentName),
-    m_insertedEntity(Q_NULLPTR)
+    m_parentName(parentName)
 {
 }
 
 void InsertEntityCommand::undo()
 {
-    QModelIndex index = m_sceneModel->getModelIndex(m_insertedEntity);
-    delete m_sceneModel->removeEntity(index);
-    m_insertedEntity = 0;
+    QModelIndex index = m_sceneModel->getModelIndexByName(m_insertedEntityName);
+    m_sceneModel->removeEntity(index);
+    m_insertedEntityName.clear();
 }
 
 void InsertEntityCommand::redo()
 {
     QModelIndex parentIndex = m_sceneModel->getModelIndexByName(m_parentName);
-    m_insertedEntity = m_sceneModel->insertEntity(m_type, parentIndex);
+    m_insertedEntityName = m_sceneModel->insertEntity(m_type, parentIndex)->objectName();
 }

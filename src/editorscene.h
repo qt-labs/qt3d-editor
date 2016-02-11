@@ -157,7 +157,7 @@ public:
 
     void moveEntity(Qt3DCore::QEntity *entity, Qt3DCore::QEntity *newParent = Q_NULLPTR);
 
-    void removeEntity(Qt3DCore::QEntity *entity, bool deleteEntity, bool recursiveCall = false);
+    void removeEntity(Qt3DCore::QEntity *entity);
 
     const QMap<Qt3DCore::QNodeId, EditorSceneItem *> &items() const;
 
@@ -242,7 +242,6 @@ private:
     Qt3DRender::QObjectPicker *createObjectPickerForEntity(Qt3DCore::QEntity *entity);
     int cameraIndexForEntity(Qt3DCore::QEntity *entity);
     void updateVisibleSceneCameraMatrix(const CameraData &cameraData);
-    void copyCameraProperties(Qt3DCore::QCamera *target, Qt3DCore::QCamera *source);
     void retranslateUi();
     void connectDragHandles(EditorSceneItem *item, bool enable);
     void dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown);
@@ -291,15 +290,6 @@ private:
     // Indexes match m_sceneCameras list indexes.
     QStringListModel m_sceneCamerasModel;
     UndoHandler *m_undoHandler;
-    struct EntityRelationship {
-        EntityRelationship() : parent(Q_NULLPTR), child(Q_NULLPTR) {}
-        EntityRelationship(Qt3DCore::QEntity *p, Qt3DCore::QEntity *c)
-            : parent(p), child(c) {}
-
-        Qt3DCore::QEntity *parent;
-        Qt3DCore::QEntity *child;
-    };
-    QVector<EntityRelationship> m_entityRelations;
     Qt3DCore::QEntity *m_helperPlane;
     Qt3DCore::QTransform *m_helperPlaneTransform;
 

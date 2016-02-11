@@ -83,10 +83,13 @@ class EditorUtils
     };
 
 public:
+    static bool isObjectInternal(QObject *obj);
+    static void copyCameraProperties(Qt3DCore::QCamera *target, Qt3DCore::QCamera *source);
+    static Qt3DCore::QEntity *duplicateEntity(Qt3DCore::QEntity *entity,
+                                              Qt3DCore::QEntity *newParent = Q_NULLPTR);
     static Qt3DCore::QComponent *duplicateComponent(Qt3DCore::QComponent *component,
-                                                    Qt3DCore::QEntity *parent,
-                                                    EditorSceneItemModel *sceneModel);
-    static void nameDuplicate(QObject *duplicate, QObject *original, Qt3DCore::QEntity *parent,
+                                                    Qt3DCore::QEntity *parent);
+    static void nameDuplicate(Qt3DCore::QEntity *duplicate, Qt3DCore::QEntity *original,
                               EditorSceneItemModel *sceneModel);
 
     static Qt3DRender::QGeometryRenderer *createWireframeBoxMesh(float extent = 1.0f);
