@@ -30,6 +30,7 @@ import com.theqtcompany.SceneEditor3D 1.0
 import QtQuick.Controls 1.3
 import QtQuick.Layouts 1.1
 import Qt3D.Core 2.0
+import Qt3D.Render 2.0
 
 ComponentDelegate {
     id: thisDelegate

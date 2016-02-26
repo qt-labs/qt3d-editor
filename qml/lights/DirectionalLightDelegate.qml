@@ -81,7 +81,7 @@ Item {
 
         Vector3DPropertyInputField {
             label: qsTr("Direction") + editorScene.emptyString
-            propertyName: "direction"
+            propertyName: "worldDirection"
             component: lightComponentData
             componentType: thisItem.componentType
         }

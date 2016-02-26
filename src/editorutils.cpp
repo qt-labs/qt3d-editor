@@ -30,7 +30,7 @@
 #include "qdummyobjectpicker.h"
 
 #include <Qt3DCore/QEntity>
-#include <Qt3DCore/QCamera>
+#include <Qt3DRender/QCamera>
 #include <Qt3DRender/QAbstractTextureProvider>
 #include <Qt3DRender/QTextureImage>
 #include <Qt3DRender/QObjectPicker>
@@ -62,13 +62,6 @@
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QAttribute>
 
-#include <Qt3DCore/QCameraLens>
-#include <Qt3DRender/QFrameGraph>
-#include <Qt3DRender/QLayer>
-#include <Qt3DInput/QKeyboardInput>
-#include <Qt3DInput/QMouseInput>
-#include <Qt3DLogic/QLogicComponent>
-
 #include <QtCore/QtMath>
 
 static const QString internalPrefix = QStringLiteral("__internal");
@@ -81,7 +74,7 @@ bool EditorUtils::isObjectInternal(QObject *obj)
         return false;
 }
 
-void EditorUtils::copyCameraProperties(Qt3DCore::QCamera *target, Qt3DCore::QCamera *source)
+void EditorUtils::copyCameraProperties(Qt3DRender::QCamera *target, Qt3DRender::QCamera *source)
 {
     target->setAspectRatio(source->aspectRatio());
     target->setBottom(source->bottom());
@@ -106,9 +99,9 @@ Qt3DCore::QEntity *EditorUtils::duplicateEntity(Qt3DCore::QEntity *entity,
     Qt3DCore::QEntity *newEntity = Q_NULLPTR;
 
     // Check if it's a camera
-    if (qobject_cast<Qt3DCore::QCamera *>(entity)) {
-        Qt3DCore::QCamera *newCam = new Qt3DCore::QCamera(newParent);
-        copyCameraProperties(newCam, qobject_cast<Qt3DCore::QCamera *>(entity));
+    if (qobject_cast<Qt3DRender::QCamera *>(entity)) {
+        Qt3DRender::QCamera *newCam = new Qt3DRender::QCamera(newParent);
+        copyCameraProperties(newCam, qobject_cast<Qt3DRender::QCamera *>(entity));
         newEntity = newCam;
     } else {
         newEntity = new Qt3DCore::QEntity(newParent);
@@ -147,7 +140,7 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         Qt3DRender::QDirectionalLight *newComponent = new Qt3DRender::QDirectionalLight();
         // Copy properties
         newComponent->setColor(source->color());
-        newComponent->setDirection(source->direction());
+        newComponent->setWorldDirection(source->worldDirection());
         newComponent->setIntensity(source->intensity());
         return newComponent;
     }
@@ -370,48 +363,6 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setMatrix(source->matrix());
         return newComponent;
     }
-        /*
-    case CameraLens: {
-        Qt3DCore::QCameraLens *source = qobject_cast<Qt3DCore::QCameraLens *>(component);
-        Qt3DCore::QCameraLens *newComponent = new Qt3DCore::QCameraLens();
-        newComponent->setAspectRatio(source->aspectRatio());
-        newComponent->setBottom(source->bottom());
-        newComponent->setFarPlane(source->farPlane());
-        newComponent->setFieldOfView(source->fieldOfView());
-        newComponent->setLeft(source->left());
-        newComponent->setNearPlane(source->nearPlane());
-        newComponent->setProjectionType(source->projectionType());
-        newComponent->setRight(source->right());
-        newComponent->setTop(source->top());
-        return newComponent;
-    }
-    case FrameGraph: {
-        Qt3DRender::QFrameGraph *source = qobject_cast<Qt3DRender::QFrameGraph *>(component);
-        Qt3DRender::QFrameGraph *newComponent = new Qt3DRender::QFrameGraph();
-        newComponent->setActiveFrameGraph(source->activeFrameGraph());
-        return newComponent;
-    }
-    case KeyboardInput: {
-        //Qt3DInput::QKeyboardInput *source = qobject_cast<Qt3DInput::QKeyboardInput *>(component);
-        Qt3DInput::QKeyboardInput *newComponent = new Qt3DInput::QKeyboardInput();
-        // No properties to copy?
-        return newComponent;
-    }
-    case Layer: {
-        Qt3DRender::QLayer *source = qobject_cast<Qt3DRender::QLayer *>(component);
-        Qt3DRender::QLayer *newComponent = new Qt3DRender::QLayer();
-        newComponent->setNames(source->names());
-        return newComponent;
-    }
-    case Logic: {
-        Qt3DLogic::QLogicComponent *newComponent = new Qt3DLogic::QLogicComponent();
-        return newComponent;
-    }
-    case MouseInput: {
-        Qt3DInput::QMouseInput *newComponent = new Qt3DInput::QMouseInput();
-        return newComponent;
-    }
-        */
     case ObjectPicker: {
         QDummyObjectPicker *source = qobject_cast<QDummyObjectPicker *>(component);
         QDummyObjectPicker *newComponent = new QDummyObjectPicker();
@@ -422,8 +373,6 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         qWarning() << "Unsupported component:" << component;
         break;
     }
-
-    // TODO: copy custom lock properties?
 
     return Q_NULLPTR;
 }
@@ -487,9 +436,9 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createWireframeBoxMesh(float extent)
     addIndexAttributeToGeometry(boxGeometry, indexDataBuffer, 24);
 
     boxMesh->setInstanceCount(1);
-    boxMesh->setBaseVertex(0);
-    boxMesh->setBaseInstance(0);
-    boxMesh->setPrimitiveCount(24);
+    boxMesh->setIndexOffset(0);
+    boxMesh->setFirstInstance(0);
+    boxMesh->setVertexCount(24);
     boxMesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
     boxMesh->setGeometry(boxGeometry);
 
@@ -530,9 +479,9 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createWireframePlaneMesh(int lineCou
     addPositionAttributeToGeometry(planeGeometry, planeDataBuffer, lineCount * 4);
 
     planeMesh->setInstanceCount(1);
-    planeMesh->setBaseVertex(0);
-    planeMesh->setBaseInstance(0);
-    planeMesh->setPrimitiveCount(lineCount * 4);
+    planeMesh->setIndexOffset(0);
+    planeMesh->setFirstInstance(0);
+    planeMesh->setVertexCount(lineCount * 4);
     planeMesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
     planeMesh->setGeometry(planeGeometry);
 
@@ -615,9 +564,9 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createVisibleCameraMesh()
     addIndexAttributeToGeometry(geometry, indexDataBuffer, 20);
 
     mesh->setInstanceCount(1);
-    mesh->setBaseVertex(0);
-    mesh->setBaseInstance(0);
-    mesh->setPrimitiveCount(20);
+    mesh->setIndexOffset(0);
+    mesh->setFirstInstance(0);
+    mesh->setVertexCount(20);
     mesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
     mesh->setGeometry(geometry);
 
@@ -653,9 +602,9 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createCameraViewVectorMesh()
     addIndexAttributeToGeometry(geometry, indexDataBuffer, 2);
 
     mesh->setInstanceCount(1);
-    mesh->setBaseVertex(0);
-    mesh->setBaseInstance(0);
-    mesh->setPrimitiveCount(2);
+    mesh->setIndexOffset(0);
+    mesh->setFirstInstance(0);
+    mesh->setVertexCount(2);
     mesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
     mesh->setGeometry(geometry);
 
@@ -780,14 +729,14 @@ void EditorUtils::addIndexAttributeToGeometry(Qt3DRender::QGeometry *geometry,
 }
 
 void EditorUtils::updateCameraFrustumMesh(Qt3DRender::QGeometryRenderer *mesh,
-                                          Qt3DCore::QCamera *camera)
+                                          Qt3DRender::QCamera *camera)
 {
     QMatrix4x4 projectionMatrix = camera->projectionMatrix().inverted();
 
     Qt3DRender::QGeometry *geometry = mesh->geometry();
 
-    Qt3DRender::QAbstractBuffer *dataBuffer = Q_NULLPTR;
-    Q_FOREACH (Qt3DRender::QAbstractAttribute *attribute, geometry->attributes()) {
+    Qt3DRender::QBuffer *dataBuffer = Q_NULLPTR;
+    Q_FOREACH (Qt3DRender::QAttribute *attribute, geometry->attributes()) {
         if (attribute->name() == Qt3DRender::QAttribute::defaultPositionAttributeName()) {
             dataBuffer = attribute->buffer();
             break;
@@ -821,7 +770,7 @@ void EditorUtils::updateCameraFrustumMesh(Qt3DRender::QGeometryRenderer *mesh,
 
 Qt3DCore::QTransform *EditorUtils::entityTransform(Qt3DCore::QEntity *entity)
 {
-    Qt3DCore::QComponentList components = entity->components();
+    Qt3DCore::QComponentVector components = entity->components();
     for (int i = 0; i < components.size(); i++) {
         Qt3DCore::QTransform *transform = qobject_cast<Qt3DCore::QTransform *>(components.value(i));
         if (transform)
@@ -833,7 +782,7 @@ Qt3DCore::QTransform *EditorUtils::entityTransform(Qt3DCore::QEntity *entity)
 
 Qt3DRender::QLight *EditorUtils::entityLight(Qt3DCore::QEntity *entity)
 {
-    Qt3DCore::QComponentList components = entity->components();
+    Qt3DCore::QComponentVector components = entity->components();
     for (int i = 0; i < components.size(); i++) {
         Qt3DRender::QLight *light = qobject_cast<Qt3DRender::QLight *>(components.value(i));
         if (light)
@@ -845,7 +794,7 @@ Qt3DRender::QLight *EditorUtils::entityLight(Qt3DCore::QEntity *entity)
 
 Qt3DRender::QObjectPicker *EditorUtils::entityPicker(Qt3DCore::QEntity *entity)
 {
-    Qt3DCore::QComponentList components = entity->components();
+    Qt3DCore::QComponentVector components = entity->components();
     for (int i = 0; i < components.size(); i++) {
         Qt3DRender::QObjectPicker *picker
                 = qobject_cast<Qt3DRender::QObjectPicker *>(components.value(i));
@@ -956,18 +905,6 @@ EditorUtils::ComponentTypes EditorUtils::componentType(Qt3DCore::QComponent *com
             componentType = MeshTorus;
     } else if (qobject_cast<Qt3DCore::QTransform *>(component)) {
         componentType = Transform;
-    } else if (qobject_cast<Qt3DCore::QCameraLens *>(component)) {
-        componentType = CameraLens;
-    } else if (qobject_cast<Qt3DRender::QFrameGraph *>(component)) {
-        componentType = FrameGraph;
-    } else if (qobject_cast<Qt3DInput::QKeyboardInput *>(component)) {
-        componentType = KeyboardInput;
-    } else if (qobject_cast<Qt3DRender::QLayer *>(component)) {
-        componentType = Layer;
-    } else if (qobject_cast<Qt3DLogic::QLogicComponent *>(component)) {
-        componentType = Logic;
-    } else if (qobject_cast<Qt3DInput::QMouseInput *>(component)) {
-        componentType = MouseInput;
     } else if (qobject_cast<QDummyObjectPicker *>(component)) {
         componentType = ObjectPicker;
     }
@@ -1048,7 +985,7 @@ QVector3D EditorUtils::lightDirection(const Qt3DRender::QLight *light)
     const Qt3DRender::QSpotLight *spotLight =
             qobject_cast<const Qt3DRender::QSpotLight *>(light);
     if (dirLight)
-        direction = dirLight->direction();
+        direction = dirLight->worldDirection();
     else if (spotLight)
         direction = spotLight->direction();
     return direction;

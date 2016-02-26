@@ -30,7 +30,7 @@
 #include "editorscene.h"
 #include "editorutils.h"
 #include <Qt3DCore/QEntity>
-#include <Qt3DCore/QCamera>
+#include <Qt3DRender/QCamera>
 #include <Qt3DCore/QNodeId>
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QMesh>
@@ -215,7 +215,7 @@ Qt3DCore::QEntity *EditorSceneItemModel::insertEntity(EditorUtils::InsertableEnt
 
     Qt3DCore::QEntity *newEntity = Q_NULLPTR;
     if (type == EditorUtils::CameraEntity) {
-        Qt3DCore::QCamera *newCamera = new Qt3DCore::QCamera(parentItem->entity());
+        Qt3DRender::QCamera *newCamera = new Qt3DRender::QCamera(parentItem->entity());
         newCamera->setObjectName(generateValidName(tr("New Camera"), newEntity));
         newCamera->setPosition(pos);
         newEntity = newCamera;

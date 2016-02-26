@@ -35,7 +35,6 @@ namespace Qt3DCore {
 class QEntity;
 class QComponent;
 class QTransform;
-class QCamera;
 }
 namespace Qt3DRender {
 class QGeometryRenderer;
@@ -43,6 +42,7 @@ class QGeometry;
 class QBuffer;
 class QLight;
 class QObjectPicker;
+class QCamera;
 }
 
 class EditorSceneItemModel;
@@ -77,12 +77,6 @@ public:
         // Transforms
         Transform,
         // Other
-        CameraLens,
-        FrameGraph,
-        KeyboardInput,
-        Layer,
-        Logic,
-        MouseInput,
         ObjectPicker,
         Unknown = 1000
     };
@@ -104,7 +98,7 @@ public:
 
 public:
     static bool isObjectInternal(QObject *obj);
-    static void copyCameraProperties(Qt3DCore::QCamera *target, Qt3DCore::QCamera *source);
+    static void copyCameraProperties(Qt3DRender::QCamera *target, Qt3DRender::QCamera *source);
     static Qt3DCore::QEntity *duplicateEntity(Qt3DCore::QEntity *entity,
                                               Qt3DCore::QEntity *newParent = Q_NULLPTR);
     static Qt3DCore::QComponent *duplicateComponent(Qt3DCore::QComponent *component);
@@ -129,7 +123,7 @@ public:
                                             Qt3DRender::QBuffer *buffer,
                                             int count);
     static void updateCameraFrustumMesh(Qt3DRender::QGeometryRenderer *mesh,
-                                        Qt3DCore::QCamera *camera);
+                                        Qt3DRender::QCamera *camera);
 
     static Qt3DCore::QTransform *entityTransform(Qt3DCore::QEntity *entity);
     static Qt3DRender::QLight *entityLight(Qt3DCore::QEntity *entity);

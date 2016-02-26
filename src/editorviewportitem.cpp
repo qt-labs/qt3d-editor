@@ -27,6 +27,7 @@
 ****************************************************************************/
 #include "editorviewportitem.h"
 #include "editorscene.h"
+#include "editorcameracontroller.h"
 
 #include <QOpenGLContext>
 #include <QOpenGLFramebufferObject>
@@ -38,8 +39,15 @@
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QRenderAspect>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QForwardRenderer>
+#include <Qt3DRender/QRenderSurfaceSelector>
+#include <Qt3DRender/QRenderSettings>
 #include <Qt3DInput/QInputAspect>
-#include <Qt3DCore/QCamera>
+#include <Qt3DInput/QInputSettings>
+#include <Qt3DLogic/QLogicAspect>
+
+#include <Qt3DRender/private/qrenderaspect_p.h>
 
 class ContextSaver
 {
@@ -70,19 +78,19 @@ public:
     FrameBufferObjectRenderer(EditorViewportItem *item,
                               Qt3DCore::QAspectEngine *aspectEngine,
                               Qt3DRender::QRenderAspect *renderAspect,
-                              Qt3DInput::QInputAspect *inputAspect)
+                              Qt3DInput::QInputAspect *inputAspect,
+                              Qt3DLogic::QLogicAspect *logicAspect)
         : m_item(item)
         , m_aspectEngine(aspectEngine)
         , m_renderAspect(renderAspect)
         , m_inputAspect(inputAspect)
+        , m_logicAspect(logicAspect)
     {
         ContextSaver saver;
-
-        QVariantMap data;
-        data.insert(QStringLiteral("surface"), QVariant::fromValue(saver.surface()));
-        m_aspectEngine->setData(data);
-
-        m_renderAspect->renderInitialize(saver.context());
+        m_item->scene()->renderer()->setSurface(saver.surface());
+        static_cast<Qt3DRender::QRenderAspectPrivate *>(
+                    Qt3DRender::QRenderAspectPrivate::get(m_renderAspect))
+                ->renderInitialize(saver.context());
         scheduleRootEntityChange();
     }
 
@@ -94,9 +102,9 @@ public:
         }
 
         ContextSaver saver;
-        Q_UNUSED(saver)
 
-        m_renderAspect->renderSynchronous();
+        static_cast<Qt3DRender::QRenderAspectPrivate *>(
+                    Qt3DRender::QRenderAspectPrivate::get(m_renderAspect))->renderSynchronous();
 
         // We may have called doneCurrent() so restore the context.
         saver.context()->makeCurrent(saver.surface());
@@ -125,6 +133,7 @@ public:
     Qt3DCore::QAspectEngine *m_aspectEngine;
     Qt3DRender::QRenderAspect *m_renderAspect;
     Qt3DInput::QInputAspect *m_inputAspect;
+    Qt3DLogic::QLogicAspect *m_logicAspect;
 };
 
 EditorViewportItem::EditorViewportItem(QQuickItem *parent)
@@ -133,11 +142,14 @@ EditorViewportItem::EditorViewportItem(QQuickItem *parent)
     , m_aspectEngine(new Qt3DCore::QAspectEngine(this))
     , m_renderAspect(new Qt3DRender::QRenderAspect(Qt3DRender::QRenderAspect::Synchronous))
     , m_inputAspect(new Qt3DInput::QInputAspect)
+    , m_logicAspect(new Qt3DLogic::QLogicAspect)
+    , m_cameraController(Q_NULLPTR)
     , m_inputEnabled(false)
 {
     setFlag(ItemHasContents, true);
     m_aspectEngine->registerAspect(m_renderAspect);
     m_aspectEngine->registerAspect(m_inputAspect);
+    m_aspectEngine->registerAspect(m_logicAspect);
 
     setAcceptHoverEvents(true);
     setAcceptedMouseButtons(Qt::AllButtons);
@@ -165,13 +177,12 @@ void EditorViewportItem::setInputEnabled(bool enable)
 {
     if (enable != m_inputEnabled) {
         m_inputEnabled = enable;
-        // TODO: maybe we also want non-free camera positions to be adjustable via input?
-        // TODO: Note that QInputAspect::setCamera() takes QCamera parameter instead of generic
-        // TODO: QEntity, so we will need to limit scene cameras to QCameras in that case.
-        if (m_inputEnabled)
-            m_inputAspect->setCamera(m_scene->m_freeViewCameraEntity);
-        else
-            m_inputAspect->setCamera(Q_NULLPTR);
+        if (m_cameraController) {
+            if (m_inputEnabled)
+                m_cameraController->setCamera(m_scene->m_freeViewCameraEntity);
+            else
+                m_cameraController->setCamera(Q_NULLPTR);
+        }
         emit inputEnabledChanged(m_inputEnabled);
     }
 }
@@ -190,18 +201,20 @@ void EditorViewportItem::setScene(EditorScene *scene)
 void EditorViewportItem::applyRootEntityChange()
 {
     if (m_scene != Q_NULLPTR && m_scene->rootEntity() != m_aspectEngine->rootEntity()) {
-        m_aspectEngine->setRootEntity(m_scene->rootEntity());
-        QVariantMap data;
-        data.insert(QStringLiteral("surface"), QVariant::fromValue(static_cast<QSurface *>(window())));
-        data.insert(QStringLiteral("eventSource"), QVariant::fromValue(this));
-        m_aspectEngine->setData(data);
+        m_aspectEngine->setRootEntity(Qt3DCore::QEntityPtr(m_scene->rootEntity()));
+
+        m_cameraController = new EditorCameraController(m_scene->rootEntity());
+        if (m_inputEnabled)
+            m_cameraController->setCamera(m_scene->m_freeViewCameraEntity);
+
     }
 }
 
 QQuickFramebufferObject::Renderer *EditorViewportItem::createRenderer() const
 {
     EditorViewportItem *self = const_cast<EditorViewportItem*>(this);
-    return new FrameBufferObjectRenderer(self, m_aspectEngine, m_renderAspect, m_inputAspect);
+    return new FrameBufferObjectRenderer(self, m_aspectEngine, m_renderAspect,
+                                         m_inputAspect, m_logicAspect);
 }
 
 QSGNode *EditorViewportItem::updatePaintNode(QSGNode *node,
@@ -214,22 +227,56 @@ QSGNode *EditorViewportItem::updatePaintNode(QSGNode *node,
     return node;
 }
 
+void EditorViewportItem::geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry)
+{
+    QQuickFramebufferObject::geometryChanged(newGeometry, oldGeometry);
+
+    // Find surface selector in framegraph and set the area
+    Qt3DRender::QRenderSettings *renderSettings
+            = m_scene->rootEntity()->findChild<Qt3DRender::QRenderSettings *>();
+    if (renderSettings) {
+        Qt3DCore::QNode *frameGraphRoot = renderSettings->activeFrameGraph();
+        if (frameGraphRoot) {
+            Qt3DRender::QRenderSurfaceSelector *surfaceSelector
+                    = frameGraphRoot->findChild<Qt3DRender::QRenderSurfaceSelector *>();
+            if (surfaceSelector)
+                surfaceSelector->setExternalRenderTargetSize(newGeometry.size().toSize());
+        }
+    }
+}
+
+void EditorViewportItem::mousePressEvent(QMouseEvent *event)
+{
+    if (m_inputEnabled) {
+        m_cameraController->handleMousePress(event);
+        event->accept();
+    } else {
+        event->ignore();
+    }
+}
+
+void EditorViewportItem::mouseMoveEvent(QMouseEvent *event)
+{
+    if (m_inputEnabled)
+        event->accept();
+    else
+        event->ignore();
+}
+
+void EditorViewportItem::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (m_inputEnabled) {
+        m_cameraController->handleMouseRelease(event);
+        event->accept();
+    } else {
+        event->ignore();
+    }
+}
+
 void EditorViewportItem::wheelEvent(QWheelEvent *event)
 {
-    if (!m_inputEnabled)
-        return;
-
-    if (event->buttons() & Qt::RightButton) {
-        // Change camera FOV
-        float fov = m_scene->m_freeViewCameraEntity->lens()->fieldOfView();
-        fov -= event->angleDelta().y() / 120.0f;
-        fov = qBound(0.0f, fov, 180.0f);
-        m_scene->m_freeViewCameraEntity->lens()->setFieldOfView(fov);
-    } else {
-        // Change camera position
-        QVector3D position = m_scene->m_freeViewCameraEntity->position();
-        position /= (1.0 + event->angleDelta().y() / 1200.0f);
-        m_scene->m_freeViewCameraEntity->setPosition(position);
-    }
-    event->accept();
+    if (m_inputEnabled)
+        m_cameraController->handleWheel(event);
+    else
+        event->ignore();
 }

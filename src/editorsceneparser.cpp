@@ -30,14 +30,14 @@
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QComponent>
-#include <Qt3DCore/QCamera>
-#include <Qt3DCore/QCameraLens>
+#include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCameraLens>
 
 #include <Qt3DRender/QTexture>
 
 #include <Qt3DCore/QTransform>
-#include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QForwardRenderer>
+#include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QObjectPicker>
 
 #include <Qt3DRender/QMesh>
@@ -113,9 +113,8 @@ EditorSceneParser::EditorSceneParser(QObject *parent)
             << QStringLiteral("Scene3D")
             << QStringLiteral("Entity")
             << QStringLiteral("Camera")
-            << QStringLiteral("CameraLens")
             << QStringLiteral("Transform")
-            << QStringLiteral("FrameGraph")
+            << QStringLiteral("RenderSettings")
             << QStringLiteral("DiffuseMapMaterial")
             << QStringLiteral("DiffuseSpecularMapMaterial")
             << QStringLiteral("GoochMaterial")
@@ -140,10 +139,9 @@ EditorSceneParser::EditorSceneParser(QObject *parent)
     m_stream.setCodec("UTF-8");
 
     cacheProperties(Entity, new Qt3DCore::QEntity());
-    cacheProperties(Camera, new Qt3DCore::QCamera());
-    cacheProperties(CameraLens, new Qt3DCore::QCameraLens());
+    cacheProperties(Camera, new Qt3DRender::QCamera());
     cacheProperties(Transform, new Qt3DCore::QTransform());
-    cacheProperties(FrameGraph, new Qt3DRender::QFrameGraph());
+    cacheProperties(RenderSettings, new Qt3DRender::QRenderSettings());
     cacheProperties(DiffuseMapMaterial, new Qt3DRender::QDiffuseMapMaterial());
     cacheProperties(DiffuseSpecularMapMaterial, new Qt3DRender::QDiffuseSpecularMapMaterial());
     cacheProperties(GoochMaterial, new Qt3DRender::QGoochMaterial());
@@ -239,18 +237,18 @@ bool EditorSceneParser::exportQmlScene(Qt3DCore::QEntity *sceneEntity, const QUr
     outStartType(Entity);
 
     // Create a dummy framegraph and output it
-    Qt3DRender::QFrameGraph *frameGraph = new Qt3DRender::QFrameGraph();
-    frameGraph->setObjectName(QStringLiteral("Scene frame graph"));
+    Qt3DRender::QRenderSettings *renderSettings = new Qt3DRender::QRenderSettings();
+    renderSettings->setObjectName(QStringLiteral("Scene frame graph"));
     Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
     forwardRenderer->setClearColor(Qt::lightGray);
     forwardRenderer->setCamera(activeSceneCamera);
-    frameGraph->setActiveFrameGraph(forwardRenderer);
+    renderSettings->setActiveFrameGraph(forwardRenderer);
 
-    m_stream << indent() << componentsStart << outComponent(frameGraph)
+    m_stream << indent() << componentsStart << outComponent(renderSettings)
              << componentsEnd << endl << endl;
 
     forwardRenderer->setCamera(Q_NULLPTR);
-    delete frameGraph;
+    delete renderSettings;
 
     m_stream << indent() << sceneStartTag << endl;
     outEntity(sceneEntity);
@@ -649,7 +647,7 @@ void EditorSceneParser::outEntity(Qt3DCore::QEntity *entity)
         outGenericProperties(type, entity);
 
         // Output components
-        Qt3DCore::QComponentList componentList = entity->components();
+        Qt3DCore::QComponentVector componentList = entity->components();
         int componentCount = componentList.size();
         if (componentCount) {
             QStringList componentIds;
@@ -657,7 +655,7 @@ void EditorSceneParser::outEntity(Qt3DCore::QEntity *entity)
             for (int i = 0; i < componentCount; i++) {
                 // Skip internal camera lens and transform for cameras
                 if (type == Camera) {
-                    Qt3DCore::QCamera *camera = qobject_cast<Qt3DCore::QCamera *>(entity);
+                    Qt3DRender::QCamera *camera = qobject_cast<Qt3DRender::QCamera *>(entity);
                     if (camera && (componentList.at(i) == camera->lens()
                                    || componentList.at(i) == camera->transform())) {
                         continue;
@@ -708,8 +706,8 @@ QString EditorSceneParser::outComponent(Qt3DCore::QComponent *component)
 
         // Some types require custom handling of properties
         switch (type) {
-        case FrameGraph:
-            outFrameGraph(component);
+        case RenderSettings:
+            outRenderSettings(component);
             break;
             // Materials with textures. Intentional fall-through.
         case DiffuseMapMaterial:
@@ -737,10 +735,10 @@ QString EditorSceneParser::outComponent(Qt3DCore::QComponent *component)
     return componentId.qmlId;
 }
 
-void EditorSceneParser::outFrameGraph(Qt3DCore::QComponent *component)
+void EditorSceneParser::outRenderSettings(Qt3DCore::QComponent *component)
 {
-    Qt3DRender::QFrameGraph *frameGraph = qobject_cast<Qt3DRender::QFrameGraph *>(component);
-    Qt3DRender::QFrameGraphNode *activeFrameGraph = frameGraph->activeFrameGraph();
+    Qt3DRender::QRenderSettings *renderSettings = qobject_cast<Qt3DRender::QRenderSettings *>(component);
+    Qt3DRender::QFrameGraphNode *activeFrameGraph = renderSettings->activeFrameGraph();
     Qt3DRender::QForwardRenderer *forwardRenderer = qobject_cast<Qt3DRender::QForwardRenderer *>(activeFrameGraph);
     if (forwardRenderer) {
         m_stream << indent() << QStringLiteral("activeFrameGraph: ForwardRenderer {") << endl;
@@ -872,8 +870,8 @@ EditorSceneParser::EditorItemType EditorSceneParser::itemType(QObject *item) con
                     return SphereMesh;
                 else if (qobject_cast<Qt3DRender::QTorusMesh *>(item))
                     return TorusMesh;
-            } else if (qobject_cast<Qt3DRender::QFrameGraph *>(item)) {
-                return FrameGraph;
+            } else if (qobject_cast<Qt3DRender::QRenderSettings *>(item)) {
+                return RenderSettings;
             } else if (qobject_cast<QDummyObjectPicker *>(item)) {
                 return ObjectPicker;
             } else if (qobject_cast<Qt3DRender::QDirectionalLight *>(item)) {
@@ -884,8 +882,6 @@ EditorSceneParser::EditorItemType EditorSceneParser::itemType(QObject *item) con
                 return SpotLight;
             } else if (qobject_cast<Qt3DRender::QLight *>(item)) {
                 return Light; // Must be checked last, as all the other lights inherit this one
-            } else if (qobject_cast<Qt3DCore::QCameraLens *>(item)) {
-                return CameraLens;
             } else if (qobject_cast<Qt3DCore::QTransform *>(item)) {
                 return Transform;
             } else if (qobject_cast<Qt3DRender::QMaterial *>(item)) {
@@ -909,7 +905,7 @@ EditorSceneParser::EditorItemType EditorSceneParser::itemType(QObject *item) con
                     return PhongMaterial;
             }
         } else if (qobject_cast<Qt3DCore::QEntity *>(item)) {
-            if (qobject_cast<Qt3DCore::QCamera *>(item))
+            if (qobject_cast<Qt3DRender::QCamera *>(item))
                 return Camera;
             else
                 return Entity;
@@ -1027,7 +1023,7 @@ Qt3DCore::QEntity *EditorSceneParser::createEntity(EditorSceneParser::EditorItem
     case Entity:
         return new Qt3DCore::QEntity();
     case Camera:
-        return new Qt3DCore::QCamera();
+        return new Qt3DRender::QCamera();
     default:
         break;
     }
@@ -1038,12 +1034,10 @@ Qt3DCore::QEntity *EditorSceneParser::createEntity(EditorSceneParser::EditorItem
 Qt3DCore::QComponent *EditorSceneParser::createComponent(EditorSceneParser::EditorItemType type)
 {
     switch (type) {
-    case CameraLens:
-        return new Qt3DCore::QCameraLens();
     case Transform:
         return new Qt3DCore::QTransform();
-    case FrameGraph:
-        return new Qt3DRender::QFrameGraph();
+    case RenderSettings:
+        return new Qt3DRender::QRenderSettings();
     case DiffuseMapMaterial:
         return new Qt3DRender::QDiffuseMapMaterial();
     case DiffuseSpecularMapMaterial:
@@ -1095,7 +1089,7 @@ void EditorSceneParser::parseAndSetProperty(const QString &propertyName,
                                             QObject *obj, EditorItemType type)
 {
     switch (type) {
-    case FrameGraph:
+    case RenderSettings:
         // We ignore framegraphs for now
         break;
         // Materials with textures. Intentional fall-through.

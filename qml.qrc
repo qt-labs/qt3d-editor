@@ -4,21 +4,15 @@
         <file>meshes/defaultmesh.obj</file>
         <file alias="main.qml">qml/main.qml</file>
         <file alias="CameraEntityDelegate.qml">qml/CameraEntityDelegate.qml</file>
-        <file alias="CameraLensComponentDelegate.qml">qml/CameraLensComponentDelegate.qml</file>
         <file alias="ComponentDelegate.qml">qml/ComponentDelegate.qml</file>
         <file alias="ComponentMenu.qml">qml/ComponentMenu.qml</file>
         <file alias="ComponentPropertiesDelegate.qml">qml/ComponentPropertiesDelegate.qml</file>
         <file alias="EntityTree.qml">qml/EntityTree.qml</file>
-        <file alias="FrameGraphComponentDelegate.qml">qml/FrameGraphComponentDelegate.qml</file>
-        <file alias="KeyboardInputComponentDelegate.qml">qml/KeyboardInputComponentDelegate.qml</file>
-        <file alias="LayerComponentDelegate.qml">qml/LayerComponentDelegate.qml</file>
         <file alias="LightComponentDelegate.qml">qml/LightComponentDelegate.qml</file>
-        <file alias="LogicComponentDelegate.qml">qml/LogicComponentDelegate.qml</file>
         <file alias="MaterialComponentDelegate.qml">qml/MaterialComponentDelegate.qml</file>
         <file alias="MaterialDelegate.qml">qml/MaterialDelegate.qml</file>
         <file alias="MeshComponentDelegate.qml">qml/MeshComponentDelegate.qml</file>
         <file alias="MeshDelegate.qml">qml/MeshDelegate.qml</file>
-        <file alias="MouseInputComponentDelegate.qml">qml/MouseInputComponentDelegate.qml</file>
         <file alias="ObjectPickerComponentDelegate.qml">qml/ObjectPickerComponentDelegate.qml</file>
         <file alias="TransformComponentDelegate.qml">qml/TransformComponentDelegate.qml</file>
         <file alias="TransformDelegate.qml">qml/TransformDelegate.qml</file>
@@ -34,9 +28,6 @@
         <file alias="Vector3DInputField.qml">qml/inputfields/Vector3DInputField.qml</file>
         <file alias="MatrixTransformDelegate.qml">qml/transforms/MatrixTransformDelegate.qml</file>
         <file alias="SRTTransformDelegate.qml">qml/transforms/SRTTransformDelegate.qml</file>
-        <file alias="RotateTransformDelegate.qml">qml/transforms/RotateTransformDelegate.qml</file>
-        <file alias="ScaleTransformDelegate.qml">qml/transforms/ScaleTransformDelegate.qml</file>
-        <file alias="TranslateTransformDelegate.qml">qml/transforms/TranslateTransformDelegate.qml</file>
         <file alias="UnknownTransformDelegate.qml">qml/transforms/UnknownTransformDelegate.qml</file>
         <file alias="DiffuseMapMaterialDelegate.qml">qml/materials/DiffuseMapMaterialDelegate.qml</file>
         <file alias="DiffuseSpecularMapMaterialDelegate.qml">qml/materials/DiffuseSpecularMapMaterialDelegate.qml</file>

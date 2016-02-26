@@ -39,6 +39,7 @@ ApplicationWindow {
     width: 1280
     height: 700
     visible: true
+    color: "lightGray"
 
     Item {
         id: applicationArea
@@ -520,11 +521,7 @@ ApplicationWindow {
 
             EditorViewport {
                 id: editorViewport
-                // TODO: Picking doesn't work correctly, as view is smaller than the window
-                //anchors.fill: parent
-                // TODO: Use this until picking is fixed
-                width: mainwindow.width
-                height: mainwindow.height
+                anchors.fill: parent
                 scene: editorScene
                 inputEnabled: editorScene.freeView
 
@@ -538,44 +535,37 @@ ApplicationWindow {
             }
         }
 
-        Rectangle { // TODO: remove rectangle once picking works correctly
-            width: 250
+        SplitView {
+            orientation: Qt.Vertical
             Layout.minimumWidth: 250
-            color: "lightGray"
+            Layout.maximumWidth: mainwindow.width - 10
+            width: mainwindow.width / 5
 
-            SplitView {
-                anchors.fill: parent // TODO: remove once picking works correctly
-                orientation: Qt.Vertical
-                Layout.minimumWidth: 250
-                Layout.maximumWidth: mainwindow.width - 10
-                //width: mainwindow.width / 5 // TODO: Use once picking works correctly
+            // Entity list
+            EntityTree {
+                id: entityTree
+            }
 
-                // Entity list
-                EntityTree {
-                    id: entityTree
+            GeneralPropertyView {
+                id: generalPropertyView
+                entityName: selectedEntityName
+                entityType: editorScene.sceneModel.editorSceneItemFromIndex(entityTree.view.selection.currentIndex).itemType()
+                propertiesButtonVisible: {
+                    (entityTree.view.selection.currentIndex
+                     !== editorScene.sceneModel.sceneEntityIndex())
+                            ? true : false
                 }
+            }
 
-                GeneralPropertyView {
-                    id: generalPropertyView
-                    entityName: selectedEntityName
-                    entityType: editorScene.sceneModel.editorSceneItemFromIndex(entityTree.view.selection.currentIndex).itemType()
-                    propertiesButtonVisible: {
-                        (entityTree.view.selection.currentIndex
-                         !== editorScene.sceneModel.sceneEntityIndex())
-                                ? true : false
-                    }
-                }
-
-                // Property (transform, material, etc.) list
-                ListView {
-                    id: componentPropertiesView
-                    Layout.fillHeight: true
-                    delegate: ComponentPropertiesDelegate {}
-                    flickableDirection: Flickable.VerticalFlick
-                    boundsBehavior: Flickable.StopAtBounds
-                    clip: true
-                    visible: generalPropertyView.viewTitleVisible
-                }
+            // Property (transform, material, etc.) list
+            ListView {
+                id: componentPropertiesView
+                Layout.fillHeight: true
+                delegate: ComponentPropertiesDelegate {}
+                flickableDirection: Flickable.VerticalFlick
+                boundsBehavior: Flickable.StopAtBounds
+                clip: true
+                visible: generalPropertyView.viewTitleVisible
             }
         }
     }

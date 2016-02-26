@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += qml quick widgets 3dcore 3drender 3dinput 3dlogic 3dquick
+QT += qml quick widgets 3dcore 3drender 3dinput 3dlogic 3dquick 3drender-private
 
 SOURCES += src/main.cpp \
     src/editorviewportitem.cpp \
@@ -26,7 +26,8 @@ SOURCES += src/main.cpp \
     src/undohandler/propertychangecommand.cpp \
     src/undohandler/modelrolechangecommand.cpp \
     src/undohandler/replacecomponentcommand.cpp \
-    src/materials/draghandleeffect.cpp
+    src/materials/draghandleeffect.cpp \
+    src/inputcontrols/editorcameracontroller.cpp
 
 TRANSLATIONS = qt3dsceneeditor_fi.ts \
                qt3dsceneeditor_en.ts
@@ -40,7 +41,7 @@ QML_IMPORT_PATH =
 # Default rules for deployment.
 include(deployment.pri)
 
-INCLUDEPATH += src src/components src/undohandler src/materials
+INCLUDEPATH += src src/components src/undohandler src/materials src/inputcontrols
 
 HEADERS += \
     src/editorviewportitem.h \
@@ -66,7 +67,8 @@ HEADERS += \
     src/undohandler/propertychangecommand.h \
     src/undohandler/modelrolechangecommand.h \
     src/undohandler/replacecomponentcommand.h \
-    src/materials/draghandleeffect.h
+    src/materials/draghandleeffect.h \
+    src/inputcontrols/editorcameracontroller.h
 
 lupdate_only {
 SOURCES = qml/*.qml \

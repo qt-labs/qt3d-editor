@@ -41,19 +41,20 @@
 
 namespace Qt3DCore {
     class QEntity;
-    class QCamera;
     class QTransform;
-    class QCameraLens;
     class QComponent;
 }
 
 namespace Qt3DRender {
     class QPickEvent;
     class QObjectPicker;
-    class QFrameGraph;
+    class QRenderSettings;
     class QMaterial;
     class QPhongAlphaMaterial;
     class QGeometryRenderer;
+    class QCamera;
+    class QCameraLens;
+    class QForwardRenderer;
 }
 
 class EditorSceneItemModel;
@@ -110,7 +111,7 @@ private:
           , visibleTransform(Q_NULLPTR)
           , cameraPicker(Q_NULLPTR)
         {}
-        CameraData(Qt3DCore::QCamera *camera,
+        CameraData(Qt3DRender::QCamera *camera,
                    Qt3DCore::QEntity *visible,
                    Qt3DCore::QTransform *visibleTrans,
                    Qt3DRender::QObjectPicker *picker) :
@@ -120,7 +121,7 @@ private:
           , cameraPicker(picker)
         {}
 
-        Qt3DCore::QCamera *cameraEntity;
+        Qt3DRender::QCamera *cameraEntity;
         Qt3DCore::QEntity *visibleEntity;
         Qt3DCore::QTransform *visibleTransform;
         Qt3DRender::QObjectPicker *cameraPicker;
@@ -204,19 +205,16 @@ public:
     explicit EditorScene(QObject *parent = 0);
     ~EditorScene();
 
-    Qt3DCore::QEntity *rootEntity();
-    EditorSceneItem *rootItem();
-    EditorSceneItem *sceneEntityItem();
-
-    EditorSceneItemModel *sceneModel() const;
+    Qt3DCore::QEntity *rootEntity() const { return m_rootEntity; }
+    EditorSceneItem *rootItem() const { return m_rootItem; }
+    EditorSceneItem *sceneEntityItem() const { return m_sceneEntityItem; }
+    Qt3DRender::QForwardRenderer *renderer() const { return m_renderer; }
+    EditorSceneItemModel *sceneModel() const { return m_sceneModel; }
+    const QMap<Qt3DCore::QNodeId, EditorSceneItem *> &items() const { return m_sceneItems; }
 
     void addEntity(Qt3DCore::QEntity *entity, int index = -1, Qt3DCore::QEntity *parent = Q_NULLPTR);
-
     void moveEntity(Qt3DCore::QEntity *entity, Qt3DCore::QEntity *newParent = Q_NULLPTR);
-
     void removeEntity(Qt3DCore::QEntity *entity);
-
-    const QMap<Qt3DCore::QNodeId, EditorSceneItem *> &items() const;
 
     Q_INVOKABLE void resetScene();
     Q_INVOKABLE bool saveScene(const QUrl &fileUrl, bool autosave = false);
@@ -238,14 +236,14 @@ public:
     bool isRemovable(Qt3DCore::QEntity *entity) const;
 
     void setSelection(Qt3DCore::QEntity *entity);
-    Qt3DCore::QEntity *selection() const;
-    const QString &error() const;
+    Qt3DCore::QEntity *selection() const { return m_selectedEntity; }
+    const QString &error() const { return m_errorString; }
 
     void setActiveSceneCameraIndex(int index);
-    int activeSceneCameraIndex() const;
+    int activeSceneCameraIndex() const { return m_activeSceneCameraIndex; }
 
     void setFreeView(bool enable);
-    bool freeView() const;
+    bool freeView() const { return m_freeView; }
 
     void setLanguage(const QString &language);
     const QString language() const;
@@ -254,18 +252,18 @@ public:
     const QString lockPropertySuffix() const { return QStringLiteral("_editorPropertyLock"); }
 
     void setViewport(EditorViewportItem *viewport);
-    EditorViewportItem *viewport() const;
+    EditorViewportItem *viewport() const { return m_viewport; }
 
-    QAbstractItemModel *sceneCamerasModel();
-    UndoHandler *undoHandler();
+    QAbstractItemModel *sceneCamerasModel() { return &m_sceneCamerasModel; }
+    UndoHandler *undoHandler() const { return m_undoHandler; }
 
-    Qt3DCore::QEntity *helperPlane() const;
-    Qt3DCore::QTransform *helperPlaneTransform() const;
+    Qt3DCore::QEntity *helperPlane() const { return m_helperPlane; }
+    Qt3DCore::QTransform *helperPlaneTransform() const { return m_helperPlaneTransform; }
 
-    Qt3DRender::QMaterial *selectionBoxMaterial() const;
-    Qt3DRender::QGeometryRenderer *selectionBoxMesh() const;
+    Qt3DRender::QMaterial *selectionBoxMaterial() const { return m_selectionBoxMaterial; }
+    Qt3DRender::QGeometryRenderer *selectionBoxMesh() const { return m_selectionBoxMesh; }
 
-    QMatrix4x4 calculateVisibleSceneCameraMatrix(Qt3DCore::QCamera *camera) const;
+    QMatrix4x4 calculateVisibleSceneCameraMatrix(Qt3DRender::QCamera *camera) const;
     QMatrix4x4 calculateVisibleLightMatrix(Qt3DCore::QEntity *lightEntity) const;
 
     void handlePropertyLocking(EditorSceneItem *item, const QString &lockProperty, bool locked);
@@ -291,25 +289,25 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:
-    void handlePress(Qt3DRender::QPickEvent *event);
+    void handlePickerPress(Qt3DRender::QPickEvent *event);
     void handleCameraMatrixChange();
     void handleLightTransformChange();
     void handleViewportSizeChange();
     void handleEntityNameChange();
-    void endSelectionHandling(Qt3DCore::QEntity *selectedEntity);
+    void endSelectionHandling();
     void handleSelectionTransformChange();
     void handleSceneLoaderStatusChanged();
 
 private:
-    void handleCameraAdded(Qt3DCore::QCamera *camera);
-    void handleCameraRemoved(Qt3DCore::QCamera *camera);
+    void handleCameraAdded(Qt3DRender::QCamera *camera);
+    void handleCameraRemoved(Qt3DRender::QCamera *camera);
     void handleLightAdded(Qt3DCore::QEntity *lightEntity);
     void handleLightRemoved(Qt3DCore::QEntity *lightEntity);
     void connectSceneCamera(const CameraData &cameraData);
     void setupDefaultScene();
     void createRootEntity();
     void setFrameGraphCamera(Qt3DCore::QEntity *cameraEntity);
-    Qt3DCore::QCamera *frameGraphCamera() const;
+    Qt3DRender::QCamera *frameGraphCamera() const;
     void enableCameraCones(bool enable);
     void enableVisibleLights(bool enable);
     void clearSceneCamerasAndLights();
@@ -345,12 +343,12 @@ private:
     QMap<Qt3DCore::QNodeId, EditorSceneItem *> m_sceneItems;
 
     EditorSceneParser *m_sceneParser;
-    Qt3DRender::QFrameGraph *m_frameGraph;
+    Qt3DRender::QRenderSettings *m_renderSettings;
+    Qt3DRender::QForwardRenderer *m_renderer;
     Qt3DCore::QEntity *m_sceneEntity;
     EditorSceneItem *m_sceneEntityItem;
     Qt3DCore::QEntity *m_selectedEntity;
     Qt3DCore::QTransform *m_selectedEntityTransform;
-    bool m_handlingSelection;
     bool m_cameraViewCenterSelected;
 
     QString m_errorString;
@@ -360,7 +358,7 @@ private:
     CameraFrustumData m_activeSceneCameraFrustumData;
     int m_activeSceneCameraIndex;
     bool m_freeView;
-    Qt3DCore::QCamera *m_freeViewCameraEntity;
+    Qt3DRender::QCamera *m_freeViewCameraEntity;
 
     EditorViewportItem *m_viewport; // Not owned
 
@@ -401,6 +399,8 @@ private:
     QVector3D m_dragInitialHandleCornerTranslation;
     bool m_ignoringInitialDrag;
     bool m_viewCenterLocked;
+    Qt3DCore::QEntity *m_pickedEntity;
+    float m_pickedDistance;
 
     QMap<QString, PlaceholderEntityData *> m_placeholderEntityMap;
 };

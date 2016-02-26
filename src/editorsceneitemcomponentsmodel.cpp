@@ -33,24 +33,19 @@
 #include "editorscene.h"
 #include "editorutils.h"
 #include <Qt3DCore/QEntity>
-#include <Qt3DCore/QCamera>
+#include <Qt3DRender/QCamera>
 #include <Qt3DCore/QComponent>
 
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QCuboidMesh>
 #include <Qt3DRender/QSphereMesh>
 #include <Qt3DRender/QMaterial>
-#include <Qt3DCore/QCameraLens>
-#include <Qt3DRender/QFrameGraph>
-#include <Qt3DRender/QLayer>
+#include <Qt3DRender/QCameraLens>
 #include <Qt3DRender/QLight>
 #include <Qt3DRender/QDirectionalLight>
 #include <Qt3DRender/QSpotLight>
 #include <Qt3DRender/QPhongMaterial>
 #include <Qt3DRender/QPhongAlphaMaterial>
-#include <Qt3DInput/QKeyboardInput>
-#include <Qt3DInput/QMouseInput>
-#include <Qt3DLogic/QLogicComponent>
 #include <Qt3DRender/QObjectPicker>
 
 EditorSceneItemComponentsModel::EditorSceneItemComponentsModel(EditorSceneItem *sceneItem,
@@ -92,7 +87,7 @@ int EditorSceneItemComponentsModel::rowCount(const QModelIndex &parent) const
 // Also initializes index maps.
 void EditorSceneItemComponentsModel::initializeModel()
 {
-    Qt3DCore::QComponentList componentList = m_sceneItem->entity()->components();
+    Qt3DCore::QComponentVector componentList = m_sceneItem->entity()->components();
     QMap<EditorSceneItemComponentTypes, ComponentInfo> newInfoMap;
     for (int i = 0; i < componentList.size(); i++) {
         Qt3DCore::QComponent *component = componentList.at(i);
@@ -133,7 +128,7 @@ void EditorSceneItemComponentsModel::initializeModel()
     }
 
     // Camera entities have a special "component" for the entity itself
-    if (qobject_cast<Qt3DCore::QCamera *>(m_sceneItem->entity()))
+    if (qobject_cast<Qt3DRender::QCamera *>(m_sceneItem->entity()))
         newInfoMap.insert(CameraEntity, ComponentInfo(Q_NULLPTR, CameraEntity));
 
     m_modelRowList.clear();
@@ -150,7 +145,7 @@ EditorSceneItemComponentsModel::typeOfComponent(QObject *component)
     if (component && component->objectName().startsWith("__internal"))
         return Internal;
     if (qobject_cast<Qt3DCore::QEntity *>(component)) {
-        if (qobject_cast<Qt3DCore::QCamera *>(component))
+        if (qobject_cast<Qt3DRender::QCamera *>(component))
             return CameraEntity;
     }
     if (qobject_cast<Qt3DRender::QLight *>(component))
@@ -158,30 +153,18 @@ EditorSceneItemComponentsModel::typeOfComponent(QObject *component)
     if (qobject_cast<Qt3DRender::QGeometryRenderer *>(component))
         return Mesh;
     if (qobject_cast<Qt3DCore::QTransform *>(component)) {
-        if (qobject_cast<Qt3DCore::QCamera *>(m_sceneItem->entity()))
+        if (qobject_cast<Qt3DRender::QCamera *>(m_sceneItem->entity()))
             return Internal;
         else
             return Transform;
     }
     if (qobject_cast<Qt3DRender::QMaterial *>(component))
         return Material;
-    if (qobject_cast<Qt3DRender::QFrameGraph *>(component))
-        return FrameGraph;
-    if (qobject_cast<Qt3DInput::QKeyboardInput *>(component))
-        return KeyboardInput;
-    if (qobject_cast<Qt3DRender::QLayer *>(component))
-        return Layer;
-    if (qobject_cast<Qt3DLogic::QLogicComponent *>(component))
-        return Logic;
-    if (qobject_cast<Qt3DInput::QMouseInput *>(component))
-        return MouseInput;
     if (qobject_cast<QDummyObjectPicker *>(component))
         return ObjectPicker;
-    if (qobject_cast<Qt3DCore::QCameraLens *>(component)) {
-        if (qobject_cast<Qt3DCore::QCamera *>(m_sceneItem->entity()))
+    if (qobject_cast<Qt3DRender::QCameraLens *>(component)) {
+        if (qobject_cast<Qt3DRender::QCamera *>(m_sceneItem->entity()))
             return Internal;
-        else
-            return CameraLens;
     }
     return Unknown;
 }
@@ -202,7 +185,7 @@ QVariant EditorSceneItemComponentsModel::data(const QModelIndex &index, int role
 
     // CameraEntity is not actually a component, so handle it first
     if (compInfo.type == CameraEntity) {
-        Qt3DCore::QCamera *camera = qobject_cast<Qt3DCore::QCamera *>(m_sceneItem->entity());
+        Qt3DRender::QCamera *camera = qobject_cast<Qt3DRender::QCamera *>(m_sceneItem->entity());
         if (camera)
             componentData = QVariant::fromValue(camera);
         return componentData;
@@ -259,29 +242,12 @@ void EditorSceneItemComponentsModel::appendNewComponent(EditorSceneItemComponent
     }
 
     switch (type) {
-    case CameraLens:
-        if (qobject_cast<Qt3DCore::QCamera *>(m_sceneItem->entity()))
-            return;
-        component = new Qt3DCore::QCameraLens();
-        break;
-    case FrameGraph:
-        component = new Qt3DRender::QFrameGraph();
-        break;
-    case KeyboardInput:
-        component = new Qt3DInput::QKeyboardInput();
-        break;
-    case Layer:
-        component = new Qt3DRender::QLayer();
-        break;
     case Light:
         if (!m_lightItem) {
             Qt3DRender::QLight *lightComponent = new Qt3DRender::QLight();
             m_lightItem = new LightComponentProxyItem(this, lightComponent);
             component = lightComponent;
         }
-        break;
-    case Logic:
-        component = new Qt3DLogic::QLogicComponent();
         break;
     case Material: {
         if (!m_materialItem) {
@@ -299,15 +265,12 @@ void EditorSceneItemComponentsModel::appendNewComponent(EditorSceneItemComponent
         }
         break;
     }
-    case MouseInput:
-        component = new Qt3DInput::QMouseInput();
-        break;
     case ObjectPicker:
         // Use a QDummyObjectPicker, as adding a real one replaces the one needed for editor.
         component = new QDummyObjectPicker();
         break;
     case Transform: {
-        if (qobject_cast<Qt3DCore::QCamera *>(m_sceneItem->entity()))
+        if (qobject_cast<Qt3DRender::QCamera *>(m_sceneItem->entity()))
             return;
         if (!m_transformItem) {
             Qt3DCore::QTransform *transformComponent = new Qt3DCore::QTransform();

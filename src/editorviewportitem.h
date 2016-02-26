@@ -31,6 +31,7 @@
 #include <QtQuick/QQuickFramebufferObject>
 
 class EditorScene;
+class EditorCameraController;
 
 namespace Qt3DCore
 {
@@ -46,6 +47,10 @@ class QRenderAspect;
 namespace Qt3DInput
 {
 class QInputAspect;
+}
+
+namespace Qt3DLogic {
+class QLogicAspect;
 }
 
 class EditorViewportItem : public QQuickFramebufferObject
@@ -75,7 +80,11 @@ signals:
 protected:
     Renderer *createRenderer() const Q_DECL_OVERRIDE;
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *nodeData) Q_DECL_OVERRIDE;
-    virtual void wheelEvent(QWheelEvent *event);
+    void geometryChanged(const QRectF &newGeometry, const QRectF &oldGeometry) Q_DECL_OVERRIDE;
+    void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+    void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+    void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+    void wheelEvent(QWheelEvent *event) Q_DECL_OVERRIDE;
 
 private:
     EditorScene* m_scene;
@@ -83,6 +92,8 @@ private:
     Qt3DCore::QAspectEngine *m_aspectEngine;
     Qt3DRender::QRenderAspect *m_renderAspect;
     Qt3DInput::QInputAspect *m_inputAspect;
+    Qt3DLogic::QLogicAspect *m_logicAspect;
+    EditorCameraController *m_cameraController;
 
     bool m_inputEnabled;
 };

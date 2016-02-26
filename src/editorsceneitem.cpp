@@ -30,10 +30,10 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
 #include <Qt3DCore/QComponent>
-#include <Qt3DCore/QCamera>
+#include <Qt3DRender/QCamera>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QGeometryRenderer>
-#include <Qt3DRender/QGeometryFunctor>
+#include <Qt3DRender/QGeometryFactory>
 #include <Qt3DRender/QCuboidMesh>
 #include <Qt3DRender/QMesh>
 #include <Qt3DRender/QCylinderMesh>
@@ -44,7 +44,7 @@
 #include <Qt3DRender/QDirectionalLight>
 #include <Qt3DRender/QSpotLight>
 #include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QAbstractBuffer>
+#include <Qt3DRender/QBuffer>
 
 #include <cfloat>
 
@@ -70,7 +70,7 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
         m_parentItem->addChild(this, index);
 
     // Selection box
-    Qt3DCore::QComponentList components = entity->components();
+    Qt3DCore::QComponentVector components = entity->components();
     Qt3DRender::QGeometryRenderer *entityMesh = Q_NULLPTR;
     bool isLight = false;
     Q_FOREACH (Qt3DCore::QComponent *component, components) {
@@ -86,7 +86,7 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
             }
         }
     }
-    bool isCamera = qobject_cast<Qt3DCore::QCamera *>(entity);
+    bool isCamera = qobject_cast<Qt3DRender::QCamera *>(entity);
     if (isCamera)
         m_entityMeshExtents = QVector3D(1.4f, 1.4f, 1.4f);
 
@@ -275,7 +275,7 @@ void EditorSceneItem::recalculateCustomMeshExtents(Qt3DRender::QGeometryRenderer
 {
     // For custom meshes we need to calculate the extents from geometry
     Qt3DRender::QGeometry *meshGeometry = Q_NULLPTR;
-    Qt3DRender::QGeometryFunctorPtr geometryFunctorPtr = mesh->geometryFunctor();
+    Qt3DRender::QGeometryFactoryPtr geometryFunctorPtr = mesh->geometryFactory();
 
     if (geometryFunctorPtr.data()) {
         // Execute the geometry functor to get the geometry, since its not normally available
@@ -288,8 +288,8 @@ void EditorSceneItem::recalculateCustomMeshExtents(Qt3DRender::QGeometryRenderer
         m_entityMeshExtents = QVector3D(2.0f, 2.0f, 2.0f);
         m_entityMeshCenter =  QVector3D();
 
-        Qt3DRender::QAbstractAttribute *vPosAttribute = Q_NULLPTR;
-        Q_FOREACH (Qt3DRender::QAbstractAttribute *attribute, meshGeometry->attributes()) {
+        Qt3DRender::QAttribute *vPosAttribute = Q_NULLPTR;
+        Q_FOREACH (Qt3DRender::QAttribute *attribute, meshGeometry->attributes()) {
             if (attribute->name() == Qt3DRender::QAttribute::defaultPositionAttributeName()) {
                 vPosAttribute = attribute;
                 break;
@@ -382,7 +382,7 @@ QMatrix4x4 EditorSceneItem::composeSelectionBoxTransform()
 {
     QMatrix4x4 totalTransform;
 
-    Qt3DCore::QCamera *camera = qobject_cast<Qt3DCore::QCamera *>(m_entity);
+    Qt3DRender::QCamera *camera = qobject_cast<Qt3DRender::QCamera *>(m_entity);
     if (camera) {
         totalTransform = m_scene->calculateVisibleSceneCameraMatrix(camera);
     } else if (m_itemType == Light) {

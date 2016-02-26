@@ -52,9 +52,8 @@ class EditorSceneParser : public QObject
         Entity,
         Camera,
         // Components
-        CameraLens,
         Transform,
-        FrameGraph,
+        RenderSettings,
         DiffuseMapMaterial,
         DiffuseSpecularMapMaterial,
         GoochMaterial,
@@ -106,7 +105,7 @@ private:
     void outItemId(const IdPair IdPair);
     void outEntity(Qt3DCore::QEntity *entity);
     QString outComponent(Qt3DCore::QComponent *component);
-    void outFrameGraph(Qt3DCore::QComponent *component);
+    void outRenderSettings(Qt3DCore::QComponent *component);
     void outTexturedMaterial(EditorItemType type, Qt3DCore::QComponent *component);
     void outTextureProperty(const QString &propertyName,
                             Qt3DRender::QAbstractTextureProvider *textureProvider);

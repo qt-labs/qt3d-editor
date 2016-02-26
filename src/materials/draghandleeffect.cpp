@@ -43,13 +43,28 @@ DragHandleEffect::DragHandleEffect(Qt3DCore::QNode *parent)
     technique->graphicsApiFilter()->setMajorVersion(2);
     technique->graphicsApiFilter()->setMinorVersion(1);
 
+    Qt3DRender::QTechnique *techniqueES2 = new Qt3DRender::QTechnique();
+    techniqueES2->graphicsApiFilter()->setApi(Qt3DRender::QGraphicsApiFilter::OpenGLES);
+    techniqueES2->graphicsApiFilter()->setMajorVersion(2);
+    techniqueES2->graphicsApiFilter()->setMinorVersion(0);
+    techniqueES2->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::NoProfile);
+
+    Qt3DRender::QAnnotation *annotation = new Qt3DRender::QAnnotation(this);
+    annotation->setName(QStringLiteral("renderingStyle"));
+    annotation->setValue(QStringLiteral("forward"));
+
+    technique->addAnnotation(annotation);
+    techniqueES2->addAnnotation(annotation);
+
     Qt3DRender::QShaderProgram *shader = new Qt3DRender::QShaderProgram();
     shader->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/draghandle.vert"))));
     shader->setFragmentShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/draghandle.frag"))));
 
     Qt3DRender::QRenderPass *renderPass = new Qt3DRender::QRenderPass();
     renderPass->setShaderProgram(shader);
-    technique->addPass(renderPass);
+    technique->addRenderPass(renderPass);
+    techniqueES2->addRenderPass(renderPass);
 
     addTechnique(technique);
+    addTechnique(techniqueES2);
 }
