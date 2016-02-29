@@ -427,26 +427,15 @@ ApplicationWindow {
         anchors.fill: parent
         orientation: Qt.Horizontal
 
-        SplitView {
-            orientation: Qt.Vertical
+        // Entity library
+        EntityLibrary {
+            id: entityLibrary
             Layout.minimumWidth: 100
             Layout.maximumWidth: mainwindow.width - 10
-            width: mainwindow.width / 5
-
-            // Entity library
-            EntityLibrary {
-                id: entityLibrary
-                onCreateNewEntity: {
-                    entityTree.selectSceneRoot() //TODO: check where the entity is really added to
-                    entityTree.addNewEntity(entityType)
-                }
+            onCreateNewEntity: {
+                entityTree.selectSceneRoot() //TODO: check where the entity is really added to
+                entityTree.addNewEntity(entityType)
             }
-
-            Rectangle {
-                Layout.fillHeight: true
-                color: "lightgray"
-            }
-
         }
 
         Item {

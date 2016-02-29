@@ -33,12 +33,15 @@ import QtQml.Models 2.2
 Item {
     id: entityLibrary
 
+    property int gridMargin: 10
+    property int buttonSize: 80
     property int splitHeight: entityViewHeader.height + 260
 
     signal createNewEntity(int entityType)
 
     Layout.minimumHeight: entityViewHeader.height
     height: splitHeight
+    width: buttonSize * 3 - gridMargin
 
     ButtonViewHeader {
         id: entityViewHeader
@@ -63,15 +66,16 @@ Item {
         visible: entityViewHeader.viewVisible
         ScrollView {
             anchors.fill: parent
+            anchors.leftMargin: gridMargin
             GridView {
                 id: gridRoot
                 clip: true
-                topMargin: 10
+                topMargin: gridMargin
                 model: EntityModel { id: entityModel }
                 delegate: MouseArea {
                     id: delegateRoot
-                    width: 80
-                    height: 80
+                    width: buttonSize
+                    height: buttonSize
 
                     property variant dragIconObj
                     property int dragPositionX
@@ -103,8 +107,8 @@ Item {
 
                     Rectangle {
                         id: entityButton
-                        width: 80
-                        height: 80
+                        width: buttonSize
+                        height: buttonSize
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
                         Column {
