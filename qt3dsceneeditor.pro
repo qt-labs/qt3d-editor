@@ -25,7 +25,8 @@ SOURCES += src/main.cpp \
     src/undohandler/renameentitycommand.cpp \
     src/undohandler/propertychangecommand.cpp \
     src/undohandler/modelrolechangecommand.cpp \
-    src/undohandler/replacecomponentcommand.cpp
+    src/undohandler/replacecomponentcommand.cpp \
+    src/materials/draghandleeffect.cpp
 
 TRANSLATIONS = qt3dsceneeditor_fi.ts \
                qt3dsceneeditor_en.ts
@@ -39,7 +40,7 @@ QML_IMPORT_PATH =
 # Default rules for deployment.
 include(deployment.pri)
 
-INCLUDEPATH += src src/components src/undohandler
+INCLUDEPATH += src src/components src/undohandler src/materials
 
 HEADERS += \
     src/editorviewportitem.h \
@@ -64,7 +65,8 @@ HEADERS += \
     src/undohandler/renameentitycommand.h \
     src/undohandler/propertychangecommand.h \
     src/undohandler/modelrolechangecommand.h \
-    src/undohandler/replacecomponentcommand.h
+    src/undohandler/replacecomponentcommand.h \
+    src/materials/draghandleeffect.h
 
 lupdate_only {
 SOURCES = qml/*.qml \

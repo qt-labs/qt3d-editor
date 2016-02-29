@@ -33,6 +33,7 @@
 #include "editorsceneitemcomponentsmodel.h"
 #include "editorviewportitem.h"
 #include "undohandler.h"
+#include "draghandleeffect.h"
 
 #include <Qt3DCore/QCamera>
 #include <Qt3DCore/QEntity>
@@ -50,6 +51,7 @@
 #include <Qt3DRender/QPhongAlphaMaterial>
 #include <Qt3DRender/QPhongMaterial>
 #include <Qt3DRender/QLight>
+#include <Qt3DRender/QParameter>
 
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
@@ -1030,10 +1032,11 @@ void EditorScene::createRootEntity()
     m_dragHandleRotate.entity->addComponent(m_dragHandleRotate.transform);
     m_dragHandles.entity->addComponent(m_dragHandles.transform);
 
-    Qt3DRender::QPhongMaterial *dragHandleMaterial = new Qt3DRender::QPhongMaterial();
-    dragHandleMaterial->setAmbient(QColor(Qt::yellow));
-    dragHandleMaterial->setDiffuse(QColor(Qt::black));
-    dragHandleMaterial->setSpecular(QColor(Qt::black));
+    Qt3DRender::QMaterial *dragHandleMaterial = new Qt3DRender::QMaterial();
+    dragHandleMaterial->setEffect(new DragHandleEffect());
+    dragHandleMaterial->addParameter(new Qt3DRender::QParameter(QStringLiteral("handleColor"),
+                                                                QColor(Qt::yellow)));
+
     m_dragHandleScale.entity->addComponent(dragHandleMaterial);
     m_dragHandleRotate.entity->addComponent(dragHandleMaterial);
 

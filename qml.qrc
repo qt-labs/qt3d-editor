@@ -73,8 +73,8 @@
         <file alias="Matrix4x4PropertyInputField.qml">qml/inputfields/Matrix4x4PropertyInputField.qml</file>
         <file alias="CheckBoxPropertyInputField.qml">qml/inputfields/CheckBoxPropertyInputField.qml</file>
         <file alias="DragEntity.qml">qml/DragEntity.qml</file>
-        <file>shaders/wireframe.frag</file>
-        <file>shaders/wireframe.vert</file>
+        <file>shaders/draghandle.frag</file>
+        <file>shaders/draghandle.vert</file>
         <file alias="VisiblePropertyInputField.qml">qml/inputfields/VisiblePropertyInputField.qml</file>
         <file alias="EnableButton.qml">qml/EnableButton.qml</file>
         <file alias="GeneralPropertyView.qml">qml/GeneralPropertyView.qml</file>
