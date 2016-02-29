@@ -33,7 +33,7 @@ Item {
     id: matrix4x4Input
     width: parent.width
     height: mainLayout.height
-    property real cellwidth: matrix4x4Input.width * 0.15 - 4 // 4 = column spacing
+    property real cellwidth: matrix4x4Input.width / 4 - 4 // 4 = column spacing
     property alias label: matrixLabel.text
     property int roundDigits: 2 // TODO: Determine nice default rounding
     property int roundMultiplier: Math.pow(10, roundDigits) // Calculated from roundDigits, do not set directly
@@ -79,7 +79,7 @@ Item {
         locale: "C"
     }
 
-    RowLayout {
+    ColumnLayout {
         id: mainLayout
         anchors.right: parent.right
         anchors.left: parent.left
@@ -92,7 +92,7 @@ Item {
         }
 
         ColumnLayout {
-            Layout.alignment: Qt.AlignRight
+            Layout.alignment: Qt.AlignLeft
             RowLayout {
                 TextField {
                     id: m11Field
