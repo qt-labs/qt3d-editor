@@ -393,6 +393,35 @@ void EditorScene::duplicateEntity(Qt3DCore::QEntity *entity)
     m_sceneModel->resetModel();
 }
 
+// Resolves a world position for given viewport position.
+// The world position is the intersection of the eye ray at specified position and the active
+// helper plane. If there is no intersection, (0, 0, 0) position is returned.
+QVector3D EditorScene::getWorldPosition(int xPos, int yPos)
+{
+    QVector3D retVec;
+    if (xPos >= 0 && yPos >= 0) {
+        QPoint pos(xPos, yPos);
+        Qt3DCore::QCamera *camera = frameGraphCamera();
+        if (camera) {
+            QVector3D planeOrigin;
+            QVector3D planeNormal = helperPlaneNormal();
+            float cosAngle = QVector3D::dotProduct(planeOrigin.normalized(), planeNormal);
+            float planeOffset = planeOrigin.length() * cosAngle;
+
+            QVector3D ray = EditorUtils::unprojectRay(camera->viewMatrix(), camera->projectionMatrix(),
+                                                      m_viewport->width(), m_viewport->height(),
+                                                      pos);
+            float t = 0.0f;
+            QVector3D intersection = EditorUtils::findIntersection(camera->position(), ray,
+                                                                   planeOffset, planeNormal, t);
+            if (t > camera->nearPlane())
+                retVec = intersection;
+        }
+    }
+
+    return retVec;
+}
+
 const QString EditorScene::language() const
 {
     if (m_language.isEmpty())

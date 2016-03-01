@@ -67,7 +67,8 @@ public:
 
     // TODO: Add undo support for add/remove components, if that is generally supported.
 
-    Q_INVOKABLE void createInsertEntityCommand(int type, const QString &parentName);
+    Q_INVOKABLE void createInsertEntityCommand(int type, const QString &parentName,
+                                               const QVector3D &pos);
     Q_INVOKABLE void createRemoveEntityCommand(const QString &entityName);
     Q_INVOKABLE void createChangePropertyCommand(const QString &entityName,
                                                  int componentType,

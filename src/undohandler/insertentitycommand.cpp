@@ -34,10 +34,11 @@
 
 InsertEntityCommand::InsertEntityCommand(EditorSceneItemModel *sceneModel,
                                          EditorSceneItemModel::InsertableEntities type,
-                                         const QString &parentName) :
+                                         const QString &parentName, const QVector3D &pos) :
     m_sceneModel(sceneModel),
     m_type(type),
-    m_parentName(parentName)
+    m_parentName(parentName),
+    m_insertPosition(pos)
 {
 }
 
@@ -51,5 +52,6 @@ void InsertEntityCommand::undo()
 void InsertEntityCommand::redo()
 {
     QModelIndex parentIndex = m_sceneModel->getModelIndexByName(m_parentName);
-    m_insertedEntityName = m_sceneModel->insertEntity(m_type, parentIndex)->objectName();
+    Qt3DCore::QEntity *entity = m_sceneModel->insertEntity(m_type, m_insertPosition, parentIndex);
+    m_insertedEntityName = entity->objectName();
 }

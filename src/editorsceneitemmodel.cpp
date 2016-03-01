@@ -205,6 +205,7 @@ EditorSceneItem *EditorSceneItemModel::editorSceneItemFromIndex(const QModelInde
 }
 
 Qt3DCore::QEntity *EditorSceneItemModel::insertEntity(InsertableEntities type,
+                                                      const QVector3D &pos,
                                                       const QModelIndex &parentIndex)
 {
     int rows = rowCount(parentIndex);
@@ -213,68 +214,68 @@ Qt3DCore::QEntity *EditorSceneItemModel::insertEntity(InsertableEntities type,
     beginInsertRows(parentIndex, rows, rows);
 
     Qt3DCore::QEntity *newEntity = Q_NULLPTR;
-    if (type == CameraEntity)
-        newEntity = new Qt3DCore::QCamera(parentItem->entity());
-    else
+    if (type == CameraEntity) {
+        Qt3DCore::QCamera *newCamera = new Qt3DCore::QCamera(parentItem->entity());
+        newCamera->setObjectName(generateValidName(tr("New Camera"), newEntity));
+        newCamera->setPosition(pos);
+        newEntity = newCamera;
+    } else {
         newEntity = new Qt3DCore::QEntity(parentItem->entity());
+        Qt3DCore::QTransform *transform = new Qt3DCore::QTransform();
+        // This implementation assumes that entities inserted into a non-default position are
+        // inserted as children of the scene root. If this is not always true, we need to account
+        // for parent chain transforms when determining the initial translation.
+        transform->setTranslation(pos);
+        newEntity->addComponent(transform);
 
-    switch (type)     {
-    case CuboidEntity: {
-        newEntity->setObjectName(generateValidName(tr("New Cube"), newEntity));
-        newEntity->addComponent(new Qt3DRender::QCuboidMesh());
-        newEntity->addComponent(new Qt3DCore::QTransform());
-        newEntity->addComponent(new Qt3DRender::QPhongMaterial());
-        break;
+        switch (type) {
+        case CuboidEntity: {
+            newEntity->setObjectName(generateValidName(tr("New Cube"), newEntity));
+            newEntity->addComponent(new Qt3DRender::QCuboidMesh());
+            newEntity->addComponent(new Qt3DRender::QPhongMaterial());
+            break;
+        }
+        case CylinderEntity: {
+            newEntity->setObjectName(generateValidName(tr("New Cylinder"), newEntity));
+            newEntity->addComponent(new Qt3DRender::QCylinderMesh);
+            newEntity->addComponent(new Qt3DRender::QPhongMaterial());
+            break;
+        }
+        case PlaneEntity: {
+            newEntity->setObjectName(generateValidName(tr("New Plane"), newEntity));
+            newEntity->addComponent(new Qt3DRender::QPlaneMesh);
+            newEntity->addComponent(new Qt3DRender::QPhongMaterial());
+            break;
+        }
+        case SphereEntity: {
+            newEntity->setObjectName(generateValidName(tr("New Sphere"), newEntity));
+            newEntity->addComponent(new Qt3DRender::QSphereMesh);
+            newEntity->addComponent(new Qt3DRender::QPhongMaterial());
+            break;
+        }
+        case TorusEntity: {
+            newEntity->setObjectName(generateValidName(tr("New Torus"), newEntity));
+            newEntity->addComponent(new Qt3DRender::QTorusMesh);
+            newEntity->addComponent(new Qt3DRender::QPhongMaterial());
+            break;
+        }
+        case CustomEntity: {
+            newEntity->setObjectName(generateValidName(tr("New Custom"), newEntity));
+            newEntity->addComponent(EditorUtils::createDefaultCustomMesh());
+            newEntity->addComponent(new Qt3DRender::QPhongMaterial());
+            break;
+        }
+        case LightEntity: {
+            newEntity->setObjectName(generateValidName(tr("New Light"), newEntity));
+            newEntity->addComponent(new Qt3DRender::QLight());
+            break;
+        }
+        default:
+            newEntity->setObjectName(generateValidName(tr("New Empty Entity"), newEntity));
+            break;
+        }
     }
-    case CylinderEntity: {
-        newEntity->setObjectName(generateValidName(tr("New Cylinder"), newEntity));
-        newEntity->addComponent(new Qt3DRender::QCylinderMesh);
-        newEntity->addComponent(new Qt3DCore::QTransform());
-        newEntity->addComponent(new Qt3DRender::QPhongMaterial());
-        break;
-    }
-    case PlaneEntity: {
-        newEntity->setObjectName(generateValidName(tr("New Plane"), newEntity));
-        newEntity->addComponent(new Qt3DRender::QPlaneMesh);
-        newEntity->addComponent(new Qt3DCore::QTransform());
-        newEntity->addComponent(new Qt3DRender::QPhongMaterial());
-        break;
-    }
-    case SphereEntity: {
-        newEntity->setObjectName(generateValidName(tr("New Sphere"), newEntity));
-        newEntity->addComponent(new Qt3DRender::QSphereMesh);
-        newEntity->addComponent(new Qt3DCore::QTransform());
-        newEntity->addComponent(new Qt3DRender::QPhongMaterial());
-        break;
-    }
-    case TorusEntity: {
-        newEntity->setObjectName(generateValidName(tr("New Torus"), newEntity));
-        newEntity->addComponent(new Qt3DRender::QTorusMesh);
-        newEntity->addComponent(new Qt3DCore::QTransform());
-        newEntity->addComponent(new Qt3DRender::QPhongMaterial());
-        break;
-    }
-    case CustomEntity: {
-        newEntity->setObjectName(generateValidName(tr("New Custom"), newEntity));
-        newEntity->addComponent(EditorUtils::createDefaultCustomMesh());
-        newEntity->addComponent(new Qt3DCore::QTransform());
-        newEntity->addComponent(new Qt3DRender::QPhongMaterial());
-        break;
-    }
-    case CameraEntity: {
-        newEntity->setObjectName(generateValidName(tr("New Camera"), newEntity));
-        break;
-    }
-    case LightEntity: {
-        newEntity->setObjectName(generateValidName(tr("New Light"), newEntity));
-        newEntity->addComponent(new Qt3DRender::QLight());
-        newEntity->addComponent(new Qt3DCore::QTransform());
-        break;
-    }
-    default:
-        newEntity->setObjectName(generateValidName(tr("New Empty Entity"), newEntity));
-        break;
-    }
+
 
     m_scene->addEntity(newEntity);
 

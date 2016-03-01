@@ -171,6 +171,7 @@ public:
     Q_INVOKABLE void moveActiveSceneCameraToFreeView();
     Q_INVOKABLE void snapFreeViewCameraToActiveSceneCamera();
     Q_INVOKABLE void duplicateEntity(Qt3DCore::QEntity *entity);
+    Q_INVOKABLE QVector3D getWorldPosition(int xPos, int yPos);
 
     bool isRemovable(Qt3DCore::QEntity *entity) const;
 

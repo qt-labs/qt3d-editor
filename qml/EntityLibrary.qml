@@ -37,7 +37,7 @@ Item {
     property int buttonSize: 80
     property int splitHeight: entityViewHeader.height + 260
 
-    signal createNewEntity(int entityType)
+    signal createNewEntity(int entityType, int xPos, int yPos)
 
     Layout.minimumHeight: entityViewHeader.height
     height: splitHeight
@@ -102,7 +102,10 @@ Item {
 
                     onReleased: {
                         dragIconObj.destroy()
-                        createNewEntity(meshType)
+                        var scenePos = editorViewport.mapFromItem(applicationMouseArea,
+                                                                  dragPositionX,
+                                                                  dragPositionY)
+                        createNewEntity(meshType, scenePos.x, scenePos.y)
                     }
 
                     Rectangle {

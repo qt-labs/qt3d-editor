@@ -75,6 +75,7 @@ public:
 
     Q_INVOKABLE EditorSceneItem *editorSceneItemFromIndex(const QModelIndex &index) const;
     Qt3DCore::QEntity *insertEntity(InsertableEntities type,
+                                    const QVector3D &pos,
                                     const QModelIndex &parentIndex = QModelIndex());
     void insertExistingEntity(Qt3DCore::QEntity *entity, int row,
                               const QModelIndex &parentIndex = QModelIndex());

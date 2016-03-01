@@ -45,13 +45,16 @@ Item {
         entityTreeView.expand(entityTreeView.selection.currentIndex)
     }
 
-    function addNewEntity(entityType) {
+    function addNewEntity(entityType, xPos, yPos) {
+        var x = xPos ? xPos : -1
+        var y = yPos ? yPos : -1
         entityTreeView.editing = false
 
         // Never allow inserting to root
         if (entityTreeView.selection.currentIndex.row === -1)
             selectSceneRoot()
-        editorScene.undoHandler.createInsertEntityCommand(entityType, selectedEntityName)
+        editorScene.undoHandler.createInsertEntityCommand(entityType, selectedEntityName,
+                                                          editorScene.getWorldPosition(x, y))
         var newItemIndex = editorScene.sceneModel.lastInsertedIndex()
 
         entityTreeView.expand(entityTreeView.selection.currentIndex)

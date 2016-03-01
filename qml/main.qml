@@ -434,7 +434,7 @@ ApplicationWindow {
             Layout.maximumWidth: mainwindow.width - 10
             onCreateNewEntity: {
                 entityTree.selectSceneRoot() //TODO: check where the entity is really added to
-                entityTree.addNewEntity(entityType)
+                entityTree.addNewEntity(entityType, xPos, yPos)
             }
         }
 

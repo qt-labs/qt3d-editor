@@ -81,11 +81,12 @@ void UndoHandler::clear()
     m_undoStack->clear();
 }
 
-void UndoHandler::createInsertEntityCommand(int type, const QString &parentName)
+void UndoHandler::createInsertEntityCommand(int type, const QString &parentName,
+                                            const QVector3D &pos)
 {
     m_undoStack->push(new InsertEntityCommand(m_scene->sceneModel(),
                                               EditorSceneItemModel::InsertableEntities(type),
-                                              parentName));
+                                              parentName, pos));
 }
 
 void UndoHandler::createRemoveEntityCommand(const QString &entityName)
