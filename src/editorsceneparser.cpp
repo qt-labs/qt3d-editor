@@ -173,7 +173,7 @@ EditorSceneParser::~EditorSceneParser()
 }
 
 // Caller retains ownership of sceneEntity and frameGraph
-bool EditorSceneParser::exportScene(Qt3DCore::QEntity *sceneEntity, const QUrl &fileUrl,
+bool EditorSceneParser::exportQmlScene(Qt3DCore::QEntity *sceneEntity, const QUrl &fileUrl,
                                     Qt3DCore::QEntity *activeSceneCamera, bool autosave)
 {
     // TODO: Maybe change exporting so that use selects the target .qrc file, and generate
@@ -423,8 +423,8 @@ bool EditorSceneParser::exportScene(Qt3DCore::QEntity *sceneEntity, const QUrl &
 
 // Ownership of the returned root entity is passed to caller.
 // cameraEntity parameter returns the active camera entity.
-Qt3DCore::QEntity *EditorSceneParser::importScene(const QUrl &fileUrl,
-                                                  Qt3DCore::QEntity *&cameraEntity)
+Qt3DCore::QEntity *EditorSceneParser::importQmlScene(const QUrl &fileUrl,
+                                                     Qt3DCore::QEntity *&cameraEntity)
 {
     qDebug() << "Importing scene from " << fileUrl;
 

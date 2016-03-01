@@ -82,9 +82,9 @@ public:
     explicit EditorSceneParser(QObject *parent = 0);
     ~EditorSceneParser();
 
-    bool exportScene(Qt3DCore::QEntity *sceneEntity, const QUrl &fileUrl,
-                     Qt3DCore::QEntity *activeSceneCamera, bool autosave = false);
-    Qt3DCore::QEntity *importScene(const QUrl &fileUrl, Qt3DCore::QEntity *&cameraEntity);
+    bool exportQmlScene(Qt3DCore::QEntity *sceneEntity, const QUrl &fileUrl,
+                        Qt3DCore::QEntity *activeSceneCamera, bool autosave = false);
+    Qt3DCore::QEntity *importQmlScene(const QUrl &fileUrl, Qt3DCore::QEntity *&cameraEntity);
 
 private:
     enum TextureTypes {

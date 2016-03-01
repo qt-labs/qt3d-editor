@@ -344,32 +344,32 @@
 <context>
     <name>EditorScene</name>
     <message>
-        <location filename="src/editorscene.cpp" line="429"/>
+        <location filename="src/editorscene.cpp" line="529"/>
         <source>Failed to save the scene</source>
         <translation>Failed to save the scene</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="430"/>
+        <location filename="src/editorscene.cpp" line="530"/>
         <source>Failed to load a new scene</source>
         <translation>Failed to load the scene</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="431"/>
+        <location filename="src/editorscene.cpp" line="531"/>
         <source>Camera</source>
         <translation>Camera</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="432"/>
+        <location filename="src/editorscene.cpp" line="532"/>
         <source>Cube</source>
         <translation>Cube</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="433"/>
+        <location filename="src/editorscene.cpp" line="533"/>
         <source>Light</source>
         <translation>Light</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="428"/>
+        <location filename="src/editorscene.cpp" line="528"/>
         <source>Scene root</source>
         <translation>Scene Root</translation>
     </message>
@@ -377,47 +377,47 @@
 <context>
     <name>EditorSceneItemModel</name>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="223"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="239"/>
         <source>New Cube</source>
         <translation>New Cube</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="230"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="243"/>
         <source>New Cylinder</source>
         <translation>New Cylinder</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="237"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="247"/>
         <source>New Plane</source>
         <translation>New Plane</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="244"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="251"/>
         <source>New Sphere</source>
         <translation>New Sphere</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="251"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="255"/>
         <source>New Torus</source>
         <translation>New Torus</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="258"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="259"/>
         <source>New Custom</source>
         <translation>New Custom</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="265"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="219"/>
         <source>New Camera</source>
         <translation>New Camera</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="269"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="263"/>
         <source>New Light</source>
         <translation>New Light</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="275"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="268"/>
         <source>New Empty Entity</source>
         <translation>New Empty Entity</translation>
     </message>
@@ -521,17 +521,17 @@
 <context>
     <name>EntityTree</name>
     <message>
-        <location filename="qml/EntityTree.qml" line="160"/>
+        <location filename="qml/EntityTree.qml" line="163"/>
         <source>Entities</source>
         <translation>Entities</translation>
     </message>
     <message>
-        <location filename="qml/EntityTree.qml" line="74"/>
+        <location filename="qml/EntityTree.qml" line="77"/>
         <source>Scene</source>
         <translation>Scene</translation>
     </message>
     <message>
-        <location filename="qml/EntityTree.qml" line="165"/>
+        <location filename="qml/EntityTree.qml" line="168"/>
         <source>Visibility</source>
         <translation>Visibility</translation>
     </message>
@@ -1122,7 +1122,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="src/editorutils.cpp" line="437"/>
+        <location filename="src/editorutils.cpp" line="434"/>
         <source>_Copy</source>
         <translation>_Copy</translation>
     </message>
@@ -1445,168 +1445,183 @@
         <translation>Enable Autosave</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="103"/>
+        <location filename="qml/main.qml" line="107"/>
         <source>E&amp;xit</source>
         <translation>E&amp;xit</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="108"/>
+        <location filename="qml/main.qml" line="112"/>
         <source>&amp;Edit</source>
         <translation>&amp;Edit</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="118"/>
+        <location filename="qml/main.qml" line="122"/>
         <source>&amp;View</source>
         <translation>&amp;View</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="121"/>
+        <location filename="qml/main.qml" line="125"/>
         <source>&amp;Camera</source>
         <translation>&amp;Camera</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="146"/>
+        <location filename="qml/main.qml" line="150"/>
         <source>Free viewing mode</source>
         <translation>Free Viewing Mode</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="155"/>
+        <location filename="qml/main.qml" line="159"/>
         <source>Reset</source>
         <translation>Reset to Default</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="162"/>
+        <location filename="qml/main.qml" line="166"/>
         <source>Add scene camera here</source>
         <translation>Add Scene Camera Here</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="173"/>
+        <location filename="qml/main.qml" line="177"/>
         <source>Move active camera here</source>
         <translation>Move Active Camera Here</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="181"/>
+        <location filename="qml/main.qml" line="185"/>
         <source>Snap to active camera</source>
         <translation>Snap to Active Camera</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="189"/>
+        <location filename="qml/main.qml" line="193"/>
         <source>&amp;Helper Plane</source>
         <translation>&amp;Helper Plane</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="195"/>
+        <location filename="qml/main.qml" line="199"/>
         <source>Normal &amp;X</source>
         <translation>Normal &amp;X</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="206"/>
+        <location filename="qml/main.qml" line="210"/>
         <source>Normal &amp;Y</source>
         <translation>Normal &amp;Y</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="217"/>
+        <location filename="qml/main.qml" line="221"/>
         <source>Normal &amp;Z</source>
         <translation>Normal &amp;Z</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="228"/>
+        <location filename="qml/main.qml" line="232"/>
         <source>&amp;Hide</source>
         <translation>&amp;Hide</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="240"/>
+        <location filename="qml/main.qml" line="244"/>
         <source>&amp;Language</source>
         <translation>Language</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="246"/>
+        <location filename="qml/main.qml" line="250"/>
         <source>English</source>
         <translation>English</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="258"/>
+        <location filename="qml/main.qml" line="262"/>
         <source>Finnish</source>
         <translation>Finnish</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="276"/>
+        <location filename="qml/main.qml" line="280"/>
         <source>Load Scene</source>
         <translation>Load Scene</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="277"/>
-        <location filename="qml/main.qml" line="289"/>
+        <location filename="qml/main.qml" line="281"/>
+        <location filename="qml/main.qml" line="293"/>
         <source>Qt3D Scenes (*.qml)</source>
         <translation>Qt 3D Scenes (*.qml)</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="288"/>
+        <location filename="qml/main.qml" line="292"/>
         <source>Save Scene</source>
         <translation>Save Scene</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="298"/>
+        <location filename="qml/main.qml" line="304"/>
+        <source>Import Entity</source>
+        <translation>Import Entity</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="305"/>
+        <source>All files (*)</source>
+        <translation>All files (*)</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="313"/>
         <source>L&amp;oad</source>
         <translation>L&amp;oad</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="305"/>
+        <location filename="qml/main.qml" line="320"/>
         <source>&amp;Save</source>
         <translation>&amp;Save</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="320"/>
+        <location filename="qml/main.qml" line="335"/>
         <source>Save As</source>
         <translation>Save As</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="331"/>
+        <location filename="qml/main.qml" line="346"/>
+        <source>&amp;Import Entity</source>
+        <translation>&amp;Import Entity</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="354"/>
         <source>Undo</source>
         <translation>Undo</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="331"/>
+        <location filename="qml/main.qml" line="354"/>
         <source>Undo &apos;%1&apos;</source>
         <translation>Undo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="339"/>
+        <location filename="qml/main.qml" line="362"/>
         <source>Redo</source>
         <translation>Redo</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="339"/>
+        <location filename="qml/main.qml" line="362"/>
         <source>Redo &apos;%1&apos;</source>
         <translation>Redo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="356"/>
+        <location filename="qml/main.qml" line="379"/>
         <source>Normal X</source>
         <translation>Normal X</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="357"/>
+        <location filename="qml/main.qml" line="380"/>
         <source>Normal Y</source>
         <translation>Normal Y</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="358"/>
+        <location filename="qml/main.qml" line="381"/>
         <source>Normal Z</source>
         <translation>Normal Z</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="359"/>
+        <location filename="qml/main.qml" line="382"/>
         <source>Hide Helper Plane</source>
         <translation>Hide Helper Plane</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="390"/>
+        <location filename="qml/main.qml" line="413"/>
         <source>Reset to Default</source>
         <translation>Reset to Default</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="415"/>
+        <location filename="qml/main.qml" line="438"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>

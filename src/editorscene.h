@@ -181,6 +181,7 @@ public:
     Q_INVOKABLE bool saveScene(const QUrl &fileUrl, bool autosave = false);
     Q_INVOKABLE bool loadScene(const QUrl &fileUrl);
     Q_INVOKABLE void deleteScene(const QUrl &fileUrl, bool autosave = false);
+    Q_INVOKABLE void importEntity(const QUrl &fileUrl);
     Q_INVOKABLE QString cameraName(int index) const;
     Q_INVOKABLE void resetFreeViewCamera();
     Q_INVOKABLE void copyFreeViewToNewSceneCamera();
@@ -247,6 +248,7 @@ private slots:
     void handleEntityNameChange();
     void endSelectionHandling(Qt3DCore::QEntity *selectedEntity);
     void handleSelectionTransformChange();
+    void handleSceneLoaderStatusChanged();
 
 private:
     void handleCameraAdded(Qt3DCore::QCamera *camera);

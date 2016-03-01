@@ -37,13 +37,11 @@
 #include <Qt3DCore/QCamera>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QCameraLens>
+#include <Qt3DCore/QTransform>
 
 #include <Qt3DRender/QTexture>
-
 #include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QForwardRenderer>
-
-#include <Qt3DCore/QTransform>
 #include <Qt3DRender/QMesh>
 #include <Qt3DRender/QCuboidMesh>
 #include <Qt3DRender/QDiffuseSpecularMapMaterial>
@@ -51,9 +49,10 @@
 #include <Qt3DRender/QPhongMaterial>
 #include <Qt3DRender/QLight>
 #include <Qt3DRender/QParameter>
-
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
+#include <Qt3DRender/QSceneLoader>
+#include <Qt3DRender/QAbstractSceneLoader>
 
 #include <QtGui/QGuiApplication>
 #include <QtGui/QWindow>
@@ -270,7 +269,7 @@ bool EditorScene::saveScene(const QUrl &fileUrl, bool autosave)
     Qt3DCore::QEntity *camera = Q_NULLPTR;
     if (m_activeSceneCameraIndex >= 0 && m_activeSceneCameraIndex < m_sceneCameras.size())
         camera = m_sceneCameras.at(m_activeSceneCameraIndex).cameraEntity;
-    bool retval = m_sceneParser->exportScene(m_sceneEntity, fileUrl, camera, autosave);
+    bool retval = m_sceneParser->exportQmlScene(m_sceneEntity, fileUrl, camera, autosave);
     if (retval) {
         m_undoHandler->setClean();
     } else {
@@ -284,7 +283,7 @@ bool EditorScene::saveScene(const QUrl &fileUrl, bool autosave)
 bool EditorScene::loadScene(const QUrl &fileUrl)
 {
     Qt3DCore::QEntity *camera = Q_NULLPTR;
-    Qt3DCore::QEntity *newSceneEntity = m_sceneParser->importScene(fileUrl, camera);
+    Qt3DCore::QEntity *newSceneEntity = m_sceneParser->importQmlScene(fileUrl, camera);
 
     if (newSceneEntity) {
         if (!m_freeView)
@@ -328,6 +327,17 @@ void EditorScene::deleteScene(const QUrl &fileUrl, bool autosave)
         resourceDirName.append(autoSavePostfix);
     QDir dir = QDir(resourceDirName);
     dir.removeRecursively();
+}
+
+void EditorScene::importEntity(const QUrl &fileUrl)
+{
+    // TODO: Scene loading doesn't work, pending QTBUG-51577
+    Qt3DCore::QEntity *sceneLoaderEntity = new Qt3DCore::QEntity(m_rootEntity);
+    Qt3DRender::QSceneLoader *sceneLoader = new Qt3DRender::QSceneLoader(sceneLoaderEntity);
+    QObject::connect(sceneLoader, &Qt3DRender::QSceneLoader::statusChanged,
+                     this, &EditorScene::handleSceneLoaderStatusChanged);
+    sceneLoader->setSource(fileUrl);
+    sceneLoaderEntity->addComponent(sceneLoader);
 }
 
 QString EditorScene::cameraName(int index) const
@@ -1459,6 +1469,25 @@ void EditorScene::handleSelectionTransformChange()
         m_dragHandles.transform->setRotation(item->selectionTransform()->rotation());
 
         resizeCameraViewCenterEntity();
+    }
+}
+
+void EditorScene::handleSceneLoaderStatusChanged()
+{
+    Qt3DRender::QSceneLoader *sceneLoader = qobject_cast<Qt3DRender::QSceneLoader *>(sender());
+    if (sceneLoader) {
+        QVector<Qt3DCore::QEntity *> entities = sceneLoader->entities();
+        if (!entities.isEmpty()) {
+            Qt3DCore::QEntity *importedEntity = entities[0];
+            if (sceneLoader->status() == Qt3DRender::QAbstractSceneLoader::Loaded) {
+                // TODO do we need to do something else here?
+                importedEntity->setParent(m_sceneEntity);
+                addEntity(importedEntity);
+            } else if (sceneLoader->status() == Qt3DRender::QAbstractSceneLoader::Error) {
+                // TODO handle error properly
+                importedEntity->deleteLater();
+            }
+        }
     }
 }
 

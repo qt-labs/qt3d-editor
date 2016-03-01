@@ -97,6 +97,10 @@ ApplicationWindow {
                     }
                 }
             }
+            MenuItem {
+                action: entityImportAction
+            }
+
             MenuSeparator {
             }
             MenuItem {
@@ -293,6 +297,17 @@ ApplicationWindow {
         }
     }
 
+    FileDialog {
+        id: importEntityDialog
+        selectMultiple: false
+        selectExisting: true
+        title: qsTr("Import Entity") + editorScene.emptyString
+        nameFilters: [qsTr("All files (*)") + editorScene.emptyString]
+        onAccepted: {
+            editorScene.importEntity(fileUrl)
+        }
+    }
+
     Action {
         id: fileLoadAction
         text: qsTr("L&oad") + editorScene.emptyString
@@ -323,6 +338,14 @@ ApplicationWindow {
             if (saveFileUrl != "")
                 editorScene.deleteScene(saveFileUrl, true)
             saveFileDialog.open()
+        }
+    }
+
+    Action {
+        id: entityImportAction
+        text: qsTr("&Import Entity") + editorScene.emptyString
+        onTriggered: {
+            importEntityDialog.open();
         }
     }
 
