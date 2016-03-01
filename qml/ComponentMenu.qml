@@ -122,6 +122,20 @@ Menu {
 //        }
 //    }
     MenuSeparator {}
+    EntityMenu {
+        iconSource: "qrc:/images/plus.png" // TODO: Replace with a real icon
+    }
+    MenuItem {
+        text: qsTr("Remove") + editorScene.emptyString
+        enabled: !entityTreeView.sceneRootSelected
+        iconSource: "qrc:/images/minus.png" // TODO: Replace with a real icon
+        onTriggered: {
+            entityTreeView.editing = false
+            // Doublecheck that we don't try to remove the scene root
+            if (entityTreeView.selection.currentIndex !== editorScene.sceneModel.sceneEntityIndex())
+                editorScene.undoHandler.createRemoveEntityCommand(selectedEntityName)
+        }
+    }
     MenuItem {
         text: qsTr("Duplicate") + editorScene.emptyString
         enabled: !entityTreeView.sceneRootSelected

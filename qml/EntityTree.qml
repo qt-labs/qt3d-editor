@@ -68,57 +68,9 @@ Item {
     Layout.minimumHeight: treeViewHeader.height
     height: splitHeight
 
-    EntityMenu {
-        id: addEntityMenu
-    }
-    Rectangle {
-        // TODO: Remove when Entity Library is in place
-        id: treeViewHeaderBackground
-        anchors.top: treeViewSplit.top
-        height: treeViewHeaderText.implicitHeight + 12
-        width: parent.width
-        color: "lightGray"
-        border.color: "darkGray"
-        Label {
-            id: treeViewHeaderText
-            anchors.left: parent.left
-            anchors.leftMargin: 8
-            anchors.verticalCenter: parent.verticalCenter
-            text: qsTr("Entities") + editorScene.emptyString
-        }
-        ToolButton {
-            id: removeEntityButton
-            anchors.right: parent.right
-            anchors.rightMargin: 4
-            anchors.verticalCenter: parent.verticalCenter
-            iconSource: "images/minus.png"
-            height: parent.height
-            width: height
-            enabled: !entityTreeView.sceneRootSelected
-            onClicked: {
-                entityTreeView.editing = false
-                // Doublecheck that we don't try to remove the scene root
-                if (entityTreeView.selection.currentIndex !== editorScene.sceneModel.sceneEntityIndex())
-                    editorScene.undoHandler.createRemoveEntityCommand(selectedEntityName)
-            }
-        }
-        ToolButton {
-            id: addEntityButton
-            anchors.right: removeEntityButton.left
-            anchors.rightMargin: 4
-            anchors.verticalCenter: parent.verticalCenter
-            iconSource: "images/plus.png"
-            height: parent.height
-            width: height
-            enabled: true
-            onClicked: {
-                addEntityMenu.popup()
-            }
-        }
-    }
     ButtonViewHeader {
         id: treeViewHeader
-        anchors.top: treeViewHeaderBackground.bottom
+        anchors.top: treeViewSplit.top
         headerText: qsTr("Scene") + editorScene.emptyString
 
         onShowViewButtonPressed: {
@@ -126,7 +78,7 @@ Item {
         }
         onHideViewButtonPressed: {
             splitHeight = treeViewSplit.height
-            treeViewSplit.height = minimumHeaderHeight + treeViewHeaderBackground.height
+            treeViewSplit.height = minimumHeaderHeight
         }
     }
 

@@ -150,7 +150,12 @@
         <translation>Poimin</translation>
     </message>
     <message>
-        <location filename="qml/ComponentMenu.qml" line="126"/>
+        <location filename="qml/ComponentMenu.qml" line="129"/>
+        <source>Remove</source>
+        <translation>Poista</translation>
+    </message>
+    <message>
+        <location filename="qml/ComponentMenu.qml" line="140"/>
         <source>Duplicate</source>
         <translation>Monista</translation>
     </message>
@@ -339,32 +344,32 @@
 <context>
     <name>EditorScene</name>
     <message>
-        <location filename="src/editorscene.cpp" line="481"/>
+        <location filename="src/editorscene.cpp" line="429"/>
         <source>Failed to save the scene</source>
         <translation>Maiseman tallennus epäonnistui</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="482"/>
+        <location filename="src/editorscene.cpp" line="430"/>
         <source>Failed to load a new scene</source>
         <translation>Maiseman lataus epäonnistui</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="483"/>
+        <location filename="src/editorscene.cpp" line="431"/>
         <source>Camera</source>
         <translation>Kamera</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="484"/>
+        <location filename="src/editorscene.cpp" line="432"/>
         <source>Cube</source>
         <translation>Kuutio</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="485"/>
+        <location filename="src/editorscene.cpp" line="433"/>
         <source>Light</source>
         <translation>Valo</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="480"/>
+        <location filename="src/editorscene.cpp" line="428"/>
         <source>Scene root</source>
         <translation>Maiseman Päätaso</translation>
     </message>
@@ -427,7 +432,7 @@
 <context>
     <name>EntityLibrary</name>
     <message>
-        <location filename="qml/EntityLibrary.qml" line="45"/>
+        <location filename="qml/EntityLibrary.qml" line="48"/>
         <source>Shapes</source>
         <translation>Muodot</translation>
     </message>
@@ -516,18 +521,17 @@
 <context>
     <name>EntityTree</name>
     <message>
-        <location filename="qml/EntityTree.qml" line="87"/>
-        <location filename="qml/EntityTree.qml" line="208"/>
+        <location filename="qml/EntityTree.qml" line="160"/>
         <source>Entities</source>
         <translation>Entiteetit</translation>
     </message>
     <message>
-        <location filename="qml/EntityTree.qml" line="122"/>
+        <location filename="qml/EntityTree.qml" line="74"/>
         <source>Scene</source>
         <translation>Maisema</translation>
     </message>
     <message>
-        <location filename="qml/EntityTree.qml" line="213"/>
+        <location filename="qml/EntityTree.qml" line="165"/>
         <source>Visibility</source>
         <translation>Näkyvyys</translation>
     </message>
@@ -1118,7 +1122,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="src/editorutils.cpp" line="397"/>
+        <location filename="src/editorutils.cpp" line="437"/>
         <source>_Copy</source>
         <translation>_Kopio</translation>
     </message>
@@ -1461,148 +1465,148 @@
         <translation>&amp;Kamera</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="147"/>
+        <location filename="qml/main.qml" line="146"/>
         <source>Free viewing mode</source>
         <translation>Katsele Vapaasti</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="156"/>
+        <location filename="qml/main.qml" line="155"/>
         <source>Reset</source>
         <translation>Palauta Oletussijainti</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="163"/>
+        <location filename="qml/main.qml" line="162"/>
         <source>Add scene camera here</source>
         <translation>Lisää Kamera Tähän</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="174"/>
+        <location filename="qml/main.qml" line="173"/>
         <source>Move active camera here</source>
         <translation>Siirrä Aktiivinen Kamera Tähän</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="182"/>
+        <location filename="qml/main.qml" line="181"/>
         <source>Snap to active camera</source>
         <translation>Siirry Aktiiviseen Kameraan</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="190"/>
+        <location filename="qml/main.qml" line="189"/>
         <source>&amp;Helper Plane</source>
         <translation>&amp;Aputaso</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="196"/>
+        <location filename="qml/main.qml" line="195"/>
         <source>Normal &amp;X</source>
         <translation>&amp;X Normaali</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="207"/>
+        <location filename="qml/main.qml" line="206"/>
         <source>Normal &amp;Y</source>
         <translation>&amp;Y Normaali</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="218"/>
+        <location filename="qml/main.qml" line="217"/>
         <source>Normal &amp;Z</source>
         <translation>&amp;Z Normaali</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="229"/>
+        <location filename="qml/main.qml" line="228"/>
         <source>&amp;Hide</source>
         <translation>&amp;Piilota</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="241"/>
+        <location filename="qml/main.qml" line="240"/>
         <source>&amp;Language</source>
         <translation>Kieli</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="247"/>
+        <location filename="qml/main.qml" line="246"/>
         <source>English</source>
         <translation>Englanti</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="259"/>
+        <location filename="qml/main.qml" line="258"/>
         <source>Finnish</source>
         <translation>Suomi</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="277"/>
+        <location filename="qml/main.qml" line="276"/>
         <source>Load Scene</source>
         <translation>Lataa Maisema</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="278"/>
-        <location filename="qml/main.qml" line="290"/>
+        <location filename="qml/main.qml" line="277"/>
+        <location filename="qml/main.qml" line="289"/>
         <source>Qt3D Scenes (*.qml)</source>
         <translation>Qt 3D Maisemat (*.qml)</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="289"/>
+        <location filename="qml/main.qml" line="288"/>
         <source>Save Scene</source>
         <translation>Tallenna Maisema</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="299"/>
+        <location filename="qml/main.qml" line="298"/>
         <source>L&amp;oad</source>
         <translation>&amp;Lataa</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="306"/>
+        <location filename="qml/main.qml" line="305"/>
         <source>&amp;Save</source>
         <translation>&amp;Tallenna</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="321"/>
+        <location filename="qml/main.qml" line="320"/>
         <source>Save As</source>
         <translation>Tallenna Nimellä</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="332"/>
+        <location filename="qml/main.qml" line="331"/>
         <source>Undo</source>
         <translation>Peru</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="332"/>
+        <location filename="qml/main.qml" line="331"/>
         <source>Undo &apos;%1&apos;</source>
         <translation>Peru &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="340"/>
+        <location filename="qml/main.qml" line="339"/>
         <source>Redo</source>
         <translation>Toista</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="340"/>
+        <location filename="qml/main.qml" line="339"/>
         <source>Redo &apos;%1&apos;</source>
         <translation>Toista &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="357"/>
+        <location filename="qml/main.qml" line="356"/>
         <source>Normal X</source>
         <translation>X Normaali</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="358"/>
+        <location filename="qml/main.qml" line="357"/>
         <source>Normal Y</source>
         <translation>Y Normaali</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="359"/>
+        <location filename="qml/main.qml" line="358"/>
         <source>Normal Z</source>
         <translation>Z Normaali</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="360"/>
+        <location filename="qml/main.qml" line="359"/>
         <source>Hide Helper Plane</source>
         <translation>Piilota Aputaso</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="391"/>
+        <location filename="qml/main.qml" line="390"/>
         <source>Reset to Default</source>
         <translation>Palauta Oletussijainti</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="416"/>
+        <location filename="qml/main.qml" line="415"/>
         <source>Error</source>
         <translation>Virhe</translation>
     </message>
