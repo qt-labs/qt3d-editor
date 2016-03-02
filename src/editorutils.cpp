@@ -115,8 +115,7 @@ Qt3DCore::QEntity *EditorUtils::duplicateEntity(Qt3DCore::QEntity *entity,
         // Internals will get recreated when duplicate entity is added to scene
         Q_FOREACH (Qt3DCore::QComponent *component, entity->components()) {
             if (!EditorUtils::isObjectInternal(component)) {
-                Qt3DCore::QComponent *newComponent =
-                        EditorUtils::duplicateComponent(component, newEntity);
+                Qt3DCore::QComponent *newComponent = EditorUtils::duplicateComponent(component);
                 if (newComponent)
                     newEntity->addComponent(newComponent);
             }
@@ -135,8 +134,7 @@ Qt3DCore::QEntity *EditorUtils::duplicateEntity(Qt3DCore::QEntity *entity,
     return newEntity;
 }
 
-Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *component,
-                                                      Qt3DCore::QEntity *parent)
+Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *component)
 {
     // Check component type and create the same kind
     ComponentTypes type = componentType(component);
@@ -288,8 +286,7 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         return newComponent;
     }
     case MaterialPerVertexColor: {
-        Qt3DRender::QPerVertexColorMaterial *source =
-                qobject_cast<Qt3DRender::QPerVertexColorMaterial *>(component);
+        // MaterialPerVertexColor has no properties
         Qt3DRender::QPerVertexColorMaterial *newComponent =
                 new Qt3DRender::QPerVertexColorMaterial();
         return newComponent;
@@ -661,6 +658,53 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createCameraViewCenterMesh(float siz
     // TODO: proper mesh
     Qt3DRender::QSphereMesh *mesh = new Qt3DRender::QSphereMesh;
     mesh->setRadius(size / 2.0f);
+    return mesh;
+}
+
+Qt3DRender::QGeometryRenderer *EditorUtils::createLightMesh(EditorUtils::ComponentTypes type)
+{
+    // TODO: Create different mesh for different light types
+    Q_UNUSED(type)
+
+    Qt3DRender::QSphereMesh *mesh = new Qt3DRender::QSphereMesh();
+    mesh->setRadius(0.5f);
+    mesh->setRings(10);
+    mesh->setSlices(10);
+    return mesh;
+}
+
+Qt3DRender::QGeometryRenderer *EditorUtils::createMeshForInsertableType(InsertableEntities type)
+{
+    Qt3DRender::QGeometryRenderer *mesh = Q_NULLPTR;
+    switch (type) {
+    case CuboidEntity: {
+        mesh = new Qt3DRender::QCuboidMesh();
+        break;
+    }
+    case CylinderEntity: {
+        mesh = new Qt3DRender::QCylinderMesh();
+        break;
+    }
+    case PlaneEntity: {
+        mesh = new Qt3DRender::QPlaneMesh();
+        break;
+    }
+    case SphereEntity: {
+        mesh = new Qt3DRender::QSphereMesh();
+        break;
+    }
+    case TorusEntity: {
+        mesh = new Qt3DRender::QTorusMesh();
+        break;
+    }
+    case CustomEntity: {
+        mesh = createDefaultCustomMesh();
+        break;
+    }
+    default:
+        break;
+    }
+
     return mesh;
 }
 

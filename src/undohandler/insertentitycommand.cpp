@@ -33,7 +33,7 @@
 #include <Qt3DCore/QEntity>
 
 InsertEntityCommand::InsertEntityCommand(EditorSceneItemModel *sceneModel,
-                                         EditorSceneItemModel::InsertableEntities type,
+                                         EditorUtils::InsertableEntities type,
                                          const QString &parentName, const QVector3D &pos) :
     m_sceneModel(sceneModel),
     m_type(type),

@@ -44,28 +44,28 @@ Menu {
         text: qsTr("Mesh") + editorScene.emptyString
         iconSource: "qrc:/images/mesh.png"
         onTriggered: {
-            entityTree.addNewEntity(EditorSceneItemModel.CuboidEntity)
+            entityTree.addNewEntity(EditorUtils.CuboidEntity)
         }
     }
     MenuItem {
         text: qsTr("Camera") + editorScene.emptyString
         iconSource: "qrc:/images/camera.png"
         onTriggered: {
-            entityTree.addNewEntity(EditorSceneItemModel.CameraEntity)
+            entityTree.addNewEntity(EditorUtils.CameraEntity)
         }
     }
     MenuItem {
         text: qsTr("Light") + editorScene.emptyString
         iconSource: "qrc:/images/light.png"
         onTriggered: {
-            entityTree.addNewEntity(EditorSceneItemModel.LightEntity)
+            entityTree.addNewEntity(EditorUtils.LightEntity)
         }
     }
     MenuItem {
         text: qsTr("Empty") + editorScene.emptyString
         iconSource: "qrc:/images/cross.png"
         onTriggered: {
-            entityTree.addNewEntity(EditorSceneItemModel.GenericEntity)
+            entityTree.addNewEntity(EditorUtils.GenericEntity)
         }
     }
 }

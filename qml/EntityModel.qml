@@ -51,42 +51,42 @@ ListModel {
     }
 
     ListElement {
-        meshType: EditorSceneItemModel.CuboidEntity
+        meshType: EditorUtils.CuboidEntity
         meshImage: "images/mesh_cuboid-large.png"
         meshDragImage: "images/mesh_cuboid-large.png"
     }
     ListElement {
-        meshType: EditorSceneItemModel.CylinderEntity
+        meshType: EditorUtils.CylinderEntity
         meshImage: "images/mesh_cylinder-large.png"
         meshDragImage: "images/mesh_cylinder-large.png"
     }
     ListElement {
-        meshType: EditorSceneItemModel.PlaneEntity
+        meshType: EditorUtils.PlaneEntity
         meshImage: "images/mesh_plane-large.png"
         meshDragImage: "images/mesh_plane-large.png"
     }
     ListElement {
-        meshType: EditorSceneItemModel.SphereEntity
+        meshType: EditorUtils.SphereEntity
         meshImage: "images/mesh_sphere-large.png"
         meshDragImage: "images/mesh_sphere-large.png"
     }
     ListElement {
-        meshType: EditorSceneItemModel.TorusEntity
+        meshType: EditorUtils.TorusEntity
         meshImage: "images/mesh_torus-large.png"
         meshDragImage: "images/mesh_torus-large.png"
     }
     ListElement {
-        meshType: EditorSceneItemModel.CustomEntity
+        meshType: EditorUtils.CustomEntity
         meshImage: "images/mesh_custom-large.png"
         meshDragImage: "images/mesh_custom-large.png"
     }
     ListElement {
-        meshType: EditorSceneItemModel.CameraEntity
+        meshType: EditorUtils.CameraEntity
         meshImage: "images/camera-large.png"
         meshDragImage: "images/camera-large.png"
     }
     ListElement {
-        meshType: EditorSceneItemModel.LightEntity
+        meshType: EditorUtils.LightEntity
         meshImage: "images/light-large.png"
         meshDragImage: "images/light-large.png"
     }

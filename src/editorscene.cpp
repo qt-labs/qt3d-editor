@@ -28,7 +28,6 @@
 #include "editorscene.h"
 #include "editorutils.h"
 #include "editorsceneitem.h"
-#include "editorsceneitemmodel.h"
 #include "editorsceneparser.h"
 #include "editorsceneitemcomponentsmodel.h"
 #include "editorviewportitem.h"
@@ -399,7 +398,7 @@ void EditorScene::duplicateEntity(Qt3DCore::QEntity *entity)
 QVector3D EditorScene::getWorldPosition(int xPos, int yPos)
 {
     QVector3D retVec;
-    if (xPos >= 0 && yPos >= 0) {
+    if (xPos >= 0 && yPos >= 0 && xPos < m_viewport->width() && yPos < m_viewport->height()) {
         QPoint pos(xPos, yPos);
         Qt3DCore::QCamera *camera = frameGraphCamera();
         if (camera) {
@@ -420,6 +419,66 @@ QVector3D EditorScene::getWorldPosition(int xPos, int yPos)
     }
 
     return retVec;
+}
+
+// For some reason EditorUtils::InsertableEntities doesn't work as parameter type from QML here,
+// so we use int and cast it.
+void EditorScene::showPlaceholderEntity(const QString &name, int type)
+{
+    PlaceholderEntityData *data = m_placeholderEntityMap.value(name);
+    if (!data) {
+        data = new PlaceholderEntityData();
+        data->entity = new Qt3DCore::QEntity(m_rootEntity);
+        data->transform = new Qt3DCore::QTransform();
+        Qt3DRender::QPhongAlphaMaterial *material = new Qt3DRender::QPhongAlphaMaterial();
+        material->setAlpha(0.4f);
+        material->setAmbient(Qt::blue);
+        data->material = material;
+        data->entity->addComponent(data->transform);
+        data->entity->addComponent(material);
+        m_placeholderEntityMap.insert(name, data);
+    }
+
+    EditorUtils::InsertableEntities insertableType = EditorUtils::InsertableEntities(type);
+    if (data->type != insertableType) {
+        data->type = insertableType;
+        delete data->mesh;
+        data->mesh = EditorUtils::createMeshForInsertableType(insertableType);
+        if (!data->mesh) {
+            if (insertableType == EditorUtils::LightEntity)
+                data->mesh = EditorUtils::createLightMesh(EditorUtils::LightBasic);
+            else if (insertableType == EditorUtils::CameraEntity)
+                data->mesh = EditorUtils::createVisibleCameraMesh();
+        }
+        if (data->mesh)
+            data->entity->addComponent(data->mesh);
+    }
+
+    data->transform->setTranslation(QVector3D());
+    data->entity->setEnabled(true);
+}
+
+void EditorScene::movePlaceholderEntity(const QString &name, const QVector3D &worldPos)
+{
+    PlaceholderEntityData *data = m_placeholderEntityMap.value(name);
+    if (data)
+        data->transform->setTranslation(worldPos);
+}
+
+void EditorScene::hidePlaceholderEntity(const QString &name)
+{
+    PlaceholderEntityData *data = m_placeholderEntityMap.value(name);
+    if (data)
+        data->entity->setEnabled(false);
+}
+
+void EditorScene::destroyPlaceholderEntity(const QString &name)
+{
+    PlaceholderEntityData *data = m_placeholderEntityMap.value(name);
+    if (data) {
+        delete data->entity;
+        delete data;
+    }
 }
 
 const QString EditorScene::language() const

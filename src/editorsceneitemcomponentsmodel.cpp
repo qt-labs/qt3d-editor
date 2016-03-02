@@ -30,6 +30,7 @@
 #include "qdummyobjectpicker.h"
 
 #include "editorsceneitem.h"
+#include "editorutils.h"
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QCamera>
 #include <Qt3DCore/QComponent>
@@ -146,21 +147,18 @@ void EditorSceneItemComponentsModel::createLightMesh(Qt3DRender::QLight *lightCo
 {
     // Add an internal mesh at the same time, to be used as the light placeholder in
     // freeview camera mode
-    Qt3DRender::QSphereMesh *lightSphere = new Qt3DRender::QSphereMesh();
-    lightSphere->setObjectName(QStringLiteral("__internal light sphere"));
+    Qt3DRender::QGeometryRenderer *lightMesh = EditorUtils::createLightMesh(EditorUtils::LightBasic);
+    lightMesh->setObjectName(QStringLiteral("__internal light sphere"));
     connect(m_sceneItem, &EditorSceneItem::freeViewChanged,
-            lightSphere, &Qt3DRender::QSphereMesh::setEnabled);
-    lightSphere->setEnabled(m_sceneItem->freeViewFlag());
-    lightSphere->setRadius(0.5f);
-    lightSphere->setRings(10);
-    lightSphere->setSlices(10);
+            lightMesh, &Qt3DRender::QSphereMesh::setEnabled);
+    lightMesh->setEnabled(m_sceneItem->freeViewFlag());
     Qt3DRender::QPhongAlphaMaterial *lightMaterial = new Qt3DRender::QPhongAlphaMaterial();
     lightMaterial->setObjectName(QStringLiteral("__internal light material"));
     lightMaterial->setDiffuse(Qt::white);
     lightMaterial->setAmbient(lightComponent->color());
     lightMaterial->setAlpha(0.5f);
     m_sceneItem->entity()->addComponent(lightMaterial);
-    m_sceneItem->entity()->addComponent(lightSphere);
+    m_sceneItem->entity()->addComponent(lightMesh);
     m_lightItem->setLightMaterial(lightMaterial);
     // TODO: Currently adding new mesh/material to a light overrides the default free view
     // TODO: mesh/material and if you remove it, there will be no mesh/material left.

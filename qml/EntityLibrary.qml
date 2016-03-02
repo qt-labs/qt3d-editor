@@ -90,14 +90,22 @@ Item {
                         dragIconObj.source = meshDragImage
                         dragIconObj.x = globalPos.x - dragIconObj.width / 2
                         dragIconObj.y = globalPos.y - dragIconObj.height / 2
+                        editorScene.showPlaceholderEntity("dragInsert", meshType)
                     }
 
                     onPositionChanged: {
-                        var globalPos = mapToItem(applicationMouseArea, mouseX, mouseY)
-                        dragIconObj.x += globalPos.x - dragPositionX
-                        dragIconObj.y += globalPos.y - dragPositionY
-                        dragPositionX = globalPos.x
-                        dragPositionY = globalPos.y
+                        if (dragIconObj) {
+                            var globalPos = mapToItem(applicationMouseArea, mouseX, mouseY)
+                            dragIconObj.x += globalPos.x - dragPositionX
+                            dragIconObj.y += globalPos.y - dragPositionY
+                            dragPositionX = globalPos.x
+                            dragPositionY = globalPos.y
+                            var scenePos = editorViewport.mapFromItem(applicationMouseArea,
+                                                                      dragPositionX,
+                                                                      dragPositionY)
+                            editorScene.movePlaceholderEntity("dragInsert",
+                                        editorScene.getWorldPosition(scenePos.x, scenePos.y))
+                        }
                     }
 
                     onReleased: {
@@ -105,7 +113,13 @@ Item {
                         var scenePos = editorViewport.mapFromItem(applicationMouseArea,
                                                                   dragPositionX,
                                                                   dragPositionY)
+                        editorScene.hidePlaceholderEntity("dragInsert")
                         createNewEntity(meshType, scenePos.x, scenePos.y)
+                    }
+
+                    onCanceled: {
+                        dragIconObj.destroy()
+                        editorScene.hidePlaceholderEntity("dragInsert")
                     }
 
                     Rectangle {

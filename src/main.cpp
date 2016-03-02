@@ -55,6 +55,7 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<EditorSceneItemMeshComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemMeshComponentsModel", "Created by EditorSceneItemComponentsModel");
     qmlRegisterUncreatableType<EditorSceneItemLightComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemLightComponentsModel", "Created by EditorSceneItemComponentsModel");
     qmlRegisterUncreatableType<UndoHandler>("com.theqtcompany.SceneEditor3D", 1, 0, "UndoHandler", "Created by EditorScene");
+    qmlRegisterUncreatableType<EditorUtils>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorUtils", "Created by EditorScene");
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));

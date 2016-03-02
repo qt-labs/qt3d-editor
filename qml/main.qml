@@ -162,7 +162,7 @@ ApplicationWindow {
                     text: qsTr("Add scene camera here") + editorScene.emptyString
                     onTriggered: {
                         entityTree.selectSceneRoot()
-                        entityTree.addNewEntity(EditorSceneItemModel.CameraEntity)
+                        entityTree.addNewEntity(EditorUtils.CameraEntity)
                         editorScene.copyFreeViewToNewSceneCamera()
                         // TODO: Needs undo/redo support.
                         // TODO: Also, adding and copying should be undone/redone in a single step

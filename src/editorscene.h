@@ -28,15 +28,16 @@
 #ifndef EDITORSCENE_H
 #define EDITORSCENE_H
 
+#include "editorutils.h"
+
 #include <QtCore/QObject>
 #include <QtCore/QMap>
 #include <QtCore/QUrl>
+#include <QtCore/QStringListModel>
+#include <QtCore/QTranslator>
 #include <QtGui/QVector3D>
 #include <QtGui/QQuaternion>
 #include <Qt3DCore/QNodeId>
-
-#include <QStringListModel>
-#include <QtCore/QTranslator>
 
 namespace Qt3DCore {
     class QEntity;
@@ -59,7 +60,6 @@ class EditorSceneItem;
 class EditorSceneParser;
 class EditorViewportItem;
 class UndoHandler;
-class EditorUtils;
 class QMouseEvent;
 
 class EditorScene : public QObject
@@ -136,12 +136,28 @@ private:
         Qt3DRender::QObjectPicker *picker;
     };
 
+    struct PlaceholderEntityData {
+        PlaceholderEntityData() :
+            entity(Q_NULLPTR)
+          , transform(Q_NULLPTR)
+          , material(Q_NULLPTR)
+          , mesh(Q_NULLPTR)
+          , type(EditorUtils::GenericEntity)
+        {}
+        Qt3DCore::QEntity *entity;
+        Qt3DCore::QTransform *transform;
+        Qt3DRender::QMaterial *material;
+        Qt3DRender::QGeometryRenderer *mesh;
+        EditorUtils::InsertableEntities type;
+    };
+
     enum DragMode {
         DragNone = 0,
         DragTranslate,
         DragScale,
         DragRotate
     };
+
 
 public:
     explicit EditorScene(QObject *parent = 0);
@@ -172,6 +188,10 @@ public:
     Q_INVOKABLE void snapFreeViewCameraToActiveSceneCamera();
     Q_INVOKABLE void duplicateEntity(Qt3DCore::QEntity *entity);
     Q_INVOKABLE QVector3D getWorldPosition(int xPos, int yPos);
+    Q_INVOKABLE void showPlaceholderEntity(const QString &name, int type);
+    Q_INVOKABLE void movePlaceholderEntity(const QString &name, const QVector3D &worldPos);
+    Q_INVOKABLE void hidePlaceholderEntity(const QString &name);
+    Q_INVOKABLE void destroyPlaceholderEntity(const QString &name);
 
     bool isRemovable(Qt3DCore::QEntity *entity) const;
 
@@ -322,6 +342,8 @@ private:
     QVector3D m_dragInitialHandleTranslation;
     QVector3D m_dragInitialHandleCornerTranslation;
     bool m_ignoringInitialDrag;
+
+    QMap<QString, PlaceholderEntityData *> m_placeholderEntityMap;
 };
 
 #endif // EDITORSCENE_H

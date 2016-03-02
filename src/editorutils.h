@@ -44,8 +44,10 @@ class QBuffer;
 
 class EditorSceneItemModel;
 
-class EditorUtils
+class EditorUtils : public QObject
 {
+    Q_OBJECT
+public:
     enum ComponentTypes {
         // Lights
         LightDirectional = 1,
@@ -81,14 +83,28 @@ class EditorUtils
         ObjectPicker,
         Unknown = 1000
     };
+    Q_ENUM(ComponentTypes)
+
+    enum InsertableEntities {
+        GenericEntity,
+        CuboidEntity,
+        CylinderEntity,
+        PlaneEntity,
+        SphereEntity,
+        TorusEntity,
+        CustomEntity,
+        CameraEntity,
+        LightEntity
+    };
+    Q_ENUM(InsertableEntities)
+
 
 public:
     static bool isObjectInternal(QObject *obj);
     static void copyCameraProperties(Qt3DCore::QCamera *target, Qt3DCore::QCamera *source);
     static Qt3DCore::QEntity *duplicateEntity(Qt3DCore::QEntity *entity,
                                               Qt3DCore::QEntity *newParent = Q_NULLPTR);
-    static Qt3DCore::QComponent *duplicateComponent(Qt3DCore::QComponent *component,
-                                                    Qt3DCore::QEntity *parent);
+    static Qt3DCore::QComponent *duplicateComponent(Qt3DCore::QComponent *component);
     static void nameDuplicate(Qt3DCore::QEntity *duplicate, Qt3DCore::QEntity *original,
                               EditorSceneItemModel *sceneModel);
 
@@ -100,6 +116,8 @@ public:
     static Qt3DRender::QGeometryRenderer *createVisibleCameraMesh();
     static Qt3DRender::QGeometryRenderer *createCameraViewVectorMesh();
     static Qt3DRender::QGeometryRenderer *createCameraViewCenterMesh(float size);
+    static Qt3DRender::QGeometryRenderer *createLightMesh(ComponentTypes type);
+    static Qt3DRender::QGeometryRenderer *createMeshForInsertableType(InsertableEntities type);
     static void addPositionAttributeToGeometry(Qt3DRender::QGeometry *geometry,
                                                Qt3DRender::QBuffer *buffer,
                                                int count);
@@ -123,6 +141,9 @@ public:
                                   qreal radians);
     static QVector3D projectVectorOnPlane(const QVector3D &vector, const QVector3D &planeNormal);
 private:
+    // Private constructor to ensure no actual instance is created
+    explicit EditorUtils() {}
+
     static ComponentTypes componentType(Qt3DCore::QComponent *component);
     QString m_copyString;
 };

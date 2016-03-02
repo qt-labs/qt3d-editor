@@ -28,7 +28,7 @@
 #ifndef INSERTENTITYCOMMAND_H
 #define INSERTENTITYCOMMAND_H
 
-#include "editorsceneitemmodel.h"
+#include "editorutils.h"
 
 #include <QtWidgets/QUndoCommand>
 #include <QtGui/QVector3D>
@@ -43,7 +43,7 @@ class InsertEntityCommand : public QUndoCommand
 {
 public:
     InsertEntityCommand(EditorSceneItemModel *sceneModel,
-                        EditorSceneItemModel::InsertableEntities type,
+                        EditorUtils::InsertableEntities type,
                         const QString &parentName, const QVector3D &pos);
 
     virtual void undo();
@@ -51,7 +51,7 @@ public:
 
 private:
     EditorSceneItemModel *m_sceneModel;
-    EditorSceneItemModel::InsertableEntities m_type;
+    EditorUtils::InsertableEntities m_type;
     QString m_parentName;
     QString m_insertedEntityName;
     QVector3D m_insertPosition;

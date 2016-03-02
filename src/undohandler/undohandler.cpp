@@ -85,7 +85,7 @@ void UndoHandler::createInsertEntityCommand(int type, const QString &parentName,
                                             const QVector3D &pos)
 {
     m_undoStack->push(new InsertEntityCommand(m_scene->sceneModel(),
-                                              EditorSceneItemModel::InsertableEntities(type),
+                                              EditorUtils::InsertableEntities(type),
                                               parentName, pos));
 }
 

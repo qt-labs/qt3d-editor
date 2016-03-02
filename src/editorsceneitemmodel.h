@@ -28,6 +28,8 @@
 #ifndef EDITORSCENEITEMMODEL_H
 #define EDITORSCENEITEMMODEL_H
 
+#include "editorutils.h"
+
 #include <QtCore/QAbstractItemModel>
 
 namespace Qt3DCore {
@@ -40,19 +42,6 @@ class EditorSceneItemModel : public QAbstractItemModel
 {
     Q_OBJECT
 public:
-    enum InsertableEntities {
-        GenericEntity,
-        CuboidEntity,
-        CylinderEntity,
-        PlaneEntity,
-        SphereEntity,
-        TorusEntity,
-        CustomEntity,
-        CameraEntity,
-        LightEntity
-    };
-    Q_ENUM(InsertableEntities)
-
     enum EditorSceneItemRoles {
         ItemRole = Qt::UserRole + 1,
         NameRole,
@@ -74,7 +63,7 @@ public:
     void resetModel();
 
     Q_INVOKABLE EditorSceneItem *editorSceneItemFromIndex(const QModelIndex &index) const;
-    Qt3DCore::QEntity *insertEntity(InsertableEntities type,
+    Qt3DCore::QEntity *insertEntity(EditorUtils::InsertableEntities type,
                                     const QVector3D &pos,
                                     const QModelIndex &parentIndex = QModelIndex());
     void insertExistingEntity(Qt3DCore::QEntity *entity, int row,
