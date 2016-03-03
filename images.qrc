@@ -60,14 +60,14 @@
         <file>images/property_camera_hidden.png</file>
         <file>images/property_camera_shown.png</file>
         <file>images/property_grouping_line.png</file>
-        <file>images/workplane_none_deselected.png</file>
-        <file>images/workplane_none_selected.png</file>
-        <file>images/workplane_x_deselected.png</file>
-        <file>images/workplane_x_selected.png</file>
-        <file>images/workplane_y_deselected.png</file>
-        <file>images/workplane_y_selected.png</file>
-        <file>images/workplane_z_deselected.png</file>
-        <file>images/workplane_z_selected.png</file>
+        <file>images/helperplane_none_deselected.png</file>
+        <file>images/helperplane_none_selected.png</file>
+        <file>images/helperplane_x_deselected.png</file>
+        <file>images/helperplane_x_selected.png</file>
+        <file>images/helperplane_y_deselected.png</file>
+        <file>images/helperplane_y_selected.png</file>
+        <file>images/helperplane_z_deselected.png</file>
+        <file>images/helperplane_z_selected.png</file>
         <file>images/reset_camera_to_default.png</file>
     </qresource>
 </RCC>
