@@ -498,7 +498,7 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createWireframePlaneMesh(int lineCou
     Qt3DRender::QGeometryRenderer *planeMesh = new Qt3DRender::QGeometryRenderer();
     Qt3DRender::QGeometry *planeGeometry = new Qt3DRender::QGeometry(planeMesh);
     Qt3DRender::QBuffer *planeDataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer,
-                                                                    planeGeometry);
+                                                                   planeGeometry);
     QByteArray vertexBufferData;
     QVector<QVector3D> vertices;
 
@@ -740,7 +740,7 @@ void EditorUtils::addIndexAttributeToGeometry(Qt3DRender::QGeometry *geometry,
 }
 
 void EditorUtils::updateCameraFrustumMesh(Qt3DRender::QGeometryRenderer *mesh,
-                                           Qt3DCore::QCamera *camera)
+                                          Qt3DCore::QCamera *camera)
 {
     QMatrix4x4 projectionMatrix = camera->projectionMatrix().inverted();
 

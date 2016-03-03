@@ -201,7 +201,7 @@ Item {
                     selectSceneRoot()
                 } else {
                     entityTreeView.sceneRootSelected =
-                        (editorScene.sceneModel.sceneEntityIndex() === entityTreeView.selection.currentIndex)
+                            (editorScene.sceneModel.sceneEntityIndex() === entityTreeView.selection.currentIndex)
                     selectedEntity = editorScene.sceneModel.editorSceneItemFromIndex(entityTreeView.selection.currentIndex)
                     if (selectedEntity) {
                         componentPropertiesView.model = selectedEntity.componentsModel

@@ -387,7 +387,7 @@ void EditorScene::snapFreeViewCameraToActiveSceneCamera()
     // Set the freeview camera position to the active scene camera position
     Qt3DCore::QCamera *activeCam = qobject_cast<Qt3DCore::QCamera *>(
                 m_sceneCameras.at(m_activeSceneCameraIndex).cameraEntity);
-   EditorUtils::copyCameraProperties(m_freeViewCameraEntity, activeCam);
+    EditorUtils::copyCameraProperties(m_freeViewCameraEntity, activeCam);
 }
 
 void EditorScene::duplicateEntity(Qt3DCore::QEntity *entity)
@@ -617,7 +617,7 @@ void EditorScene::updateVisibleSceneCameraMatrix(const EditorScene::CameraData &
                     cameraData.visibleTransform->rotation());
 
         EditorUtils::updateCameraFrustumMesh(m_activeSceneCameraFrustumData.frustumMesh,
-                                              cameraData.cameraEntity);
+                                             cameraData.cameraEntity);
         m_activeSceneCameraFrustumData.frustumTransform->setTranslation(
                     cameraData.cameraEntity->position());
         m_activeSceneCameraFrustumData.frustumTransform->setRotation(
@@ -1441,11 +1441,11 @@ void EditorScene::handleSelectionTransformChange()
 
         // These are approximate distances to drag handles used for sizing of the handles
         float distanceToScale = ((translation * dragHandleScaleAdjustment
-                    + m_dragHandles.transform->translation())
-                   - cameraPos).length();
+                                  + m_dragHandles.transform->translation())
+                                 - cameraPos).length();
         float distanceToRotate = ((translation * dragHandleRotationAdjustment
-                    + m_dragHandles.transform->translation())
-                   - cameraPos).length();
+                                   + m_dragHandles.transform->translation())
+                                  - cameraPos).length();
 
         // We want the size to be constant on screen, so the angle for the handle radius
         // must be constant.
@@ -1774,7 +1774,7 @@ bool EditorScene::eventFilter(QObject *obj, QEvent *event)
     Q_UNUSED(obj)
     // Filter undo and redo keysequences so TextFields don't get them
     switch (event->type()) {
-        case QEvent::KeyPress: {
+    case QEvent::KeyPress: {
         QKeyEvent *ke = static_cast<QKeyEvent *>(event);
         if (ke == QKeySequence::Redo) {
             if (m_undoHandler->canRedo())

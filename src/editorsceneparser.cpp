@@ -174,7 +174,7 @@ EditorSceneParser::~EditorSceneParser()
 
 // Caller retains ownership of sceneEntity and frameGraph
 bool EditorSceneParser::exportQmlScene(Qt3DCore::QEntity *sceneEntity, const QUrl &fileUrl,
-                                    Qt3DCore::QEntity *activeSceneCamera, bool autosave)
+                                       Qt3DCore::QEntity *activeSceneCamera, bool autosave)
 {
     // TODO: Maybe change exporting so that use selects the target .qrc file, and generate
     // TODO: qml in the subdirectory? That way user only needs to add the .qrc to the project.
@@ -235,7 +235,7 @@ bool EditorSceneParser::exportQmlScene(Qt3DCore::QEntity *sceneEntity, const QUr
     m_stream << indent() << QStringLiteral("aspects: [\"render\"") << extraAspectsTag
              << QStringLiteral("]") << endl;
 
-     // Top level container entity
+    // Top level container entity
     outStartType(Entity);
 
     // Create a dummy framegraph and output it
@@ -680,7 +680,7 @@ void EditorSceneParser::outEntity(Qt3DCore::QEntity *entity)
                     m_indentLevel--;
                 }
                 m_stream << indent() << componentsEnd << endl;
-                }
+            }
         }
 
         // Output child entities
@@ -791,7 +791,7 @@ void EditorSceneParser::outTextureProperty(const QString &propertyName,
     // Get the url of the texture
     if (textureProvider->textureImages().size()) {
         const Qt3DRender::QTextureImage *textureImage =
-            qobject_cast<const Qt3DRender::QTextureImage *>(textureProvider->textureImages().at(0));
+                qobject_cast<const Qt3DRender::QTextureImage *>(textureProvider->textureImages().at(0));
         if (textureImage) {
             QString imageName = m_exportResourceMap.value(textureImage->source());
 

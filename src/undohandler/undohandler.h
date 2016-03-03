@@ -77,10 +77,10 @@ public:
                                                  const QVariant &oldValue,
                                                  bool pushToStack);
     Q_INVOKABLE void createChangeModelRoleCommand(const QString &entityName,
-                                                 int componentType,
-                                                 int roleIndex,
-                                                 const QVariant &newValue,
-                                                 const QVariant &oldValue);
+                                                  int componentType,
+                                                  int roleIndex,
+                                                  const QVariant &newValue,
+                                                  const QVariant &oldValue);
     Q_INVOKABLE void createRenameEntityCommand(const QString &oldName,
                                                const QString &newName);
     void createReplaceComponentCommand(const QString &entityName,

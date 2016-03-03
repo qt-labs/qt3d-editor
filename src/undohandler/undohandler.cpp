@@ -116,7 +116,7 @@ void UndoHandler::createChangeModelRoleCommand(const QString &entityName,
                                                const QVariant &newValue, const QVariant &oldValue)
 {
     m_undoStack->push(new ModelRoleChangeCommand(m_scene->sceneModel(), entityName,
-                                                EditorSceneItemComponentsModel::EditorSceneItemComponentTypes(componentType),
+                                                 EditorSceneItemComponentsModel::EditorSceneItemComponentTypes(componentType),
                                                  roleIndex, newValue, oldValue));
 }
 

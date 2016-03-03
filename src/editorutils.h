@@ -125,7 +125,7 @@ public:
                                             Qt3DRender::QBuffer *buffer,
                                             int count);
     static void updateCameraFrustumMesh(Qt3DRender::QGeometryRenderer *mesh,
-                                         Qt3DCore::QCamera *camera);
+                                        Qt3DCore::QCamera *camera);
 
     static Qt3DCore::QTransform *entityTransform(Qt3DCore::QEntity *entity);
     static QVector3D findIntersection(const QVector3D &rayOrigin, const QVector3D &ray,

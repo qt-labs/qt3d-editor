@@ -83,10 +83,10 @@ Item {
 
             onHeightChanged: {
                 if (componentTitle.viewHeaderInitialized)
-                        componentHeight = columnLayout.y + columnLayout.height
-                    else
-                        componentHeight = columnLayout.y + columnLayout.height
-                                            + componentTitle.minimumHeaderHeight
+                    componentHeight = columnLayout.y + columnLayout.height
+                else
+                    componentHeight = columnLayout.y + columnLayout.height
+                            + componentTitle.minimumHeaderHeight
                 componentDelegate.height = componentHeight
             }
         }
