@@ -50,6 +50,7 @@ ApplicationWindow {
     property string selectedEntityName: ""
     property var sceneModel: EditorSceneItemComponentsModel
     property url saveFileUrl: ""
+    property int currentHelperPlane: 1
 
     property color labelTextColor: "white"
 
@@ -198,44 +199,44 @@ ApplicationWindow {
                     id: planeOrientationX
                     text: qsTr("Normal &X") + editorScene.emptyString
                     checkable: true
-                    checked: helperPlaneComboBox.currentIndex === 0 ? true : false
+                    checked: currentHelperPlane === 0 ? true : false
                     exclusiveGroup: helperPlaneOrientationGroup
                     onCheckedChanged: {
                         if (checked)
-                            helperPlaneComboBox.currentIndex = 0
+                            mainwindow.showNormalXPlane()
                     }
                 }
                 MenuItem {
                     id: planeOrientationY
                     text: qsTr("Normal &Y") + editorScene.emptyString
                     checkable: true
-                    checked: helperPlaneComboBox.currentIndex === 1 ? true : false
+                    checked: currentHelperPlane === 1 ? true : false
                     exclusiveGroup: helperPlaneOrientationGroup
                     onCheckedChanged: {
                         if (checked)
-                            helperPlaneComboBox.currentIndex = 1
+                            mainwindow.showNormalYPlane()
                     }
                 }
                 MenuItem {
                     id: planeOrientationZ
                     text: qsTr("Normal &Z") + editorScene.emptyString
                     checkable: true
-                    checked: helperPlaneComboBox.currentIndex === 2 ? true : false
+                    checked: currentHelperPlane === 2 ? true : false
                     exclusiveGroup: helperPlaneOrientationGroup
                     onCheckedChanged: {
                         if (checked)
-                            helperPlaneComboBox.currentIndex = 2
+                            mainwindow.showNormalZPlane()
                     }
                 }
                 MenuItem {
                     id: planeDisabled
                     text: qsTr("&Hide") + editorScene.emptyString
                     checkable: true
-                    checked: helperPlaneComboBox.currentIndex === 3 ? true : false
+                    checked: currentHelperPlane === 3 ? true : false
                     exclusiveGroup: helperPlaneOrientationGroup
                     onCheckedChanged: {
                         if (checked)
-                            helperPlaneComboBox.currentIndex = 3
+                            mainwindow.hideHelperPlane()
                     }
                 }
             }
@@ -366,54 +367,108 @@ ApplicationWindow {
     }
 
     toolBar: ToolBar {
-        height: 24
+        id: mainToolBar
+        height: normalXButton.height + 4
         RowLayout {
-            ComboBox {
-                id: helperPlaneComboBox
-                model: ListModel {
-                    property string language: systemLanguage
-
-                    function retranslateUi() {
-                        // Repopulate list to change the current text as well
-                        clear()
-                        append({text: qsTr("Normal X")})
-                        append({text: qsTr("Normal Y")})
-                        append({text: qsTr("Normal Z")})
-                        append({text: qsTr("Hide Helper Plane")})
-                    }
-
-                    Component.onCompleted: retranslateUi()
-
-                    onLanguageChanged: retranslateUi()
-                }
-
-                currentIndex: 1
-
-                onCurrentIndexChanged: {
-                    if (editorScene) {
-                        if (currentIndex === 3) {
-                            editorScene.helperPlane.enabled = false
-                        } else {
-                            editorScene.helperPlane.enabled = true
-                            if (currentIndex === 0) {
-                                editorScene.helperPlaneTransform.rotation =
-                                    editorScene.helperPlaneTransform.fromAxisAndAngle(0, 1, 0, 90)
-                            } else if (currentIndex === 1) {
-                                editorScene.helperPlaneTransform.rotation =
-                                    editorScene.helperPlaneTransform.fromAxisAndAngle(1, 0, 0, 90)
-                            } else if (currentIndex === 2) {
-                                editorScene.helperPlaneTransform.rotation =
-                                    editorScene.helperPlaneTransform.fromAxisAndAngle(0, 0, 1, 90)
-                            }
-                        }
-                    }
-                }
+            EnableButton {
+                id: normalXButton
+                height: 32
+                width: 32
+                anchors.verticalCenter: parent.verticalCenter
+                enabledIconSource: "/images/helperplane_x_deselected.png"
+                disabledIconSource: "/images/helperplane_x_selected.png"
+                tooltip: qsTr("Normal X (Ctrl + 1)") + editorScene.emptyString
+                buttonEnabled: currentHelperPlane === 0 ? false : true
+                onEnabledButtonClicked: mainwindow.showNormalXPlane()
             }
-            ToolButton {
-                text: qsTr("Reset to Default") + editorScene.emptyString
-                onClicked: editorScene.resetFreeViewCamera()
+            EnableButton {
+                height: 32
+                width: 32
+                anchors.verticalCenter: parent.verticalCenter
+                enabledIconSource: "/images/helperplane_y_deselected.png"
+                disabledIconSource: "/images/helperplane_y_selected.png"
+                tooltip: qsTr("Normal Y (Ctrl + 2)") + editorScene.emptyString
+                buttonEnabled: currentHelperPlane === 1 ? false : true
+                onEnabledButtonClicked: mainwindow.showNormalYPlane()
+            }
+            EnableButton {
+                height: 32
+                width: 32
+                anchors.verticalCenter: parent.verticalCenter
+                enabledIconSource: "/images/helperplane_z_deselected.png"
+                disabledIconSource: "/images/helperplane_z_selected.png"
+                tooltip: qsTr("Normal Z (Ctrl + 3)") + editorScene.emptyString
+                buttonEnabled: currentHelperPlane === 2 ? false : true
+                onEnabledButtonClicked: mainwindow.showNormalZPlane()
+            }
+            EnableButton {
+                height: 32
+                width: 32
+                anchors.verticalCenter: parent.verticalCenter
+                enabledIconSource: "/images/helperplane_none_deselected.png"
+                disabledIconSource: "/images/helperplane_none_selected.png"
+                tooltip: qsTr("Hide helper plane (Ctrl + 4)") + editorScene.emptyString
+                buttonEnabled: currentHelperPlane === 3 ? false : true
+                onEnabledButtonClicked: mainwindow.hideHelperPlane()
+            }
+            EnableButton {
+                height: 32
+                width: 32
+                anchors.verticalCenter: parent.verticalCenter
+                enabledIconSource: "/images/reset_camera_to_default.png"
+                disabledIconSource: "/images/reset_camera_to_default.png"
+                tooltip: qsTr("Reset to Default (Ctrl + R)") + editorScene.emptyString
+                buttonEnabled: true
+                onEnabledButtonClicked: editorScene.resetFreeViewCamera()
             }
         }
+    }
+    Shortcut {
+        id: normalXShortcut
+        sequence: "Ctrl+1"
+        onActivated: mainwindow.showNormalXPlane()
+    }
+    function showNormalXPlane() {
+        editorScene.helperPlane.enabled = true
+        editorScene.helperPlaneTransform.rotation =
+                editorScene.helperPlaneTransform.fromAxisAndAngle(0, 1, 0, 90)
+        currentHelperPlane = 0
+    }
+    Shortcut {
+        id: normalYShortcut
+        sequence: "Ctrl+2"
+        onActivated: mainwindow.showNormalYPlane()
+    }
+    function showNormalYPlane() {
+        editorScene.helperPlane.enabled = true
+        editorScene.helperPlaneTransform.rotation =
+                editorScene.helperPlaneTransform.fromAxisAndAngle(1, 0, 0, 90)
+        currentHelperPlane = 1
+    }
+    Shortcut {
+        id: normalZShortcut
+        sequence: "Ctrl+3"
+        onActivated: mainwindow.showNormalZPlane()
+    }
+    function showNormalZPlane() {
+        editorScene.helperPlane.enabled = true
+        editorScene.helperPlaneTransform.rotation =
+                editorScene.helperPlaneTransform.fromAxisAndAngle(0, 0, 1, 90)
+        currentHelperPlane = 2
+    }
+    Shortcut {
+        id: hideHelperPlaneShortcut
+        sequence: "Ctrl+4"
+        onActivated: mainwindow.hideHelperPlane()
+    }
+    function hideHelperPlane() {
+        editorScene.helperPlane.enabled = false
+        currentHelperPlane = 3
+    }
+    Shortcut {
+        id: resetCameraShortcut
+        sequence: "Ctrl+R"
+        onActivated: editorScene.resetFreeViewCamera()
     }
 
     EditorScene {
