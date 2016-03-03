@@ -77,7 +77,6 @@ Item {
                     width: buttonSize
                     height: buttonSize
 
-                    property variant dragIconObj
                     property int dragPositionX
                     property int dragPositionY
 
@@ -85,31 +84,21 @@ Item {
                         var globalPos = mapToItem(applicationArea, mouseX, mouseY)
                         dragPositionX = globalPos.x
                         dragPositionY = globalPos.y
-                        var component = Qt.createComponent("DragEntity.qml")
-                        dragIconObj = component.createObject(mainwindow)
-                        dragIconObj.source = meshDragImage
-                        dragIconObj.x = globalPos.x - dragIconObj.width / 2
-                        dragIconObj.y = globalPos.y - dragIconObj.height / 2
                         editorScene.showPlaceholderEntity("dragInsert", meshType)
                     }
 
                     onPositionChanged: {
-                        if (dragIconObj) {
-                            var globalPos = mapToItem(applicationArea, mouseX, mouseY)
-                            dragIconObj.x += globalPos.x - dragPositionX
-                            dragIconObj.y += globalPos.y - dragPositionY
-                            dragPositionX = globalPos.x
-                            dragPositionY = globalPos.y
-                            var scenePos = editorViewport.mapFromItem(applicationArea,
-                                                                      dragPositionX,
-                                                                      dragPositionY)
-                            editorScene.movePlaceholderEntity("dragInsert",
-                                        editorScene.getWorldPosition(scenePos.x, scenePos.y))
-                        }
+                        var globalPos = mapToItem(applicationArea, mouseX, mouseY)
+                        dragPositionX = globalPos.x
+                        dragPositionY = globalPos.y
+                        var scenePos = editorViewport.mapFromItem(applicationArea,
+                                                                  dragPositionX,
+                                                                  dragPositionY)
+                        editorScene.movePlaceholderEntity("dragInsert",
+                                    editorScene.getWorldPosition(scenePos.x, scenePos.y))
                     }
 
                     onReleased: {
-                        dragIconObj.destroy()
                         var scenePos = editorViewport.mapFromItem(applicationArea,
                                                                   dragPositionX,
                                                                   dragPositionY)
@@ -118,7 +107,6 @@ Item {
                     }
 
                     onCanceled: {
-                        dragIconObj.destroy()
                         editorScene.hidePlaceholderEntity("dragInsert")
                     }
 
