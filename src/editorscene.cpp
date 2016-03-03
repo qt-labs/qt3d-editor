@@ -384,10 +384,13 @@ void EditorScene::moveActiveSceneCameraToFreeView()
 
 void EditorScene::snapFreeViewCameraToActiveSceneCamera()
 {
-    // Set the freeview camera position to the active scene camera position
-    Qt3DCore::QCamera *activeCam = qobject_cast<Qt3DCore::QCamera *>(
-                m_sceneCameras.at(m_activeSceneCameraIndex).cameraEntity);
-    EditorUtils::copyCameraProperties(m_freeViewCameraEntity, activeCam);
+    // Set the freeview camera position and viewCenter to the active scene camera values
+    Qt3DCore::QCamera *activeCam = m_sceneCameras.at(m_activeSceneCameraIndex).cameraEntity;
+    m_freeViewCameraEntity->setViewCenter(activeCam->viewCenter());
+    m_freeViewCameraEntity->setPosition(activeCam->position());
+    // Need to reset upVector as well, as camera controls will keep updating it to actual
+    // value, which won't work anymore if you move both camera viewCenter and position.
+    m_freeViewCameraEntity->setUpVector(QVector3D(0, 1, 0));
 }
 
 void EditorScene::duplicateEntity(Qt3DCore::QEntity *entity)
