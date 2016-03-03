@@ -40,10 +40,9 @@ ApplicationWindow {
     height: 700
     visible: true
 
-    MouseArea {
-        id: applicationMouseArea
+    Item {
+        id: applicationArea
         anchors.fill: parent
-        hoverEnabled: true
     }
 
     property var selectedEntity: null
@@ -528,6 +527,14 @@ ApplicationWindow {
                 height: mainwindow.height
                 scene: editorScene
                 inputEnabled: editorScene.freeView
+
+                MouseArea {
+                    anchors.fill: parent
+                    onPressed: {
+                        entityTree.focusTree()
+                        mouse.accepted = false
+                    }
+                }
             }
         }
 

@@ -82,7 +82,7 @@ Item {
                     property int dragPositionY
 
                     onPressed: {
-                        var globalPos = mapToItem(applicationMouseArea, mouseX, mouseY)
+                        var globalPos = mapToItem(applicationArea, mouseX, mouseY)
                         dragPositionX = globalPos.x
                         dragPositionY = globalPos.y
                         var component = Qt.createComponent("DragEntity.qml")
@@ -95,12 +95,12 @@ Item {
 
                     onPositionChanged: {
                         if (dragIconObj) {
-                            var globalPos = mapToItem(applicationMouseArea, mouseX, mouseY)
+                            var globalPos = mapToItem(applicationArea, mouseX, mouseY)
                             dragIconObj.x += globalPos.x - dragPositionX
                             dragIconObj.y += globalPos.y - dragPositionY
                             dragPositionX = globalPos.x
                             dragPositionY = globalPos.y
-                            var scenePos = editorViewport.mapFromItem(applicationMouseArea,
+                            var scenePos = editorViewport.mapFromItem(applicationArea,
                                                                       dragPositionX,
                                                                       dragPositionY)
                             editorScene.movePlaceholderEntity("dragInsert",
@@ -110,7 +110,7 @@ Item {
 
                     onReleased: {
                         dragIconObj.destroy()
-                        var scenePos = editorViewport.mapFromItem(applicationMouseArea,
+                        var scenePos = editorViewport.mapFromItem(applicationArea,
                                                                   dragPositionX,
                                                                   dragPositionY)
                         editorScene.hidePlaceholderEntity("dragInsert")

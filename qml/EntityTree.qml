@@ -38,6 +38,10 @@ Item {
 
     property alias view: entityTreeView
 
+    function focusTree() {
+        entityTreeView.forceActiveFocus(Qt.MouseFocusReason)
+    }
+
     function selectSceneRoot() {
         entityTreeView.selection.setCurrentIndex(
                     editorScene.sceneModel.sceneEntityIndex(),
