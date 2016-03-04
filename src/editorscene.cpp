@@ -607,7 +607,8 @@ int EditorScene::cameraIndexForEntity(Qt3DCore::QEntity *entity)
 
 void EditorScene::updateVisibleSceneCameraMatrix(const EditorScene::CameraData &cameraData)
 {
-    QMatrix4x4 matrix = calculateVisibleSceneCameraMatrix(cameraData.cameraEntity);
+    QMatrix4x4 matrix = EditorUtils::totalAncestralTransform(cameraData.cameraEntity)
+            * calculateVisibleSceneCameraMatrix(cameraData.cameraEntity);
     cameraData.visibleTransform->setMatrix(matrix);
 
     if (m_activeSceneCameraIndex >= 0
@@ -695,6 +696,11 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
             } else {
                 propertyName = QStringLiteral("translation");
             }
+
+            // If entity has parents with transfroms, those need to be applied in inverse
+            QMatrix4x4 totalTransform = EditorUtils::totalAncestralTransform(m_selectedEntity);
+            intersection = totalTransform.inverted() * intersection;
+
             m_undoHandler->createChangePropertyCommand(m_selectedEntity->objectName(), componentType,
                                                        propertyName, intersection,
                                                        entityTranslation, true);
@@ -799,6 +805,8 @@ void EditorScene::dragRotateSelectedEntity(const QPoint &newPos, bool shiftDown,
                                                        QStringLiteral("upVector"), newUpVector,
                                                        cameraEntity->upVector(), true);
         } else {
+            QQuaternion ancestralRotation =
+                    EditorUtils::totalAncestralRotation(m_selectedEntity).inverted();
             if (qFuzzyIsNull(d)) {
                 // Rotation of 180 degrees
                 QVector3D rotationAxis;
@@ -806,6 +814,7 @@ void EditorScene::dragRotateSelectedEntity(const QPoint &newPos, bool shiftDown,
                     rotationAxis = frameGraphCameraNormal();
                 else
                     rotationAxis = helperPlaneNormal();
+                rotationAxis = ancestralRotation.rotatedVector(rotationAxis);
                 newRotation = QQuaternion::fromAxisAndAngle(rotationAxis, 180.0f)
                         * m_dragInitialRotationValue;
             } else if (qFuzzyCompare(d, 2.0f)) {
@@ -817,8 +826,12 @@ void EditorScene::dragRotateSelectedEntity(const QPoint &newPos, bool shiftDown,
                     QQuaternion planeRotation = QQuaternion::rotationTo(frameGraphCameraNormal(),
                                                                         helperPlaneNormal());
 
+                    planeRotation = ancestralRotation * planeRotation;
                     unrotatedHandlePos = planeRotation.rotatedVector(unrotatedHandlePos);
                     desiredPos = planeRotation.rotatedVector(desiredPos);
+                } else {
+                    unrotatedHandlePos = ancestralRotation.rotatedVector(unrotatedHandlePos);
+                    desiredPos = ancestralRotation.rotatedVector(desiredPos);
                 }
                 newRotation = QQuaternion::rotationTo(unrotatedHandlePos, desiredPos)
                         * m_dragInitialRotationValue;
@@ -1508,6 +1521,7 @@ void EditorScene::handlePress(Qt3DRender::QPickEvent *event)
                 m_dragInitialHandleTranslation = m_dragHandles.transform->rotation()
                         * m_dragHandleScale.transform->translation();
                 m_dragInitialHandleCornerTranslation =
+                        EditorUtils::totalAncestralScale(m_selectedEntity) *
                         m_dragInitialScaleValue * m_dragHandleScaleCornerTranslation;
             }
         } else if (pressedEntity == m_dragHandleRotate.entity) {

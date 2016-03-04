@@ -110,7 +110,7 @@ signals:
 
 private:
     void connectSelectionBoxTransformsRecursive(bool enabled);
-    void composeSelectionBoxTransformRecursive(QMatrix4x4 &transformMatrix);
+    QMatrix4x4 composeSelectionBoxTransform();
     void connectEntityMesh(bool enabled);
     void recalculateCustomMeshExtents(Qt3DRender::QGeometryRenderer *mesh);
 

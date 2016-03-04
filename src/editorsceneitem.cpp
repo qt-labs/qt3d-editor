@@ -374,18 +374,19 @@ void EditorSceneItem::connectSelectionBoxTransformsRecursive(bool enabled)
         m_parentItem->connectSelectionBoxTransformsRecursive(enabled);
 }
 
-void EditorSceneItem::composeSelectionBoxTransformRecursive(QMatrix4x4 &transformMatrix)
+QMatrix4x4 EditorSceneItem::composeSelectionBoxTransform()
 {
-    if (m_parentItem)
-        m_parentItem->composeSelectionBoxTransformRecursive(transformMatrix);
+    QMatrix4x4 totalTransform = EditorUtils::totalAncestralTransform(m_entity);
 
     if (m_entityTransform) {
         Qt3DCore::QCamera *camera = qobject_cast<Qt3DCore::QCamera *>(m_entity);
         if (camera)
-            transformMatrix *= m_scene->calculateVisibleSceneCameraMatrix(camera);
+            totalTransform *= m_scene->calculateVisibleSceneCameraMatrix(camera);
         else
-            transformMatrix *= m_entityTransform->matrix();
+            totalTransform *= m_entityTransform->matrix();
     }
+
+    return totalTransform;
 }
 
 void EditorSceneItem::connectEntityMesh(bool enabled)
@@ -510,14 +511,17 @@ void EditorSceneItem::connectEntityMesh(bool enabled)
 void EditorSceneItem::updateSelectionBoxTransform()
 {
     // Transform mesh extents, first scale, then translate
-    QMatrix4x4 transformMatrix;
-    composeSelectionBoxTransformRecursive(transformMatrix);
+    QMatrix4x4 transformMatrix = composeSelectionBoxTransform();
     transformMatrix.translate(m_entityMeshCenter);
     m_selectionBoxCenter = transformMatrix * QVector3D();
     m_selectionBoxExtents = m_entityMeshExtents + QVector3D(0.002f, 0.002f, 0.002f);
     transformMatrix.scale(m_selectionBoxExtents);
+
+    QVector3D ancestralScale = EditorUtils::totalAncestralScale(m_entity);
+    m_selectionBoxExtents *= ancestralScale;
     if (m_entityTransform)
         m_selectionBoxExtents *= m_entityTransform->scale3D();
+
     m_selectionTransform->setMatrix(transformMatrix);
     emit selectionBoxTransformChanged(this);
 

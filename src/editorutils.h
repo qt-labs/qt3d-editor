@@ -29,6 +29,7 @@
 #define EDITORUTILS_H
 
 #include <QtCore/QObject>
+#include <QtGui/QMatrix4x4>
 
 namespace Qt3DCore {
 class QEntity;
@@ -140,6 +141,11 @@ public:
     static QVector3D rotateVector(const QVector3D &vector, const QVector3D &rotationAxis,
                                   qreal radians);
     static QVector3D projectVectorOnPlane(const QVector3D &vector, const QVector3D &planeNormal);
+    static QMatrix4x4 totalAncestralTransform(Qt3DCore::QEntity *entity);
+    static QVector3D totalAncestralScale(Qt3DCore::QEntity *entity);
+    static QQuaternion totalAncestralRotation(Qt3DCore::QEntity *entity);
+    static QList<Qt3DCore::QTransform *> ancestralTransforms(Qt3DCore::QEntity *entity);
+
 private:
     // Private constructor to ensure no actual instance is created
     explicit EditorUtils() {}

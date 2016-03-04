@@ -928,3 +928,55 @@ QVector3D EditorUtils::projectVectorOnPlane(const QVector3D &vector, const QVect
     float distance = vector.distanceToPlane(QVector3D(), planeNormal);
     return vector - distance * planeNormal;
 }
+
+QMatrix4x4 EditorUtils::totalAncestralTransform(Qt3DCore::QEntity *entity)
+{
+    QMatrix4x4 totalTransform;
+    QList<Qt3DCore::QTransform *> transforms = ancestralTransforms(entity);
+
+    for (int i = transforms.size() - 1; i >= 0; i--)
+        totalTransform *= transforms.at(i)->matrix();
+
+    return totalTransform;
+}
+
+QVector3D EditorUtils::totalAncestralScale(Qt3DCore::QEntity *entity)
+{
+    QVector3D totalScale(1.0f, 1.0f, 1.0f);
+    QList<Qt3DCore::QTransform *> transforms = ancestralTransforms(entity);
+
+    for (int i = transforms.size() - 1; i >= 0; i--)
+        totalScale *= transforms.at(i)->scale3D();
+
+    return totalScale;
+}
+
+QQuaternion EditorUtils::totalAncestralRotation(Qt3DCore::QEntity *entity)
+{
+    QQuaternion totalRotation;
+    QList<Qt3DCore::QTransform *> transforms = ancestralTransforms(entity);
+
+    for (int i = transforms.size() - 1; i >= 0; i--)
+        totalRotation *= transforms.at(i)->rotation();
+
+    return totalRotation;
+}
+
+QList<Qt3DCore::QTransform *> EditorUtils::ancestralTransforms(Qt3DCore::QEntity *entity)
+{
+    Qt3DCore::QEntity *parent = entity->parentEntity();
+    QList<Qt3DCore::QTransform *> transforms;
+    while (parent) {
+        Qt3DCore::QComponentList components = parent->components();
+        for (int i = components.size() - 1; i >= 0; i--) {
+            Qt3DCore::QTransform *transform =
+                    qobject_cast<Qt3DCore::QTransform *>(components.at(i));
+            if (transform) {
+                transforms.append(transform);
+                break;
+            }
+        }
+        parent = parent->parentEntity();
+    }
+    return transforms;
+}
