@@ -899,6 +899,33 @@ QMatrix4x4 EditorScene::calculateVisibleSceneCameraMatrix(Qt3DCore::QCamera *cam
     return matrix;
 }
 
+void EditorScene::handlePropertyLocking(EditorSceneItem *item, const QString &lockProperty,
+                                        bool locked)
+{
+    // Disable/enable relevant drag handles when properties are locked/unlocked
+    EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(), Q_NULLPTR);
+    if (item && item == selectedItem) {
+        if (item->itemType() == EditorSceneItem::Light) {
+            // Do nothing, light never have handles
+        } else if (item->itemType() == EditorSceneItem::Camera) {
+            // Check rotate handle
+            QString upVectorLock = QStringLiteral("upVector") + lockPropertySuffix();
+            if (lockProperty == upVectorLock)
+                m_dragHandleRotate.entity->setEnabled(!locked);
+        } else {
+            QString scaleLock = QStringLiteral("scale3D") + lockPropertySuffix();
+            QString rotateLock = QStringLiteral("rotation") + lockPropertySuffix();
+            if (lockProperty == scaleLock)
+                m_dragHandleScale.entity->setEnabled(!locked);
+            if (lockProperty == rotateLock)
+                m_dragHandleRotate.entity->setEnabled(!locked);
+            // TODO: translation lock once translation handle is added
+        }
+        handleSelectionTransformChange();
+        updateDragHandlePickers();
+    }
+}
+
 bool EditorScene::isRemovable(Qt3DCore::QEntity *entity) const
 {
     if (entity == m_sceneEntity || entity == m_rootEntity)
@@ -1257,10 +1284,14 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
         } else if (item->itemType() == EditorSceneItem::Camera) {
             // Disable scale handles for cameras
             m_dragHandleScale.entity->setEnabled(false);
-            m_dragHandleRotate.entity->setEnabled(true);
+            m_dragHandleRotate.entity->setEnabled(!isPropertyLocked(QStringLiteral("upVector"),
+                                                                    m_selectedEntity));
         } else {
-            m_dragHandleScale.entity->setEnabled(true);
-            m_dragHandleRotate.entity->setEnabled(true);
+            Qt3DCore::QTransform *transform = EditorUtils::entityTransform(m_selectedEntity);
+            m_dragHandleScale.entity->setEnabled(!isPropertyLocked(QStringLiteral("scale3D"),
+                                                                   transform));
+            m_dragHandleRotate.entity->setEnabled(!isPropertyLocked(QStringLiteral("rotation"),
+                                                                    transform));
         }
 
         // Update drag handles transforms to initial state
@@ -1514,29 +1545,33 @@ void EditorScene::handlePress(Qt3DRender::QPickEvent *event)
         Qt3DCore::QEntity *pressedEntity = qobject_cast<Qt3DCore::QEntity *>(sender()->parent());
         m_ignoringInitialDrag = true;
         if (pressedEntity == m_dragHandleScale.entity) {
-            EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(), Q_NULLPTR);
-            if (selectedItem) {
-                m_dragMode = DragScale;
-                m_dragInitialScaleValue = selectedItem->entityTransform()->scale3D();
-                m_dragInitialHandleTranslation = m_dragHandles.transform->rotation()
-                        * m_dragHandleScale.transform->translation();
-                m_dragInitialHandleCornerTranslation =
-                        EditorUtils::totalAncestralScale(m_selectedEntity) *
-                        m_dragInitialScaleValue * m_dragHandleScaleCornerTranslation;
+            if (pressedEntity->isEnabled()) {
+                EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(), Q_NULLPTR);
+                if (selectedItem) {
+                    m_dragMode = DragScale;
+                    m_dragInitialScaleValue = selectedItem->entityTransform()->scale3D();
+                    m_dragInitialHandleTranslation = m_dragHandles.transform->rotation()
+                            * m_dragHandleScale.transform->translation();
+                    m_dragInitialHandleCornerTranslation =
+                            EditorUtils::totalAncestralScale(m_selectedEntity) *
+                            m_dragInitialScaleValue * m_dragHandleScaleCornerTranslation;
+                }
             }
         } else if (pressedEntity == m_dragHandleRotate.entity) {
-            EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(), Q_NULLPTR);
-            if (selectedItem) {
-                Qt3DCore::QCamera *cameraEntity =
-                        qobject_cast<Qt3DCore::QCamera *>(m_selectedEntity);
-                if (cameraEntity) {
-                    // Store the initial upvector
-                    m_dragInitialUpVector = cameraEntity->upVector();
+            if (pressedEntity->isEnabled()) {
+                EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(), Q_NULLPTR);
+                if (selectedItem) {
+                    Qt3DCore::QCamera *cameraEntity =
+                            qobject_cast<Qt3DCore::QCamera *>(m_selectedEntity);
+                    if (cameraEntity) {
+                        // Store the initial upvector
+                        m_dragInitialUpVector = cameraEntity->upVector();
+                    }
+                    m_dragMode = DragRotate;
+                    m_dragInitialRotationValue = selectedItem->entityTransform()->rotation();
+                    m_dragInitialHandleTranslation = m_dragHandles.transform->rotation()
+                            * m_dragHandleRotate.transform->translation();
                 }
-                m_dragMode = DragRotate;
-                m_dragInitialRotationValue = selectedItem->entityTransform()->rotation();
-                m_dragInitialHandleTranslation = m_dragHandles.transform->rotation()
-                        * m_dragHandleRotate.transform->translation();
             }
         } else if (!m_handlingSelection && pressedEntity) {
             bool select = false;
@@ -1690,6 +1725,20 @@ void EditorScene::resizeCameraViewCenterEntity()
     float distanceToVc = (vcPos - frameGraphCamera()->position()).length();
     float vcScale = vcEntityAngle * distanceToVc;
     m_activeSceneCameraFrustumData.viewCenterTransform->setScale(vcScale * 2.0f);
+}
+
+bool EditorScene::isPropertyLocked(const QString &propertyName, QObject *obj)
+{
+    if (!obj)
+        return false;
+    QString lockProperty = propertyName + lockPropertySuffix();
+    QByteArray nameArray = lockProperty.toLocal8Bit();
+    const char *namePtr = nameArray.constData();
+    QVariant propertyVariant = obj->property(namePtr);
+    if (propertyVariant.isValid())
+        return propertyVariant.toBool();
+    else
+        return false;
 }
 
 void EditorScene::handleCameraAdded(Qt3DCore::QCamera *camera)

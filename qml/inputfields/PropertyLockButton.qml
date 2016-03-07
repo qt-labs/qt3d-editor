@@ -25,33 +25,32 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.4
+import QtQuick 2.5
 import QtQuick.Controls 1.3
-import QtQuick.Layouts 1.2
+import QtQuick.Controls.Styles 1.4
 
-PropertyInputField {
-    id: floatSliderPropertyInputField
-    width: parent.width
-    height: sliderInputfield.height
+EnableButton {
+    property string lockProperty: editorScene.lockPropertySuffix
+    property string label: "" // Dummy label, needs to be set by using component
+    property var lockComponent: null
+    property bool locked: false
 
-    property alias label: sliderInputfield.label
-    property alias stepSize: sliderInputfield.stepSize
-    property alias minimum: sliderInputfield.minimum
-    property alias maximum: sliderInputfield.maximum
-    property alias roundDigits: sliderInputfield.roundDigits
+    enabledIconSource: "/images/lock_open.png"
+    disabledIconSource: "/images/lock_locked.png"
+    tooltip: qsTr("Lock '%1' Properties").arg(label) + editorScene.emptyString
+    buttonEnabled: !locked
 
-    onComponentValueChanged: {
-        if (component !== null)
-            sliderInputfield.value = component[propertyName]
+    Component.onCompleted: {
+        if (selectedEntity) {
+            var propertyLocked = selectedEntity.customProperty(lockComponent, lockProperty)
+            if (propertyLocked != undefined)
+                locked = propertyLocked
+        }
+
     }
 
-    FloatSliderInputField {
-        id: sliderInputfield
-        lockProperty: floatSliderPropertyInputField.propertyName + editorScene.lockPropertySuffix
-        lockComponent: floatSliderPropertyInputField.component
-        value: 0
-        onValueChanged: {
-            handleEditingFinished(value)
-        }
+    onEnabledButtonClicked: {
+        locked = !locked
+        selectedEntity.setCustomProperty(lockComponent, lockProperty, locked)
     }
 }

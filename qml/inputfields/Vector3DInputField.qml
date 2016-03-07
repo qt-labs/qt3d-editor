@@ -34,6 +34,9 @@ Item {
     width: parent.width
     height: mainLayout.height
 
+    property alias lockProperty: lockButton.lockProperty
+    property alias lockComponent: lockButton.lockComponent
+    property alias locked: lockButton.locked
     property string label: qsTr("Vector3D") + editorScene.emptyString
     property alias xLabel: xLabel.text
     property alias yLabel: yLabel.text
@@ -42,14 +45,6 @@ Item {
     property int roundDigits: 2 // TODO: Determine nice default rounding
     property int roundMultiplier: Math.pow(10, roundDigits) // Calculated from roundDigits, do not set directly
     property real inputCellWidth: vectorInput.width * 0.6
-
-    Component.onCompleted: {
-        if (selectedEntity) {
-            var propertyLocked = selectedEntity.customProperty(label)
-            if (propertyLocked)
-                lockButton.buttonEnabled = propertyLocked
-        }
-    }
 
     property vector3d value: Qt.vector3d(0, 0, 0)
 
@@ -141,18 +136,11 @@ Item {
             Component.onCompleted: text = roundNumber(vectorInput.value.y)
         }
 
-        EnableButton {
+        PropertyLockButton {
             id: lockButton
             Layout.alignment: Qt.AlignVCenter
             Layout.maximumWidth: 16
-            enabledIconSource: "/images/lock_open.png"
-            disabledIconSource: "/images/lock_locked.png"
-            tooltip: qsTr("Lock '%1' Properties").arg(label) + editorScene.emptyString
-            buttonEnabled: true
-            onEnabledButtonClicked: {
-                buttonEnabled = !buttonEnabled
-                selectedEntity.setCustomProperty(label, buttonEnabled)
-            }
+            label: vectorInput.label
         }
 
         Label {

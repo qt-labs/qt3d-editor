@@ -66,15 +66,20 @@ PropertyInputField {
 
     Vector3DInputField {
         id: vectorInputField
+        lockProperty: rotationPropertyInputField.propertyName + editorScene.lockPropertySuffix
+        lockComponent: rotationPropertyInputField.component
         label: qsTr("Rotate") + editorScene.emptyString
         onValueEdited: {
             axis = value
             handleRotationChangeFinished()
         }
+        onLockedChanged: sliderInputfield.locked = locked
     }
 
     FloatSliderInputField {
         id: sliderInputfield
+        lockProperty: rotationPropertyInputField.propertyName + editorScene.lockPropertySuffix
+        lockComponent: rotationPropertyInputField.component
         value: 0
         label: qsTr("Rotation Angle") + editorScene.emptyString
         anchors.top: vectorInputField.bottom
@@ -86,6 +91,7 @@ PropertyInputField {
                 handleRotationChangeFinished()
             }
         }
+        onLockedChanged: vectorInputField.locked = locked
     }
 
     function toAxisAndAngle(quat) {

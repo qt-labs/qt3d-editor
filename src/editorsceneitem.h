@@ -90,8 +90,9 @@ public:
 
     Q_INVOKABLE ItemType itemType() { return m_itemType; }
 
-    Q_INVOKABLE bool setCustomProperty(const QString name, const QVariant &value);
-    Q_INVOKABLE QVariant customProperty(const QString name) const;
+    Q_INVOKABLE bool setCustomProperty(QObject *component, const QString name,
+                                       const QVariant &value);
+    Q_INVOKABLE QVariant customProperty(QObject *component, const QString name) const;
     Qt3DCore::QTransform *selectionTransform() const { return m_selectionTransform; }
     Qt3DCore::QTransform *entityTransform() const { return m_entityTransform; }
     QVector3D selectionBoxExtents() const { return m_selectionBoxExtents; }

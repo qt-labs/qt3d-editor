@@ -558,22 +558,39 @@ bool EditorSceneItem::isSelectionBoxShowing() const
         return false;
 }
 
-bool EditorSceneItem::setCustomProperty(const QString name, const QVariant &value)
+bool EditorSceneItem::setCustomProperty(QObject *component, const QString name,
+                                        const QVariant &value)
 {
-    // Sets the name property to value. If the property is defined using Q_PROPERTY, returns true
+    // Sets the 'name' property to value to a component or the entity itself if component is null.
+    // If the property is defined using Q_PROPERTY, returns true
     // on success, else returns false. This complies with QObject::property().
+
+    QObject *targetObj = component;
+    if (!targetObj)
+        targetObj = m_entity;
+
     QByteArray nameArray = name.toLocal8Bit();
     const char *propertyName = nameArray.constData();
-    return setProperty(propertyName, value);
+
+    m_scene->handlePropertyLocking(this, name, value.toBool());
+
+    return targetObj->setProperty(propertyName, value);
 }
 
-QVariant EditorSceneItem::customProperty(const QString name) const
+QVariant EditorSceneItem::customProperty(QObject *component, const QString name) const
 {
-    // Returns the value of the name property. If the property doesn't exist, the returned variant
+    // Returns the value of the 'name' property of the component.
+    // If component is null, entity itself is checked for the property.
+    // If the property doesn't exist, the returned variant
     // is invalid. This complies with QObject::property().
+
+    QObject *targetObj = component;
+    if (!targetObj)
+        targetObj = m_entity;
+
     QByteArray nameArray = name.toLocal8Bit();
     const char *propertyName = nameArray.constData();
-    QVariant propertyVariant = property(propertyName);
+    QVariant propertyVariant = targetObj->property(propertyName);
     if (propertyVariant.isValid())
         return propertyVariant;
     else

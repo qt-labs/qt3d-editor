@@ -77,6 +77,7 @@ class EditorScene : public QObject
     Q_PROPERTY(Qt3DCore::QTransform *helperPlaneTransform READ helperPlaneTransform CONSTANT)
     Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)
     Q_PROPERTY(QString emptyString READ emptyString NOTIFY translationChanged)
+    Q_PROPERTY(QString lockPropertySuffix READ lockPropertySuffix CONSTANT)
 
 private:
     struct CameraFrustumData {
@@ -210,6 +211,7 @@ public:
     const QString language() const;
 
     const QString emptyString() const;
+    const QString lockPropertySuffix() const { return QStringLiteral("_editorPropertyLock"); }
 
     void setViewport(EditorViewportItem *viewport);
     EditorViewportItem *viewport() const;
@@ -224,6 +226,8 @@ public:
     Qt3DRender::QGeometryRenderer *selectionBoxMesh() const;
 
     QMatrix4x4 calculateVisibleSceneCameraMatrix(Qt3DCore::QCamera *camera) const;
+
+    void handlePropertyLocking(EditorSceneItem *item, const QString &lockProperty, bool locked);
 
 public slots:
     void clearSelectionBoxes();
@@ -279,6 +283,7 @@ private:
     QVector3D frameGraphCameraNormal() const;
     void updateDragHandlePickers();
     void resizeCameraViewCenterEntity();
+    bool isPropertyLocked(const QString &propertyName, QObject *obj);
 
 private:
     friend class EditorViewportItem;

@@ -50,6 +50,8 @@ PropertyInputField {
 
     Vector3DInputField {
         id: vectorInputField
+        lockProperty: vectorPropertyInputField.propertyName + editorScene.lockPropertySuffix
+        lockComponent: vectorPropertyInputField.component
         onValueEdited: {
             handleEditingFinished(value)
         }

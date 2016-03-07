@@ -72,6 +72,7 @@
         <file alias="Vector3DPropertyInputField.qml">qml/inputfields/Vector3DPropertyInputField.qml</file>
         <file alias="Matrix4x4PropertyInputField.qml">qml/inputfields/Matrix4x4PropertyInputField.qml</file>
         <file alias="CheckBoxPropertyInputField.qml">qml/inputfields/CheckBoxPropertyInputField.qml</file>
+        <file alias="PropertyLockButton.qml">qml/inputfields/PropertyLockButton.qml</file>
         <file>shaders/draghandle.frag</file>
         <file>shaders/draghandle.vert</file>
         <file alias="VisiblePropertyInputField.qml">qml/inputfields/VisiblePropertyInputField.qml</file>

@@ -422,6 +422,8 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         break;
     }
 
+    // TODO: copy custom lock properties
+
     return Q_NULLPTR;
 }
 
@@ -967,16 +969,12 @@ QList<Qt3DCore::QTransform *> EditorUtils::ancestralTransforms(Qt3DCore::QEntity
     Qt3DCore::QEntity *parent = entity->parentEntity();
     QList<Qt3DCore::QTransform *> transforms;
     while (parent) {
-        Qt3DCore::QComponentList components = parent->components();
-        for (int i = components.size() - 1; i >= 0; i--) {
-            Qt3DCore::QTransform *transform =
-                    qobject_cast<Qt3DCore::QTransform *>(components.at(i));
-            if (transform) {
-                transforms.append(transform);
-                break;
-            }
-        }
+        Qt3DCore::QTransform *transform = entityTransform(parent);
+        if (transform)
+            transforms.append(transform);
         parent = parent->parentEntity();
     }
     return transforms;
 }
+
+
