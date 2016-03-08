@@ -114,6 +114,7 @@ public:
     static Qt3DRender::QGeometryRenderer *createDefaultCustomMesh();
     static Qt3DRender::QGeometryRenderer *createRotateHandleMesh(float size);
     static Qt3DRender::QGeometryRenderer *createScaleHandleMesh(float size);
+    static Qt3DRender::QGeometryRenderer *createTranslateHandleMesh(float size);
     static Qt3DRender::QGeometryRenderer *createVisibleCameraMesh();
     static Qt3DRender::QGeometryRenderer *createCameraViewVectorMesh();
     static Qt3DRender::QGeometryRenderer *createCameraViewCenterMesh(float size);

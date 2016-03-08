@@ -282,6 +282,7 @@ private:
     QVector3D projectVectorOnCameraPlane(const QVector3D &vector) const;
     QVector3D frameGraphCameraNormal() const;
     void updateDragHandlePickers();
+    void updateDragHandlePicker(DragHandleData &handleData);
     void resizeCameraViewCenterEntity();
     bool isPropertyLocked(const QString &propertyName, QObject *obj);
 
@@ -339,6 +340,7 @@ private:
     DragHandleData m_dragHandles;
     DragHandleData m_dragHandleScale;
     DragHandleData m_dragHandleRotate;
+    DragHandleData m_dragHandleTranslate;
     DragMode m_dragMode;
     QPoint m_previousMousePosition;
     QVector3D m_dragHandleScaleCornerTranslation;
@@ -349,6 +351,7 @@ private:
     QVector3D m_dragInitialHandleTranslation;
     QVector3D m_dragInitialHandleCornerTranslation;
     bool m_ignoringInitialDrag;
+    bool m_viewCenterLocked;
 
     QMap<QString, PlaceholderEntityData *> m_placeholderEntityMap;
 };

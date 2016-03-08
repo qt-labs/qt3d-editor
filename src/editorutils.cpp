@@ -422,7 +422,7 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         break;
     }
 
-    // TODO: copy custom lock properties
+    // TODO: copy custom lock properties?
 
     return Q_NULLPTR;
 }
@@ -561,6 +561,12 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createScaleHandleMesh(float size)
     mesh->setYExtent(size);
     mesh->setZExtent(size);
     return mesh;
+}
+
+Qt3DRender::QGeometryRenderer *EditorUtils::createTranslateHandleMesh(float size)
+{
+    // TODO: proper mesh
+    return createWireframeBoxMesh(size);
 }
 
 Qt3DRender::QGeometryRenderer *EditorUtils::createVisibleCameraMesh()
