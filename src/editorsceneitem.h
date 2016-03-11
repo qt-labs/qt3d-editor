@@ -52,6 +52,7 @@ class EditorSceneItem : public QObject
 
     Q_PROPERTY(EditorSceneItemComponentsModel* componentsModel READ componentsModel CONSTANT)
     Q_PROPERTY(bool showSelectionBox READ isSelectionBoxShowing WRITE setShowSelectionBox NOTIFY showSelectionBoxChanged)
+
 public:
     enum ItemType {
         Camera = 1,
@@ -62,7 +63,7 @@ public:
 
     EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
                     EditorSceneItem *parentItem = Q_NULLPTR,
-                    int index = -1, bool freeView = false, QObject *parent = Q_NULLPTR);
+                    int index = -1, QObject *parent = Q_NULLPTR);
     ~EditorSceneItem();
 
     Q_INVOKABLE Qt3DCore::QEntity *entity();
@@ -78,10 +79,6 @@ public:
     void setParentItem(EditorSceneItem *parentItem);
 
     EditorSceneItemComponentsModel* componentsModel() const;
-
-    // TODO: Freeview flag doesn't belong to this class, should use it from scene.
-    void setFreeViewFlag(bool enabled);
-    bool freeViewFlag() const;
 
     void setShowSelectionBox(bool enabled);
     bool isSelectionBoxShowing() const;
@@ -99,13 +96,15 @@ public:
     QVector3D entityMeshExtents() const { return m_entityMeshExtents; }
     QVector3D selectionBoxCenter() const { return m_selectionBoxCenter; }
 
+    bool canRotate() const { return m_canRotate; }
+    void setCanRotate(bool canRotate) { m_canRotate = canRotate; }
+
 public slots:
     void updateSelectionBoxTransform();
     void handleMeshChange(Qt3DRender::QGeometryRenderer *newMesh);
     void recalculateMeshExtents();
 
 signals:
-    void freeViewChanged(bool enabled);
     void showSelectionBoxChanged(bool enabled);
     void selectionBoxTransformChanged(EditorSceneItem *item);
 
@@ -114,6 +113,7 @@ private:
     QMatrix4x4 composeSelectionBoxTransform();
     void connectEntityMesh(bool enabled);
     void recalculateCustomMeshExtents(Qt3DRender::QGeometryRenderer *mesh);
+    void updateChildLightTransforms();
 
     Qt3DCore::QEntity *m_entity; // Not owned
 
@@ -121,8 +121,6 @@ private:
     QList<EditorSceneItem *> m_children;
 
     EditorSceneItemComponentsModel *m_componentsModel;
-
-    bool m_freeView;
 
     EditorScene *m_scene; // Not owned
 
@@ -137,6 +135,8 @@ private:
     QVector3D m_entityMeshCenter;
     QVector3D m_selectionBoxExtents;
     QVector3D m_selectionBoxCenter;
+
+    bool m_canRotate;
 };
 
 Q_DECLARE_METATYPE(EditorSceneItem*)

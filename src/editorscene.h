@@ -52,6 +52,7 @@ namespace Qt3DRender {
     class QObjectPicker;
     class QFrameGraph;
     class QMaterial;
+    class QPhongAlphaMaterial;
     class QGeometryRenderer;
 }
 
@@ -123,6 +124,45 @@ private:
         Qt3DCore::QEntity *visibleEntity;
         Qt3DCore::QTransform *visibleTransform;
         Qt3DRender::QObjectPicker *cameraPicker;
+    };
+
+    struct LightData {
+        LightData() :
+            lightEntity(Q_NULLPTR)
+          , lightComponent(Q_NULLPTR)
+          , lightTransform(Q_NULLPTR)
+          , visibleEntity(Q_NULLPTR)
+          , visibleTransform(Q_NULLPTR)
+          , visibleMaterial(Q_NULLPTR)
+          , visibleMesh(Q_NULLPTR)
+          , visiblePicker(Q_NULLPTR)
+        {}
+        LightData(Qt3DCore::QEntity *entity,
+                  Qt3DRender::QLight *component,
+                  Qt3DCore::QTransform *transform,
+                  Qt3DCore::QEntity *visEntity,
+                  Qt3DCore::QTransform *visTransform,
+                  Qt3DRender::QPhongAlphaMaterial *visMaterial,
+                  Qt3DRender::QGeometryRenderer *visMesh,
+                  Qt3DRender::QObjectPicker *picker) :
+            lightEntity(entity)
+          , lightComponent(component)
+          , lightTransform(transform)
+          , visibleEntity(visEntity)
+          , visibleTransform(visTransform)
+          , visibleMaterial(visMaterial)
+          , visibleMesh(visMesh)
+          , visiblePicker(picker)
+        {}
+
+        Qt3DCore::QEntity *lightEntity;
+        Qt3DRender::QLight *lightComponent;
+        Qt3DCore::QTransform *lightTransform;
+        Qt3DCore::QEntity *visibleEntity;
+        Qt3DCore::QTransform *visibleTransform;
+        Qt3DRender::QPhongAlphaMaterial *visibleMaterial;
+        Qt3DRender::QGeometryRenderer *visibleMesh;
+        Qt3DRender::QObjectPicker *visiblePicker;
     };
 
     struct DragHandleData {
@@ -226,8 +266,11 @@ public:
     Qt3DRender::QGeometryRenderer *selectionBoxMesh() const;
 
     QMatrix4x4 calculateVisibleSceneCameraMatrix(Qt3DCore::QCamera *camera) const;
+    QMatrix4x4 calculateVisibleLightMatrix(Qt3DCore::QEntity *lightEntity) const;
 
     void handlePropertyLocking(EditorSceneItem *item, const QString &lockProperty, bool locked);
+    void handleLightTypeChanged(EditorSceneItem *item);
+    void updateLightVisibleTransform(Qt3DCore::QEntity *lightEntity);
 
 public slots:
     void clearSelectionBoxes();
@@ -248,6 +291,7 @@ protected:
 private slots:
     void handlePress(Qt3DRender::QPickEvent *event);
     void handleCameraMatrixChange();
+    void handleLightTransformChange();
     void handleViewportSizeChange();
     void handleEntityNameChange();
     void endSelectionHandling(Qt3DCore::QEntity *selectedEntity);
@@ -257,14 +301,16 @@ private slots:
 private:
     void handleCameraAdded(Qt3DCore::QCamera *camera);
     void handleCameraRemoved(Qt3DCore::QCamera *camera);
+    void handleLightAdded(Qt3DCore::QEntity *lightEntity);
+    void handleLightRemoved(Qt3DCore::QEntity *lightEntity);
     void connectSceneCamera(const CameraData &cameraData);
-    void removeEntityItem(const Qt3DCore::QNodeId &id);
     void setupDefaultScene();
     void createRootEntity();
     void setFrameGraphCamera(Qt3DCore::QEntity *cameraEntity);
     Qt3DCore::QCamera *frameGraphCamera() const;
     void enableCameraCones(bool enable);
-    void clearSceneCameras();
+    void enableVisibleLights(bool enable);
+    void clearSceneCamerasAndLights();
     void resetSceneCamera(Qt3DCore::QEntity *sceneCameraEntity);
     Qt3DRender::QObjectPicker *createObjectPickerForEntity(Qt3DCore::QEntity *entity);
     int cameraIndexForEntity(Qt3DCore::QEntity *entity);
@@ -308,6 +354,7 @@ private:
     QString m_errorString;
 
     QList<CameraData> m_sceneCameras;
+    QMap<Qt3DCore::QNodeId, LightData *> m_sceneLights;
     CameraFrustumData m_activeSceneCameraFrustumData;
     int m_activeSceneCameraIndex;
     bool m_freeView;
@@ -347,7 +394,7 @@ private:
     QVector3D m_dragInitialTranslationValue;
     QVector3D m_dragInitialScaleValue;
     QQuaternion m_dragInitialRotationValue;
-    QVector3D m_dragInitialUpVector;
+    QVector3D m_dragInitialRotateCustomVector;
     QVector3D m_dragInitialHandleTranslation;
     QVector3D m_dragInitialHandleCornerTranslation;
     bool m_ignoringInitialDrag;

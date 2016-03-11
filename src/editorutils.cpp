@@ -671,13 +671,44 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createCameraViewCenterMesh(float siz
 
 Qt3DRender::QGeometryRenderer *EditorUtils::createLightMesh(EditorUtils::ComponentTypes type)
 {
-    // TODO: Create different mesh for different light types
-    Q_UNUSED(type)
+    Qt3DRender::QGeometryRenderer *mesh = Q_NULLPTR;
 
-    Qt3DRender::QSphereMesh *mesh = new Qt3DRender::QSphereMesh();
-    mesh->setRadius(0.5f);
-    mesh->setRings(10);
-    mesh->setSlices(10);
+    // TODO: Proper meshes
+    switch (type) {
+    case LightDirectional: {
+        Qt3DRender::QCuboidMesh *directionalMesh = new Qt3DRender::QCuboidMesh;
+        directionalMesh->setXExtent(0.5f);
+        directionalMesh->setYExtent(0.5f);
+        directionalMesh->setZExtent(0.9f);
+        mesh = directionalMesh;
+        break;
+    }
+    case LightPoint: {
+        Qt3DRender::QSphereMesh *pointMesh = new Qt3DRender::QSphereMesh();
+        pointMesh->setRadius(0.2f);
+        pointMesh->setRings(10);
+        pointMesh->setSlices(10);
+        mesh = pointMesh;
+        break;
+    }
+    case LightSpot: {
+        Qt3DRender::QCuboidMesh *spotMesh = new Qt3DRender::QCuboidMesh;
+        spotMesh->setXExtent(0.3f);
+        spotMesh->setYExtent(0.3f);
+        spotMesh->setZExtent(0.9f);
+        mesh = spotMesh;
+        break;
+    }
+    default: { // LightBasic
+        Qt3DRender::QSphereMesh *basicMesh = new Qt3DRender::QSphereMesh();
+        basicMesh->setRadius(0.5f);
+        basicMesh->setRings(10);
+        basicMesh->setSlices(10);
+        mesh = basicMesh;
+        break;
+    }
+    }
+
     return mesh;
 }
 
@@ -794,6 +825,18 @@ Qt3DCore::QTransform *EditorUtils::entityTransform(Qt3DCore::QEntity *entity)
         Qt3DCore::QTransform *transform = qobject_cast<Qt3DCore::QTransform *>(components.value(i));
         if (transform)
             return transform;
+    }
+
+    return Q_NULLPTR;
+}
+
+Qt3DRender::QLight *EditorUtils::entityLight(Qt3DCore::QEntity *entity)
+{
+    Qt3DCore::QComponentList components = entity->components();
+    for (int i = 0; i < components.size(); i++) {
+        Qt3DRender::QLight *light = qobject_cast<Qt3DRender::QLight *>(components.value(i));
+        if (light)
+            return light;
     }
 
     return Q_NULLPTR;
@@ -981,6 +1024,20 @@ QList<Qt3DCore::QTransform *> EditorUtils::ancestralTransforms(Qt3DCore::QEntity
         parent = parent->parentEntity();
     }
     return transforms;
+}
+
+QVector3D EditorUtils::lightDirection(const Qt3DRender::QLight *light)
+{
+    QVector3D direction;
+    const Qt3DRender::QDirectionalLight *dirLight =
+            qobject_cast<const Qt3DRender::QDirectionalLight *>(light);
+    const Qt3DRender::QSpotLight *spotLight =
+            qobject_cast<const Qt3DRender::QSpotLight *>(light);
+    if (dirLight)
+        direction = dirLight->direction();
+    else if (spotLight)
+        direction = spotLight->direction();
+    return direction;
 }
 
 

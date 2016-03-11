@@ -37,7 +37,6 @@ LightComponentProxyItem::LightComponentProxyItem(EditorSceneItemComponentsModel 
     : QObject(parent)
     , m_component(component)
     , m_model(new EditorSceneItemLightComponentsModel(m_component, sceneItemModel, this))
-    , m_lightMaterial(Q_NULLPTR)
 {
 }
 
@@ -58,38 +57,11 @@ EditorSceneItemLightComponentsModel *LightComponentProxyItem::model() const
 
 void LightComponentProxyItem::beginResetComponent(Qt3DRender::QLight *component)
 {
-    if (m_lightMaterial) {
-        disconnect(m_component, &Qt3DRender::QLight::colorChanged,
-                   m_lightMaterial, &Qt3DRender::QPhongAlphaMaterial::setAmbient);
-    }
-
     m_model->beginReplace();
     m_component = component;
-
-    if (m_lightMaterial) {
-        connect(m_component, &Qt3DRender::QLight::colorChanged,
-                m_lightMaterial, &Qt3DRender::QPhongAlphaMaterial::setAmbient);
-        m_lightMaterial->setAmbient(m_component->color());
-    }
 }
 
 void LightComponentProxyItem::endResetComponent()
 {
     m_model->endReplace(m_component);
-}
-
-void LightComponentProxyItem::setLightMaterial(Qt3DRender::QPhongAlphaMaterial *lightMaterial)
-{
-    if (m_lightMaterial) {
-        disconnect(m_component, &Qt3DRender::QLight::colorChanged,
-                   m_lightMaterial, &Qt3DRender::QPhongAlphaMaterial::setAmbient);
-    }
-
-    m_lightMaterial = lightMaterial;
-
-    if (m_lightMaterial) {
-        connect(m_component, &Qt3DRender::QLight::colorChanged,
-                m_lightMaterial, &Qt3DRender::QPhongAlphaMaterial::setAmbient);
-        m_lightMaterial->setAmbient(m_component->color());
-    }
 }

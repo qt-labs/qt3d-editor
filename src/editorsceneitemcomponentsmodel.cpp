@@ -30,6 +30,7 @@
 #include "qdummyobjectpicker.h"
 
 #include "editorsceneitem.h"
+#include "editorscene.h"
 #include "editorutils.h"
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QCamera>
@@ -43,6 +44,8 @@
 #include <Qt3DRender/QFrameGraph>
 #include <Qt3DRender/QLayer>
 #include <Qt3DRender/QLight>
+#include <Qt3DRender/QDirectionalLight>
+#include <Qt3DRender/QSpotLight>
 #include <Qt3DRender/QPhongMaterial>
 #include <Qt3DRender/QPhongAlphaMaterial>
 #include <Qt3DInput/QKeyboardInput>
@@ -98,10 +101,8 @@ void EditorSceneItemComponentsModel::initializeModel()
         switch (type) {
         case Light: {
             Qt3DRender::QLight *lightComponent = qobject_cast<Qt3DRender::QLight *>(component);
-            if (lightComponent && !m_lightItem) {
+            if (lightComponent && !m_lightItem)
                 m_lightItem = new LightComponentProxyItem(this, lightComponent);
-                createLightMesh(lightComponent);
-            }
             break;
         }
         case Mesh: {
@@ -141,28 +142,6 @@ void EditorSceneItemComponentsModel::initializeModel()
         if (newInfoMap.contains(EditorSceneItemComponentTypes(i)))
             m_modelRowList.append(newInfoMap.value(EditorSceneItemComponentTypes(i)));
     }
-}
-
-void EditorSceneItemComponentsModel::createLightMesh(Qt3DRender::QLight *lightComponent)
-{
-    // Add an internal mesh at the same time, to be used as the light placeholder in
-    // freeview camera mode
-    Qt3DRender::QGeometryRenderer *lightMesh = EditorUtils::createLightMesh(EditorUtils::LightBasic);
-    lightMesh->setObjectName(QStringLiteral("__internal light sphere"));
-    connect(m_sceneItem, &EditorSceneItem::freeViewChanged,
-            lightMesh, &Qt3DRender::QSphereMesh::setEnabled);
-    lightMesh->setEnabled(m_sceneItem->freeViewFlag());
-    Qt3DRender::QPhongAlphaMaterial *lightMaterial = new Qt3DRender::QPhongAlphaMaterial();
-    lightMaterial->setObjectName(QStringLiteral("__internal light material"));
-    lightMaterial->setDiffuse(Qt::white);
-    lightMaterial->setAmbient(lightComponent->color());
-    lightMaterial->setAlpha(0.5f);
-    m_sceneItem->entity()->addComponent(lightMaterial);
-    m_sceneItem->entity()->addComponent(lightMesh);
-    m_lightItem->setLightMaterial(lightMaterial);
-    // TODO: Currently adding new mesh/material to a light overrides the default free view
-    // TODO: mesh/material and if you remove it, there will be no mesh/material left.
-    // TODO: We need to re-create internal light mesh/material again if a custom one is removed.
 }
 
 EditorSceneItemComponentsModel::EditorSceneItemComponentTypes
@@ -299,7 +278,6 @@ void EditorSceneItemComponentsModel::appendNewComponent(EditorSceneItemComponent
             Qt3DRender::QLight *lightComponent = new Qt3DRender::QLight();
             m_lightItem = new LightComponentProxyItem(this, lightComponent);
             component = lightComponent;
-            createLightMesh(lightComponent);
         }
         break;
     case Logic:
@@ -476,6 +454,9 @@ void EditorSceneItemComponentsModel::replaceComponent(Qt3DCore::QComponent *oldC
     switch (type) {
     case Light: {
         m_lightItem->endResetComponent();
+        m_sceneItem->setCanRotate(qobject_cast<Qt3DRender::QDirectionalLight *>(newComponent)
+                                  || qobject_cast<Qt3DRender::QSpotLight *>(newComponent));
+        m_sceneItem->scene()->handleLightTypeChanged(m_sceneItem);
         break;
     }
     case Mesh: {

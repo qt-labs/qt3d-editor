@@ -55,12 +55,9 @@ public:
 
     void beginResetComponent(Qt3DRender::QLight *component);
     void endResetComponent();
-
-    void setLightMaterial(Qt3DRender::QPhongAlphaMaterial *lightMaterial);
 private:
     Qt3DRender::QLight *m_component;
     EditorSceneItemLightComponentsModel *m_model;
-    Qt3DRender::QPhongAlphaMaterial *m_lightMaterial;
 };
 
 Q_DECLARE_METATYPE(LightComponentProxyItem*)

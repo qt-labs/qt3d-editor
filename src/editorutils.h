@@ -41,6 +41,7 @@ namespace Qt3DRender {
 class QGeometryRenderer;
 class QGeometry;
 class QBuffer;
+class QLight;
 }
 
 class EditorSceneItemModel;
@@ -130,6 +131,7 @@ public:
                                         Qt3DCore::QCamera *camera);
 
     static Qt3DCore::QTransform *entityTransform(Qt3DCore::QEntity *entity);
+    static Qt3DRender::QLight *entityLight(Qt3DCore::QEntity *entity);
     static QVector3D findIntersection(const QVector3D &rayOrigin, const QVector3D &ray,
                                       float planeOffset, const QVector3D &planeNormal,
                                       float &t);
@@ -146,6 +148,7 @@ public:
     static QVector3D totalAncestralScale(Qt3DCore::QEntity *entity);
     static QQuaternion totalAncestralRotation(Qt3DCore::QEntity *entity);
     static QList<Qt3DCore::QTransform *> ancestralTransforms(Qt3DCore::QEntity *entity);
+    static QVector3D lightDirection(const Qt3DRender::QLight *light);
 
 private:
     // Private constructor to ensure no actual instance is created

@@ -93,8 +93,6 @@ public:
     EditorSceneItem *sceneItem() const { return m_sceneItem; }
 
 private:
-    void createLightMesh(Qt3DRender::QLight *lightComponent);
-
     EditorSceneItem *m_sceneItem;
     TransformComponentProxyItem *m_transformItem;
     MaterialComponentProxyItem *m_materialItem;

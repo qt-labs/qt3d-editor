@@ -41,6 +41,8 @@
 #include <Qt3DRender/QSphereMesh>
 #include <Qt3DRender/QTorusMesh>
 #include <Qt3DRender/QLight>
+#include <Qt3DRender/QDirectionalLight>
+#include <Qt3DRender/QSpotLight>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QAbstractBuffer>
 
@@ -50,12 +52,11 @@
 
 EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
                                  EditorSceneItem *parentItem,
-                                 int index, bool freeView, QObject *parent)
+                                 int index, QObject *parent)
     : QObject(parent)
     , m_entity(entity)
     , m_parentItem(parentItem)
     , m_componentsModel(new EditorSceneItemComponentsModel(this, this))
-    , m_freeView(freeView)
     , m_scene(scene)
     , m_selectionBox(Q_NULLPTR)
     , m_selectionTransform(Q_NULLPTR)
@@ -63,6 +64,7 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
     , m_entityMesh(Q_NULLPTR)
     , m_entityMeshType(EditorSceneItemMeshComponentsModel::Unknown)
     , m_entityMeshExtents(1.0f, 1.0f, 1.0f)
+    , m_canRotate(true)
 {
     if (m_parentItem != Q_NULLPTR)
         m_parentItem->addChild(this, index);
@@ -71,19 +73,24 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
     Qt3DCore::QComponentList components = entity->components();
     Qt3DRender::QGeometryRenderer *entityMesh = Q_NULLPTR;
     bool isLight = false;
-    for (int i = 0; i < components.size(); i++) {
+    Q_FOREACH (Qt3DCore::QComponent *component, components) {
         if (!m_entityTransform)
-            m_entityTransform = qobject_cast<Qt3DCore::QTransform *>(components.value(i));
+            m_entityTransform = qobject_cast<Qt3DCore::QTransform *>(component);
         if (!entityMesh)
-            entityMesh = qobject_cast<Qt3DRender::QGeometryRenderer *>(components.value(i));
-        if (qobject_cast<Qt3DRender::QLight *>(components.value(i)))
+            entityMesh = qobject_cast<Qt3DRender::QGeometryRenderer *>(component);
+        if (qobject_cast<Qt3DRender::QLight *>(component)) {
             isLight = true;
+            if (!qobject_cast<Qt3DRender::QDirectionalLight *>(component)
+                    && !qobject_cast<Qt3DRender::QSpotLight *>(component)) {
+                m_canRotate = false;
+            }
+        }
     }
     bool isCamera = qobject_cast<Qt3DCore::QCamera *>(entity);
     if (isCamera)
         m_entityMeshExtents = QVector3D(1.4f, 1.4f, 1.4f);
 
-    // Selection transform is need for child items, even if we don't have a box
+    // Selection transform is needed for child items, even if we don't have a box
     m_selectionTransform = new Qt3DCore::QTransform;
 
     // Don't show box itself unless the entity has mesh
@@ -119,8 +126,6 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
         m_itemType = EditorSceneItem::Mesh;
     else
         m_itemType = EditorSceneItem::Other;
-
-    connect(this, &EditorSceneItem::freeViewChanged, this, &EditorSceneItem::setFreeViewFlag);
 }
 
 EditorSceneItem::~EditorSceneItem()
@@ -191,16 +196,6 @@ void EditorSceneItem::setParentItem(EditorSceneItem *parentItem)
 EditorSceneItemComponentsModel *EditorSceneItem::componentsModel() const
 {
     return m_componentsModel;
-}
-
-void EditorSceneItem::setFreeViewFlag(bool enabled)
-{
-    m_freeView = enabled;
-}
-
-bool EditorSceneItem::freeViewFlag() const
-{
-    return m_freeView;
 }
 
 EditorScene *EditorSceneItem::scene() const
@@ -345,6 +340,15 @@ void EditorSceneItem::recalculateCustomMeshExtents(Qt3DRender::QGeometryRenderer
     }
 }
 
+void EditorSceneItem::updateChildLightTransforms()
+{
+    Q_FOREACH (EditorSceneItem *child, m_children) {
+        child->updateChildLightTransforms();
+        if (child->itemType() == Light)
+            m_scene->updateLightVisibleTransform(child->entity());
+    }
+}
+
 void EditorSceneItem::connectSelectionBoxTransformsRecursive(bool enabled)
 {
     if (enabled) {
@@ -376,13 +380,16 @@ void EditorSceneItem::connectSelectionBoxTransformsRecursive(bool enabled)
 
 QMatrix4x4 EditorSceneItem::composeSelectionBoxTransform()
 {
-    QMatrix4x4 totalTransform = EditorUtils::totalAncestralTransform(m_entity);
+    QMatrix4x4 totalTransform;
 
-    if (m_entityTransform) {
-        Qt3DCore::QCamera *camera = qobject_cast<Qt3DCore::QCamera *>(m_entity);
-        if (camera)
-            totalTransform *= m_scene->calculateVisibleSceneCameraMatrix(camera);
-        else
+    Qt3DCore::QCamera *camera = qobject_cast<Qt3DCore::QCamera *>(m_entity);
+    if (camera) {
+        totalTransform = m_scene->calculateVisibleSceneCameraMatrix(camera);
+    } else if (m_itemType == Light) {
+        totalTransform = m_scene->calculateVisibleLightMatrix(m_entity);
+    } else {
+        totalTransform = EditorUtils::totalAncestralTransform(m_entity);
+        if (m_entityTransform)
             totalTransform *= m_entityTransform->matrix();
     }
 
@@ -523,6 +530,11 @@ void EditorSceneItem::updateSelectionBoxTransform()
         m_selectionBoxExtents *= m_entityTransform->scale3D();
 
     m_selectionTransform->setMatrix(transformMatrix);
+
+    // Check if we have lights as children and update their visible translations, as they are
+    // not part of the normal scene.
+    updateChildLightTransforms();
+
     emit selectionBoxTransformChanged(this);
 
     // TODO: How to handle group selection?
