@@ -55,12 +55,14 @@ ComponentDelegate {
 
         ComboBox {
             id: transformCombobox
+            activeFocusOnPress: true
             anchors.right: parent.right
             anchors.rightMargin: 4
             anchors.left: parent.left
             anchors.leftMargin: 8
             anchors.bottomMargin: 4
             anchors.verticalCenter: parent.verticalCenter
+            property int validIndex: -1
 
             model: ListModel {
                 property string language: systemLanguage
@@ -80,10 +82,15 @@ ComponentDelegate {
                 }
             }
             onCurrentIndexChanged: {
-                if (currentIndex === EditorSceneItemTransformComponentsModel.SRT - 1)
-                    componentData.model.setTransform(EditorSceneItemTransformComponentsModel.SRT)
-                else if (currentIndex === EditorSceneItemTransformComponentsModel.Matrix - 1)
-                    componentData.model.setTransform(EditorSceneItemTransformComponentsModel.Matrix)
+                if (activeFocus || validIndex === -1) {
+                    validIndex = currentIndex
+                    if (currentIndex === EditorSceneItemTransformComponentsModel.SRT - 1)
+                        componentData.model.setTransform(EditorSceneItemTransformComponentsModel.SRT)
+                    else if (currentIndex === EditorSceneItemTransformComponentsModel.Matrix - 1)
+                        componentData.model.setTransform(EditorSceneItemTransformComponentsModel.Matrix)
+                } else {
+                    currentIndex = validIndex
+                }
             }
         }
     }

@@ -56,12 +56,14 @@ ComponentDelegate {
 
         ComboBox {
             id: lightCombobox
+            activeFocusOnPress: true
             anchors.right: parent.right
             anchors.rightMargin: 4
             anchors.left: parent.left
             anchors.leftMargin: 8
             anchors.bottomMargin: 4
             anchors.verticalCenter: parent.verticalCenter
+            property int validIndex: -1
 
             model: ListModel {
                 property string language: systemLanguage
@@ -84,14 +86,19 @@ ComponentDelegate {
                 }
             }
             onCurrentIndexChanged: {
-                if (currentIndex === EditorSceneItemLightComponentsModel.Directional - 1)
-                    componentData.model.setLight(EditorSceneItemLightComponentsModel.Directional)
-                else if (currentIndex === EditorSceneItemLightComponentsModel.Point - 1)
-                    componentData.model.setLight(EditorSceneItemLightComponentsModel.Point)
-                else if (currentIndex === EditorSceneItemLightComponentsModel.Spot - 1)
-                    componentData.model.setLight(EditorSceneItemLightComponentsModel.Spot)
-                else if (currentIndex === EditorSceneItemLightComponentsModel.Basic - 1)
-                    componentData.model.setLight(EditorSceneItemLightComponentsModel.Basic)
+                if (activeFocus || validIndex === -1) {
+                    validIndex = currentIndex
+                    if (currentIndex === EditorSceneItemLightComponentsModel.Directional - 1)
+                        componentData.model.setLight(EditorSceneItemLightComponentsModel.Directional)
+                    else if (currentIndex === EditorSceneItemLightComponentsModel.Point - 1)
+                        componentData.model.setLight(EditorSceneItemLightComponentsModel.Point)
+                    else if (currentIndex === EditorSceneItemLightComponentsModel.Spot - 1)
+                        componentData.model.setLight(EditorSceneItemLightComponentsModel.Spot)
+                    else if (currentIndex === EditorSceneItemLightComponentsModel.Basic - 1)
+                        componentData.model.setLight(EditorSceneItemLightComponentsModel.Basic)
+                } else {
+                    currentIndex = validIndex
+                }
             }
         }
     }

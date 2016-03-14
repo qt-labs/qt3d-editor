@@ -55,12 +55,14 @@ ComponentDelegate {
 
         ComboBox {
             id: meshCombobox
+            activeFocusOnPress: true
             anchors.right: parent.right
             anchors.rightMargin: 8
             anchors.left: parent.left
             anchors.leftMargin: 8
             anchors.bottomMargin: 4
             anchors.verticalCenter: parent.verticalCenter
+            property int validIndex: -1
 
             model: ListModel {
                 property string language: systemLanguage
@@ -84,18 +86,23 @@ ComponentDelegate {
                 }
             }
             onCurrentIndexChanged: {
-                if (currentIndex === EditorSceneItemMeshComponentsModel.Cuboid - 1)
-                    componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Cuboid)
-                else if (currentIndex === EditorSceneItemMeshComponentsModel.Custom - 1)
-                    componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Custom)
-                else if (currentIndex === EditorSceneItemMeshComponentsModel.Cylinder - 1)
-                    componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Cylinder)
-                else if (currentIndex === EditorSceneItemMeshComponentsModel.Plane - 1)
-                    componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Plane)
-                else if (currentIndex === EditorSceneItemMeshComponentsModel.Sphere - 1)
-                    componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Sphere)
-                else if (currentIndex === EditorSceneItemMeshComponentsModel.Torus - 1)
-                    componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Torus)
+                if (activeFocus || validIndex === -1) {
+                    validIndex = currentIndex
+                    if (currentIndex === EditorSceneItemMeshComponentsModel.Cuboid - 1)
+                        componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Cuboid)
+                    else if (currentIndex === EditorSceneItemMeshComponentsModel.Custom - 1)
+                        componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Custom)
+                    else if (currentIndex === EditorSceneItemMeshComponentsModel.Cylinder - 1)
+                        componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Cylinder)
+                    else if (currentIndex === EditorSceneItemMeshComponentsModel.Plane - 1)
+                        componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Plane)
+                    else if (currentIndex === EditorSceneItemMeshComponentsModel.Sphere - 1)
+                        componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Sphere)
+                    else if (currentIndex === EditorSceneItemMeshComponentsModel.Torus - 1)
+                        componentData.model.setMesh(EditorSceneItemMeshComponentsModel.Torus)
+                } else {
+                    currentIndex = validIndex
+                }
             }
         }
     }

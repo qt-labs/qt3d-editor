@@ -56,12 +56,14 @@ ComponentDelegate {
 
         ComboBox {
             id: materialCombobox
+            activeFocusOnPress: true
             anchors.right: parent.right
             anchors.rightMargin: 4
             anchors.left: parent.left
             anchors.leftMargin: 8
             anchors.bottomMargin: 4
             anchors.verticalCenter: parent.verticalCenter
+            property int validIndex: -1
 
             model: ListModel {
                 property string language: systemLanguage
@@ -88,24 +90,29 @@ ComponentDelegate {
                 }
             }
             onCurrentIndexChanged: {
-                if (currentIndex === EditorSceneItemMaterialComponentsModel.DiffuseMap - 1)
-                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.DiffuseMap)
-                else if (currentIndex === EditorSceneItemMaterialComponentsModel.DiffuseSpecularMap - 1)
-                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.DiffuseSpecularMap)
-                else if (currentIndex === EditorSceneItemMaterialComponentsModel.Gooch - 1)
-                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.Gooch)
-                else if (currentIndex === EditorSceneItemMaterialComponentsModel.NormalDiffuseMap - 1)
-                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.NormalDiffuseMap)
-                else if (currentIndex === EditorSceneItemMaterialComponentsModel.NormalDiffuseMapAlpha - 1)
-                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.NormalDiffuseMapAlpha)
-                else if (currentIndex === EditorSceneItemMaterialComponentsModel.NormalDiffuseSpecularMap - 1)
-                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.NormalDiffuseSpecularMap)
-                else if (currentIndex === EditorSceneItemMaterialComponentsModel.PerVertexColor - 1)
-                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.PerVertexColor)
-                else if (currentIndex === EditorSceneItemMaterialComponentsModel.PhongAlpha - 1)
-                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.PhongAlpha)
-                else if (currentIndex === EditorSceneItemMaterialComponentsModel.Phong - 1)
-                    componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.Phong)
+                if (activeFocus || validIndex === -1) {
+                    validIndex = currentIndex
+                    if (currentIndex === EditorSceneItemMaterialComponentsModel.DiffuseMap - 1)
+                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.DiffuseMap)
+                    else if (currentIndex === EditorSceneItemMaterialComponentsModel.DiffuseSpecularMap - 1)
+                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.DiffuseSpecularMap)
+                    else if (currentIndex === EditorSceneItemMaterialComponentsModel.Gooch - 1)
+                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.Gooch)
+                    else if (currentIndex === EditorSceneItemMaterialComponentsModel.NormalDiffuseMap - 1)
+                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.NormalDiffuseMap)
+                    else if (currentIndex === EditorSceneItemMaterialComponentsModel.NormalDiffuseMapAlpha - 1)
+                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.NormalDiffuseMapAlpha)
+                    else if (currentIndex === EditorSceneItemMaterialComponentsModel.NormalDiffuseSpecularMap - 1)
+                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.NormalDiffuseSpecularMap)
+                    else if (currentIndex === EditorSceneItemMaterialComponentsModel.PerVertexColor - 1)
+                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.PerVertexColor)
+                    else if (currentIndex === EditorSceneItemMaterialComponentsModel.PhongAlpha - 1)
+                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.PhongAlpha)
+                    else if (currentIndex === EditorSceneItemMaterialComponentsModel.Phong - 1)
+                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.Phong)
+                } else {
+                    currentIndex = validIndex
+                }
             }
         }
     }
