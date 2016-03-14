@@ -35,6 +35,17 @@ Item {
     height: columnLayout.y + columnLayout.height + 8
 
     property int componentType: EditorSceneItemComponentsModel.Light
+    property bool initialState: true
+    property color selectedColor: "#ffffff"
+    property double selectedIntensity: 1
+
+    Component.onCompleted: {
+        initialState = false
+        if (parent.newColor !== selectedColor)
+            colorField.component[colorField.propertyName] = parent.newColor
+        if (parent.newIntensity !== selectedIntensity)
+            intensityField.component[intensityField.propertyName] = parent.newIntensity
+    }
 
     Column {
         id: columnLayout
@@ -47,17 +58,27 @@ Item {
         anchors.rightMargin: 8
 
         ColorPropertyInputField {
+            id: colorField
             label: qsTr("Color") + editorScene.emptyString
             propertyName: "color"
             component: lightComponentData
             componentType: thisItem.componentType
+            onColorValueChanged: {
+                if (selectedColor !== colorValue && !thisItem.initialState)
+                    thisItem.parent.setNewColor(colorValue)
+            }
         }
 
         FloatPropertyInputField {
+            id: intensityField
             label: qsTr("Intensity") + editorScene.emptyString
             propertyName: "intensity"
             component: lightComponentData
             componentType: thisItem.componentType
+            onFieldValueChanged: {
+                if (selectedIntensity !== fieldValue && !thisItem.initialState)
+                    thisItem.parent.setNewIntensity(fieldValue)
+            }
         }
     }
 }

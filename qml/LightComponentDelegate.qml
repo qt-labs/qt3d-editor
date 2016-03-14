@@ -100,9 +100,14 @@ ComponentDelegate {
         id: lightRepeater
         model: componentData.model
 
+        property color lightColor: "#ffffff"
+        property double lightIntensity: 1
         Loader {
             id: lightLoader
             width: parent.width
+
+            property color newColor: lightRepeater.lightColor
+            property double newIntensity: lightRepeater.lightIntensity
 
             function lightTypetoDelegateSource(lightType) {
                 lightDelegate.currentLight = lightType
@@ -119,6 +124,13 @@ ComponentDelegate {
             }
 
             source: lightTypetoDelegateSource(lightType)
+
+            function setNewColor(color) {
+                lightRepeater.lightColor = color
+            }
+            function setNewIntensity(intensity) {
+                lightRepeater.lightIntensity = intensity
+            }
         }
     }
 }

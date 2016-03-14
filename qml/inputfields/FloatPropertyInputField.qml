@@ -38,6 +38,7 @@ PropertyInputField {
     property real minimum: -99999999999 // TODO: Do we need more sensible default minimum?
     property int roundDigits: 4 // TODO: Determine nice default rounding
     property int roundMultiplier: Math.pow(10, roundDigits) // Calculated from roundDigits, do not set directly
+    property double fieldValue: component[propertyName]
 
     onComponentValueChanged: {
         if (component !== null)
