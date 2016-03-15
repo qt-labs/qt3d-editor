@@ -272,6 +272,8 @@ public:
     void handleLightTypeChanged(EditorSceneItem *item);
     void updateLightVisibleTransform(Qt3DCore::QEntity *lightEntity);
 
+    void handleEnabledChanged(Qt3DCore::QEntity *entity, bool enabled);
+
 public slots:
     void clearSelectionBoxes();
 

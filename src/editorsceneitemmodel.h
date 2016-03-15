@@ -76,6 +76,7 @@ public:
     Q_INVOKABLE QModelIndex getModelIndex(Qt3DCore::QEntity *entity);
     QModelIndex getModelIndexByName(const QString &entityName);
     QString generateValidName(const QString &desiredName, const Qt3DCore::QEntity *skipEntity);
+    EditorScene *scene() { return m_scene; }
 
 signals:
     void freeViewChanged(bool enabled);

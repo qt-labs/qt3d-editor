@@ -55,8 +55,14 @@ void PropertyChangeCommand::undo()
     if (isNonOp())
         return;
     QObject *object = getTargetObject();
-    if (object)
+    if (object) {
         object->setProperty(m_propertyName, m_oldValue);
+        if (m_propertyName == QByteArrayLiteral("enabled")) {
+            // Handle hiding/showing camera & light placeholder meshes
+            m_sceneModel->scene()->handleEnabledChanged(qobject_cast<Qt3DCore::QEntity *>(object),
+                                                        m_oldValue.toBool());
+        }
+    }
 }
 
 void PropertyChangeCommand::redo()
@@ -64,8 +70,14 @@ void PropertyChangeCommand::redo()
     if (isNonOp())
         return;
     QObject *object = getTargetObject();
-    if (object)
+    if (object) {
         object->setProperty(m_propertyName, m_newValue);
+        if (m_propertyName == QByteArrayLiteral("enabled")) {
+            // Handle hiding/showing camera & light placeholder meshes
+            m_sceneModel->scene()->handleEnabledChanged(qobject_cast<Qt3DCore::QEntity *>(object),
+                                                        m_newValue.toBool());
+        }
+    }
 }
 
 bool PropertyChangeCommand::mergeWith(const QUndoCommand *other)

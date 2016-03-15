@@ -176,7 +176,6 @@ int UndoHandler::nonOpCount(bool checkUndos) const
                 count++;
             else
                 break;
-
         } else if (nextCommand->id() == RenameEntityCommandId) {
             const RenameEntityCommand *renameCommand =
                     static_cast<const RenameEntityCommand *>(nextCommand);
