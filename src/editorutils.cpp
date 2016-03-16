@@ -33,6 +33,7 @@
 #include <Qt3DCore/QCamera>
 #include <Qt3DRender/QAbstractTextureProvider>
 #include <Qt3DRender/QTextureImage>
+#include <Qt3DRender/QObjectPicker>
 
 #include <Qt3DCore/QTransform>
 
@@ -837,6 +838,19 @@ Qt3DRender::QLight *EditorUtils::entityLight(Qt3DCore::QEntity *entity)
         Qt3DRender::QLight *light = qobject_cast<Qt3DRender::QLight *>(components.value(i));
         if (light)
             return light;
+    }
+
+    return Q_NULLPTR;
+}
+
+Qt3DRender::QObjectPicker *EditorUtils::entityPicker(Qt3DCore::QEntity *entity)
+{
+    Qt3DCore::QComponentList components = entity->components();
+    for (int i = 0; i < components.size(); i++) {
+        Qt3DRender::QObjectPicker *picker
+                = qobject_cast<Qt3DRender::QObjectPicker *>(components.value(i));
+        if (picker)
+            return picker;
     }
 
     return Q_NULLPTR;

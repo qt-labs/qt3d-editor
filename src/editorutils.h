@@ -42,6 +42,7 @@ class QGeometryRenderer;
 class QGeometry;
 class QBuffer;
 class QLight;
+class QObjectPicker;
 }
 
 class EditorSceneItemModel;
@@ -132,6 +133,7 @@ public:
 
     static Qt3DCore::QTransform *entityTransform(Qt3DCore::QEntity *entity);
     static Qt3DRender::QLight *entityLight(Qt3DCore::QEntity *entity);
+    static Qt3DRender::QObjectPicker *entityPicker(Qt3DCore::QEntity *entity);
     static QVector3D findIntersection(const QVector3D &rayOrigin, const QVector3D &ray,
                                       float planeOffset, const QVector3D &planeNormal,
                                       float &t);

@@ -693,7 +693,7 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
     // TODO: Snap to grid with ctrl down?
 
     Qt3DCore::QCamera *camera = frameGraphCamera();
-    if (camera) {
+    if (camera && m_selectedEntityTransform) {
         // For cameras, we need to use position instead of translation for correct results
         QVector3D entityTranslation = m_selectedEntityTransform->translation();
         Qt3DCore::QCamera *cameraEntity = qobject_cast<Qt3DCore::QCamera *>(m_selectedEntity);
@@ -1124,10 +1124,38 @@ void EditorScene::handleEnabledChanged(Qt3DCore::QEntity *entity, bool enabled)
             m_activeSceneCameraFrustumData.viewCenterEntity->setEnabled(isEnabled);
             m_activeSceneCameraFrustumData.viewVectorEntity->setEnabled(isEnabled);
         }
+        // Picker doesn't get disabled with the entity - we have to delete it to disable
+        if (isEnabled) {
+            if (!m_sceneCameras.at(cameraIndex).cameraPicker) {
+                m_sceneCameras[cameraIndex].cameraPicker =
+                        createObjectPickerForEntity(m_sceneCameras.at(cameraIndex).visibleEntity);
+            }
+        } else {
+            delete m_sceneCameras.at(cameraIndex).cameraPicker;
+            m_sceneCameras[cameraIndex].cameraPicker = Q_NULLPTR;
+        }
     } else if (EditorUtils::entityLight(entity) != Q_NULLPTR) {
         LightData *lightData = m_sceneLights.value(entity->id());
         if (lightData)
             lightData->visibleEntity->setEnabled(isEnabled);
+        // Picker doesn't get disabled with the entity - we have to delete it to disable
+        if (isEnabled) {
+            if (!lightData->visiblePicker)
+                lightData->visiblePicker = createObjectPickerForEntity(lightData->visibleEntity);
+        } else {
+            delete lightData->visiblePicker;
+            lightData->visiblePicker = Q_NULLPTR;
+        }
+    } else {
+        // Other objects aren't affected by m_freeView, so just check enabled flag
+        // Picker doesn't get disabled with the entity - we have to delete it to disable
+        Qt3DRender::QObjectPicker *picker = EditorUtils::entityPicker(entity);
+        if (enabled) {
+            if (!picker)
+                createObjectPickerForEntity(entity);
+        } else {
+            delete picker;
+        }
     }
 }
 
