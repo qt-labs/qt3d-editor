@@ -331,6 +331,7 @@ private:
     void updateDragHandlePicker(DragHandleData &handleData);
     void resizeCameraViewCenterEntity();
     bool isPropertyLocked(const QString &propertyName, QObject *obj);
+    void cancelDrag();
 
 private:
     friend class EditorViewportItem;
@@ -397,6 +398,7 @@ private:
     QVector3D m_dragInitialRotateCustomVector;
     QVector3D m_dragInitialHandleTranslation;
     QVector3D m_dragInitialHandleCornerTranslation;
+    Qt3DCore::QEntity *m_dragEntity;
     bool m_ignoringInitialDrag;
     bool m_viewCenterLocked;
     Qt3DCore::QEntity *m_pickedEntity;

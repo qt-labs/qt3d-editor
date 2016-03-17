@@ -105,6 +105,7 @@ EditorScene::EditorScene(QObject *parent)
     , m_qtTranslator(new QTranslator(this))
     , m_appTranslator(new QTranslator(this))
     , m_dragMode(DragNone)
+    , m_dragEntity(Q_NULLPTR)
     , m_ignoringInitialDrag(true)
     , m_viewCenterLocked(false)
     , m_pickedEntity(Q_NULLPTR)
@@ -1638,6 +1639,7 @@ void EditorScene::endSelectionHandling()
                 && (!cameraEntity || !m_cameraViewCenterSelected);
         if (viewCenterDrag || entityDrag) {
             m_dragMode = DragTranslate;
+            m_dragEntity = m_pickedEntity;
             m_previousMousePosition = QCursor::pos();
             if (cameraEntity) {
                 if (viewCenterDrag)
@@ -1763,11 +1765,17 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
     if (m_dragMode == DragNone) {
         Qt3DCore::QEntity *pressedEntity = qobject_cast<Qt3DCore::QEntity *>(sender()->parent());
         m_ignoringInitialDrag = true;
-        if (pressedEntity == m_dragHandleScale.entity) {
-            if (pressedEntity->isEnabled()) {
-                EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(), Q_NULLPTR);
+        // If pressedEntity is not enabled, it typically means the pressedEntity is a drag handle
+        // and the selection has changed to a different type of entity since the mouse press was
+        // registered. Since the new entity is not the one we wanted to modify anyway, just
+        // skip handling the pick event.
+        if (pressedEntity->isEnabled()) {
+            if (pressedEntity == m_dragHandleScale.entity) {
+                EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(),
+                                                                   Q_NULLPTR);
                 if (selectedItem) {
                     m_dragMode = DragScale;
+                    m_dragEntity = m_selectedEntity;
                     m_dragInitialScaleValue = selectedItem->entityTransform()->scale3D();
                     m_dragInitialHandleTranslation = m_dragHandles.transform->rotation()
                             * m_dragHandleScale.transform->translation();
@@ -1775,10 +1783,9 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
                             EditorUtils::totalAncestralScale(m_selectedEntity) *
                             m_dragInitialScaleValue * m_dragHandleScaleCornerTranslation;
                 }
-            }
-        } else if (pressedEntity == m_dragHandleRotate.entity) {
-            if (pressedEntity->isEnabled()) {
-                EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(), Q_NULLPTR);
+            } else if (pressedEntity == m_dragHandleRotate.entity) {
+                EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(),
+                                                                   Q_NULLPTR);
                 if (selectedItem) {
                     Qt3DRender::QCamera *cameraEntity =
                             qobject_cast<Qt3DRender::QCamera *>(m_selectedEntity);
@@ -1796,15 +1803,15 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
                             }
                         }
                     }
+                    m_dragEntity = m_selectedEntity;
                     m_dragMode = DragRotate;
                     m_dragInitialRotationValue = selectedItem->entityTransform()->rotation();
                     m_dragInitialHandleTranslation = m_dragHandles.transform->rotation()
                             * m_dragHandleRotate.transform->translation();
                 }
-            }
-        } else if (pressedEntity == m_dragHandleTranslate.entity) {
-            if (pressedEntity->isEnabled()) {
-                EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(), Q_NULLPTR);
+            } else if (pressedEntity == m_dragHandleTranslate.entity) {
+                EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(),
+                                                                   Q_NULLPTR);
                 if (selectedItem) {
                     m_cameraViewCenterSelected = false;
                     m_previousMousePosition = QCursor::pos();
@@ -1814,45 +1821,46 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
                         m_dragInitialTranslationValue = cameraEntity->position();
                     else
                         m_dragInitialTranslationValue = m_dragHandles.transform->translation();
+                    m_dragEntity = m_selectedEntity;
                     m_dragMode = DragTranslate;
                 }
-            }
-        } else if (pressedEntity && (!m_pickedEntity || m_pickedDistance > event->distance())) {
-            // Ignore presses that are farther away than the closest one
-            m_pickedDistance = event->distance();
-            bool select = false;
-            EditorSceneItem *item = m_sceneItems.value(pressedEntity->id(), Q_NULLPTR);
-            if (item) {
-                select = true;
-            } else if (m_freeView) {
-                if (pressedEntity == m_activeSceneCameraFrustumData.viewCenterEntity) {
-                    // Select the active scene camera instead if clicked on view center
-                    pressedEntity = m_sceneCameras.at(m_activeSceneCameraIndex).cameraEntity;
+            } else if (pressedEntity && (!m_pickedEntity || m_pickedDistance > event->distance())) {
+                // Ignore presses that are farther away than the closest one
+                m_pickedDistance = event->distance();
+                bool select = false;
+                EditorSceneItem *item = m_sceneItems.value(pressedEntity->id(), Q_NULLPTR);
+                if (item) {
                     select = true;
-                    m_cameraViewCenterSelected = true;
-                } else if (pressedEntity->objectName() == cameraVisibleEntityName) {
-                    // Select the camera instead if clicked on camera cone
-                    for (int i = 0; i < m_sceneCameras.size(); i++) {
-                        if (m_sceneCameras.at(i).visibleEntity == pressedEntity) {
-                            pressedEntity = m_sceneCameras.at(i).cameraEntity;
-                            select = true;
-                            m_cameraViewCenterSelected = false;
-                            break;
+                } else if (m_freeView) {
+                    if (pressedEntity == m_activeSceneCameraFrustumData.viewCenterEntity) {
+                        // Select the active scene camera instead if clicked on view center
+                        pressedEntity = m_sceneCameras.at(m_activeSceneCameraIndex).cameraEntity;
+                        select = true;
+                        m_cameraViewCenterSelected = true;
+                    } else if (pressedEntity->objectName() == cameraVisibleEntityName) {
+                        // Select the camera instead if clicked on camera cone
+                        for (int i = 0; i < m_sceneCameras.size(); i++) {
+                            if (m_sceneCameras.at(i).visibleEntity == pressedEntity) {
+                                pressedEntity = m_sceneCameras.at(i).cameraEntity;
+                                select = true;
+                                m_cameraViewCenterSelected = false;
+                                break;
+                            }
                         }
-                    }
-                } else if (pressedEntity->objectName() == lightVisibleEntityName) {
-                    // Select the light instead if clicked on visible light mesh
-                    Q_FOREACH (LightData *lightData, m_sceneLights.values()) {
-                        if (lightData->visibleEntity == pressedEntity) {
-                            pressedEntity = lightData->lightEntity;
-                            select = true;
+                    } else if (pressedEntity->objectName() == lightVisibleEntityName) {
+                        // Select the light instead if clicked on visible light mesh
+                        Q_FOREACH (LightData *lightData, m_sceneLights.values()) {
+                            if (lightData->visibleEntity == pressedEntity) {
+                                pressedEntity = lightData->lightEntity;
+                                select = true;
+                            }
                         }
                     }
                 }
+                if (select && !m_pickedEntity)
+                    QMetaObject::invokeMethod(this, "endSelectionHandling", Qt::QueuedConnection);
+                m_pickedEntity = pressedEntity;
             }
-            if (select && !m_pickedEntity)
-                QMetaObject::invokeMethod(this, "endSelectionHandling", Qt::QueuedConnection);
-            m_pickedEntity = pressedEntity;
         }
     }
     event->setAccepted(true);
@@ -1861,18 +1869,14 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
 bool EditorScene::handleMousePress(QMouseEvent *event)
 {
     Q_UNUSED(event)
-    m_dragMode = DragNone;
-    m_pickedEntity = Q_NULLPTR;
-    m_pickedDistance = -1.0f;
+    cancelDrag();
     return false; // Never consume press event
 }
 
 bool EditorScene::handleMouseRelease(QMouseEvent *event)
 {
     Q_UNUSED(event)
-    m_dragMode = DragNone;
-    m_pickedEntity = Q_NULLPTR;
-    m_pickedDistance = -1.0f;
+    cancelDrag();
     return false; // Never consume release event
 }
 
@@ -1887,6 +1891,9 @@ bool EditorScene::handleMouseMove(QMouseEvent *event)
     if (!m_ignoringInitialDrag) {
         bool shiftDown = event->modifiers() & Qt::ShiftModifier;
         bool ctrlDown = event->modifiers() & Qt::ControlModifier;
+        // If selected entity changes mid-drag, cancel drag.
+        if (m_dragMode != DragNone && m_dragEntity != m_selectedEntity)
+            cancelDrag();
         switch (m_dragMode) {
         case DragTranslate: {
             dragTranslateSelectedEntity(event->pos(), shiftDown, ctrlDown);
@@ -1993,6 +2000,14 @@ bool EditorScene::isPropertyLocked(const QString &propertyName, QObject *obj)
         return propertyVariant.toBool();
     else
         return false;
+}
+
+void EditorScene::cancelDrag()
+{
+    m_dragMode = DragNone;
+    m_pickedEntity = Q_NULLPTR;
+    m_pickedDistance = -1.0f;
+    m_dragEntity = Q_NULLPTR;
 }
 
 void EditorScene::handleCameraAdded(Qt3DRender::QCamera *camera)
