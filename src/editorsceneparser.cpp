@@ -944,7 +944,10 @@ QString EditorSceneParser::variantToQMLString(const QVariant &var)
         QVector3D vec = qvariant_cast<QVector3D>(var);
         return retVal.arg(vec.x()).arg(vec.y()).arg(vec.z());
     }
-    case QVariant::Color: {
+    case QVariant::Color:
+    case QVariant::Url:
+    case QVariant::String: {
+
         QString retVal = QStringLiteral("\"%1\"");
         return retVal.arg(var.toString());
     }
@@ -999,6 +1002,18 @@ QVariant EditorSceneParser::QMLStringToVariant(QVariant::Type type, const QStrin
             return QVariant::fromValue(QColor());
         else
             return QVariant::fromValue(QColor(qmlStr.mid(1, qmlStr.size() - 2)));
+    }
+    case QVariant::Url: {
+        if (qmlStr.size() < 3)
+            return QVariant::fromValue(QUrl());
+        else
+            return QVariant::fromValue(QUrl(qmlStr.mid(1, qmlStr.size() - 2)));
+    }
+    case QVariant::String: {
+        if (qmlStr.size() < 3)
+            return QVariant::fromValue(QString());
+        else
+            return QVariant::fromValue(QString(qmlStr.mid(1, qmlStr.size() - 2)));
     }
     case QVariant::Int: {
         int enumTagIndex = qmlStr.lastIndexOf(enumPropertyTag);
