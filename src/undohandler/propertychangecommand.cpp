@@ -91,6 +91,7 @@ bool PropertyChangeCommand::mergeWith(const QUndoCommand *other)
     if (id() == other->id()) {
         const PropertyChangeCommand *otherCommand = static_cast<const PropertyChangeCommand *>(other);
         if (otherCommand->m_sceneModel == m_sceneModel
+                && otherCommand->m_entityName == m_entityName
                 && otherCommand->m_componentType == m_componentType
                 && otherCommand->m_propertyName == m_propertyName) {
             m_newValue = otherCommand->m_newValue;
