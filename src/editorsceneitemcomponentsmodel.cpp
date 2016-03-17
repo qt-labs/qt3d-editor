@@ -53,8 +53,8 @@ EditorSceneItemComponentsModel::EditorSceneItemComponentsModel(EditorSceneItem *
     : QAbstractListModel(parent)
     , m_sceneItem(sceneItem)
     , m_transformItem(Q_NULLPTR)
-    , m_meshItem(Q_NULLPTR)
     , m_materialItem(Q_NULLPTR)
+    , m_meshItem(Q_NULLPTR)
     , m_lightItem(Q_NULLPTR)
 {
 }

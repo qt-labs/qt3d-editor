@@ -68,6 +68,8 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QtMath>
 
+#include <QtQml/QQmlEngine>
+
 //#define TEST_SCENE // If a test scene is wanted instead of the default scene
 
 #ifdef TEST_SCENE
@@ -1295,6 +1297,10 @@ void EditorScene::setupDefaultScene()
 void EditorScene::createRootEntity()
 {
     m_rootEntity = new Qt3DCore::QEntity();
+    // Grab explicit ownership of the root entity, otherwise QML garbage collector may
+    // clean it up.
+    QQmlEngine::setObjectOwnership(m_rootEntity, QQmlEngine::CppOwnership);
+
     m_rootEntity->setObjectName(QStringLiteral("__internal root entity"));
 
     // Create a component cache for components that are needed after Load/New/possible other
