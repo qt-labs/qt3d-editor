@@ -33,7 +33,6 @@
 #include <Qt3DInput/QAction>
 #include <Qt3DInput/QActionInput>
 #include <Qt3DInput/QLogicalDevice>
-#include <Qt3DInput/QKeyboardController>
 #include <Qt3DInput/QMouseDevice>
 #include <Qt3DInput/QMouseEvent>
 #include <Qt3DInput/QMouseHandler>
