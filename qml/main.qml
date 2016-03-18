@@ -156,10 +156,9 @@ ApplicationWindow {
                     }
                 }
                 MenuItem {
-                    enabled: freeViewCamera.checked
                     text: qsTr("Reset") + editorScene.emptyString
                     onTriggered: {
-                        editorScene.resetFreeViewCamera()
+                        resetCameraToDefault()
                     }
                 }
                 MenuItem {
@@ -419,7 +418,7 @@ ApplicationWindow {
                 disabledIconSource: "/images/reset_camera_to_default.png"
                 tooltip: qsTr("Reset to Default (Ctrl + R)") + editorScene.emptyString
                 buttonEnabled: true
-                onEnabledButtonClicked: editorScene.resetFreeViewCamera()
+                onEnabledButtonClicked: resetCameraToDefault()
             }
         }
     }
@@ -468,7 +467,7 @@ ApplicationWindow {
     Shortcut {
         id: resetCameraShortcut
         sequence: "Ctrl+R"
-        onActivated: editorScene.resetFreeViewCamera()
+        onActivated: resetCameraToDefault()
     }
 
     EditorScene {
@@ -578,5 +577,10 @@ ApplicationWindow {
         onTriggered: {
             editorScene.saveScene(saveFileUrl, true)
         }
+    }
+
+    function resetCameraToDefault() {
+        editorScene.freeView = true
+        editorScene.resetFreeViewCamera()
     }
 }
