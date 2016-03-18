@@ -49,12 +49,12 @@ DragHandleEffect::DragHandleEffect(Qt3DCore::QNode *parent)
     techniqueES2->graphicsApiFilter()->setMinorVersion(0);
     techniqueES2->graphicsApiFilter()->setProfile(Qt3DRender::QGraphicsApiFilter::NoProfile);
 
-    Qt3DRender::QAnnotation *annotation = new Qt3DRender::QAnnotation(this);
-    annotation->setName(QStringLiteral("renderingStyle"));
-    annotation->setValue(QStringLiteral("forward"));
+    Qt3DRender::QFilterKey *filterkey = new Qt3DRender::QFilterKey(this);
+    filterkey->setName(QStringLiteral("renderingStyle"));
+    filterkey->setValue(QStringLiteral("forward"));
 
-    technique->addAnnotation(annotation);
-    techniqueES2->addAnnotation(annotation);
+    technique->addFilterKey(filterkey);
+    techniqueES2->addFilterKey(filterkey);
 
     Qt3DRender::QShaderProgram *shader = new Qt3DRender::QShaderProgram();
     shader->setVertexShaderCode(Qt3DRender::QShaderProgram::loadSource(QUrl(QStringLiteral("qrc:/shaders/draghandle.vert"))));

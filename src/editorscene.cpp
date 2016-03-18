@@ -54,7 +54,6 @@
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
 #include <Qt3DRender/QSceneLoader>
-#include <Qt3DRender/QAbstractSceneLoader>
 #include <Qt3DRender/QPickingSettings>
 
 #include <Qt3DInput/QInputSettings>
@@ -1762,11 +1761,11 @@ void EditorScene::handleSceneLoaderStatusChanged()
         QVector<Qt3DCore::QEntity *> entities = sceneLoader->entities();
         if (!entities.isEmpty()) {
             Qt3DCore::QEntity *importedEntity = entities[0];
-            if (sceneLoader->status() == Qt3DRender::QAbstractSceneLoader::Ready) {
+            if (sceneLoader->status() == Qt3DRender::QSceneLoader::Ready) {
                 // TODO do we need to do something else here?
                 importedEntity->setParent(m_sceneEntity);
                 addEntity(importedEntity);
-            } else if (sceneLoader->status() == Qt3DRender::QAbstractSceneLoader::Error) {
+            } else if (sceneLoader->status() == Qt3DRender::QSceneLoader::Error) {
                 // TODO handle error properly
                 importedEntity->deleteLater();
             }
