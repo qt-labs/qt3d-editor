@@ -339,7 +339,7 @@ QString EditorScene::cameraName(int index) const
 void EditorScene::resetFreeViewCamera()
 {
     if (m_viewport)
-        m_freeViewCameraEntity->setAspectRatio(m_viewport->width() / m_viewport->height());
+        m_freeViewCameraEntity->setAspectRatio(m_viewport->width() / qMax(m_viewport->height(), 1.0));
     else
         m_freeViewCameraEntity->setAspectRatio(16.0f / 9.0f);
     m_freeViewCameraEntity->setBottom(-0.5f);
@@ -759,6 +759,7 @@ void EditorScene::dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, 
             moveFactors.setZ(moveFactors.z() / qAbs(m_dragInitialHandleCornerTranslation.z()));
         else
             moveFactors.setZ(1.0f);
+
 
         if (shiftDown) {
             float averageFactor = (moveFactors.x() + moveFactors.y() + moveFactors.z()) / 3.0f;
@@ -2162,7 +2163,7 @@ void EditorScene::handleLightTransformChange()
 
 void EditorScene::handleViewportSizeChange()
 {
-    qreal aspectRatio = m_viewport->width() / m_viewport->height();
+    qreal aspectRatio = m_viewport->width() / qMax(m_viewport->height(), 1.0);
     m_freeViewCameraEntity->lens()->setPerspectiveProjection(
                 45.0f, aspectRatio, 0.1f, 1000.0f);
 }

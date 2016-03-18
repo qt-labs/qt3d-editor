@@ -37,9 +37,11 @@ ApplicationWindow {
     id: mainwindow
     title: qsTr("Qt 3D Scene Editor") + editorScene.emptyString
     width: 1280
-    height: 700
+    height: 800
     visible: true
     color: "lightGray"
+    minimumHeight: 400
+    minimumWidth: 640
 
     Item {
         id: applicationArea
@@ -517,6 +519,7 @@ ApplicationWindow {
 
         Item {
             Layout.fillWidth: true
+            Layout.minimumWidth: 100
 
             EditorViewport {
                 id: editorViewport
