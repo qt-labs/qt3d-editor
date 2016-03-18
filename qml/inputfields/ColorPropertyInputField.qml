@@ -96,6 +96,7 @@ PropertyInputField {
                 background: Rectangle {
                     implicitWidth: colorInput.width * 0.6
                     implicitHeight: colorLabel.height * 1.1
+                    border.width: control.activeFocus ? 2 : 1
                     border.color: "#888"
                     radius: 4
                     color: colorValue

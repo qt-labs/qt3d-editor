@@ -60,6 +60,7 @@ Item {
         anchors.centerIn: parent.Center
         iconSource: buttonEnabled ? enabledIconSource : disabledIconSource
         style: enabledButtonStyle
+        activeFocusOnTab: false
         onClicked: {
             enabledButtonClicked()
         }
