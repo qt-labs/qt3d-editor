@@ -241,7 +241,7 @@ void EditorScene::resetScene()
     m_freeView = true;
     resetFreeViewCamera();
     setFrameGraphCamera(m_freeViewCameraEntity);
-    enableCameraCones(m_freeView);
+    enableVisibleCameras(m_freeView);
     enableVisibleLights(m_freeView);
 
     emit freeViewChanged(m_freeView);
@@ -282,7 +282,7 @@ bool EditorScene::loadScene(const QUrl &fileUrl)
         removeEntity(m_sceneEntity);
         m_sceneEntity = newSceneEntity;
         addEntity(newSceneEntity);
-        enableCameraCones(m_freeView);
+        enableVisibleCameras(m_freeView);
         enableVisibleLights(m_freeView);
         m_activeSceneCameraIndex--; // To force change
         setActiveSceneCameraIndex(cameraIndexForEntity(camera));
@@ -528,62 +528,61 @@ const QString EditorScene::emptyString() const
     return QStringLiteral("");
 }
 
-void EditorScene::enableCameraCones(bool enable)
+void EditorScene::enableVisibleCameras(bool enable)
 {
-    // TODO: This function and enableVisibleLights do a lot of similar stuff as handleEnabledChanged,
-    // TODO: perhaps call handleEnabledChanged from here for each camera to simplify things?
-    bool activeEnabled = false;
-    for (int i = 0; i < m_sceneCameras.size(); i++) {
-        // Check actual camera "enabled" property
-        bool isEnabled = enable;
-        if (enable)
-            isEnabled = m_sceneCameras.at(i).cameraEntity->isEnabled();
-        m_sceneCameras.at(i).visibleEntity->setEnabled(isEnabled);
+    for (int i = 0; i < m_sceneCameras.size(); i++)
+        enableVisibleCamera(m_sceneCameras[i], enable, i == m_activeSceneCameraIndex);
+}
 
-        if (i == m_activeSceneCameraIndex)
-            activeEnabled = isEnabled;
-        // Picker doesn't get disabled with the entity - we have to delete it to disable
-        if (isEnabled) {
-            if (!m_sceneCameras.at(i).cameraPicker) {
-                m_sceneCameras[i].cameraPicker =
-                        createObjectPickerForEntity(m_sceneCameras.at(i).visibleEntity);
+void EditorScene::enableVisibleCamera(EditorScene::CameraData &cameraData,
+                                      bool enable, bool isActiveCamera)
+{
+    enable = enable && cameraData.cameraEntity->isEnabled();
+    cameraData.visibleEntity->setEnabled(enable);
+
+    if (isActiveCamera) {
+        m_activeSceneCameraFrustumData.frustumEntity->setEnabled(enable);
+        m_activeSceneCameraFrustumData.viewCenterEntity->setEnabled(enable);
+        m_activeSceneCameraFrustumData.viewVectorEntity->setEnabled(enable);
+        if (enable) {
+            if (!m_activeSceneCameraFrustumData.viewCenterPicker) {
+                m_activeSceneCameraFrustumData.viewCenterPicker =
+                        createObjectPickerForEntity(m_activeSceneCameraFrustumData.viewCenterEntity);
             }
         } else {
-            delete m_sceneCameras.at(i).cameraPicker;
-            m_sceneCameras[i].cameraPicker = Q_NULLPTR;
+            delete m_activeSceneCameraFrustumData.viewCenterPicker;
+            m_activeSceneCameraFrustumData.viewCenterPicker = Q_NULLPTR;
         }
-    }
-    if (activeEnabled) {
-        if (!m_activeSceneCameraFrustumData.viewCenterPicker) {
-            m_activeSceneCameraFrustumData.viewCenterPicker =
-                    createObjectPickerForEntity(m_activeSceneCameraFrustumData.viewCenterEntity);
-        }
-    } else {
-        delete m_activeSceneCameraFrustumData.viewCenterPicker;
-        m_activeSceneCameraFrustumData.viewCenterPicker = Q_NULLPTR;
     }
 
-    m_activeSceneCameraFrustumData.frustumEntity->setEnabled(activeEnabled);
-    m_activeSceneCameraFrustumData.viewCenterEntity->setEnabled(activeEnabled);
-    m_activeSceneCameraFrustumData.viewVectorEntity->setEnabled(activeEnabled);
+    // Picker doesn't get disabled with the entity - we have to delete it to disable
+    if (enable) {
+        if (!cameraData.cameraPicker)
+            cameraData.cameraPicker = createObjectPickerForEntity(cameraData.visibleEntity);
+    } else {
+        delete cameraData.cameraPicker;
+        cameraData.cameraPicker = Q_NULLPTR;
+    }
 }
 
 void EditorScene::enableVisibleLights(bool enable)
 {
-    Q_FOREACH (LightData *lightData, m_sceneLights.values()) {
-        // Check actual light "enabled" property
-        bool isEnabled = enable;
-        if (enable)
-            isEnabled = lightData->lightEntity->isEnabled();
-        lightData->visibleEntity->setEnabled(isEnabled);
-        // Picker doesn't get disabled with the entity - we have to delete it to disable
-        if (isEnabled) {
-            if (!lightData->visiblePicker)
-                lightData->visiblePicker = createObjectPickerForEntity(lightData->visibleEntity);
-        } else {
-            delete lightData->visiblePicker;
-            lightData->visiblePicker = Q_NULLPTR;
-        }
+    Q_FOREACH (LightData *lightData, m_sceneLights.values())
+        enableVisibleLight(*lightData, enable);
+}
+
+void EditorScene::enableVisibleLight(EditorScene::LightData &lightData, bool enable)
+{
+    enable = enable && lightData.lightEntity->isEnabled();
+    lightData.visibleEntity->setEnabled(enable);
+
+    // Picker doesn't get disabled with the entity - we have to delete it to disable
+    if (enable) {
+        if (!lightData.visiblePicker)
+            lightData.visiblePicker = createObjectPickerForEntity(lightData.visibleEntity);
+    } else {
+        delete lightData.visiblePicker;
+        lightData.visiblePicker = Q_NULLPTR;
     }
 }
 
@@ -1106,45 +1105,24 @@ void EditorScene::updateLightVisibleTransform(Qt3DCore::QEntity *lightEntity)
 
 void EditorScene::handleEnabledChanged(Qt3DCore::QEntity *entity, bool enabled)
 {
+    bool freeViewEnabled = enabled && m_freeView;
     Qt3DRender::QCamera *camera = qobject_cast<Qt3DRender::QCamera *>(entity);
-    bool isEnabled = enabled;
-    if (enabled)
-        isEnabled = m_freeView ? true : false;
     if (camera != Q_NULLPTR) {
         int cameraIndex = cameraIndexForEntity(camera);
-        if (cameraIndex >= 0)
-            m_sceneCameras.at(cameraIndex).visibleEntity->setEnabled(isEnabled);
-        if (cameraIndex == m_activeSceneCameraIndex) {
-            m_activeSceneCameraFrustumData.frustumEntity->setEnabled(isEnabled);
-            m_activeSceneCameraFrustumData.viewCenterEntity->setEnabled(isEnabled);
-            m_activeSceneCameraFrustumData.viewVectorEntity->setEnabled(isEnabled);
+        if (cameraIndex >= 0) {
+            enableVisibleCamera(m_sceneCameras[cameraIndex], freeViewEnabled,
+                                cameraIndex == m_activeSceneCameraIndex);
         }
-        // Picker doesn't get disabled with the entity - we have to delete it to disable
-        if (isEnabled) {
-            if (!m_sceneCameras.at(cameraIndex).cameraPicker) {
-                m_sceneCameras[cameraIndex].cameraPicker =
-                        createObjectPickerForEntity(m_sceneCameras.at(cameraIndex).visibleEntity);
-            }
-        } else {
-            delete m_sceneCameras.at(cameraIndex).cameraPicker;
-            m_sceneCameras[cameraIndex].cameraPicker = Q_NULLPTR;
-        }
+
     } else if (EditorUtils::entityLight(entity) != Q_NULLPTR) {
         LightData *lightData = m_sceneLights.value(entity->id());
         if (lightData)
-            lightData->visibleEntity->setEnabled(isEnabled);
-        // Picker doesn't get disabled with the entity - we have to delete it to disable
-        if (isEnabled) {
-            if (!lightData->visiblePicker)
-                lightData->visiblePicker = createObjectPickerForEntity(lightData->visibleEntity);
-        } else {
-            delete lightData->visiblePicker;
-            lightData->visiblePicker = Q_NULLPTR;
-        }
+            enableVisibleLight(*lightData, freeViewEnabled);
+
     } else {
-        // Other objects aren't affected by m_freeView, so just check enabled flag
         // Picker doesn't get disabled with the entity - we have to delete it to disable
         Qt3DRender::QObjectPicker *picker = EditorUtils::entityPicker(entity);
+        // Other objects aren't affected by m_freeView, so just check enabled flag
         if (enabled) {
             if (!picker)
                 createObjectPickerForEntity(entity);
@@ -1579,7 +1557,7 @@ void EditorScene::setActiveSceneCameraIndex(int index)
     }
 
     if (m_freeView)
-        enableCameraCones(bool(m_sceneCameras.size()));
+        enableVisibleCameras(bool(m_sceneCameras.size()));
 
     if (previousIndex != m_activeSceneCameraIndex)
         emit activeSceneCameraIndexChanged(m_activeSceneCameraIndex);
@@ -1599,7 +1577,7 @@ void EditorScene::setFreeView(bool enable)
             setFrameGraphCamera(m_freeViewCameraEntity);
         else
             setFrameGraphCamera(m_sceneCameras.at(m_activeSceneCameraIndex).cameraEntity);
-        enableCameraCones(m_freeView);
+        enableVisibleCameras(m_freeView);
         enableVisibleLights(m_freeView);
     }
     // Show / hide light meshes, and notify UI. Need to be emitted always even if it doesn't change,
@@ -2039,18 +2017,14 @@ void EditorScene::handleCameraAdded(Qt3DRender::QCamera *camera)
 
     Qt3DCore::QTransform *visibleTransform = new Qt3DCore::QTransform();
 
-    visibleEntity->setEnabled(m_freeView);
-
     visibleEntity->addComponent(visibleMesh);
     visibleEntity->addComponent(cameraMaterial);
     visibleEntity->addComponent(visibleTransform);
 
-    Qt3DRender::QObjectPicker *cameraPicker = Q_NULLPTR;
-    if (m_freeView)
-        cameraPicker = createObjectPickerForEntity(visibleEntity);
-
-    CameraData newData(camera, visibleEntity, visibleTransform, cameraPicker);
+    CameraData newData(camera, visibleEntity, visibleTransform, Q_NULLPTR);
+    enableVisibleCamera(newData, m_freeView, false);
     m_sceneCameras.append(newData);
+
     connectSceneCamera(newData);
     updateVisibleSceneCameraMatrix(newData);
 
@@ -2097,12 +2071,6 @@ void EditorScene::handleLightAdded(Qt3DCore::QEntity *lightEntity)
     visibleEntity->addComponent(visibleMaterial);
     visibleEntity->addComponent(visibleTransform);
 
-    visibleEntity->setEnabled(m_freeView);
-
-    Qt3DRender::QObjectPicker *lightPicker = Q_NULLPTR;
-    if (m_freeView)
-        lightPicker = createObjectPickerForEntity(visibleEntity);
-
     Qt3DCore::QTransform *lightTransform = EditorUtils::entityTransform(lightEntity);
     if (lightTransform) {
         connect(lightTransform, &Qt3DCore::QTransform::translationChanged,
@@ -2110,7 +2078,8 @@ void EditorScene::handleLightAdded(Qt3DCore::QEntity *lightEntity)
     }
 
     LightData *newData = new LightData(lightEntity, lightComponent, lightTransform, visibleEntity,
-                                       visibleTransform, visibleMaterial, Q_NULLPTR, lightPicker);
+                                       visibleTransform, visibleMaterial, Q_NULLPTR, Q_NULLPTR);
+    enableVisibleLight(*newData, m_freeView);
     m_sceneLights.insert(lightEntity->id(), newData);
 
     QMatrix4x4 matrix = EditorUtils::totalAncestralTransform(lightEntity);

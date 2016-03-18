@@ -308,8 +308,10 @@ private:
     void createRootEntity();
     void setFrameGraphCamera(Qt3DCore::QEntity *cameraEntity);
     Qt3DRender::QCamera *frameGraphCamera() const;
-    void enableCameraCones(bool enable);
+    void enableVisibleCameras(bool enable);
+    void enableVisibleCamera(CameraData &cameraData, bool enable, bool isActiveCamera);
     void enableVisibleLights(bool enable);
+    void enableVisibleLight(LightData &lightData, bool enable);
     void clearSceneCamerasAndLights();
     void resetSceneCamera(Qt3DCore::QEntity *sceneCameraEntity);
     Qt3DRender::QObjectPicker *createObjectPickerForEntity(Qt3DCore::QEntity *entity);
