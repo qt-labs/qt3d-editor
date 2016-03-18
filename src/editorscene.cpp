@@ -744,8 +744,21 @@ void EditorScene::dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, 
         QVector3D moveFactors =
                 EditorUtils::absVector3D(
                     QVector3D(m_dragInitialHandleCornerTranslation
-                              + (m_dragHandles.transform->rotation().inverted() * posOffset))
-                    / m_dragInitialHandleCornerTranslation);
+                              + (m_dragHandles.transform->rotation().inverted() * posOffset)));
+
+        // Divide by zero may cause an INFINITY. Fix it.
+        if (m_dragInitialHandleCornerTranslation.x() != 0.0f)
+            moveFactors.setX(moveFactors.x() / qAbs(m_dragInitialHandleCornerTranslation.x()));
+        else
+            moveFactors.setX(1.0f);
+        if (m_dragInitialHandleCornerTranslation.y() != 0.0f)
+            moveFactors.setY(moveFactors.y() / qAbs(m_dragInitialHandleCornerTranslation.y()));
+        else
+            moveFactors.setY(1.0f);
+        if (m_dragInitialHandleCornerTranslation.z() != 0.0f)
+            moveFactors.setZ(moveFactors.z() / qAbs(m_dragInitialHandleCornerTranslation.z()));
+        else
+            moveFactors.setZ(1.0f);
 
         if (shiftDown) {
             float averageFactor = (moveFactors.x() + moveFactors.y() + moveFactors.z()) / 3.0f;
