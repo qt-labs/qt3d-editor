@@ -107,14 +107,27 @@ ComponentDelegate {
         id: lightRepeater
         model: componentData.model
 
+        // Note: Various light properties of non-selected light types are only remembered
+        // until selected entity changes. Only the selected type properties are retained
+        // between selected entity changes.
+
         property color lightColor: "#ffffff"
-        property double lightIntensity: 1
+        property real lightIntensity: 1
+        property vector3d lightDirection: Qt.vector3d(0, -1, 0)
+        property vector3d lightAttenuation: Qt.vector3d(0, 0, 0.002)
+        property real lightCutOffAngle: 45
+
+        property bool colorSet: false
+        property bool intensitySet: false
+        property bool directionSet: false
+        property bool attenuationSet: false
+        property bool cutOffAngleSet: false
+
         Loader {
             id: lightLoader
             width: parent.width
 
-            property color newColor: lightRepeater.lightColor
-            property double newIntensity: lightRepeater.lightIntensity
+            property var repeater: lightRepeater
 
             function lightTypetoDelegateSource(lightType) {
                 lightDelegate.currentLight = lightType
@@ -134,9 +147,23 @@ ComponentDelegate {
 
             function setNewColor(color) {
                 lightRepeater.lightColor = color
+                lightRepeater.colorSet = true
             }
             function setNewIntensity(intensity) {
                 lightRepeater.lightIntensity = intensity
+                lightRepeater.intensitySet = true
+            }
+            function setNewDirection(direction) {
+                lightRepeater.lightDirection = direction
+                lightRepeater.directionSet = true
+            }
+            function setNewAttenuation(attenuation) {
+                lightRepeater.lightAttenuation = attenuation
+                lightRepeater.attenuationSet = true
+            }
+            function setNewCutOffAngle(cutOffAngle) {
+                lightRepeater.lightCutOffAngle = cutOffAngle
+                lightRepeater.cutOffAngleSet = true
             }
         }
     }

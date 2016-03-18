@@ -36,15 +36,18 @@ Item {
 
     property int componentType: EditorSceneItemComponentsModel.Light
     property bool initialState: true
-    property color selectedColor: "#ffffff"
-    property double selectedIntensity: 1
+    property alias inputLayout: columnLayout
 
     Component.onCompleted: {
         initialState = false
-        if (parent.newColor !== selectedColor)
-            colorField.component[colorField.propertyName] = parent.newColor
-        if (parent.newIntensity !== selectedIntensity)
-            intensityField.component[intensityField.propertyName] = parent.newIntensity
+        if (parent.repeater.colorSet)
+            colorField.component[colorField.propertyName] = parent.repeater.lightColor
+        else
+            parent.setNewColor(colorField.component[colorField.propertyName])
+        if (parent.repeater.intensitySet)
+            intensityField.component[intensityField.propertyName] = parent.repeater.lightIntensity
+        else
+            parent.setNewIntensity(intensityField.component[intensityField.propertyName])
     }
 
     Column {
@@ -64,7 +67,7 @@ Item {
             component: lightComponentData
             componentType: thisItem.componentType
             onColorValueChanged: {
-                if (selectedColor !== colorValue && !thisItem.initialState)
+                if (!thisItem.initialState)
                     thisItem.parent.setNewColor(colorValue)
             }
         }
@@ -76,7 +79,7 @@ Item {
             component: lightComponentData
             componentType: thisItem.componentType
             onFieldValueChanged: {
-                if (selectedIntensity !== fieldValue && !thisItem.initialState)
+                if (!thisItem.initialState)
                     thisItem.parent.setNewIntensity(fieldValue)
             }
         }

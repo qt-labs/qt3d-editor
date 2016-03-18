@@ -39,6 +39,7 @@ PropertyInputField {
     property alias yLabel: vectorInputField.yLabel
     property alias zLabel: vectorInputField.zLabel
     property alias roundDigits: vectorInputField.roundDigits
+    property vector3d fieldValue: component[propertyName]
 
     onComponentValueChanged: {
         // TODO: Changing value to (0,0,0) via e.g. undo doesn't trigger this slot,

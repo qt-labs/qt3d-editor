@@ -28,63 +28,27 @@
 import QtQuick 2.4
 import com.theqtcompany.SceneEditor3D 1.0
 
-Item {
+BasicLightDelegate {
     id: thisItem
-    width: parent.width
-    height: columnLayout.y + columnLayout.height + 8
-
-    property int componentType: EditorSceneItemComponentsModel.Light
-    property bool initialState: true
-    property color selectedColor: "#ffffff"
-    property double selectedIntensity: 1
 
     Component.onCompleted: {
         initialState = false
-        if (parent.newColor !== selectedColor)
-            colorField.component[colorField.propertyName] = parent.newColor
-        if (parent.newIntensity !== selectedIntensity)
-            intensityField.component[intensityField.propertyName] = parent.newIntensity
+        if (parent.repeater.attenuationSet)
+            attenuationField.component[attenuationField.propertyName] = parent.repeater.lightAttenuation
+        else
+            parent.setNewAttenuation(attenuationField.component[attenuationField.propertyName])
     }
 
-    Column {
-        id: columnLayout
-        spacing: 4
-        anchors.top: parent.top
-        anchors.topMargin: 8
-        anchors.left: parent.left
-        anchors.leftMargin: 8
-        anchors.right: parent.right
-        anchors.rightMargin: 8
-
-        ColorPropertyInputField {
-            id: colorField
-            label: qsTr("Color") + editorScene.emptyString
-            propertyName: "color"
-            component: lightComponentData
-            componentType: thisItem.componentType
-            onColorValueChanged: {
-                if (selectedColor !== colorValue && !thisItem.initialState)
-                    thisItem.parent.setNewColor(colorValue)
-            }
-        }
-
-        FloatPropertyInputField {
-            id: intensityField
-            label: qsTr("Intensity") + editorScene.emptyString
-            propertyName: "intensity"
-            component: lightComponentData
-            componentType: thisItem.componentType
-            onFieldValueChanged: {
-                if (selectedIntensity !== fieldValue && !thisItem.initialState)
-                    thisItem.parent.setNewIntensity(fieldValue)
-            }
-        }
-
-        Vector3DPropertyInputField {
-            label: qsTr("Attenuation") + editorScene.emptyString
-            propertyName: "attenuation"
-            component: lightComponentData
-            componentType: thisItem.componentType
+    Vector3DPropertyInputField {
+        id: attenuationField
+        parent: inputLayout
+        label: qsTr("Attenuation") + editorScene.emptyString
+        propertyName: "attenuation"
+        component: lightComponentData
+        componentType: thisItem.componentType
+        onFieldValueChanged: {
+            if (!thisItem.initialState)
+                thisItem.parent.setNewAttenuation(fieldValue)
         }
     }
 }
