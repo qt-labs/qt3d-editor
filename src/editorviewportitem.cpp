@@ -157,10 +157,10 @@ EditorViewportItem::EditorViewportItem(QQuickItem *parent)
 
 EditorViewportItem::~EditorViewportItem()
 {
-    // TODO: When Qt3D supports shutting down renderer, enable this again.
-    // TODO: Until then, just don't do it, as it crashes the application.
-    // TODO: It also means we cannot dynamically create and destroy viewports without memory leak.
-    //m_renderAspect->renderShutdown();
+    if (m_renderAspect) {
+        static_cast<Qt3DRender::QRenderAspectPrivate *>
+            (Qt3DRender::QRenderAspectPrivate::get(m_renderAspect))->renderShutdown();
+    }
 }
 
 EditorScene *EditorViewportItem::scene() const
