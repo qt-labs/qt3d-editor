@@ -32,7 +32,7 @@
 #include <QOpenGLContext>
 #include <QOpenGLFramebufferObject>
 #include <QOpenGLFramebufferObjectFormat>
-#include <QSurface>
+#include <QOffscreenSurface>
 #include <QQuickWindow>
 
 #include <QSGSimpleTextureNode>
@@ -54,7 +54,7 @@ class ContextSaver
 public:
     explicit ContextSaver(QOpenGLContext *context = QOpenGLContext::currentContext())
         : m_context(context)
-        , m_surface(context ? context->surface() : Q_NULLPTR)
+        , m_surface(context ? static_cast<QOffscreenSurface *>(context->surface()) : Q_NULLPTR)
     {
     }
 
@@ -65,11 +65,11 @@ public:
     }
 
     QOpenGLContext *context() const { return m_context; }
-    QSurface *surface() const { return m_surface; }
+    QOffscreenSurface *surface() const { return m_surface; }
 
 private:
     QOpenGLContext *const m_context;
-    QSurface *const m_surface;
+    QOffscreenSurface *const m_surface;
 };
 
 class FrameBufferObjectRenderer : public QQuickFramebufferObject::Renderer
@@ -87,7 +87,7 @@ public:
         , m_logicAspect(logicAspect)
     {
         ContextSaver saver;
-        m_item->scene()->renderer()->setSurface(saver.surface());
+        m_item->scene()->renderer()->setSurface(reinterpret_cast<QObject *>(saver.surface()));
         static_cast<Qt3DRender::QRenderAspectPrivate *>(
                     Qt3DRender::QRenderAspectPrivate::get(m_renderAspect))
                 ->renderInitialize(saver.context());
