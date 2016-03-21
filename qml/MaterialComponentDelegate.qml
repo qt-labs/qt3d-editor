@@ -149,6 +149,11 @@ ComponentDelegate {
                 return "UnknownMaterialDelegate.qml";
             }
 
+            onLoaded: {
+                if (materialDelegate)
+                    materialCombobox.currentIndex = materialDelegate.currentMaterial - 1
+            }
+
             source: materialTypetoDelegateSource(materialType)
         }
     }

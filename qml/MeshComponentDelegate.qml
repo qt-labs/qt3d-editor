@@ -132,6 +132,11 @@ ComponentDelegate {
                 return "UnknownMeshDelegate.qml";
             }
 
+            onLoaded: {
+                if (meshDelegate)
+                    meshCombobox.currentIndex = meshDelegate.currentMesh - 1
+            }
+
             source: meshTypetoDelegateSource(meshType)
         }
     }

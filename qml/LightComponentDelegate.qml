@@ -145,6 +145,11 @@ ComponentDelegate {
 
             source: lightTypetoDelegateSource(lightType)
 
+            onLoaded: {
+                if (lightDelegate)
+                    lightCombobox.currentIndex = lightDelegate.currentLight - 1
+            }
+
             function setNewColor(color) {
                 lightRepeater.lightColor = color
                 lightRepeater.colorSet = true

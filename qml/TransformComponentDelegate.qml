@@ -117,6 +117,11 @@ ComponentDelegate {
                 return "UnknownTransformDelegate.qml"
             }
 
+            onLoaded: {
+                if (transformDelegate)
+                    transformCombobox.currentIndex = transformDelegate.currentTransform - 1
+            }
+
             source: transformTypetoDelegateSource(transformType)
         }
     }
