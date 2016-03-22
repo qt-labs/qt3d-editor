@@ -67,8 +67,6 @@ MaterialDelegate {
         propertyName: "shininess"
         component: materialComponentData
         componentType: thisDelegate.componentType
-        // TODO: Qt3D is buggy, shininess for DiffuseMapMaterial doesn't work currently
-        // TODO: (See https://bugreports.qt.io/browse/QTBUG-50126)
     }
 
     FloatPropertyInputField {

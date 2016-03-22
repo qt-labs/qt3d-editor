@@ -206,7 +206,6 @@ void EditorViewportItem::applyRootEntityChange()
         m_cameraController = new EditorCameraController(m_scene->rootEntity());
         if (m_inputEnabled)
             m_cameraController->setCamera(m_scene->m_freeViewCameraEntity);
-
     }
 }
 

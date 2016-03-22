@@ -731,11 +731,9 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
 
 void EditorScene::dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown)
 {
-    Q_UNUSED(ctrlDown)
-
     // By default, scale each dimension individually
     // When shift is pressed, scale uniformly
-    // TODO: Scale in discrete increments when ctrl down?
+    // When ctrl is pressed, scale in integers
 
     QVector3D posOffset = dragHandlePositionOffset(newPos);
     if (!posOffset.isNull()) {
@@ -758,12 +756,18 @@ void EditorScene::dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, 
         else
             moveFactors.setZ(1.0f);
 
-
         if (shiftDown) {
             float averageFactor = (moveFactors.x() + moveFactors.y() + moveFactors.z()) / 3.0f;
             moveFactors = QVector3D(averageFactor, averageFactor, averageFactor);
         }
+
         QVector3D newScale = m_dragInitialScaleValue * EditorUtils::maxVector3D(moveFactors, 0.0001f);
+
+        if (ctrlDown) {
+            newScale.setX(qMax(qRound(newScale.x()), 1));
+            newScale.setY(qMax(qRound(newScale.y()), 1));
+            newScale.setZ(qMax(qRound(newScale.z()), 1));
+        }
 
         m_undoHandler->createChangePropertyCommand(m_selectedEntity->objectName(),
                                                    EditorSceneItemComponentsModel::Transform,
