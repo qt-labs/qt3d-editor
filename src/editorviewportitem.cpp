@@ -144,7 +144,7 @@ EditorViewportItem::EditorViewportItem(QQuickItem *parent)
     , m_inputAspect(new Qt3DInput::QInputAspect)
     , m_logicAspect(new Qt3DLogic::QLogicAspect)
     , m_cameraController(Q_NULLPTR)
-    , m_inputEnabled(false)
+    , m_inputEnabled(true)
 {
     setFlag(ItemHasContents, true);
     m_aspectEngine->registerAspect(m_renderAspect);
