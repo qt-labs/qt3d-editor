@@ -68,9 +68,8 @@ Menu {
         iconSource: "qrc:/images/cross.png" // TODO: Replace with a real icon
         onTriggered: {
             // TODO: Must be added to Undo -list
-            // TODO: duplicate resets the model - restore old selection
             editorScene.duplicateEntity(selectedEntity.entity())
+            editorScene.restoreSelection(selectedEntity.entity())
         }
     }
-
 }

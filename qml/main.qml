@@ -478,7 +478,18 @@ ApplicationWindow {
         freeView: true
 
         onSelectionChanged: {
-            var index = editorScene.sceneModel.getModelIndex(selection)
+            restoreSelection(selection)
+        }
+
+        onErrorChanged: {
+            notification.title = qsTr("Error") + editorScene.emptyString
+            notification.icon = StandardIcon.Warning
+            notification.text = error
+            notification.open()
+        }
+
+        function restoreSelection(entity) {
+            var index = editorScene.sceneModel.getModelIndex(entity)
             // Expand tree view to the selection
             var previous = index
             do {
@@ -488,13 +499,6 @@ ApplicationWindow {
             // Highlight the selection
             entityTree.view.forceActiveFocus()
             entityTree.view.selection.setCurrentIndex(index, ItemSelectionModel.SelectCurrent)
-        }
-
-        onErrorChanged: {
-            notification.title = qsTr("Error") + editorScene.emptyString
-            notification.icon = StandardIcon.Warning
-            notification.text = error
-            notification.open()
         }
     }
 
