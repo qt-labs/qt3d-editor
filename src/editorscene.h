@@ -383,6 +383,7 @@ private:
     QString m_sceneRootString;
     QString m_saveFailString;
     QString m_loadFailString;
+    QString m_importFailString;
     QString m_cameraString;
     QString m_cubeString;
     QString m_lightString;

@@ -518,6 +518,7 @@ void EditorScene::retranslateUi()
     m_sceneRootString = tr("Scene root");
     m_saveFailString = tr("Failed to save the scene");
     m_loadFailString = tr("Failed to load a new scene");
+    m_importFailString = tr("Failed to import an Entity");
     m_cameraString = tr("Camera");
     m_cubeString = tr("Cube");
     m_lightString = tr("Light");
@@ -1748,8 +1749,10 @@ void EditorScene::handleSceneLoaderStatusChanged()
                 importedEntity->setParent(m_sceneEntity);
                 addEntity(importedEntity);
             } else if (sceneLoader->status() == Qt3DRender::QSceneLoader::Error) {
-                // TODO handle error properly
                 importedEntity->deleteLater();
+                m_errorString = m_importFailString;
+                emit errorChanged(m_errorString);
+                qWarning() << m_errorString;
             }
         }
     }
