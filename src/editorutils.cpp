@@ -162,7 +162,7 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setColor(source->color());
         newComponent->setConstantAttenuation(source->constantAttenuation());
         newComponent->setCutOffAngle(source->cutOffAngle());
-        newComponent->setDirection(source->direction());
+        newComponent->setLocalDirection(source->localDirection());
         newComponent->setIntensity(source->intensity());
         newComponent->setLinearAttenuation(source->linearAttenuation());
         newComponent->setQuadraticAttenuation(source->quadraticAttenuation());
@@ -987,7 +987,7 @@ QVector3D EditorUtils::lightDirection(const Qt3DRender::QLight *light)
     if (dirLight)
         direction = dirLight->worldDirection();
     else if (spotLight)
-        direction = spotLight->direction();
+        direction = spotLight->localDirection();
     return direction;
 }
 

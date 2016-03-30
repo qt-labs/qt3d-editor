@@ -47,7 +47,7 @@ BasicLightDelegate {
         id: directionField
         parent: inputLayout
         label: qsTr("Direction") + editorScene.emptyString
-        propertyName: "direction"
+        propertyName: "localDirection"
         component: lightComponentData
         componentType: thisItem.componentType
         onFieldValueChanged: {

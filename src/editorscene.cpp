@@ -1070,9 +1070,9 @@ void EditorScene::handleLightTypeChanged(EditorSceneItem *item)
                             item, &EditorSceneItem::updateSelectionBoxTransform);
                 } else if (spotLight) {
                     lightData->visibleMesh = EditorUtils::createLightMesh(EditorUtils::LightSpot);
-                    connect(spotLight, &Qt3DRender::QSpotLight::directionChanged,
+                    connect(spotLight, &Qt3DRender::QSpotLight::localDirectionChanged,
                             this, &EditorScene::handleLightTransformChange);
-                    connect(spotLight, &Qt3DRender::QSpotLight::directionChanged,
+                    connect(spotLight, &Qt3DRender::QSpotLight::localDirectionChanged,
                             item, &EditorSceneItem::updateSelectionBoxTransform);
                 } else if (qobject_cast<Qt3DRender::QPointLight *>(light)) {
                     lightData->visibleMesh = EditorUtils::createLightMesh(EditorUtils::LightPoint);
