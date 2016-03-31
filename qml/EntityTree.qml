@@ -38,6 +38,12 @@ Item {
 
     property alias view: entityTreeView
 
+    Keys.onDeletePressed: {
+        // Doublecheck that we don't try to remove the scene root
+        if (entityTreeView.selection.currentIndex !== editorScene.sceneModel.sceneEntityIndex())
+            editorScene.undoHandler.createRemoveEntityCommand(selectedEntityName)
+    }
+
     function focusTree() {
         entityTreeView.forceActiveFocus(Qt.MouseFocusReason)
     }
