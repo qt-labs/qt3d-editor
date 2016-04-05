@@ -27,8 +27,9 @@
 ****************************************************************************/
 import QtQuick 2.5
 import QtQuick.Controls 1.4
+import Qt.labs.controls 1.0 as QLC
 import QtQuick.Layouts 1.1
-import QtQuick.Dialogs 1.1
+import QtQuick.Dialogs 1.2
 import QtQml.Models 2.2
 import Qt3D.Core 2.0
 import com.theqtcompany.SceneEditor3D 1.0
@@ -227,6 +228,14 @@ ApplicationWindow {
                     onCheckedChanged: {
                         if (checked)
                             mainwindow.showNormalZPlane()
+                    }
+                }
+                MenuItem {
+                    id: gridSize
+                    text: qsTr("Change Grid Size") + editorScene.emptyString
+                    onTriggered: {
+                        gridSizeSpinBox.value = editorScene.gridSize
+                        gridSizeDialog.open()
                     }
                 }
                 MenuItem {
@@ -504,6 +513,33 @@ ApplicationWindow {
 
     MessageDialog {
         id: notification
+    }
+
+    Dialog {
+        id: gridSizeDialog
+        property int previousSize: editorScene.gridSize
+        title: qsTr("Grid Size") + editorScene.emptyString
+        standardButtons: StandardButton.Cancel | StandardButton.Apply | StandardButton.Ok
+
+        QLC.SpinBox {
+            id: gridSizeSpinBox
+            anchors.horizontalCenter: parent.horizontalCenter
+            to: 20
+            stepSize: 1
+            from: 1
+        }
+
+        onRejected: {
+            editorScene.gridSize = previousSize
+        }
+
+        onApply: {
+            editorScene.gridSize = gridSizeSpinBox.value
+        }
+
+        onAccepted: {
+            editorScene.gridSize = gridSizeSpinBox.value
+        }
     }
 
     SplitView {

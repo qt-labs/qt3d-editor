@@ -80,6 +80,7 @@ class EditorScene : public QObject
     Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)
     Q_PROPERTY(QString emptyString READ emptyString NOTIFY translationChanged)
     Q_PROPERTY(QString lockPropertySuffix READ lockPropertySuffix CONSTANT)
+    Q_PROPERTY(int gridSize READ gridSize WRITE setGridSize NOTIFY gridSizeChanged)
 
 private:
     struct CameraFrustumData {
@@ -245,6 +246,9 @@ public:
     void setFreeView(bool enable);
     bool freeView() const { return m_freeView; }
 
+    int gridSize() const;
+    void setGridSize(int size);
+
     void setLanguage(const QString &language);
     const QString language() const;
 
@@ -284,6 +288,7 @@ signals:
     void sceneCamerasModelChanged();
     void languageChanged(const QString &language);
     void translationChanged(const QString &translation);
+    void gridSizeChanged(int gridSize);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
@@ -306,6 +311,7 @@ private:
     void connectSceneCamera(const CameraData &cameraData);
     void setupDefaultScene();
     void createRootEntity();
+    void createHelperPlane();
     void setFrameGraphCamera(Qt3DCore::QEntity *cameraEntity);
     Qt3DRender::QCamera *frameGraphCamera() const;
     void enableVisibleCameras(bool enable);
@@ -406,6 +412,8 @@ private:
     bool m_viewCenterLocked;
     Qt3DCore::QEntity *m_pickedEntity;
     float m_pickedDistance;
+    QVector3D m_snapToGridIntersection;
+    int m_gridSize;
 
     QMap<QString, PlaceholderEntityData *> m_placeholderEntityMap;
 };

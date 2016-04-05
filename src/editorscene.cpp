@@ -112,6 +112,7 @@ EditorScene::EditorScene(QObject *parent)
     , m_viewCenterLocked(false)
     , m_pickedEntity(Q_NULLPTR)
     , m_pickedDistance(-1.0f)
+    , m_gridSize(3)
 {
     retranslateUi();
     createRootEntity();
@@ -484,6 +485,21 @@ void EditorScene::destroyPlaceholderEntity(const QString &name)
     }
 }
 
+int EditorScene::gridSize() const
+{
+    return m_gridSize;
+}
+
+void EditorScene::setGridSize(int size)
+{
+    if (m_gridSize != size) {
+        delete m_helperPlane;
+        m_gridSize = size;
+        createHelperPlane();
+        emit gridSizeChanged(size);
+    }
+}
+
 const QString EditorScene::language() const
 {
     if (m_language.isEmpty())
@@ -677,7 +693,7 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
 
     // By default, translate along helper plane
     // When shift is pressed, translate along camera plane
-    // TODO: Snap to grid with ctrl down?
+    // When ctrl is pressed, snap to grid
 
     Qt3DRender::QCamera *camera = frameGraphCamera();
     if (camera && m_selectedEntityTransform) {
@@ -726,8 +742,16 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
             QMatrix4x4 totalTransform = EditorUtils::totalAncestralTransform(m_selectedEntity);
             intersection = totalTransform.inverted() * intersection;
 
+            if (ctrlDown) {
+                m_snapToGridIntersection.setX(qRound(intersection.x() / m_gridSize) * m_gridSize);
+                m_snapToGridIntersection.setY(qRound(intersection.y() / m_gridSize) * m_gridSize);
+                m_snapToGridIntersection.setZ(qRound(intersection.z() / m_gridSize) * m_gridSize);
+            } else {
+                m_snapToGridIntersection = intersection;
+            }
+
             m_undoHandler->createChangePropertyCommand(m_selectedEntity->objectName(), componentType,
-                                                       propertyName, intersection,
+                                                       propertyName, m_snapToGridIntersection,
                                                        entityTranslation, true);
         }
     }
@@ -1354,29 +1378,7 @@ void EditorScene::createRootEntity()
     addEntity(m_sceneEntity);
 
     // Helper plane
-    // Implemented as two identical planes in same position, with one rotated 180 degrees,
-    // creating a two sided plane. Having a two sided material would be better, but it doesn't
-    // seem to be easily achievable with current Qt3D implementation.
-    m_helperPlane = new Qt3DCore::QEntity();
-
-    m_helperPlane->setObjectName(QStringLiteral("__internal helper plane"));
-
-    Qt3DRender::QGeometryRenderer *planeMesh = EditorUtils::createWireframePlaneMesh(50);
-
-    Qt3DRender::QPhongMaterial *helperPlaneMaterial = new Qt3DRender::QPhongMaterial();
-    helperPlaneMaterial->setAmbient(QColor(Qt::darkGray));
-    helperPlaneMaterial->setDiffuse(QColor(Qt::black));
-    helperPlaneMaterial->setSpecular(QColor(Qt::black));
-    helperPlaneMaterial->setShininess(0);
-
-    m_helperPlaneTransform = new Qt3DCore::QTransform();
-    m_helperPlaneTransform->setScale3D(QVector3D(100.0f, 100.0f, 1.0f));
-    m_helperPlaneTransform->setRotation(
-                m_helperPlaneTransform->fromAxisAndAngle(1.0f, 0.0f, 0.0f, 90.0f));
-    m_helperPlane->addComponent(planeMesh);
-    m_helperPlane->addComponent(helperPlaneMaterial);
-    m_helperPlane->addComponent(m_helperPlaneTransform);
-    m_helperPlane->setParent(m_rootEntity);
+    createHelperPlane();
 
     // Drag handles for selected item
     m_dragHandles.entity = new Qt3DCore::QEntity(m_rootEntity);
@@ -1455,6 +1457,31 @@ void EditorScene::createRootEntity()
     m_activeSceneCameraFrustumData.viewCenterEntity->addComponent(viewCenterMesh);
     m_activeSceneCameraFrustumData.viewCenterEntity->addComponent(
                 m_activeSceneCameraFrustumData.viewCenterTransform);
+}
+
+void EditorScene::createHelperPlane()
+{
+    m_helperPlane = new Qt3DCore::QEntity();
+
+    m_helperPlane->setObjectName(QStringLiteral("__internal helper plane"));
+
+    // Helper plane origin must be at the meeting point of lines, hence the odd lineCount
+    Qt3DRender::QGeometryRenderer *planeMesh = EditorUtils::createWireframePlaneMesh(51);
+
+    Qt3DRender::QPhongMaterial *helperPlaneMaterial = new Qt3DRender::QPhongMaterial();
+    helperPlaneMaterial->setAmbient(QColor(Qt::darkGray));
+    helperPlaneMaterial->setDiffuse(QColor(Qt::black));
+    helperPlaneMaterial->setSpecular(QColor(Qt::black));
+    helperPlaneMaterial->setShininess(0);
+
+    m_helperPlaneTransform = new Qt3DCore::QTransform();
+    m_helperPlaneTransform->setScale3D(QVector3D(m_gridSize * 25.0f, m_gridSize * 25.0f, 1.0f));
+    m_helperPlaneTransform->setRotation(
+                m_helperPlaneTransform->fromAxisAndAngle(1.0f, 0.0f, 0.0f, 90.0f));
+    m_helperPlane->addComponent(planeMesh);
+    m_helperPlane->addComponent(helperPlaneMaterial);
+    m_helperPlane->addComponent(m_helperPlaneTransform);
+    m_helperPlane->setParent(m_rootEntity);
 }
 
 void EditorScene::setFrameGraphCamera(Qt3DCore::QEntity *cameraEntity)
@@ -1861,6 +1888,8 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
                 if (select && !m_pickedEntity)
                     QMetaObject::invokeMethod(this, "endSelectionHandling", Qt::QueuedConnection);
                 m_pickedEntity = pressedEntity;
+                // Get the position of the picked entity, and copy it to m_snapToGridIntersection
+                m_snapToGridIntersection = EditorUtils::entityTransform(m_pickedEntity)->translation();
             }
         }
     }
