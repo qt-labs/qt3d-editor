@@ -136,6 +136,9 @@ Item {
                     visible: !valueField.visible
                     selectByMouse: true
                     focus: true
+                    validator: RegExpValidator {
+                        regExp: /^[A-Za-z_][A-Za-z0-9_ ]*$/
+                    }
 
                     onVisibleChanged: {
                         if (visible) {

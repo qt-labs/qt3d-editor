@@ -42,6 +42,8 @@ Item {
     // This is the text we want to change to, but it is subject to approval by the using code
     property string desiredText: ""
 
+    property alias validator: textInputCtrl.validator
+
     onDisplayTextChanged: {
         textInputCtrl.text = displayText
     }

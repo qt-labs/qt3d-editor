@@ -96,6 +96,9 @@ Item {
                 id: textInputField
                 label: qsTr("Entity name") + editorScene.emptyString
                 displayText: componentData.objectName
+                validator: RegExpValidator {
+                    regExp: /^[A-Za-z_][A-Za-z0-9_ ]*$/
+                }
 
                 onDesiredTextChanged: {
                     if (desiredText !== "") {
