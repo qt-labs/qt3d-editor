@@ -29,17 +29,27 @@ import QtQuick 2.5
 import Qt.labs.controls 1.0 as QLC
 
 Rectangle {
+    id: header
+
     property string headerText
     property bool viewVisible: true
     property bool visibleEntityButtonShown: false
+    property bool showViewButtonShown: true
+    property bool lockTransformButtonShown: false
+    property bool lockTransformFields: lockTransformButton.locked
     property int minimumHeaderHeight: viewHeaderText.implicitHeight + 12
 
     signal showViewButtonPressed()
     signal hideViewButtonPressed()
+    signal showViewTitle(bool showView)
 
     height: minimumHeaderHeight
     width: parent.width
     color: "darkGray"
+
+    onViewVisibleChanged: {
+        showViewTitle(viewVisible)
+    }
 
     QLC.Label {
         id: viewHeaderText
@@ -48,6 +58,15 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         text: headerText
         font.bold: true
+    }
+
+    PropertyLockButton {
+        id: lockTransformButton
+        anchors.right: showViewButton.left
+        anchors.rightMargin: 8
+        anchors.verticalCenter: parent.verticalCenter
+        visible: lockTransformButtonShown
+        label: qsTr("Transform") + editorScene.emptyString
     }
 
     VisiblePropertyInputField {
@@ -79,6 +98,7 @@ Rectangle {
         anchors.right: parent.right
         anchors.rightMargin: 8
         anchors.verticalCenter: parent.verticalCenter
+        visible: showViewButtonShown
         height: 10
         width: 20
 
@@ -86,19 +106,19 @@ Rectangle {
             id: collapseArrowImage
             source: "images/arrow.png"
         }
+    }
 
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                if (viewVisible) {
-                    viewVisible = false
-                    hideViewButtonPressed()
-                    collapseArrowImage.rotation = 180
-                } else {
-                    viewVisible = true
-                    showViewButtonPressed()
-                    collapseArrowImage.rotation = 0
-                }
+    MouseArea {
+        anchors.fill: showViewButtonShown ? showViewButton : header
+        onClicked: {
+            if (viewVisible) {
+                viewVisible = false
+                hideViewButtonPressed()
+                collapseArrowImage.rotation = 180
+            } else {
+                viewVisible = true
+                showViewButtonPressed()
+                collapseArrowImage.rotation = 0
             }
         }
     }

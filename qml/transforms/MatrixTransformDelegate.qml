@@ -32,6 +32,7 @@ TransformDelegate {
     id: thisDelegate
     componentType: EditorSceneItemComponentsModel.Transform
     editable: false
+    enabledField: parent.enabledFields
 
     Matrix4x4PropertyInputField {
         id: positionVectorField
@@ -39,5 +40,6 @@ TransformDelegate {
         propertyName: "matrix"
         component: transformComponentData
         componentType: thisDelegate.componentType
+        lockedField: enabledField
     }
 }

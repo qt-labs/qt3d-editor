@@ -57,7 +57,6 @@
         <file alias="ModelRoleInputField.qml">qml/inputfields/ModelRoleInputField.qml</file>
         <file alias="TextureInputField.qml">qml/inputfields/TextureInputField.qml</file>
         <file alias="RotationPropertyInputField.qml">qml/inputfields/RotationPropertyInputField.qml</file>
-        <file alias="ViewHeader.qml">qml/ViewHeader.qml</file>
         <file alias="EntityLibrary.qml">qml/EntityLibrary.qml</file>
         <file alias="EntityModel.qml">qml/EntityModel.qml</file>
         <file alias="Vector3DPropertyInputField.qml">qml/inputfields/Vector3DPropertyInputField.qml</file>

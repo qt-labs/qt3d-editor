@@ -1057,23 +1057,42 @@ void EditorScene::handlePropertyLocking(EditorSceneItem *item, const QString &lo
             else if (lockProperty == viewCenterLock)
                 m_viewCenterLocked = locked;
         } else {
-            QString translateLock = QStringLiteral("translation") + lockPropertySuffix();
-            if (lockProperty == translateLock) {
-                m_dragHandleTranslate.entity->setEnabled(!locked);
-            } else if (item->itemType() == EditorSceneItem::Light) {
-                if (item->canRotate()) {
-                    QString directionLock = QStringLiteral("localDirection") + lockPropertySuffix();
-                    QString worldDirectionLock = QStringLiteral("worldDirection") + lockPropertySuffix();
-                    if (lockProperty == directionLock || lockProperty == worldDirectionLock)
-                        m_dragHandleRotate.entity->setEnabled(!locked);
+            if (lockProperty == lockTransformPropertyName()) {
+                if (item->itemType() != EditorSceneItem::Light) {
+                    if (locked) {
+                        m_dragHandleTranslate.entity->setEnabled(false);
+                        m_dragHandleScale.entity->setEnabled(false);
+                        m_dragHandleRotate.entity->setEnabled(false);
+                    } else {
+                        Qt3DCore::QTransform *transform =
+                                EditorUtils::entityTransform(m_selectedEntity);
+                        m_dragHandleTranslate.entity->setEnabled(
+                                    !isPropertyLocked(QStringLiteral("translation"), transform));
+                        m_dragHandleScale.entity->setEnabled(
+                                    !isPropertyLocked(QStringLiteral("scale3D"), transform));
+                        m_dragHandleRotate.entity->setEnabled(
+                                    !isPropertyLocked(QStringLiteral("rotation"), transform));
+                    }
                 }
             } else {
-                QString scaleLock = QStringLiteral("scale3D") + lockPropertySuffix();
-                QString rotateLock = QStringLiteral("rotation") + lockPropertySuffix();
-                if (lockProperty == scaleLock)
-                    m_dragHandleScale.entity->setEnabled(!locked);
-                else if (lockProperty == rotateLock)
-                    m_dragHandleRotate.entity->setEnabled(!locked);
+                QString translateLock = QStringLiteral("translation") + lockPropertySuffix();
+                if (lockProperty == translateLock) {
+                    m_dragHandleTranslate.entity->setEnabled(!locked);
+                } else if (item->itemType() == EditorSceneItem::Light) {
+                    if (item->canRotate()) {
+                        QString directionLock = QStringLiteral("localDirection") + lockPropertySuffix();
+                        QString worldDirectionLock = QStringLiteral("worldDirection") + lockPropertySuffix();
+                        if (lockProperty == directionLock || lockProperty == worldDirectionLock)
+                            m_dragHandleRotate.entity->setEnabled(!locked);
+                    }
+                } else {
+                    QString scaleLock = QStringLiteral("scale3D") + lockPropertySuffix();
+                    QString rotateLock = QStringLiteral("rotation") + lockPropertySuffix();
+                    if (lockProperty == scaleLock)
+                        m_dragHandleScale.entity->setEnabled(!locked);
+                    else if (lockProperty == rotateLock)
+                        m_dragHandleRotate.entity->setEnabled(!locked);
+                }
             }
         }
         handleSelectionTransformChange();
@@ -1548,8 +1567,14 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
             m_viewCenterLocked = isPropertyLocked(QStringLiteral("viewCenter"), m_selectedEntity);
         } else {
             Qt3DCore::QTransform *transform = EditorUtils::entityTransform(m_selectedEntity);
-            m_dragHandleTranslate.entity->setEnabled(
-                        !isPropertyLocked(QStringLiteral("translation"), transform));
+            bool transformPropertiesLocked = item->customProperty(m_selectedEntity,
+                                                 lockTransformPropertyName()).toBool();
+            if (transformPropertiesLocked) {
+                m_dragHandleTranslate.entity->setEnabled(false);
+            } else {
+                m_dragHandleTranslate.entity->setEnabled(
+                            !isPropertyLocked(QStringLiteral("translation"), transform));
+            }
             if (item->itemType() == EditorSceneItem::Light) {
                 // Disable scale handles for lights
                 m_dragHandleScale.entity->setEnabled(false);
@@ -1565,10 +1590,15 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
                     m_dragHandleRotate.entity->setEnabled(false);
                 }
             } else {
-                m_dragHandleScale.entity->setEnabled(!isPropertyLocked(QStringLiteral("scale3D"),
-                                                                       transform));
-                m_dragHandleRotate.entity->setEnabled(!isPropertyLocked(QStringLiteral("rotation"),
-                                                                        transform));
+                if (transformPropertiesLocked) {
+                    m_dragHandleScale.entity->setEnabled(false);
+                    m_dragHandleRotate.entity->setEnabled(false);
+                } else {
+                    m_dragHandleScale.entity->setEnabled(!isPropertyLocked(QStringLiteral("scale3D"),
+                                                                           transform));
+                    m_dragHandleRotate.entity->setEnabled(!isPropertyLocked(QStringLiteral("rotation"),
+                                                                            transform));
+                }
             }
         }
 

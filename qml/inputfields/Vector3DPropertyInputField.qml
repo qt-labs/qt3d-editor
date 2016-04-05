@@ -38,6 +38,7 @@ PropertyInputField {
     property alias zLabel: vectorInputField.zLabel
     property alias roundDigits: vectorInputField.roundDigits
     property vector3d fieldValue: component[propertyName]
+    property bool lockedField: false
 
     onComponentValueChanged: {
         if (component !== null)
@@ -51,5 +52,6 @@ PropertyInputField {
         onValueEdited: {
             handleEditingFinished(value)
         }
+        enabled: !lockedField
     }
 }

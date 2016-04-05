@@ -80,6 +80,7 @@ class EditorScene : public QObject
     Q_PROPERTY(QString language READ language WRITE setLanguage NOTIFY languageChanged)
     Q_PROPERTY(QString emptyString READ emptyString NOTIFY translationChanged)
     Q_PROPERTY(QString lockPropertySuffix READ lockPropertySuffix CONSTANT)
+    Q_PROPERTY(QString lockTransformPropertyName READ lockTransformPropertyName CONSTANT)
     Q_PROPERTY(int gridSize READ gridSize WRITE setGridSize NOTIFY gridSizeChanged)
 
 private:
@@ -254,6 +255,9 @@ public:
 
     const QString emptyString() const;
     const QString lockPropertySuffix() const { return EditorUtils::lockPropertySuffix(); }
+    const QString lockTransformPropertyName() const {
+        return EditorUtils::lockTransformPropertyName();
+    }
 
     void setViewport(EditorViewportItem *viewport);
     EditorViewportItem *viewport() const { return m_viewport; }

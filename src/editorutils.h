@@ -148,6 +148,9 @@ public:
     static QVector3D lightDirection(const Qt3DRender::QLight *light);
 
     static const QString lockPropertySuffix() { return QStringLiteral("_editorPropertyLock"); }
+    static const QString lockTransformPropertyName() {
+        return QStringLiteral("allTransform_editorPropertyLock");
+    }
 
 private:
     // Private constructor to ensure no actual instance is created

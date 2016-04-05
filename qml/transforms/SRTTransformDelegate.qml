@@ -32,12 +32,14 @@ TransformDelegate {
     id: thisDelegate
     componentType: EditorSceneItemComponentsModel.Transform
     editable: false
+    enabledField: parent.enabledFields
 
     Vector3DPropertyInputField {
         label: qsTr("Scale") + editorScene.emptyString
         propertyName: "scale3D"
         component: transformComponentData
         componentType: thisDelegate.componentType
+        lockedField: enabledField
     }
 
     RotationPropertyInputField {
@@ -47,6 +49,7 @@ TransformDelegate {
         stepSize: 1
         minimum: 0
         maximum: 359
+        lockedField: enabledField
     }
 
     Vector3DPropertyInputField {
@@ -54,6 +57,7 @@ TransformDelegate {
         propertyName: "translation"
         component: transformComponentData
         componentType: thisDelegate.componentType
+        lockedField: enabledField
     }
 
 }

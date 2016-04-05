@@ -36,6 +36,7 @@ PropertyInputField {
     property alias cellwidth: matrix4x4InputField.cellwidth
     property alias roundDigits: matrix4x4InputField.roundDigits
     property alias affine: matrix4x4InputField.affine
+    property bool lockedField: false
 
     onComponentValueChanged: {
         if (component !== null)
@@ -47,5 +48,6 @@ PropertyInputField {
         onValueEdited: {
             handleEditingFinished(value)
         }
+        enabled: !lockedField
     }
 }

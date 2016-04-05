@@ -34,6 +34,7 @@ Item {
 
     default property alias _contentChildren: columnLayout.data
     property bool editable: true
+    property bool enabledField: true
     property int componentType: EditorSceneItemComponentsModel.Unknown
 
     Column {

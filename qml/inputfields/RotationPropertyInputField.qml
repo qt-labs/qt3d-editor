@@ -41,6 +41,7 @@ PropertyInputField {
     property vector3d axis: Qt.vector3d(0, 0, 0)
     property bool calculatingAxisAndAngle: false
     property bool blockValueChanges: false
+    property bool lockedField: false
 
     onCalculatingAxisAndAngleChanged: {
         if (!calculatingAxisAndAngle) {
@@ -72,6 +73,7 @@ PropertyInputField {
             handleRotationChangeFinished()
         }
         onLockedChanged: sliderInputfield.locked = locked
+        enabled: !lockedField
     }
 
     FloatSliderInputField {
@@ -90,6 +92,7 @@ PropertyInputField {
             }
         }
         onLockedChanged: vectorInputField.locked = locked
+        enabled: !lockedField
     }
 
     function toAxisAndAngle(quat) {

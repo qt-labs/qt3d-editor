@@ -30,8 +30,8 @@ import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 
 Item {
-    height: 24
-    width: 24
+    height: 16
+    width: 16
 
     property string enabledIconSource
     property string disabledIconSource
@@ -58,7 +58,7 @@ Item {
     Button {
         id: propertyButton
         anchors.centerIn: parent.Center
-        iconSource: buttonEnabled ? enabledIconSource : disabledIconSource
+        iconSource: (buttonEnabled && enabled) ? enabledIconSource : disabledIconSource
         style: enabledButtonStyle
         activeFocusOnTab: false
         onClicked: {

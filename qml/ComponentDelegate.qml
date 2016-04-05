@@ -38,6 +38,7 @@ Item {
     property int componentType: EditorSceneItemComponentsModel.Unknown
     property int componentHeight: columnLayout.y + columnLayout.height
     property int minimumComponentHeight: componentTitle.minimumHeaderHeight
+    property alias transformFieldsDisabled: componentTitle.lockTransformFields
 
     signal changeViewVisibity(bool viewVisibility)
 
@@ -50,10 +51,14 @@ Item {
         anchors.right: parent.right
         height: componentTitle.height
 
-        ViewHeader {
+        ButtonViewHeader {
             id: componentTitle
             anchors.top: parent.top
             headerText: componentTitle
+            showViewButtonShown: componentType == EditorSceneItemComponentsModel.Transform ?
+                                     true : false
+            lockTransformButtonShown: componentType == EditorSceneItemComponentsModel.Transform ?
+                                          true : false
 
             onShowViewTitle: {
                 if (viewVisible) {
@@ -65,8 +70,12 @@ Item {
                     componentDelegate.height = minimumHeaderHeight
                 }
             }
-            onViewHeaderClicked: {
-                changeViewVisibity(!viewTitleVisible)
+
+            onShowViewButtonPressed: {
+                changeViewVisibity(true)
+            }
+            onHideViewButtonPressed: {
+                changeViewVisibity(false)
             }
         }
 

@@ -34,11 +34,19 @@ ComponentDelegate {
     title: qsTr("Transform") + editorScene.emptyString
 
     property int currentTransform: 0
+    property bool fieldsDisabled: transformFieldsDisabled
 
     viewTitleVisible: transformViewVisible
+    componentType: EditorSceneItemComponentsModel.Transform
 
     onChangeViewVisibity: {
         transformViewVisible = viewVisibility
+    }
+
+    onFieldsDisabledChanged: {
+        selectedEntity.setCustomProperty(editorScene.sceneModel.editorSceneItemFromIndex(entityTree.view.selection.currentIndex).entity(),
+                                         editorScene.lockTransformPropertyName,
+                                         fieldsDisabled)
     }
 
     Component.onCompleted: {
@@ -61,6 +69,7 @@ ComponentDelegate {
             anchors.bottomMargin: 4
             anchors.verticalCenter: parent.verticalCenter
             implicitHeight: qlcControlHeight
+            enabled: !fieldsDisabled
             property int validIndex: -1
 
             model: ListModel {
@@ -99,6 +108,8 @@ ComponentDelegate {
 
         Loader {
             width: parent.width
+
+            property bool enabledFields: fieldsDisabled
 
             function transformTypetoDelegateSource(transformType) {
                 transformDelegate.currentTransform = transformType
