@@ -80,6 +80,9 @@ static const QString cameraVisibleEntityName = QStringLiteral("__internal camera
 static const QString lightVisibleEntityName = QStringLiteral("__internal light visible entity");
 static const QString autoSavePostfix = QStringLiteral(".autosave");
 static const QVector3D defaultLightDirection(0.0f, -1.0f, 0.0f);
+static const float freeViewCameraNearPlane = 0.1f;
+static const float freeViewCameraFarPlane = 10000.0f;
+static const float freeViewCameraFov = 45.0f;
 
 EditorScene::EditorScene(QObject *parent)
     : QObject(parent)
@@ -342,10 +345,10 @@ void EditorScene::resetFreeViewCamera()
     else
         m_freeViewCameraEntity->setAspectRatio(16.0f / 9.0f);
     m_freeViewCameraEntity->setBottom(-0.5f);
-    m_freeViewCameraEntity->setFarPlane(10000.0f);
-    m_freeViewCameraEntity->setFieldOfView(45.0f);
+    m_freeViewCameraEntity->setFarPlane(freeViewCameraFarPlane);
+    m_freeViewCameraEntity->setFieldOfView(freeViewCameraFov);
     m_freeViewCameraEntity->setLeft(-0.5f);
-    m_freeViewCameraEntity->setNearPlane(0.1f);
+    m_freeViewCameraEntity->setNearPlane(freeViewCameraNearPlane);
     m_freeViewCameraEntity->setPosition(QVector3D(20.0f, 20.0f, 20.0f));
     m_freeViewCameraEntity->setProjectionType(Qt3DRender::QCameraLens::PerspectiveProjection);
     m_freeViewCameraEntity->setRight(0.5f);
@@ -2140,7 +2143,7 @@ void EditorScene::handleViewportSizeChange()
 {
     qreal aspectRatio = m_viewport->width() / qMax(m_viewport->height(), 1.0);
     m_freeViewCameraEntity->lens()->setPerspectiveProjection(
-                45.0f, aspectRatio, 0.1f, 1000.0f);
+                freeViewCameraFov, aspectRatio, freeViewCameraNearPlane, freeViewCameraFarPlane);
 }
 
 void EditorScene::handleEntityNameChange()
