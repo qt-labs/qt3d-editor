@@ -169,7 +169,6 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
     case LightPoint: {
         Qt3DRender::QPointLight *source = qobject_cast<Qt3DRender::QPointLight *>(component);
         Qt3DRender::QPointLight *newComponent = new Qt3DRender::QPointLight();
-        newComponent->setAttenuation(source->attenuation());
         newComponent->setColor(source->color());
         newComponent->setConstantAttenuation(source->constantAttenuation());
         newComponent->setIntensity(source->intensity());
@@ -181,7 +180,6 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
     case LightSpot: {
         Qt3DRender::QSpotLight *source = qobject_cast<Qt3DRender::QSpotLight *>(component);
         Qt3DRender::QSpotLight *newComponent = new Qt3DRender::QSpotLight();
-        newComponent->setAttenuation(source->attenuation());
         newComponent->setColor(source->color());
         newComponent->setConstantAttenuation(source->constantAttenuation());
         newComponent->setCutOffAngle(source->cutOffAngle());

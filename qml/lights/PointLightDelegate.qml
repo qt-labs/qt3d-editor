@@ -31,6 +31,8 @@ import com.theqtcompany.SceneEditor3D 1.0
 BasicLightDelegate {
     id: thisItem
 
+    // TODO: Attenuation is broken to three properties on pointlight.
+    // TODO: Same will probably happen for spotlight. Fix ui once both lights work similarly.
     Component.onCompleted: {
         initialState = false
         if (parent.repeater.attenuationSet)
