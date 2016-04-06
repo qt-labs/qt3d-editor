@@ -113,6 +113,7 @@ EditorScene::EditorScene(QObject *parent)
     , m_pickedEntity(Q_NULLPTR)
     , m_pickedDistance(-1.0f)
     , m_gridSize(3)
+    , m_duplicateCount(0)
 {
     retranslateUi();
     createRootEntity();
@@ -386,7 +387,12 @@ void EditorScene::snapFreeViewCameraToActiveSceneCamera()
 
 void EditorScene::duplicateEntity(Qt3DCore::QEntity *entity)
 {
-    Qt3DCore::QEntity *newEntity = EditorUtils::duplicateEntity(entity, m_sceneEntity);
+    QVector3D duplicateOffset =
+            m_helperPlaneTransform->rotation().rotatedVector(QVector3D(0.5f, 0.5f, 0.0f)
+                                                             * ++m_duplicateCount);
+
+    Qt3DCore::QEntity *newEntity =
+            EditorUtils::duplicateEntity(entity, m_sceneEntity, duplicateOffset);
 
     // Set name and add to scene
     EditorUtils::nameDuplicate(newEntity, entity, m_sceneModel);
@@ -1525,6 +1531,8 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
                 m_selectedEntityTransform = EditorUtils::entityTransform(m_selectedEntity);
             }
 
+            m_duplicateCount = 0;
+
             // Emit signal to highlight the entity from the list
             emit selectionChanged(m_selectedEntity);
         }
@@ -2023,7 +2031,7 @@ bool EditorScene::isPropertyLocked(const QString &propertyName, QObject *obj)
     if (!obj)
         return false;
     QString lockProperty = propertyName + lockPropertySuffix();
-    QByteArray nameArray = lockProperty.toLocal8Bit();
+    QByteArray nameArray = lockProperty.toLatin1();
     const char *namePtr = nameArray.constData();
     QVariant propertyVariant = obj->property(namePtr);
     if (propertyVariant.isValid())

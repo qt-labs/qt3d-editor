@@ -581,7 +581,7 @@ bool EditorSceneItem::setCustomProperty(QObject *component, const QString name,
     if (!targetObj)
         targetObj = m_entity;
 
-    QByteArray nameArray = name.toLocal8Bit();
+    QByteArray nameArray = name.toLatin1();
     const char *propertyName = nameArray.constData();
 
     m_scene->handlePropertyLocking(this, name, value.toBool());
@@ -600,7 +600,7 @@ QVariant EditorSceneItem::customProperty(QObject *component, const QString name)
     if (!targetObj)
         targetObj = m_entity;
 
-    QByteArray nameArray = name.toLocal8Bit();
+    QByteArray nameArray = name.toLatin1();
     const char *propertyName = nameArray.constData();
     QVariant propertyVariant = targetObj->property(propertyName);
     if (propertyVariant.isValid())

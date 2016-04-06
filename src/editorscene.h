@@ -253,7 +253,7 @@ public:
     const QString language() const;
 
     const QString emptyString() const;
-    const QString lockPropertySuffix() const { return QStringLiteral("_editorPropertyLock"); }
+    const QString lockPropertySuffix() const { return EditorUtils::lockPropertySuffix(); }
 
     void setViewport(EditorViewportItem *viewport);
     EditorViewportItem *viewport() const { return m_viewport; }
@@ -414,6 +414,7 @@ private:
     float m_pickedDistance;
     QVector3D m_snapToGridIntersection;
     int m_gridSize;
+    int m_duplicateCount;
 
     QMap<QString, PlaceholderEntityData *> m_placeholderEntityMap;
 };

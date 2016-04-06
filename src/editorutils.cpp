@@ -65,6 +65,7 @@
 #include <QtCore/QtMath>
 
 static const QString internalPrefix = QStringLiteral("__internal");
+static const QByteArray lockPropSuffix8 = EditorUtils::lockPropertySuffix().toLatin1();
 
 bool EditorUtils::isObjectInternal(QObject *obj)
 {
@@ -91,7 +92,8 @@ void EditorUtils::copyCameraProperties(Qt3DRender::QCamera *target, Qt3DRender::
 }
 
 Qt3DCore::QEntity *EditorUtils::duplicateEntity(Qt3DCore::QEntity *entity,
-                                                Qt3DCore::QEntity *newParent)
+                                                Qt3DCore::QEntity *newParent,
+                                                const QVector3D &duplicateOffset)
 {
     // Copies the entity, including making copies of all components and child entities
     // Both copies will retain their entity names.
@@ -99,10 +101,21 @@ Qt3DCore::QEntity *EditorUtils::duplicateEntity(Qt3DCore::QEntity *entity,
     Qt3DCore::QEntity *newEntity = Q_NULLPTR;
 
     // Check if it's a camera
-    if (qobject_cast<Qt3DRender::QCamera *>(entity)) {
+    Qt3DRender::QCamera *oldCam = qobject_cast<Qt3DRender::QCamera *>(entity);
+    if (oldCam) {
         Qt3DRender::QCamera *newCam = new Qt3DRender::QCamera(newParent);
-        copyCameraProperties(newCam, qobject_cast<Qt3DRender::QCamera *>(entity));
+        copyCameraProperties(newCam, oldCam);
         newEntity = newCam;
+
+        copyLockProperties(entity, newEntity);
+
+        // Unlock transform related properties in the duplicate
+        lockProperty(QByteArrayLiteral("position") + lockPropSuffix8, newEntity, false);
+        lockProperty(QByteArrayLiteral("upVector") + lockPropSuffix8, newEntity, false);
+        lockProperty(QByteArrayLiteral("viewCenter") + lockPropSuffix8, newEntity, false);
+
+        // Offset the position of the duplicate
+        newCam->setPosition(oldCam->position() + duplicateOffset);
     } else {
         newEntity = new Qt3DCore::QEntity(newParent);
         // Duplicate non-internal components
@@ -110,8 +123,15 @@ Qt3DCore::QEntity *EditorUtils::duplicateEntity(Qt3DCore::QEntity *entity,
         Q_FOREACH (Qt3DCore::QComponent *component, entity->components()) {
             if (!EditorUtils::isObjectInternal(component)) {
                 Qt3DCore::QComponent *newComponent = EditorUtils::duplicateComponent(component);
-                if (newComponent)
+                if (newComponent) {
                     newEntity->addComponent(newComponent);
+                    Qt3DCore::QTransform *newTransform =
+                            qobject_cast<Qt3DCore::QTransform *>(newComponent);
+                    if (newTransform) {
+                        newTransform->setTranslation(newTransform->translation()
+                                                     + duplicateOffset * newTransform->scale3D());
+                    }
+                }
             }
         }
     }
@@ -132,6 +152,7 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
 {
     // Check component type and create the same kind
     ComponentTypes type = componentType(component);
+    Qt3DCore::QComponent *duplicate = nullptr;
 
     switch (type) {
     case LightDirectional: {
@@ -142,7 +163,8 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setColor(source->color());
         newComponent->setWorldDirection(source->worldDirection());
         newComponent->setIntensity(source->intensity());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case LightPoint: {
         Qt3DRender::QPointLight *source = qobject_cast<Qt3DRender::QPointLight *>(component);
@@ -153,7 +175,8 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setIntensity(source->intensity());
         newComponent->setLinearAttenuation(source->linearAttenuation());
         newComponent->setQuadraticAttenuation(source->quadraticAttenuation());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case LightSpot: {
         Qt3DRender::QSpotLight *source = qobject_cast<Qt3DRender::QSpotLight *>(component);
@@ -166,14 +189,16 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setIntensity(source->intensity());
         newComponent->setLinearAttenuation(source->linearAttenuation());
         newComponent->setQuadraticAttenuation(source->quadraticAttenuation());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case LightBasic: {
         Qt3DRender::QLight *source = qobject_cast<Qt3DRender::QLight *>(component);
         Qt3DRender::QLight *newComponent = new Qt3DRender::QLight();
         newComponent->setColor(source->color());
         newComponent->setIntensity(source->intensity());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case MaterialDiffuseMap: {
         Qt3DRender::QDiffuseMapMaterial *source =
@@ -187,7 +212,8 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setShininess(source->shininess());
         newComponent->setSpecular(source->specular());
         newComponent->setTextureScale(source->textureScale());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case MaterialDiffuseSpecularMap: {
         Qt3DRender::QDiffuseSpecularMapMaterial *source =
@@ -205,7 +231,8 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
                                             source->specular()->textureImages().at(0))->source());
         newComponent->specular()->addTextureImage(specularTextureImage);
         newComponent->setTextureScale(source->textureScale());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case MaterialGooch: {
         Qt3DRender::QGoochMaterial *source = qobject_cast<Qt3DRender::QGoochMaterial *>(component);
@@ -217,7 +244,8 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setShininess(source->shininess());
         newComponent->setSpecular(source->specular());
         newComponent->setWarm(source->warm());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case MaterialNormalDiffuseMapAlpha: {
         Qt3DRender::QNormalDiffuseMapAlphaMaterial *source =
@@ -236,7 +264,8 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setShininess(source->shininess());
         newComponent->setSpecular(source->specular());
         newComponent->setTextureScale(source->textureScale());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case MaterialNormalDiffuseMap: {
         Qt3DRender::QNormalDiffuseMapMaterial *source =
@@ -255,7 +284,8 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setShininess(source->shininess());
         newComponent->setSpecular(source->specular());
         newComponent->setTextureScale(source->textureScale());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case MaterialNormalDiffuseSpecularMap: {
         Qt3DRender::QNormalDiffuseSpecularMapMaterial *source =
@@ -277,13 +307,15 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
                                             source->specular()->textureImages().at(0))->source());
         newComponent->specular()->addTextureImage(specularTextureImage);
         newComponent->setTextureScale(source->textureScale());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case MaterialPerVertexColor: {
         // MaterialPerVertexColor has no properties
         Qt3DRender::QPerVertexColorMaterial *newComponent =
                 new Qt3DRender::QPerVertexColorMaterial();
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case MaterialPhongAlpha: {
         Qt3DRender::QPhongAlphaMaterial *source =
@@ -294,7 +326,8 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setDiffuse(source->diffuse());
         newComponent->setShininess(source->shininess());
         newComponent->setSpecular(source->specular());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case MaterialPhong: {
         Qt3DRender::QPhongMaterial *source = qobject_cast<Qt3DRender::QPhongMaterial *>(component);
@@ -303,7 +336,8 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setDiffuse(source->diffuse());
         newComponent->setShininess(source->shininess());
         newComponent->setSpecular(source->specular());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case MeshCuboid: {
         Qt3DRender::QCuboidMesh *source = qobject_cast<Qt3DRender::QCuboidMesh *>(component);
@@ -314,13 +348,15 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setXYMeshResolution(source->xyMeshResolution());
         newComponent->setXZMeshResolution(source->xzMeshResolution());
         newComponent->setYZMeshResolution(source->yzMeshResolution());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case MeshCustom: {
         Qt3DRender::QMesh *source = qobject_cast<Qt3DRender::QMesh *>(component);
         Qt3DRender::QMesh *newComponent = new Qt3DRender::QMesh();
         newComponent->setSource(source->source());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case MeshCylinder: {
         Qt3DRender::QCylinderMesh *source = qobject_cast<Qt3DRender::QCylinderMesh *>(component);
@@ -329,7 +365,8 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setRadius(source->radius());
         newComponent->setRings(source->rings());
         newComponent->setSlices(source->slices());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case MeshPlane: {
         Qt3DRender::QPlaneMesh *source = qobject_cast<Qt3DRender::QPlaneMesh *>(component);
@@ -337,7 +374,8 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setHeight(source->height());
         newComponent->setMeshResolution(source->meshResolution());
         newComponent->setWidth(source->width());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case MeshSphere: {
         Qt3DRender::QSphereMesh *source = qobject_cast<Qt3DRender::QSphereMesh *>(component);
@@ -346,7 +384,8 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setRadius(source->radius());
         newComponent->setRings(source->rings());
         newComponent->setSlices(source->slices());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case MeshTorus: {
         Qt3DRender::QTorusMesh *source = qobject_cast<Qt3DRender::QTorusMesh *>(component);
@@ -355,26 +394,33 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setRadius(source->radius());
         newComponent->setRings(source->rings());
         newComponent->setSlices(source->slices());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case Transform: {
         Qt3DCore::QTransform *source = qobject_cast<Qt3DCore::QTransform *>(component);
         Qt3DCore::QTransform *newComponent = new Qt3DCore::QTransform();
         newComponent->setMatrix(source->matrix());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case ObjectPicker: {
         QDummyObjectPicker *source = qobject_cast<QDummyObjectPicker *>(component);
         QDummyObjectPicker *newComponent = new QDummyObjectPicker();
         newComponent->setHoverEnabled(source->hoverEnabled());
-        return newComponent;
+        duplicate = newComponent;
+        break;
     }
     case Unknown:
         qWarning() << "Unsupported component:" << component;
         break;
     }
 
-    return Q_NULLPTR;
+    // Copy property locks, except for transforms
+    if (type != Transform)
+        copyLockProperties(component, duplicate);
+
+    return duplicate;
 }
 
 void EditorUtils::nameDuplicate(Qt3DCore::QEntity *duplicate, Qt3DCore::QEntity *original,
@@ -991,4 +1037,20 @@ QVector3D EditorUtils::lightDirection(const Qt3DRender::QLight *light)
     return direction;
 }
 
+void EditorUtils::copyLockProperties(const QObject *source, QObject *target)
+{
+    QList<QByteArray> customProps = source->dynamicPropertyNames();
+    Q_FOREACH (const QByteArray &propName, customProps) {
+        if (propName.endsWith(lockPropSuffix8)) {
+            target->setProperty(propName.constData(),
+                                source->property(propName.constData()));
+        }
+    }
+}
 
+void EditorUtils::lockProperty(const QByteArray &lockPropertyName, QObject *obj, bool lock)
+{
+    QVariant propVal = obj->property(lockPropertyName);
+    if (propVal.isValid() && propVal.toBool() != lock)
+        obj->setProperty(lockPropertyName, QVariant::fromValue(lock));
+}

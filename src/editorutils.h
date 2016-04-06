@@ -100,7 +100,8 @@ public:
     static bool isObjectInternal(QObject *obj);
     static void copyCameraProperties(Qt3DRender::QCamera *target, Qt3DRender::QCamera *source);
     static Qt3DCore::QEntity *duplicateEntity(Qt3DCore::QEntity *entity,
-                                              Qt3DCore::QEntity *newParent = Q_NULLPTR);
+                                              Qt3DCore::QEntity *newParent = Q_NULLPTR,
+                                              const QVector3D &duplicateOffset = QVector3D());
     static Qt3DCore::QComponent *duplicateComponent(Qt3DCore::QComponent *component);
     static void nameDuplicate(Qt3DCore::QEntity *duplicate, Qt3DCore::QEntity *original,
                               EditorSceneItemModel *sceneModel);
@@ -146,12 +147,16 @@ public:
     static QList<Qt3DCore::QTransform *> ancestralTransforms(Qt3DCore::QEntity *entity);
     static QVector3D lightDirection(const Qt3DRender::QLight *light);
 
+    static const QString lockPropertySuffix() { return QStringLiteral("_editorPropertyLock"); }
+
 private:
     // Private constructor to ensure no actual instance is created
     explicit EditorUtils() {}
 
     static ComponentTypes componentType(Qt3DCore::QComponent *component);
-    QString m_copyString;
+
+    static void copyLockProperties(const QObject *source, QObject *target);
+    static void lockProperty(const QByteArray &lockPropertyName, QObject *obj, bool lock);
 };
 
 #endif // EDITORUTILS_H
