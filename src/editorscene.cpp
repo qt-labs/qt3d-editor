@@ -925,7 +925,7 @@ void EditorScene::dragRotateSelectedEntity(const QPoint &newPos, bool shiftDown,
             // In case of camera, we rotate the upvector, and in case of lights, the direction
             QString propertyName =
                     qobject_cast<Qt3DRender::QDirectionalLight *>(lightData->lightComponent)
-                    ? QStringLiteral("worldDirection") : QStringLiteral("direction");
+                    ? QStringLiteral("worldDirection") : QStringLiteral("localDirection");
             m_undoHandler->createChangePropertyCommand(m_selectedEntity->objectName(),
                                                        EditorSceneItemComponentsModel::Light,
                                                        propertyName, newDirection,
@@ -1062,7 +1062,7 @@ void EditorScene::handlePropertyLocking(EditorSceneItem *item, const QString &lo
                 m_dragHandleTranslate.entity->setEnabled(!locked);
             } else if (item->itemType() == EditorSceneItem::Light) {
                 if (item->canRotate()) {
-                    QString directionLock = QStringLiteral("direction") + lockPropertySuffix();
+                    QString directionLock = QStringLiteral("localDirection") + lockPropertySuffix();
                     QString worldDirectionLock = QStringLiteral("worldDirection") + lockPropertySuffix();
                     if (lockProperty == directionLock || lockProperty == worldDirectionLock)
                         m_dragHandleRotate.entity->setEnabled(!locked);
@@ -1118,7 +1118,7 @@ void EditorScene::handleLightTypeChanged(EditorSceneItem *item)
                 if (item->canRotate()) {
                     QString lockProperty =
                             qobject_cast<Qt3DRender::QDirectionalLight *>(lightData->lightComponent)
-                            ? QStringLiteral("worldDirection") : QStringLiteral("direction");
+                            ? QStringLiteral("worldDirection") : QStringLiteral("localDirection");
                     m_dragHandleRotate.entity->setEnabled(
                                 !isPropertyLocked(lockProperty, light));
                 } else {
@@ -1558,7 +1558,7 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
                     Qt3DRender::QLight *light = EditorUtils::entityLight(m_selectedEntity);
                     QString lockProperty =
                             qobject_cast<Qt3DRender::QDirectionalLight *>(light)
-                            ? QStringLiteral("worldDirection") : QStringLiteral("direction");
+                            ? QStringLiteral("worldDirection") : QStringLiteral("localDirection");
                     m_dragHandleRotate.entity->setEnabled(
                                 !isPropertyLocked(lockProperty, light));
                 } else {
