@@ -41,7 +41,7 @@ Item {
     property alias xLabel: xLabel.text
     property alias yLabel: yLabel.text
     property alias zLabel: zLabel.text
-    property bool typing: false
+    property bool blockChange: false
     property real minimum: -9999999 // TODO: Do we need more sensible default minimum?
     property real maximum: 9999999 // TODO: Do we need more sensible default maximum?
     property int roundDigits: 2 // TODO: Determine nice default rounding
@@ -61,9 +61,11 @@ Item {
     }
 
     onValueChanged: {
+        blockChange = true
         xInput.value = roundNumber(value.x) * roundMultiplier
         yInput.value = roundNumber(value.y) * roundMultiplier
         zInput.value = roundNumber(value.z) * roundMultiplier
+        blockChange = false
     }
 
     DoubleValidator {
@@ -109,10 +111,12 @@ Item {
             }
 
             onValueChanged: {
-                var oldValue = vectorInput.value.x
-                vectorInput.value.x = value / roundMultiplier
-                if (oldValue !== vectorInput.value.x)
-                    valueEdited()
+                if (!blockChange) {
+                    var oldValue = vectorInput.value.x
+                    vectorInput.value.x = value / roundMultiplier
+                    if (oldValue !== vectorInput.value.x)
+                        valueEdited()
+                }
             }
 
             Component.onCompleted: {
@@ -155,10 +159,12 @@ Item {
             }
 
             onValueChanged: {
-                var oldValue = vectorInput.value.y
-                vectorInput.value.y = value / roundMultiplier
-                if (oldValue !== vectorInput.value.y)
-                    valueEdited()
+                if (!blockChange) {
+                    var oldValue = vectorInput.value.y
+                    vectorInput.value.y = value / roundMultiplier
+                    if (oldValue !== vectorInput.value.y)
+                        valueEdited()
+                }
             }
 
             Component.onCompleted: {
@@ -202,10 +208,12 @@ Item {
             }
 
             onValueChanged: {
-                var oldValue = vectorInput.value.z
-                vectorInput.value.z = value / roundMultiplier
-                if (oldValue !== vectorInput.value.z)
-                    valueEdited()
+                if (!blockChange) {
+                    var oldValue = vectorInput.value.z
+                    vectorInput.value.z = value / roundMultiplier
+                    if (oldValue !== vectorInput.value.z)
+                        valueEdited()
+                }
             }
 
             Component.onCompleted: {
