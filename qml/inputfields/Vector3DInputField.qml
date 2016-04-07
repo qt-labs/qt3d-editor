@@ -25,8 +25,8 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.4
-import QtQuick.Controls 1.3
+import QtQuick 2.5
+import Qt.labs.controls 1.0 as QLC
 import QtQuick.Layouts 1.2
 
 Item {
@@ -42,8 +42,11 @@ Item {
     property alias yLabel: yLabel.text
     property alias zLabel: zLabel.text
     property bool typing: false
+    property real minimum: -9999999 // TODO: Do we need more sensible default minimum?
+    property real maximum: 9999999 // TODO: Do we need more sensible default maximum?
     property int roundDigits: 2 // TODO: Determine nice default rounding
     property int roundMultiplier: Math.pow(10, roundDigits) // Calculated from roundDigits, do not set directly
+    property int step: roundMultiplier
     property real inputCellWidth: vectorInput.width * 0.6
 
     property vector3d value: Qt.vector3d(0, 0, 0)
@@ -58,9 +61,9 @@ Item {
     }
 
     onValueChanged: {
-        xInput.text = roundNumber(value.x)
-        yInput.text = roundNumber(value.y)
-        zInput.text = roundNumber(value.z)
+        xInput.value = roundNumber(value.x) * roundMultiplier
+        yInput.value = roundNumber(value.y) * roundMultiplier
+        zInput.value = roundNumber(value.z) * roundMultiplier
     }
 
     DoubleValidator {
@@ -75,32 +78,46 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
         Layout.rightMargin: 1
         columns: 3
+        rowSpacing: 1
 
-        Label {
+        QLC.Label {
             id: xLabel
             Layout.alignment: Qt.AlignLeft
             text: label + " " + qsTr("X") + editorScene.emptyString
             color: labelTextColor
         }
 
-        TextField {
+        QLC.SpinBox {
             id: xInput
             Layout.alignment: Qt.AlignRight
-            inputMethodHints: Qt.ImhFormattedNumbersOnly
             implicitWidth: inputCellWidth
-            validator: doubleValidator
+            implicitHeight: qlcControlHeight
+            to: maximum * roundMultiplier
+            stepSize: step
+            from: minimum * roundMultiplier
+            editable: true
             enabled: lockButton.buttonEnabled
 
-            onEditingFinished: {
-                if (text !== "") {
-                    var oldValue = vectorInput.value.x
-                    vectorInput.value.x = text
-                    if (oldValue !== vectorInput.value.x)
-                        valueEdited()
-                }
+            validator: doubleValidator
+
+            textFromValue: function(value) {
+                return value / roundMultiplier
             }
 
-            Component.onCompleted: text = roundNumber(vectorInput.value.x)
+            valueFromText: function(text) {
+                return roundNumber(text) * roundMultiplier
+            }
+
+            onValueChanged: {
+                var oldValue = vectorInput.value.x
+                vectorInput.value.x = value / roundMultiplier
+                if (oldValue !== vectorInput.value.x)
+                    valueEdited()
+            }
+
+            Component.onCompleted: {
+                value = roundNumber(vectorInput.value.x) * roundMultiplier
+            }
         }
 
         Image {
@@ -109,31 +126,44 @@ Item {
             source: "/images/property_grouping_line.png"
         }
 
-        Label {
+        QLC.Label {
             id: yLabel
             Layout.alignment: Qt.AlignLeft
             text: label + " " + qsTr("Y") + editorScene.emptyString
             color: labelTextColor
         }
 
-        TextField {
+        QLC.SpinBox {
             id: yInput
             Layout.alignment: Qt.AlignRight
-            inputMethodHints: Qt.ImhFormattedNumbersOnly
-            validator: doubleValidator
             implicitWidth: inputCellWidth
+            implicitHeight: qlcControlHeight
+            to: maximum * roundMultiplier
+            stepSize: step
+            from: minimum * roundMultiplier
+            editable: true
             enabled: lockButton.buttonEnabled
 
-            onEditingFinished: {
-                if (text !== "") {
-                    var oldValue = vectorInput.value.y
-                    vectorInput.value.y = text
-                    if (oldValue !== vectorInput.value.y)
-                        valueEdited()
-                }
+            validator: doubleValidator
+
+            textFromValue: function(value) {
+                return value / roundMultiplier
             }
 
-            Component.onCompleted: text = roundNumber(vectorInput.value.y)
+            valueFromText: function(text) {
+                return roundNumber(text) * roundMultiplier
+            }
+
+            onValueChanged: {
+                var oldValue = vectorInput.value.y
+                vectorInput.value.y = value / roundMultiplier
+                if (oldValue !== vectorInput.value.y)
+                    valueEdited()
+            }
+
+            Component.onCompleted: {
+                value = roundNumber(vectorInput.value.y) * roundMultiplier
+            }
         }
 
         PropertyLockButton {
@@ -143,31 +173,44 @@ Item {
             label: vectorInput.label
         }
 
-        Label {
+        QLC.Label {
             id: zLabel
             Layout.alignment: Qt.AlignLeft
             text: label + " " + qsTr("Z") + editorScene.emptyString
             color: labelTextColor
         }
 
-        TextField {
+        QLC.SpinBox {
             id: zInput
             Layout.alignment: Qt.AlignRight
-            inputMethodHints: Qt.ImhFormattedNumbersOnly
-            validator: doubleValidator
             implicitWidth: inputCellWidth
+            implicitHeight: qlcControlHeight
+            to: maximum * roundMultiplier
+            stepSize: step
+            from: minimum * roundMultiplier
+            editable: true
             enabled: lockButton.buttonEnabled
 
-            onEditingFinished: {
-                if (text !== "") {
-                    var oldValue = vectorInput.value.z
-                    vectorInput.value.z = text
-                    if (oldValue !== vectorInput.value.z)
-                        valueEdited()
-                }
+            validator: doubleValidator
+
+            textFromValue: function(value) {
+                return value / roundMultiplier
             }
 
-            Component.onCompleted: text = roundNumber(vectorInput.value.z)
+            valueFromText: function(text) {
+                return roundNumber(text) * roundMultiplier
+            }
+
+            onValueChanged: {
+                var oldValue = vectorInput.value.z
+                vectorInput.value.z = value / roundMultiplier
+                if (oldValue !== vectorInput.value.z)
+                    valueEdited()
+            }
+
+            Component.onCompleted: {
+                value = roundNumber(vectorInput.value.z) * roundMultiplier
+            }
         }
 
         Image {

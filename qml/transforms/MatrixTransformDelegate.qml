@@ -26,10 +26,7 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
-import QtQuick.Controls 1.3
-import QtQuick.Layouts 1.2
 import com.theqtcompany.SceneEditor3D 1.0
-import Qt3D.Core 2.0
 
 TransformDelegate {
     id: thisDelegate

@@ -25,8 +25,8 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.4
-import QtQuick.Controls 1.3
+import QtQuick 2.5
+import Qt.labs.controls 1.0 as QLC
 import QtQuick.Layouts 1.2
 
 PropertyInputField {
@@ -35,14 +35,16 @@ PropertyInputField {
     height: mainLayout.height
 
     property alias label: floatLabel.text
-    property real minimum: -99999999999 // TODO: Do we need more sensible default minimum?
+    property real minimum: -99999 // TODO: Do we need more sensible default minimum?
+    property real maximum: 99999 // TODO: Do we need more sensible default maximum?
     property int roundDigits: 4 // TODO: Determine nice default rounding
     property int roundMultiplier: Math.pow(10, roundDigits) // Calculated from roundDigits, do not set directly
+    property int step: roundMultiplier
     property double fieldValue: component[propertyName]
 
     onComponentValueChanged: {
         if (component !== null)
-            valueInput.text = roundNumber(component[propertyName])
+            valueInput.value = roundNumber(component[propertyName]) * roundMultiplier
     }
 
     function roundNumber(number) {
@@ -63,31 +65,40 @@ PropertyInputField {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
 
-        Label {
+        QLC.Label {
             id: floatLabel
             text: qsTr("Float Value") + editorScene.emptyString
             color: labelTextColor
             Layout.alignment: Qt.AlignLeft
         }
 
-        TextField {
+        QLC.SpinBox {
             id: valueInput
             Layout.alignment: Qt.AlignRight
-            validator: doubleValidator
             implicitWidth: floatInput.width * 0.6
-            text: ""
+            implicitHeight: qlcControlHeight
+            to: maximum * roundMultiplier
+            stepSize: step
+            from: minimum * roundMultiplier
+            editable: true
             enabled: lockButton.buttonEnabled
 
-            onEditingFinished: {
-                var newValue
-                if (text !== "")
-                    newValue = roundNumber(text)
-                else
-                    newValue = roundNumber(component[propertyName])
-                newValue = Math.max(newValue, minimum)
-                handleEditingFinished(newValue, roundNumber(component[propertyName]))
-                if (text != newValue)
-                    text = newValue
+            validator: DoubleValidator {
+                locale: "C"
+            }
+
+            textFromValue: function(value) {
+                return value / roundMultiplier
+            }
+
+            valueFromText: function(text) {
+                return roundNumber(text) * roundMultiplier
+            }
+
+            onValueChanged: {
+                var newValue = value
+                newValue = Math.max(value, minimum) / roundMultiplier
+                handleEditingFinished(newValue)
             }
         }
 

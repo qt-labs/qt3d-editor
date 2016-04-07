@@ -25,8 +25,8 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.4
-import QtQuick.Controls 1.3
+import QtQuick 2.5
+import Qt.labs.controls 1.0 as QLC
 import QtQuick.Layouts 1.2
 
 Item {
@@ -42,7 +42,7 @@ Item {
     property double minimum: 0.0
     property double maximum: 100.0
     property double value: 0.0
-    property int roundDigits: 4 // TODO: Determine nice default rounding
+    property int roundDigits: 1 // TODO: Determine nice default rounding
     property int roundMultiplier: Math.pow(10, roundDigits) // Calculated from roundDigits, do not set directly
 
     function roundNumber(number) {
@@ -77,7 +77,7 @@ Item {
         id: sliderLayout
         width: parent.width
 
-        Label {
+        QLC.Label {
             id: title
             text: qsTr("Float Slider") + editorScene.emptyString
             Layout.alignment: Qt.AlignLeft
@@ -91,18 +91,50 @@ Item {
 
         RowLayout {
             Layout.alignment: Qt.AlignRight
-            Slider {
+
+            QLC.Slider {
                 id: slider
 
                 property bool blockCommit: false
                 property bool pendingValue: false
 
-                minimumValue: minimum
-                maximumValue: maximum
-                implicitWidth: floatSliderInputField.width * 0.4 - 4 // 4 = column spacing
+                from: minimum
+                to: maximum
+                implicitWidth: floatSliderInputField.width * 0.4
                 enabled: lockButton.buttonEnabled
+                handle: Rectangle {
+                    x: slider.leftPadding + (horizontal ? slider.visualPosition
+                                                          * (slider.availableWidth - width)
+                                                        : (slider.availableWidth - width) / 2)
+                    y: slider.topPadding + (horizontal ? (slider.availableHeight - height) / 2
+                                                       : slider.visualPosition
+                                                         * (slider.availableHeight - height))
+                    implicitWidth: 20
+                    implicitHeight: 20
+                    radius: width / 2
+                    border.color: enabled ? "#353637" : "#bdbebf"
+                    color: enabled ? (slider.pressed ? "#bdbebf" : "#f6f6f6") : "lightgray"
 
-                onValueChanged: {
+                    readonly property bool horizontal: slider.orientation === Qt.Horizontal
+                }
+                track: Rectangle {
+                    x: slider.leftPadding + (horizontal ? 0 : (slider.availableWidth - width) / 2)
+                    y: slider.topPadding + (horizontal ? (slider.availableHeight - height) / 2 : 0)
+                    implicitWidth: horizontal ? 200 : 6
+                    implicitHeight: horizontal ? 6 : 200
+                    width: horizontal ? slider.availableWidth : implicitWidth
+                    height: horizontal ? implicitHeight : slider.availableHeight
+                    radius: 3
+                    border.color: enabled ? "#353637" : "#bdbebf"
+                    color: enabled ? "#ffffff" : "transparent"
+                    scale: horizontal && slider.mirrored ? -1 : 1
+
+                    readonly property bool horizontal: slider.orientation === Qt.Horizontal
+                }
+
+                onPositionChanged:  {
+                    var newValue = roundNumber((position * (to - from)) + from)
+                    floatInput.text = newValue
                     if (!blockCommit) {
                         // Do not try to commit immediately, if we do not have focus.
                         // Instead, delay the commit until we get the focus. This should ensure
@@ -111,7 +143,7 @@ Item {
                         // is kept in correct order.
                         if (focus) {
                             pendingValue = false
-                            tryCommitValue(value)
+                            tryCommitValue(newValue)
                         } else {
                             pendingValue = true
                         }
@@ -133,15 +165,20 @@ Item {
                 }
             }
 
-            TextField {
+            QLC.TextField {
                 id: floatInput
-                implicitWidth: floatSliderInputField.width * 0.2 - 4 // 4 = column spacing
+                implicitWidth: floatSliderInputField.width * 0.2
                 validator: doubleValidator
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
                 enabled: lockButton.buttonEnabled
+                background: TextFieldBackgroundRectangle {}
 
                 onEditingFinished: {
                     tryCommitValue(floatInput.text)
+                }
+
+                Component.onCompleted: {
+                    text = roundNumber(slider.value)
                 }
             }
 

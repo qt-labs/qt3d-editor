@@ -25,7 +25,7 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.4
+import QtQuick 2.5
 import com.theqtcompany.SceneEditor3D 1.0
 
 Item {

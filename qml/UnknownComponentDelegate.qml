@@ -25,10 +25,8 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.0
+import QtQuick 2.5
 import com.theqtcompany.SceneEditor3D 1.0
-import QtQuick.Controls 1.3
-import QtQuick.Layouts 1.2
 
 ComponentDelegate {
     function componentTypeToString(componentType) {

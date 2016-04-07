@@ -40,7 +40,7 @@ namespace Qt3DCore {
     class QComponent;
 }
 namespace Qt3DRender {
-    class QAbstractTextureProvider;
+    class QAbstractTexture;
 }
 
 class EditorSceneParser : public QObject
@@ -108,7 +108,7 @@ private:
     void outRenderSettings(Qt3DCore::QComponent *component);
     void outTexturedMaterial(EditorItemType type, Qt3DCore::QComponent *component);
     void outTextureProperty(const QString &propertyName,
-                            Qt3DRender::QAbstractTextureProvider *textureProvider);
+                            Qt3DRender::QAbstractTexture *textureProvider);
     void outGenericProperties(EditorItemType type, QObject *obj);
     void outGenericProperty(QObject *obj,
                             const QMetaProperty &property, const QObject *defaultComponent);
@@ -126,9 +126,9 @@ private:
     void parseAndSetTextureProperty(const QString &propertyName, const QString &propertyValue,
                                     QObject *obj, EditorItemType type);
     int getTextureProviders(EditorItemType type, QObject *component,
-                            Qt3DRender::QAbstractTextureProvider *&diffuse,
-                            Qt3DRender::QAbstractTextureProvider *&specular,
-                            Qt3DRender::QAbstractTextureProvider *&normal);
+                            Qt3DRender::QAbstractTexture *&diffuse,
+                            Qt3DRender::QAbstractTexture *&specular,
+                            Qt3DRender::QAbstractTexture *&normal);
     QString getAbsoluteResourceFileName(const QFileInfo &qmlFileInfo,
                                         const QString &resourceDirName);
 

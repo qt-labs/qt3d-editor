@@ -33,7 +33,7 @@
 
 namespace Qt3DRender {
 class QMaterial;
-class QAbstractTextureProvider;
+class QAbstractTexture;
 }
 
 class EditorSceneItemComponentsModel;
@@ -88,10 +88,10 @@ Q_SIGNALS:
 private:
     MaterialComponentTypes materialType(Qt3DRender::QMaterial *material) const;
 
-    Qt3DRender::QAbstractTextureProvider *getDiffuseTexture() const;
-    Qt3DRender::QAbstractTextureProvider *getSpecularTexture() const;
-    Qt3DRender::QAbstractTextureProvider *getNormalTexture() const;
-    QUrl getTextureUrl(Qt3DRender::QAbstractTextureProvider *texture) const;
+    Qt3DRender::QAbstractTexture *getDiffuseTexture() const;
+    Qt3DRender::QAbstractTexture *getSpecularTexture() const;
+    Qt3DRender::QAbstractTexture *getNormalTexture() const;
+    QUrl getTextureUrl(Qt3DRender::QAbstractTexture *texture) const;
 
     Qt3DRender::QMaterial *m_materialComponent;
     EditorSceneItemComponentsModel *m_sceneComponentsModel;

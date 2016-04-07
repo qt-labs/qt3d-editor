@@ -25,8 +25,8 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.4
-import QtQuick.Controls 1.3
+import QtQuick 2.5
+import Qt.labs.controls 1.0 as QLC
 import QtQuick.Layouts 1.2
 
 Item {
@@ -84,7 +84,7 @@ Item {
         anchors.right: parent.right
         anchors.left: parent.left
 
-        Label {
+        QLC.Label {
             id: matrixLabel
             text: qsTr("Matrix4x4") + editorScene.emptyString
             Layout.alignment: Qt.AlignLeft
@@ -94,11 +94,12 @@ Item {
         ColumnLayout {
             Layout.alignment: Qt.AlignLeft
             RowLayout {
-                TextField {
+                QLC.TextField {
                     id: m11Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
+                    background: TextFieldBackgroundRectangle {}
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -111,11 +112,12 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m11)
                 }
-                TextField {
+                QLC.TextField {
                     id: m12Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
+                    background: TextFieldBackgroundRectangle {}
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -128,11 +130,12 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m12)
                 }
-                TextField {
+                QLC.TextField {
                     id: m13Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
+                    background: TextFieldBackgroundRectangle {}
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -145,11 +148,12 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m13)
                 }
-                TextField {
+                QLC.TextField {
                     id: m14Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
+                    background: TextFieldBackgroundRectangle {}
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -165,11 +169,12 @@ Item {
             }
 
             RowLayout {
-                TextField {
+                QLC.TextField {
                     id: m21Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
+                    background: TextFieldBackgroundRectangle {}
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -182,11 +187,12 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m21)
                 }
-                TextField {
+                QLC.TextField {
                     id: m22Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
+                    background: TextFieldBackgroundRectangle {}
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -199,11 +205,12 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m22)
                 }
-                TextField {
+                QLC.TextField {
                     id: m23Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
+                    background: TextFieldBackgroundRectangle {}
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -216,11 +223,12 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m23)
                 }
-                TextField {
+                QLC.TextField {
                     id: m24Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
+                    background: TextFieldBackgroundRectangle {}
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -235,11 +243,12 @@ Item {
                 }
             }
             RowLayout {
-                TextField {
+                QLC.TextField {
                     id: m31Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
+                    background: TextFieldBackgroundRectangle {}
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -252,11 +261,12 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m31)
                 }
-                TextField {
+                QLC.TextField {
                     id: m32Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
+                    background: TextFieldBackgroundRectangle {}
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -269,11 +279,12 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m32)
                 }
-                TextField {
+                QLC.TextField {
                     id: m33Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
+                    background: TextFieldBackgroundRectangle {}
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -286,11 +297,12 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m33)
                 }
-                TextField {
+                QLC.TextField {
                     id: m34Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
+                    background: TextFieldBackgroundRectangle {}
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -305,12 +317,13 @@ Item {
                 }
             }
             RowLayout {
-                TextField {
+                QLC.TextField {
                     id: m41Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
                     enabled: !affine
+                    background: TextFieldBackgroundRectangle {}
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -323,12 +336,13 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m41)
                 }
-                TextField {
+                QLC.TextField {
                     id: m42Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
                     enabled: !affine
+                    background: TextFieldBackgroundRectangle {}
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -341,12 +355,13 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m42)
                 }
-                TextField {
+                QLC.TextField {
                     id: m43Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
                     enabled: !affine
+                    background: TextFieldBackgroundRectangle {}
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -359,12 +374,13 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m43)
                 }
-                TextField {
+                QLC.TextField {
                     id: m44Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
                     enabled: !affine
+                    background: TextFieldBackgroundRectangle {}
 
                     onEditingFinished: {
                         if (text !== "") {

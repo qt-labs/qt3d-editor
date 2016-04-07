@@ -25,10 +25,9 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.4
+import QtQuick 2.5
 import com.theqtcompany.SceneEditor3D 1.0
-import QtQuick.Controls 1.3
-import QtQuick.Layouts 1.2
+import Qt.labs.controls 1.0 as QLC
 import Qt3D.Render 2.0
 
 ComponentDelegate {
@@ -54,9 +53,8 @@ ComponentDelegate {
 
         Component.onCompleted: materialCombobox.currentIndex = materialDelegate.currentMaterial - 1
 
-        ComboBox {
+        QLC.ComboBox {
             id: materialCombobox
-            activeFocusOnPress: true
             anchors.right: parent.right
             anchors.rightMargin: 4
             anchors.left: parent.left
@@ -64,6 +62,7 @@ ComponentDelegate {
             anchors.bottomMargin: 4
             anchors.verticalCenter: parent.verticalCenter
             property int validIndex: -1
+            implicitHeight: qlcControlHeight
 
             model: ListModel {
                 property string language: systemLanguage

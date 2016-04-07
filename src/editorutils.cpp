@@ -31,7 +31,7 @@
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QCamera>
-#include <Qt3DRender/QAbstractTextureProvider>
+#include <Qt3DRender/QAbstractTexture>
 #include <Qt3DRender/QTextureImage>
 #include <Qt3DRender/QObjectPicker>
 

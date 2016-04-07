@@ -26,38 +26,8 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
-import com.theqtcompany.SceneEditor3D 1.0
 
-MaterialDelegate {
-    id: thisDelegate
-    componentType: EditorSceneItemComponentsModel.Material
-
-    ColorPropertyInputField {
-        label: qsTr("Ambient Color") + editorScene.emptyString
-        propertyName: "ambient"
-        component: materialComponentData
-        componentType: thisDelegate.componentType
-    }
-
-    ColorPropertyInputField {
-        label: qsTr("Diffuse Color") + editorScene.emptyString
-        propertyName: "diffuse"
-        component: materialComponentData
-        componentType: thisDelegate.componentType
-    }
-
-    ColorPropertyInputField {
-        label: qsTr("Specular Color") + editorScene.emptyString
-        propertyName: "specular"
-        component: materialComponentData
-        componentType: thisDelegate.componentType
-    }
-
-    FloatPropertyInputField {
-        label: qsTr("Shininess") + editorScene.emptyString
-        propertyName: "shininess"
-        component: materialComponentData
-        componentType: thisDelegate.componentType
-    }
+Rectangle {
+    color: parent.enabled ? "white" : "transparent"
+    border.color: parent.enabled ? "#bdbebf" : "white"
 }
-

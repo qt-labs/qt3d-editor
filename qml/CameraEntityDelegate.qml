@@ -25,10 +25,9 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.4
+import QtQuick 2.5
 import com.theqtcompany.SceneEditor3D 1.0
-import QtQuick.Controls 1.3
-import QtQuick.Layouts 1.1
+import Qt.labs.controls 1.0 as QLC
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
@@ -69,129 +68,183 @@ ComponentDelegate {
         }
     }
 
-    GroupBox {
-        title: qsTr("Projection Type") + editorScene.emptyString
-        RowLayout {
-            ExclusiveGroup { id: projectionTypeGroup }
-            RadioButton {
-                id: orthoButton
-                text: qsTr("Orthographic") + editorScene.emptyString
-                checked: componentData.projectionType === CameraLens.OrthographicProjection
-                exclusiveGroup: projectionTypeGroup
-                onCheckedChanged: {
-                    if (checked)
-                        changeProjectionType(CameraLens.OrthographicProjection)
+    Column {
+        spacing: 4
+        width: parent.width
+
+        QLC.GroupBox {
+            title: qsTr("Projection Type") + editorScene.emptyString
+            Row {
+                QLC.RadioButton {
+                    id: orthoButton
+                    text: qsTr("Orthographic") + editorScene.emptyString
+                    checked: componentData.projectionType === CameraLens.OrthographicProjection
+                    indicator: Rectangle {
+                        implicitWidth: 20
+                        implicitHeight: 20
+                        x: orthoButton.text ?
+                               (orthoButton.mirrored ? orthoButton.width - width
+                                                       - orthoButton.rightPadding :
+                                                       orthoButton.leftPadding) :
+                               orthoButton.leftPadding + (orthoButton.availableWidth - width) / 2
+                        y: orthoButton.topPadding + (orthoButton.availableHeight - height) / 2
+
+                        radius: width / 2
+                        border.width: 1
+                        border.color: (orthoButton.pressed ? "#26282a" : "#353637")
+                        color: orthoButton.pressed ? "#e4e4e4" : "#f6f6f6"
+
+                        Rectangle {
+                            x: (parent.width - width) / 2
+                            y: (parent.height - height) / 2
+                            width: 14
+                            height: 14
+                            radius: width / 2
+                            color: orthoButton.pressed ? "#26282a" : "#353637"
+                            visible: orthoButton.checked
+                        }
+                    }
+                    onCheckedChanged: {
+                        if (checked)
+                            changeProjectionType(CameraLens.OrthographicProjection)
+                    }
                 }
-            }
-            RadioButton {
-                id: perspectiveButton
-                text: qsTr("Perspective") + editorScene.emptyString
-                checked: componentData.projectionType === CameraLens.PerspectiveProjection
-                exclusiveGroup: projectionTypeGroup
-                onCheckedChanged: {
-                    if (checked)
-                        changeProjectionType(CameraLens.PerspectiveProjection)
+                QLC.RadioButton {
+                    id: perspectiveButton
+                    text: qsTr("Perspective") + editorScene.emptyString
+                    checked: componentData.projectionType === CameraLens.PerspectiveProjection
+                    indicator: Rectangle {
+                        implicitWidth: 20
+                        implicitHeight: 20
+                        x: perspectiveButton.text ?
+                               (perspectiveButton.mirrored ? perspectiveButton.width - width
+                                                             - perspectiveButton.rightPadding :
+                                                             perspectiveButton.leftPadding) :
+                               perspectiveButton.leftPadding + (perspectiveButton.availableWidth
+                                                                - width) / 2
+                        y: perspectiveButton.topPadding + (perspectiveButton.availableHeight
+                                                           - height) / 2
+
+                        radius: width / 2
+                        border.width: 1
+                        border.color: (perspectiveButton.pressed ? "#26282a" : "#353637")
+                        color: perspectiveButton.pressed ? "#e4e4e4" : "#f6f6f6"
+
+                        Rectangle {
+                            x: (parent.width - width) / 2
+                            y: (parent.height - height) / 2
+                            width: 14
+                            height: 14
+                            radius: width / 2
+                            color: perspectiveButton.pressed ? "#26282a" : "#353637"
+                            visible: perspectiveButton.checked
+                        }
+                    }
+                    onCheckedChanged: {
+                        if (checked)
+                            changeProjectionType(CameraLens.PerspectiveProjection)
+                    }
                 }
             }
         }
-    }
 
-    FloatPropertyInputField {
-        id: nearPlaneField
-        label: qsTr("Near Plane") + editorScene.emptyString
-        propertyName: "nearPlane"
-        component: componentData
-        componentType: thisDelegate.componentType
-    }
+        FloatPropertyInputField {
+            id: nearPlaneField
+            label: qsTr("Near Plane") + editorScene.emptyString
+            propertyName: "nearPlane"
+            component: componentData
+            componentType: thisDelegate.componentType
+        }
 
-    FloatPropertyInputField {
-        id: farPlaneField
-        label: qsTr("Far Plane") + editorScene.emptyString
-        propertyName: "farPlane"
-        component: componentData
-        componentType: thisDelegate.componentType
-    }
+        FloatPropertyInputField {
+            id: farPlaneField
+            label: qsTr("Far Plane") + editorScene.emptyString
+            propertyName: "farPlane"
+            component: componentData
+            componentType: thisDelegate.componentType
+        }
 
-    FloatSliderPropertyInputField {
-        id: fieldOfViewField
-        visible: componentData.projectionType === CameraLens.PerspectiveProjection
-        label: qsTr("Field of View") + editorScene.emptyString
-        propertyName: "fieldOfView"
-        component: componentData
-        componentType: thisDelegate.componentType
-        minimum: 0
-        maximum: 180
-        stepSize: 1
-    }
+        FloatSliderPropertyInputField {
+            id: fieldOfViewField
+            visible: componentData.projectionType === CameraLens.PerspectiveProjection
+            label: qsTr("Field of View") + editorScene.emptyString
+            propertyName: "fieldOfView"
+            component: componentData
+            componentType: thisDelegate.componentType
+            minimum: 0
+            maximum: 180
+            stepSize: 1
+        }
 
-    FloatPropertyInputField {
-        id: aspectRatioField
-        visible: componentData.projectionType === CameraLens.PerspectiveProjection
-        label: qsTr("Aspect Ratio") + editorScene.emptyString
-        propertyName: "aspectRatio"
-        component: componentData
-        componentType: thisDelegate.componentType
-    }
+        FloatPropertyInputField {
+            id: aspectRatioField
+            visible: componentData.projectionType === CameraLens.PerspectiveProjection
+            label: qsTr("Aspect Ratio") + editorScene.emptyString
+            propertyName: "aspectRatio"
+            component: componentData
+            componentType: thisDelegate.componentType
+        }
 
-    FloatPropertyInputField {
-        id: leftField
-        label: qsTr("Left") + editorScene.emptyString
-        visible: componentData.projectionType === CameraLens.OrthographicProjection
-        propertyName: "left"
-        component: componentData
-        componentType: thisDelegate.componentType
-    }
+        FloatPropertyInputField {
+            id: leftField
+            label: qsTr("Left") + editorScene.emptyString
+            visible: componentData.projectionType === CameraLens.OrthographicProjection
+            propertyName: "left"
+            component: componentData
+            componentType: thisDelegate.componentType
+        }
 
-    FloatPropertyInputField {
-        id: rightField
-        label: qsTr("Right") + editorScene.emptyString
-        visible: componentData.projectionType === CameraLens.OrthographicProjection
-        propertyName: "right"
-        component: componentData
-        componentType: thisDelegate.componentType
-    }
+        FloatPropertyInputField {
+            id: rightField
+            label: qsTr("Right") + editorScene.emptyString
+            visible: componentData.projectionType === CameraLens.OrthographicProjection
+            propertyName: "right"
+            component: componentData
+            componentType: thisDelegate.componentType
+        }
 
-    FloatPropertyInputField {
-        id: bottomField
-        label: qsTr("Bottom") + editorScene.emptyString
-        visible: componentData.projectionType === CameraLens.OrthographicProjection
-        propertyName: "bottom"
-        component: componentData
-        componentType: thisDelegate.componentType
-    }
+        FloatPropertyInputField {
+            id: bottomField
+            label: qsTr("Bottom") + editorScene.emptyString
+            visible: componentData.projectionType === CameraLens.OrthographicProjection
+            propertyName: "bottom"
+            component: componentData
+            componentType: thisDelegate.componentType
+        }
 
-    FloatPropertyInputField {
-        id: topField
-        label: qsTr("Top") + editorScene.emptyString
-        visible: componentData.projectionType === CameraLens.OrthographicProjection
-        propertyName: "top"
-        component: componentData
-        componentType: thisDelegate.componentType
-    }
+        FloatPropertyInputField {
+            id: topField
+            label: qsTr("Top") + editorScene.emptyString
+            visible: componentData.projectionType === CameraLens.OrthographicProjection
+            propertyName: "top"
+            component: componentData
+            componentType: thisDelegate.componentType
+        }
 
-    Vector3DPropertyInputField {
-        id: positionVectorField
-        label: qsTr("Position") + editorScene.emptyString
-        propertyName: "position"
-        component: componentData
-        componentType: thisDelegate.componentType
-    }
+        Vector3DPropertyInputField {
+            id: positionVectorField
+            label: qsTr("Position") + editorScene.emptyString
+            propertyName: "position"
+            component: componentData
+            componentType: thisDelegate.componentType
+        }
 
-    Vector3DPropertyInputField {
-        id: upVectorField
-        label: qsTr("Up") + editorScene.emptyString
-        propertyName: "upVector"
-        component: componentData
-        componentType: thisDelegate.componentType
-        // TODO: Need to block (0,0,0) value for upvector somehow, it crashes the camera
-    }
+        Vector3DPropertyInputField {
+            id: upVectorField
+            label: qsTr("Up") + editorScene.emptyString
+            propertyName: "upVector"
+            component: componentData
+            componentType: thisDelegate.componentType
+            // TODO: Need to block (0,0,0) value for upvector somehow, it crashes the camera
+        }
 
-    Vector3DPropertyInputField {
-        id: viewCenterVectorField
-        label: qsTr("View Center") + editorScene.emptyString
-        propertyName: "viewCenter"
-        component: componentData
-        componentType: thisDelegate.componentType
+        Vector3DPropertyInputField {
+            id: viewCenterVectorField
+            label: qsTr("View Center") + editorScene.emptyString
+            propertyName: "viewCenter"
+            component: componentData
+            componentType: thisDelegate.componentType
+        }
     }
 }
 

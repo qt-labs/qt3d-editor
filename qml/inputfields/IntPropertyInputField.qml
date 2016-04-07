@@ -25,8 +25,8 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.4
-import QtQuick.Controls 1.3
+import QtQuick 2.5
+import Qt.labs.controls 1.0 as QLC
 import QtQuick.Layouts 1.2
 
 PropertyInputField {
@@ -39,7 +39,7 @@ PropertyInputField {
 
     onComponentValueChanged: {
         if (component !== null)
-            valueInput.text = component[propertyName]
+            valueInput.value = component[propertyName]
     }
 
     IntValidator {
@@ -53,26 +53,28 @@ PropertyInputField {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
 
-        Label {
+        QLC.Label {
             id: intLabel
             text: qsTr("Integer Value") + editorScene.emptyString
             color: labelTextColor
             Layout.alignment: Qt.AlignLeft
         }
 
-        TextField {
+        QLC.SpinBox {
             id: valueInput
             Layout.alignment: Qt.AlignRight
-            validator: intValidator
             implicitWidth: intInput.width * 0.6
-            text: ""
+            implicitHeight: qlcControlHeight
+            to: 100
+            stepSize: 1
+            from: minimum
+            editable: true
+            value: component[propertyName]
             enabled: lockButton.buttonEnabled
 
-            onEditingFinished: {
-                var newValue = component[propertyName]
-                if (text != "")
-                    newValue = text
-                newValue = Math.max(newValue, minimum)
+            onValueChanged: {
+                var newValue = value
+                newValue = Math.max(value, minimum)
                 handleEditingFinished(newValue)
             }
         }

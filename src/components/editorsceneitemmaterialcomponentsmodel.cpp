@@ -41,7 +41,7 @@
 #include <Qt3DRender/QPerVertexColorMaterial>
 #include <Qt3DRender/QPhongAlphaMaterial>
 #include <Qt3DRender/QPhongMaterial>
-#include <Qt3DRender/QAbstractTextureProvider>
+#include <Qt3DRender/QAbstractTexture>
 #include <Qt3DRender/QTextureImage>
 #include <Qt3DCore/QEntity>
 #include <QtCore/QStack>
@@ -97,7 +97,7 @@ QVariant EditorSceneItemMaterialComponentsModel::data(const QModelIndex &index, 
 bool EditorSceneItemMaterialComponentsModel::setData(const QModelIndex &index,
                                                      const QVariant &value, int role)
 {
-    Qt3DRender::QAbstractTextureProvider *texture = Q_NULLPTR;
+    Qt3DRender::QAbstractTexture *texture = Q_NULLPTR;
     switch (role) {
     case MaterialComponentType:
         return false;
@@ -316,7 +316,7 @@ EditorSceneItemMaterialComponentsModel::materialType(Qt3DRender::QMaterial *mate
         return Unknown;
 }
 
-Qt3DRender::QAbstractTextureProvider *EditorSceneItemMaterialComponentsModel::getDiffuseTexture() const
+Qt3DRender::QAbstractTexture *EditorSceneItemMaterialComponentsModel::getDiffuseTexture() const
 {
     switch (m_type) {
     case DiffuseMap: {
@@ -360,7 +360,7 @@ Qt3DRender::QAbstractTextureProvider *EditorSceneItemMaterialComponentsModel::ge
     return Q_NULLPTR;
 }
 
-Qt3DRender::QAbstractTextureProvider *EditorSceneItemMaterialComponentsModel::getSpecularTexture() const
+Qt3DRender::QAbstractTexture *EditorSceneItemMaterialComponentsModel::getSpecularTexture() const
 {
     switch (m_type) {
     case DiffuseSpecularMap: {
@@ -383,7 +383,7 @@ Qt3DRender::QAbstractTextureProvider *EditorSceneItemMaterialComponentsModel::ge
     return Q_NULLPTR;
 }
 
-Qt3DRender::QAbstractTextureProvider *EditorSceneItemMaterialComponentsModel::getNormalTexture() const
+Qt3DRender::QAbstractTexture *EditorSceneItemMaterialComponentsModel::getNormalTexture() const
 {
     switch (m_type) {
     case NormalDiffuseMap: {
@@ -413,7 +413,7 @@ Qt3DRender::QAbstractTextureProvider *EditorSceneItemMaterialComponentsModel::ge
     return Q_NULLPTR;
 }
 
-QUrl EditorSceneItemMaterialComponentsModel::getTextureUrl(Qt3DRender::QAbstractTextureProvider *texture) const
+QUrl EditorSceneItemMaterialComponentsModel::getTextureUrl(Qt3DRender::QAbstractTexture *texture) const
 {
     if (texture) {
         // We are going to assume each provider only has maximum of one texture, and it is of type

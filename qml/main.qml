@@ -63,6 +63,8 @@ ApplicationWindow {
     property bool lightViewVisible: true
     property bool cameraViewVisible: true
 
+    property real qlcControlHeight: 28
+
     property string systemLanguage: editorScene.language
 
     menuBar: MenuBar {

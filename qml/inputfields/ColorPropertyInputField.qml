@@ -25,9 +25,8 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.4
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
+import QtQuick 2.5
+import Qt.labs.controls 1.0 as QLC
 import QtQuick.Layouts 1.2
 import QtQuick.Dialogs 1.2
 
@@ -81,26 +80,24 @@ PropertyInputField {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
 
-        Label {
+        QLC.Label {
             id: colorLabel
             text: qsTr("Color") + editorScene.emptyString
             color: labelTextColor
             Layout.alignment: Qt.AlignLeft
         }
 
-        Button {
+        QLC.Button {
             id: colorButton
             Layout.alignment: Qt.AlignRight
+            implicitWidth: colorInput.width * 0.6
+            implicitHeight: qlcControlHeight
             enabled: lockButton.buttonEnabled
-            style: ButtonStyle {
-                background: Rectangle {
-                    implicitWidth: colorInput.width * 0.6
-                    implicitHeight: colorLabel.height * 1.1
-                    border.width: control.activeFocus ? 2 : 1
-                    border.color: "#888"
-                    radius: 4
-                    color: colorValue
-                }
+            background: Rectangle {
+                border.width: colorButton.activeFocus ? 2 : 1
+                border.color: enabled ? "#353637" : "#bdbebf"
+                color: enabled ? colorValue : Qt.rgba(colorValue.r, colorValue.g, colorValue.b,
+                                                      0.5)
             }
             onClicked: colorDialog.open()
         }

@@ -72,5 +72,6 @@
         <file>qt3dsceneeditor_en.qm</file>
         <file>qt3dsceneeditor_fi.qm</file>
         <file alias="ButtonViewHeader.qml">qml/ButtonViewHeader.qml</file>
+        <file alias="TextFieldBackgroundRectangle.qml">qml/inputfields/TextFieldBackgroundRectangle.qml</file>
     </qresource>
 </RCC>

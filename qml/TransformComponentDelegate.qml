@@ -25,10 +25,9 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.4
+import QtQuick 2.5
 import com.theqtcompany.SceneEditor3D 1.0
-import QtQuick.Controls 1.3
-import QtQuick.Layouts 1.2
+import Qt.labs.controls 1.0 as QLC
 
 ComponentDelegate {
     id: transformDelegate
@@ -53,15 +52,15 @@ ComponentDelegate {
 
         Component.onCompleted: transformCombobox.currentIndex = transformDelegate.currentTransform - 1
 
-        ComboBox {
+        QLC.ComboBox {
             id: transformCombobox
-            activeFocusOnPress: true
             anchors.right: parent.right
             anchors.rightMargin: 4
             anchors.left: parent.left
             anchors.leftMargin: 8
             anchors.bottomMargin: 4
             anchors.verticalCenter: parent.verticalCenter
+            implicitHeight: qlcControlHeight
             property int validIndex: -1
 
             model: ListModel {

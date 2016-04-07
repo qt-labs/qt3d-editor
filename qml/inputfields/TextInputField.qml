@@ -25,8 +25,8 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.4
-import QtQuick.Controls 1.4
+import QtQuick 2.5
+import Qt.labs.controls 1.0 as QLC
 import QtQuick.Layouts 1.2
 
 Item {
@@ -54,17 +54,18 @@ Item {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
 
-        Label {
+        QLC.Label {
             id: textLabel
             text: qsTr("Text") + editorScene.emptyString
             Layout.alignment: Qt.AlignLeft
         }
 
-        TextField {
+        QLC.TextField {
             id: textInputCtrl
             Layout.alignment: Qt.AlignRight
             implicitWidth: textInput.width * 0.6
             text: textInput.displayText
+            background: TextFieldBackgroundRectangle {}
 
             onEditingFinished: {
                 textInput.desiredText = text

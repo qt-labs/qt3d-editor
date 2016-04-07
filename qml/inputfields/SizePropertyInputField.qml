@@ -25,8 +25,8 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.4
-import QtQuick.Controls 1.3
+import QtQuick 2.5
+import Qt.labs.controls 1.0 as QLC
 import QtQuick.Layouts 1.2
 
 PropertyInputField {
@@ -58,7 +58,7 @@ PropertyInputField {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
 
-        Label {
+        QLC.Label {
             id: sizeLabel
             text: qsTr("Size") + editorScene.emptyString
             color: labelTextColor
@@ -72,18 +72,19 @@ PropertyInputField {
                                       - widthLabel.contentWidth
                                       - heightLabel.contentWidth) / 2 - 8 // 12 = column spacing * 2 (x3 because of labels)
 
-            Label {
+            QLC.Label {
                 id: widthLabel
                 text: qsTr("X") + editorScene.emptyString
                 color: labelTextColor
             }
 
-            TextField {
+            QLC.TextField {
                 id: widthInput
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
                 implicitWidth: parent.cellwidth
                 validator: intValidator
                 enabled: lockButton.buttonEnabled
+                background: TextFieldBackgroundRectangle {}
 
                 onEditingFinished: {
                     newValue.height = component[propertyName].height
@@ -96,18 +97,19 @@ PropertyInputField {
                 }
             }
 
-            Label {
+            QLC.Label {
                 id: heightLabel
                 text: qsTr("Y") + editorScene.emptyString
                 color: labelTextColor
             }
 
-            TextField {
+            QLC.TextField {
                 id: heightInput
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
                 validator: intValidator
                 implicitWidth: parent.cellwidth
                 enabled: lockButton.buttonEnabled
+                background: TextFieldBackgroundRectangle {}
 
                 onEditingFinished: {
                     newValue.width = component[propertyName].width

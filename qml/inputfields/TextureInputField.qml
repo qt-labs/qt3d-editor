@@ -25,8 +25,8 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.4
-import QtQuick.Controls 1.4
+import QtQuick 2.5
+import Qt.labs.controls 1.0 as QLC
 import QtQuick.Layouts 1.2
 import QtQuick.Dialogs 1.2
 
@@ -59,13 +59,13 @@ ModelRoleInputField {
             width: fileInput.width - fileInput.height
             Layout.alignment: Qt.AlignLeft
             height: fileInput.height
-            Label {
+            QLC.Label {
                 id: fileLabel
                 text: qsTr("File") + editorScene.emptyString
                 color: labelTextColor
                 Layout.alignment: Qt.AlignLeft
             }
-            Button {
+            QLC.Button {
                 id: fileButton
                 Layout.alignment: Qt.AlignLeft
                 implicitWidth: parent.width

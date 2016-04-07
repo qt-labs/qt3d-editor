@@ -57,7 +57,7 @@
 #include <Qt3DRender/QPerVertexColorMaterial>
 #include <Qt3DRender/QPhongAlphaMaterial>
 #include <Qt3DRender/QPhongMaterial>
-#include <Qt3DRender/QAbstractTextureProvider>
+#include <Qt3DRender/QAbstractTexture>
 #include <Qt3DRender/QTextureImage>
 
 #include <Qt3DRender/QDirectionalLight>
@@ -760,9 +760,9 @@ void EditorSceneParser::outRenderSettings(Qt3DCore::QComponent *component)
 void EditorSceneParser::outTexturedMaterial(EditorSceneParser::EditorItemType type,
                                             Qt3DCore::QComponent *component)
 {
-    Qt3DRender::QAbstractTextureProvider *diffuse = Q_NULLPTR;
-    Qt3DRender::QAbstractTextureProvider *specular = Q_NULLPTR;
-    Qt3DRender::QAbstractTextureProvider *normal = Q_NULLPTR;
+    Qt3DRender::QAbstractTexture *diffuse = Q_NULLPTR;
+    Qt3DRender::QAbstractTexture *specular = Q_NULLPTR;
+    Qt3DRender::QAbstractTexture *normal = Q_NULLPTR;
 
     int textureTypes = getTextureProviders(type, component, diffuse, specular, normal);
 
@@ -784,7 +784,7 @@ void EditorSceneParser::outTexturedMaterial(EditorSceneParser::EditorItemType ty
 }
 
 void EditorSceneParser::outTextureProperty(const QString &propertyName,
-                                           Qt3DRender::QAbstractTextureProvider *textureProvider)
+                                           Qt3DRender::QAbstractTexture *textureProvider)
 {
     // Get the url of the texture
     if (textureProvider->textureImages().size()) {
@@ -1141,10 +1141,10 @@ void EditorSceneParser::parseAndSetTextureProperty(const QString &propertyName,
                                                    QObject *obj,
                                                    EditorSceneParser::EditorItemType type)
 {
-    Qt3DRender::QAbstractTextureProvider *diffuse = Q_NULLPTR;
-    Qt3DRender::QAbstractTextureProvider *specular = Q_NULLPTR;
-    Qt3DRender::QAbstractTextureProvider *normal = Q_NULLPTR;
-    Qt3DRender::QAbstractTextureProvider *targetProvider = Q_NULLPTR;
+    Qt3DRender::QAbstractTexture *diffuse = Q_NULLPTR;
+    Qt3DRender::QAbstractTexture *specular = Q_NULLPTR;
+    Qt3DRender::QAbstractTexture *normal = Q_NULLPTR;
+    Qt3DRender::QAbstractTexture *targetProvider = Q_NULLPTR;
 
     int textureTypes = getTextureProviders(type, obj, diffuse, specular, normal);
 
@@ -1166,9 +1166,9 @@ void EditorSceneParser::parseAndSetTextureProperty(const QString &propertyName,
 
 int EditorSceneParser::getTextureProviders(EditorSceneParser::EditorItemType type,
                                            QObject *component,
-                                           Qt3DRender::QAbstractTextureProvider *&diffuse,
-                                           Qt3DRender::QAbstractTextureProvider *&specular,
-                                           Qt3DRender::QAbstractTextureProvider *&normal)
+                                           Qt3DRender::QAbstractTexture *&diffuse,
+                                           Qt3DRender::QAbstractTexture *&specular,
+                                           Qt3DRender::QAbstractTexture *&normal)
 {
     int textureTypes = 0;
 

@@ -26,8 +26,7 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Layouts 1.1
+import Qt.labs.controls 1.0 as QLC
 
 Rectangle {
     property string headerText
@@ -46,7 +45,7 @@ Rectangle {
         showViewTitle(viewVisible)
     }
 
-    Label {
+    QLC.Label {
         id: viewHeaderText
         anchors.left: parent.left
         anchors.leftMargin: 8

@@ -26,8 +26,6 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
-import QtQuick.Controls 1.3
-import QtQuick.Controls.Styles 1.4
 
 EnableButton {
     property string lockProperty: editorScene.lockPropertySuffix
