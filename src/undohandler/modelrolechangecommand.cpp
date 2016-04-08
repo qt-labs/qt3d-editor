@@ -69,7 +69,7 @@ QAbstractItemModel *ModelRoleChangeCommand::getTargetModel() const
     QModelIndex modelIndex = m_sceneModel->getModelIndexByName(m_entityName);
     EditorSceneItem *sceneItem = m_sceneModel->editorSceneItemFromIndex(modelIndex);
 
-    QAbstractItemModel *model = Q_NULLPTR;
+    QAbstractItemModel *model = nullptr;
 
     // Currently only material models are supported
     if (m_componentType == EditorSceneItemComponentsModel::Material)

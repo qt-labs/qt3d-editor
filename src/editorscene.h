@@ -86,14 +86,14 @@ class EditorScene : public QObject
 private:
     struct CameraFrustumData {
         CameraFrustumData() :
-            frustumEntity(Q_NULLPTR)
-          , viewVectorEntity(Q_NULLPTR)
-          , viewCenterEntity(Q_NULLPTR)
-          , frustumTransform(Q_NULLPTR)
-          , viewVectorTransform(Q_NULLPTR)
-          , viewCenterTransform(Q_NULLPTR)
-          , frustumMesh(Q_NULLPTR)
-          , viewCenterPicker(Q_NULLPTR)
+            frustumEntity(nullptr)
+          , viewVectorEntity(nullptr)
+          , viewCenterEntity(nullptr)
+          , frustumTransform(nullptr)
+          , viewVectorTransform(nullptr)
+          , viewCenterTransform(nullptr)
+          , frustumMesh(nullptr)
+          , viewCenterPicker(nullptr)
         {}
 
         Qt3DCore::QEntity *frustumEntity;
@@ -108,10 +108,10 @@ private:
 
     struct CameraData {
         CameraData() :
-            cameraEntity(Q_NULLPTR)
-          , visibleEntity(Q_NULLPTR)
-          , visibleTransform(Q_NULLPTR)
-          , cameraPicker(Q_NULLPTR)
+            cameraEntity(nullptr)
+          , visibleEntity(nullptr)
+          , visibleTransform(nullptr)
+          , cameraPicker(nullptr)
         {}
         CameraData(Qt3DRender::QCamera *camera,
                    Qt3DCore::QEntity *visible,
@@ -131,14 +131,14 @@ private:
 
     struct LightData {
         LightData() :
-            lightEntity(Q_NULLPTR)
-          , lightComponent(Q_NULLPTR)
-          , lightTransform(Q_NULLPTR)
-          , visibleEntity(Q_NULLPTR)
-          , visibleTransform(Q_NULLPTR)
-          , visibleMaterial(Q_NULLPTR)
-          , visibleMesh(Q_NULLPTR)
-          , visiblePicker(Q_NULLPTR)
+            lightEntity(nullptr)
+          , lightComponent(nullptr)
+          , lightTransform(nullptr)
+          , visibleEntity(nullptr)
+          , visibleTransform(nullptr)
+          , visibleMaterial(nullptr)
+          , visibleMesh(nullptr)
+          , visiblePicker(nullptr)
         {}
         LightData(Qt3DCore::QEntity *entity,
                   Qt3DRender::QLight *component,
@@ -170,9 +170,9 @@ private:
 
     struct DragHandleData {
         DragHandleData() :
-            entity(Q_NULLPTR)
-          , transform(Q_NULLPTR)
-          , picker(Q_NULLPTR)
+            entity(nullptr)
+          , transform(nullptr)
+          , picker(nullptr)
         {}
 
         Qt3DCore::QEntity *entity;
@@ -182,10 +182,10 @@ private:
 
     struct PlaceholderEntityData {
         PlaceholderEntityData() :
-            entity(Q_NULLPTR)
-          , transform(Q_NULLPTR)
-          , material(Q_NULLPTR)
-          , mesh(Q_NULLPTR)
+            entity(nullptr)
+          , transform(nullptr)
+          , material(nullptr)
+          , mesh(nullptr)
           , type(EditorUtils::GenericEntity)
         {}
         Qt3DCore::QEntity *entity;
@@ -214,8 +214,8 @@ public:
     EditorSceneItemModel *sceneModel() const { return m_sceneModel; }
     const QMap<Qt3DCore::QNodeId, EditorSceneItem *> &items() const { return m_sceneItems; }
 
-    void addEntity(Qt3DCore::QEntity *entity, int index = -1, Qt3DCore::QEntity *parent = Q_NULLPTR);
-    void moveEntity(Qt3DCore::QEntity *entity, Qt3DCore::QEntity *newParent = Q_NULLPTR);
+    void addEntity(Qt3DCore::QEntity *entity, int index = -1, Qt3DCore::QEntity *parent = nullptr);
+    void moveEntity(Qt3DCore::QEntity *entity, Qt3DCore::QEntity *newParent = nullptr);
     void removeEntity(Qt3DCore::QEntity *entity);
 
     Q_INVOKABLE void resetScene();

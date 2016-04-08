@@ -71,7 +71,7 @@ void ReplaceComponentCommand::replaceAndSwap()
     if (modelIndex.isValid()) {
         EditorSceneItem *sceneItem = m_sceneModel->editorSceneItemFromIndex(modelIndex);
         sceneItem->componentsModel()->replaceComponent(m_component2, m_component1);
-        m_component2->setParent(static_cast<Qt3DCore::QNode *>(Q_NULLPTR));
+        m_component2->setParent(static_cast<Qt3DCore::QNode *>(nullptr));
         std::swap(m_component1, m_component2);
     }
 }

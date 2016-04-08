@@ -57,7 +57,7 @@ EditorSceneItemLightComponentsModel::~EditorSceneItemLightComponentsModel()
 int EditorSceneItemLightComponentsModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return (m_lightComponent != Q_NULLPTR);
+    return (m_lightComponent != nullptr);
 }
 
 QVariant EditorSceneItemLightComponentsModel::data(const QModelIndex &index, int role) const
@@ -88,7 +88,7 @@ QHash<int, QByteArray> EditorSceneItemLightComponentsModel::roleNames() const
 void EditorSceneItemLightComponentsModel::setLight(LightComponentTypes type)
 {
     if (type != m_type) {
-        Qt3DRender::QLight *light = Q_NULLPTR;
+        Qt3DRender::QLight *light = nullptr;
         switch (type) {
         case Basic:
             light = new Qt3DRender::QLight();
@@ -107,7 +107,7 @@ void EditorSceneItemLightComponentsModel::setLight(LightComponentTypes type)
             break;
         }
 
-        if (light == Q_NULLPTR)
+        if (light == nullptr)
             return;
 
         m_sceneComponentsModel->sceneItem()->scene()->undoHandler()->createReplaceComponentCommand(
@@ -122,14 +122,14 @@ void EditorSceneItemLightComponentsModel::removeLight(int index)
     Q_UNUSED(index)
 
     m_sceneComponentsModel->removeComponent(m_lightComponent);
-    m_lightComponent = Q_NULLPTR;
+    m_lightComponent = nullptr;
 }
 
 void EditorSceneItemLightComponentsModel::beginReplace()
 {
     beginResetModel();
     m_type = Unknown;
-    m_lightComponent = Q_NULLPTR;
+    m_lightComponent = nullptr;
     endResetModel();
 }
 

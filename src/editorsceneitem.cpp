@@ -58,20 +58,20 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
     , m_parentItem(parentItem)
     , m_componentsModel(new EditorSceneItemComponentsModel(this, this))
     , m_scene(scene)
-    , m_selectionBox(Q_NULLPTR)
-    , m_selectionTransform(Q_NULLPTR)
-    , m_entityTransform(Q_NULLPTR)
-    , m_entityMesh(Q_NULLPTR)
+    , m_selectionBox(nullptr)
+    , m_selectionTransform(nullptr)
+    , m_entityTransform(nullptr)
+    , m_entityMesh(nullptr)
     , m_entityMeshType(EditorSceneItemMeshComponentsModel::Unknown)
     , m_entityMeshExtents(1.0f, 1.0f, 1.0f)
     , m_canRotate(true)
 {
-    if (m_parentItem != Q_NULLPTR)
+    if (m_parentItem != nullptr)
         m_parentItem->addChild(this, index);
 
     // Selection box
     Qt3DCore::QComponentVector components = entity->components();
-    Qt3DRender::QGeometryRenderer *entityMesh = Q_NULLPTR;
+    Qt3DRender::QGeometryRenderer *entityMesh = nullptr;
     bool isLight = false;
     Q_FOREACH (Qt3DCore::QComponent *component, components) {
         if (!m_entityTransform)
@@ -130,9 +130,9 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
 
 EditorSceneItem::~EditorSceneItem()
 {
-    setParentItem(Q_NULLPTR);
+    setParentItem(nullptr);
     if (m_selectionBox) {
-        m_selectionBox->setParent(static_cast<Qt3DCore::QNode *>(Q_NULLPTR));
+        m_selectionBox->setParent(static_cast<Qt3DCore::QNode *>(nullptr));
         m_selectionBox->deleteLater();
     }
 }
@@ -162,7 +162,7 @@ int EditorSceneItem::childNumber() const
 
 void EditorSceneItem::addChild(EditorSceneItem *child, int index)
 {
-    if (child == Q_NULLPTR)
+    if (child == nullptr)
         return;
 
     if (!m_children.contains(child)) {
@@ -175,7 +175,7 @@ void EditorSceneItem::addChild(EditorSceneItem *child, int index)
 
 void EditorSceneItem::removeChild(EditorSceneItem *child)
 {
-    if (child == Q_NULLPTR)
+    if (child == nullptr)
         return;
 
     if (m_children.contains(child))
@@ -274,7 +274,7 @@ void EditorSceneItem::recalculateMeshExtents()
 void EditorSceneItem::recalculateCustomMeshExtents(Qt3DRender::QGeometryRenderer *mesh)
 {
     // For custom meshes we need to calculate the extents from geometry
-    Qt3DRender::QGeometry *meshGeometry = Q_NULLPTR;
+    Qt3DRender::QGeometry *meshGeometry = nullptr;
     Qt3DRender::QGeometryFactoryPtr geometryFunctorPtr = mesh->geometryFactory();
 
     if (geometryFunctorPtr.data()) {
@@ -288,7 +288,7 @@ void EditorSceneItem::recalculateCustomMeshExtents(Qt3DRender::QGeometryRenderer
         m_entityMeshExtents = QVector3D(2.0f, 2.0f, 2.0f);
         m_entityMeshCenter =  QVector3D();
 
-        Qt3DRender::QAttribute *vPosAttribute = Q_NULLPTR;
+        Qt3DRender::QAttribute *vPosAttribute = nullptr;
         Q_FOREACH (Qt3DRender::QAttribute *attribute, meshGeometry->attributes()) {
             if (attribute->name() == Qt3DRender::QAttribute::defaultPositionAttributeName()) {
                 vPosAttribute = attribute;

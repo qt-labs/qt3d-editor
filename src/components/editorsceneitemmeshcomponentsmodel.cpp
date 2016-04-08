@@ -60,7 +60,7 @@ EditorSceneItemMeshComponentsModel::~EditorSceneItemMeshComponentsModel()
 int EditorSceneItemMeshComponentsModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return (m_meshComponent != Q_NULLPTR);
+    return (m_meshComponent != nullptr);
 }
 
 QVariant EditorSceneItemMeshComponentsModel::data(const QModelIndex &index, int role) const
@@ -91,7 +91,7 @@ QHash<int, QByteArray> EditorSceneItemMeshComponentsModel::roleNames() const
 void EditorSceneItemMeshComponentsModel::setMesh(MeshComponentTypes type)
 {
     if (type != m_type) {
-        Qt3DRender::QGeometryRenderer *mesh = Q_NULLPTR;
+        Qt3DRender::QGeometryRenderer *mesh = nullptr;
         switch (type) {
         case Custom:
             mesh = EditorUtils::createDefaultCustomMesh();
@@ -116,7 +116,7 @@ void EditorSceneItemMeshComponentsModel::setMesh(MeshComponentTypes type)
             break;
         }
 
-        if (mesh == Q_NULLPTR)
+        if (mesh == nullptr)
             return;
 
         m_sceneComponentsModel->sceneItem()->scene()->undoHandler()->createReplaceComponentCommand(
@@ -131,14 +131,14 @@ void EditorSceneItemMeshComponentsModel::removeMesh(int index)
     Q_UNUSED(index)
 
     m_sceneComponentsModel->removeComponent(m_meshComponent);
-    m_meshComponent = Q_NULLPTR;
+    m_meshComponent = nullptr;
 }
 
 void EditorSceneItemMeshComponentsModel::beginReplace()
 {
     beginResetModel();
     m_type = Unknown;
-    m_meshComponent = Q_NULLPTR;
+    m_meshComponent = nullptr;
     endResetModel();
 }
 

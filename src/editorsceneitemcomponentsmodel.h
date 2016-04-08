@@ -93,7 +93,7 @@ private:
 
     struct ComponentInfo {
         ComponentInfo()
-            : component(Q_NULLPTR), type(Unknown) {}
+            : component(nullptr), type(Unknown) {}
         ComponentInfo(Qt3DCore::QComponent *comp, EditorSceneItemComponentTypes compType)
             : component(comp), type(compType) {}
 

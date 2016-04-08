@@ -62,8 +62,8 @@ public:
     };
 
     EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
-                    EditorSceneItem *parentItem = Q_NULLPTR,
-                    int index = -1, QObject *parent = Q_NULLPTR);
+                    EditorSceneItem *parentItem = nullptr,
+                    int index = -1, QObject *parent = nullptr);
     ~EditorSceneItem();
 
     Q_INVOKABLE Qt3DCore::QEntity *entity();

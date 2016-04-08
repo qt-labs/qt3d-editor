@@ -66,7 +66,7 @@ EditorSceneItemMaterialComponentsModel::~EditorSceneItemMaterialComponentsModel(
 int EditorSceneItemMaterialComponentsModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
-    return (m_materialComponent != Q_NULLPTR);
+    return (m_materialComponent != nullptr);
 }
 
 QVariant EditorSceneItemMaterialComponentsModel::data(const QModelIndex &index, int role) const
@@ -97,7 +97,7 @@ QVariant EditorSceneItemMaterialComponentsModel::data(const QModelIndex &index, 
 bool EditorSceneItemMaterialComponentsModel::setData(const QModelIndex &index,
                                                      const QVariant &value, int role)
 {
-    Qt3DRender::QAbstractTexture *texture = Q_NULLPTR;
+    Qt3DRender::QAbstractTexture *texture = nullptr;
     switch (role) {
     case MaterialComponentType:
         return false;
@@ -177,7 +177,7 @@ void EditorSceneItemMaterialComponentsModel::setMaterial(
         EditorSceneItemMaterialComponentsModel::MaterialComponentTypes type)
 {
     if (type != m_type) {
-        Qt3DRender::QMaterial *material = Q_NULLPTR;
+        Qt3DRender::QMaterial *material = nullptr;
         switch (type) {
         case DiffuseMap: {
             Qt3DRender::QDiffuseMapMaterial *newMat = new Qt3DRender::QDiffuseMapMaterial();
@@ -255,7 +255,7 @@ void EditorSceneItemMaterialComponentsModel::setMaterial(
             break;
         }
 
-        if (material == Q_NULLPTR)
+        if (material == nullptr)
             return;
 
         m_sceneComponentsModel->sceneItem()->scene()->undoHandler()->createReplaceComponentCommand(
@@ -271,14 +271,14 @@ void EditorSceneItemMaterialComponentsModel::removeMaterial(int index)
     Q_UNUSED(index)
 
     m_sceneComponentsModel->removeComponent(m_materialComponent);
-    m_materialComponent = Q_NULLPTR;
+    m_materialComponent = nullptr;
 }
 
 void EditorSceneItemMaterialComponentsModel::beginReplace()
 {
     beginResetModel();
     m_type = Unknown;
-    m_materialComponent = Q_NULLPTR;
+    m_materialComponent = nullptr;
     endResetModel();
 }
 
@@ -357,7 +357,7 @@ Qt3DRender::QAbstractTexture *EditorSceneItemMaterialComponentsModel::getDiffuse
     default:
         break;
     }
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 Qt3DRender::QAbstractTexture *EditorSceneItemMaterialComponentsModel::getSpecularTexture() const
@@ -380,7 +380,7 @@ Qt3DRender::QAbstractTexture *EditorSceneItemMaterialComponentsModel::getSpecula
     default:
         break;
     }
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 Qt3DRender::QAbstractTexture *EditorSceneItemMaterialComponentsModel::getNormalTexture() const
@@ -410,7 +410,7 @@ Qt3DRender::QAbstractTexture *EditorSceneItemMaterialComponentsModel::getNormalT
     default:
         break;
     }
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 QUrl EditorSceneItemMaterialComponentsModel::getTextureUrl(Qt3DRender::QAbstractTexture *texture) const

@@ -86,31 +86,31 @@ static const float freeViewCameraFov = 45.0f;
 
 EditorScene::EditorScene(QObject *parent)
     : QObject(parent)
-    , m_rootEntity(Q_NULLPTR)
-    , m_componentCache(Q_NULLPTR)
-    , m_rootItem(Q_NULLPTR)
+    , m_rootEntity(nullptr)
+    , m_componentCache(nullptr)
+    , m_rootItem(nullptr)
     , m_sceneModel(new EditorSceneItemModel(this))
     , m_sceneParser(new EditorSceneParser(this))
-    , m_renderSettings(Q_NULLPTR)
-    , m_renderer(Q_NULLPTR)
-    , m_sceneEntity(Q_NULLPTR)
-    , m_sceneEntityItem(Q_NULLPTR)
-    , m_selectedEntity(Q_NULLPTR)
-    , m_selectedEntityTransform(Q_NULLPTR)
+    , m_renderSettings(nullptr)
+    , m_renderer(nullptr)
+    , m_sceneEntity(nullptr)
+    , m_sceneEntityItem(nullptr)
+    , m_selectedEntity(nullptr)
+    , m_selectedEntityTransform(nullptr)
     , m_activeSceneCameraIndex(-1)
     , m_freeView(false)
-    , m_freeViewCameraEntity(Q_NULLPTR)
-    , m_viewport(Q_NULLPTR)
+    , m_freeViewCameraEntity(nullptr)
+    , m_viewport(nullptr)
     , m_undoHandler(new UndoHandler(this))
-    , m_helperPlane(Q_NULLPTR)
-    , m_helperPlaneTransform(Q_NULLPTR)
+    , m_helperPlane(nullptr)
+    , m_helperPlaneTransform(nullptr)
     , m_qtTranslator(new QTranslator(this))
     , m_appTranslator(new QTranslator(this))
     , m_dragMode(DragNone)
-    , m_dragEntity(Q_NULLPTR)
+    , m_dragEntity(nullptr)
     , m_ignoringInitialDrag(true)
     , m_viewCenterLocked(false)
-    , m_pickedEntity(Q_NULLPTR)
+    , m_pickedEntity(nullptr)
     , m_pickedDistance(-1.0f)
     , m_gridSize(3)
     , m_duplicateCount(0)
@@ -138,21 +138,21 @@ EditorScene::~EditorScene()
 
 void EditorScene::addEntity(Qt3DCore::QEntity *entity, int index, Qt3DCore::QEntity *parent)
 {
-    if (entity == Q_NULLPTR)
+    if (entity == nullptr)
         return;
 
-    if (parent == Q_NULLPTR) {
+    if (parent == nullptr) {
         //make sure that entity has a parent, otherwise make its parent the root entity
-        if (entity->parentEntity() == Q_NULLPTR)
+        if (entity->parentEntity() == nullptr)
             entity->setParent(m_rootEntity);
     } else if (entity->parentEntity() != parent) {
         entity->setParent(parent);
     }
 
-    if (m_sceneItems.value(entity->id(), Q_NULLPTR) == Q_NULLPTR) {
+    if (m_sceneItems.value(entity->id(), nullptr) == nullptr) {
         EditorSceneItem *item = new EditorSceneItem(this, entity,
                                                     m_sceneItems.value(entity->parentEntity()->id(),
-                                                                       Q_NULLPTR), index, this);
+                                                                       nullptr), index, this);
 
         if (entity == m_sceneEntity)
             m_sceneEntityItem = item;
@@ -181,12 +181,12 @@ void EditorScene::addEntity(Qt3DCore::QEntity *entity, int index, Qt3DCore::QEnt
 
 void EditorScene::moveEntity(Qt3DCore::QEntity *entity, Qt3DCore::QEntity *newParent)
 {
-    if (entity == Q_NULLPTR || entity == m_rootEntity)
+    if (entity == nullptr || entity == m_rootEntity)
         return;
 
     Qt3DCore::QEntity *targetParent = newParent;
 
-    if (newParent == Q_NULLPTR)
+    if (newParent == nullptr)
         targetParent = m_rootEntity;
 
     entity->setParent(targetParent);
@@ -195,12 +195,12 @@ void EditorScene::moveEntity(Qt3DCore::QEntity *entity, Qt3DCore::QEntity *newPa
 // Removed entity is deleted
 void EditorScene::removeEntity(Qt3DCore::QEntity *entity)
 {
-    if (entity == Q_NULLPTR || entity == m_rootEntity)
+    if (entity == nullptr || entity == m_rootEntity)
         return;
 
     if (entity == m_sceneEntity) {
-        m_sceneEntity = Q_NULLPTR;
-        m_sceneEntityItem = Q_NULLPTR;
+        m_sceneEntity = nullptr;
+        m_sceneEntityItem = nullptr;
     }
 
     disconnect(entity, 0, this, 0);
@@ -226,9 +226,9 @@ void EditorScene::removeEntity(Qt3DCore::QEntity *entity)
 
 void EditorScene::resetScene()
 {
-    m_selectedEntity = Q_NULLPTR;
+    m_selectedEntity = nullptr;
     // Clear the existing scene
-    setFrameGraphCamera(Q_NULLPTR);
+    setFrameGraphCamera(nullptr);
     m_undoHandler->clear();
     clearSceneCamerasAndLights();
     removeEntity(m_sceneEntity);
@@ -259,7 +259,7 @@ void EditorScene::resetScene()
 
 bool EditorScene::saveScene(const QUrl &fileUrl, bool autosave)
 {
-    Qt3DCore::QEntity *camera = Q_NULLPTR;
+    Qt3DCore::QEntity *camera = nullptr;
     if (m_activeSceneCameraIndex >= 0 && m_activeSceneCameraIndex < m_sceneCameras.size())
         camera = m_sceneCameras.at(m_activeSceneCameraIndex).cameraEntity;
     bool retval = m_sceneParser->exportQmlScene(m_sceneEntity, fileUrl, camera, autosave);
@@ -275,13 +275,13 @@ bool EditorScene::saveScene(const QUrl &fileUrl, bool autosave)
 
 bool EditorScene::loadScene(const QUrl &fileUrl)
 {
-    Qt3DCore::QEntity *camera = Q_NULLPTR;
+    Qt3DCore::QEntity *camera = nullptr;
     Qt3DCore::QEntity *newSceneEntity = m_sceneParser->importQmlScene(fileUrl, camera);
 
     if (newSceneEntity) {
-        m_selectedEntity = Q_NULLPTR;
+        m_selectedEntity = nullptr;
         if (!m_freeView)
-            setFrameGraphCamera(Q_NULLPTR);
+            setFrameGraphCamera(nullptr);
         m_undoHandler->clear();
         clearSceneCamerasAndLights();
         removeEntity(m_sceneEntity);
@@ -577,7 +577,7 @@ void EditorScene::enableVisibleCamera(EditorScene::CameraData &cameraData,
             }
         } else {
             delete m_activeSceneCameraFrustumData.viewCenterPicker;
-            m_activeSceneCameraFrustumData.viewCenterPicker = Q_NULLPTR;
+            m_activeSceneCameraFrustumData.viewCenterPicker = nullptr;
         }
     }
 
@@ -587,7 +587,7 @@ void EditorScene::enableVisibleCamera(EditorScene::CameraData &cameraData,
             cameraData.cameraPicker = createObjectPickerForEntity(cameraData.visibleEntity);
     } else {
         delete cameraData.cameraPicker;
-        cameraData.cameraPicker = Q_NULLPTR;
+        cameraData.cameraPicker = nullptr;
     }
 }
 
@@ -608,7 +608,7 @@ void EditorScene::enableVisibleLight(EditorScene::LightData &lightData, bool ena
             lightData.visiblePicker = createObjectPickerForEntity(lightData.visibleEntity);
     } else {
         delete lightData.visiblePicker;
-        lightData.visiblePicker = Q_NULLPTR;
+        lightData.visiblePicker = nullptr;
     }
 }
 
@@ -1050,7 +1050,7 @@ void EditorScene::handlePropertyLocking(EditorSceneItem *item, const QString &lo
                                         bool locked)
 {
     // Disable/enable relevant drag handles when properties are locked/unlocked
-    EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(), Q_NULLPTR);
+    EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(), nullptr);
     if (item && item == selectedItem) {
         if (item->itemType() == EditorSceneItem::Camera) {
             QString upVectorLock = QStringLiteral("upVector") + lockPropertySuffix();
@@ -1177,14 +1177,14 @@ void EditorScene::handleEnabledChanged(Qt3DCore::QEntity *entity, bool enabled)
 {
     bool freeViewEnabled = enabled && m_freeView;
     Qt3DRender::QCamera *camera = qobject_cast<Qt3DRender::QCamera *>(entity);
-    if (camera != Q_NULLPTR) {
+    if (camera != nullptr) {
         int cameraIndex = cameraIndexForEntity(camera);
         if (cameraIndex >= 0) {
             enableVisibleCamera(m_sceneCameras[cameraIndex], freeViewEnabled,
                                 cameraIndex == m_activeSceneCameraIndex);
         }
 
-    } else if (EditorUtils::entityLight(entity) != Q_NULLPTR) {
+    } else if (EditorUtils::entityLight(entity) != nullptr) {
         LightData *lightData = m_sceneLights.value(entity->id());
         if (lightData)
             enableVisibleLight(*lightData, freeViewEnabled);
@@ -1385,7 +1385,7 @@ void EditorScene::createRootEntity()
     m_componentCache->addComponent(m_selectionBoxMesh);
     m_componentCache->addComponent(m_selectionBoxMaterial);
 
-    m_rootItem = new EditorSceneItem(this, m_rootEntity, Q_NULLPTR, -1, this);
+    m_rootItem = new EditorSceneItem(this, m_rootEntity, nullptr, -1, this);
 
     m_sceneItems.insert(m_rootEntity->id(), m_rootItem);
 
@@ -1545,16 +1545,16 @@ Qt3DRender::QCamera *EditorScene::frameGraphCamera() const
     if (m_renderer)
         return qobject_cast<Qt3DRender::QCamera *>(m_renderer->camera());
     else
-        return Q_NULLPTR;
+        return nullptr;
 }
 
 void EditorScene::setSelection(Qt3DCore::QEntity *entity)
 {
-    EditorSceneItem *item = m_sceneItems.value(entity->id(), Q_NULLPTR);
+    EditorSceneItem *item = m_sceneItems.value(entity->id(), nullptr);
     if (item) {
         if (entity != m_selectedEntity) {
             if (m_selectedEntity)
-                connectDragHandles(m_sceneItems.value(m_selectedEntity->id(), Q_NULLPTR), false);
+                connectDragHandles(m_sceneItems.value(m_selectedEntity->id(), nullptr), false);
 
             m_selectedEntity = entity;
 
@@ -1727,14 +1727,14 @@ void EditorScene::endSelectionHandling()
                 m_dragInitialTranslationValue = m_dragHandles.transform->translation();
             }
         }
-        m_pickedEntity = Q_NULLPTR;
+        m_pickedEntity = nullptr;
         m_pickedDistance = -1.0f;
     }
 }
 
 void EditorScene::handleSelectionTransformChange()
 {
-    EditorSceneItem *item = m_sceneItems.value(m_selectedEntity->id(), Q_NULLPTR);
+    EditorSceneItem *item = m_sceneItems.value(m_selectedEntity->id(), nullptr);
     if (item) {
         QVector3D dragHandleScaleAdjustment(1.0f, 1.0f, 1.0f);
         QVector3D dragHandleRotationAdjustment(1.0f, -1.0f, -1.0f);
@@ -1851,7 +1851,7 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
         if (pressedEntity->isEnabled()) {
             if (pressedEntity == m_dragHandleScale.entity) {
                 EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(),
-                                                                   Q_NULLPTR);
+                                                                   nullptr);
                 if (selectedItem) {
                     m_dragMode = DragScale;
                     m_dragEntity = m_selectedEntity;
@@ -1864,7 +1864,7 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
                 }
             } else if (pressedEntity == m_dragHandleRotate.entity) {
                 EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(),
-                                                                   Q_NULLPTR);
+                                                                   nullptr);
                 if (selectedItem) {
                     Qt3DRender::QCamera *cameraEntity =
                             qobject_cast<Qt3DRender::QCamera *>(m_selectedEntity);
@@ -1890,7 +1890,7 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
                 }
             } else if (pressedEntity == m_dragHandleTranslate.entity) {
                 EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(),
-                                                                   Q_NULLPTR);
+                                                                   nullptr);
                 if (selectedItem) {
                     m_cameraViewCenterSelected = false;
                     m_previousMousePosition = QCursor::pos();
@@ -1907,7 +1907,7 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
                 // Ignore presses that are farther away than the closest one
                 m_pickedDistance = event->distance();
                 bool select = false;
-                EditorSceneItem *item = m_sceneItems.value(pressedEntity->id(), Q_NULLPTR);
+                EditorSceneItem *item = m_sceneItems.value(pressedEntity->id(), nullptr);
                 if (item) {
                     select = true;
                 } else if (m_freeView) {
@@ -2040,11 +2040,11 @@ void EditorScene::updateDragHandlePicker(EditorScene::DragHandleData &handleData
             handleData.picker = createObjectPickerForEntity(handleData.entity);
         } else if (!handleData.entity->isEnabled()) {
             delete handleData.picker;
-            handleData.picker = Q_NULLPTR;
+            handleData.picker = nullptr;
         }
     } else {
         delete handleData.picker;
-        handleData.picker = Q_NULLPTR;
+        handleData.picker = nullptr;
     }
 }
 
@@ -2075,9 +2075,9 @@ bool EditorScene::isPropertyLocked(const QString &propertyName, QObject *obj)
 void EditorScene::cancelDrag()
 {
     m_dragMode = DragNone;
-    m_pickedEntity = Q_NULLPTR;
+    m_pickedEntity = nullptr;
     m_pickedDistance = -1.0f;
-    m_dragEntity = Q_NULLPTR;
+    m_dragEntity = nullptr;
 }
 
 void EditorScene::handleCameraAdded(Qt3DRender::QCamera *camera)
@@ -2100,7 +2100,7 @@ void EditorScene::handleCameraAdded(Qt3DRender::QCamera *camera)
     visibleEntity->addComponent(cameraMaterial);
     visibleEntity->addComponent(visibleTransform);
 
-    CameraData newData(camera, visibleEntity, visibleTransform, Q_NULLPTR);
+    CameraData newData(camera, visibleEntity, visibleTransform, nullptr);
     enableVisibleCamera(newData, m_freeView, false);
     m_sceneCameras.append(newData);
 
@@ -2157,7 +2157,7 @@ void EditorScene::handleLightAdded(Qt3DCore::QEntity *lightEntity)
     }
 
     LightData *newData = new LightData(lightEntity, lightComponent, lightTransform, visibleEntity,
-                                       visibleTransform, visibleMaterial, Q_NULLPTR, Q_NULLPTR);
+                                       visibleTransform, visibleMaterial, nullptr, nullptr);
     enableVisibleLight(*newData, m_freeView);
     m_sceneLights.insert(lightEntity->id(), newData);
 
@@ -2203,7 +2203,7 @@ void EditorScene::handleLightTransformChange()
     Qt3DCore::QComponent *component = qobject_cast<Qt3DCore::QComponent *>(sender());
     if (component) {
         QVector<Qt3DCore::QEntity *> entities = component->entities();
-        Qt3DCore::QEntity *entity = entities.size() ? entities.at(0) : Q_NULLPTR;
+        Qt3DCore::QEntity *entity = entities.size() ? entities.at(0) : nullptr;
         updateLightVisibleTransform(entity);
     }
 }

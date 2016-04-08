@@ -51,7 +51,7 @@ int EditorSceneItemTransformComponentsModel::rowCount(const QModelIndex &parent)
 {
     Q_UNUSED(parent)
     // TODO: return value can be != 1 only if type is (Composed)Matrix
-    return (m_transformComponent != Q_NULLPTR);//m_transformComponent->transforms().count();
+    return (m_transformComponent != nullptr);//m_transformComponent->transforms().count();
 }
 
 QVariant EditorSceneItemTransformComponentsModel::data(const QModelIndex &index, int role) const
@@ -63,9 +63,9 @@ QVariant EditorSceneItemTransformComponentsModel::data(const QModelIndex &index,
 
 //    //    Translate
 //    {
-//        Qt3DCore::QTranslateTransform *translateTransform = Q_NULLPTR;
+//        Qt3DCore::QTranslateTransform *translateTransform = nullptr;
 //        translateTransform = qobject_cast<Qt3DCore::QTranslateTransform *>(transform);
-//        if (translateTransform != Q_NULLPTR) {
+//        if (translateTransform != nullptr) {
 //            type = Translate;
 //            transformComponentData = QVariant::fromValue(translateTransform);
 //            goto results;
@@ -73,9 +73,9 @@ QVariant EditorSceneItemTransformComponentsModel::data(const QModelIndex &index,
 //    }
 //    //    Rotate
 //    {
-//        Qt3DCore::QRotateTransform *rotateTransform = Q_NULLPTR;
+//        Qt3DCore::QRotateTransform *rotateTransform = nullptr;
 //        rotateTransform = qobject_cast<Qt3DCore::QRotateTransform *>(transform);
-//        if (rotateTransform != Q_NULLPTR) {
+//        if (rotateTransform != nullptr) {
 //            type = Rotate;
 //            transformComponentData = QVariant::fromValue(rotateTransform);
 //            goto results;
@@ -83,9 +83,9 @@ QVariant EditorSceneItemTransformComponentsModel::data(const QModelIndex &index,
 //    }
 //    //    Scale
 //    {
-//        Qt3DCore::QScaleTransform *scaleTransform = Q_NULLPTR;
+//        Qt3DCore::QScaleTransform *scaleTransform = nullptr;
 //        scaleTransform = qobject_cast<Qt3DCore::QScaleTransform *>(transform);
-//        if (scaleTransform != Q_NULLPTR) {
+//        if (scaleTransform != nullptr) {
 //            type = Scale;
 //            transformComponentData = QVariant::fromValue(scaleTransform);
 //            goto results;
@@ -93,9 +93,9 @@ QVariant EditorSceneItemTransformComponentsModel::data(const QModelIndex &index,
 //    }
 //    //    LookAt
 //    {
-//        Qt3DCore::QLookAtTransform *lookAtTransform = Q_NULLPTR;
+//        Qt3DCore::QLookAtTransform *lookAtTransform = nullptr;
 //        lookAtTransform = qobject_cast<Qt3DCore::QLookAtTransform *>(transform);
-//        if (lookAtTransform != Q_NULLPTR) {
+//        if (lookAtTransform != nullptr) {
 //            type = LookAt;
 //            transformComponentData = QVariant::fromValue(lookAtTransform);
 //            goto results;
@@ -103,9 +103,9 @@ QVariant EditorSceneItemTransformComponentsModel::data(const QModelIndex &index,
 //    }
 //    //    Matrix
 //    {
-//        Qt3DCore::QMatrixTransform *matrixTransform = Q_NULLPTR;
+//        Qt3DCore::QMatrixTransform *matrixTransform = nullptr;
 //        matrixTransform = qobject_cast<Qt3DCore::QMatrixTransform *>(transform);
-//        if (matrixTransform != Q_NULLPTR) {
+//        if (matrixTransform != nullptr) {
 //            type = Matrix;
 //            transformComponentData = QVariant::fromValue(matrixTransform);
 //            goto results;
@@ -147,7 +147,7 @@ void EditorSceneItemTransformComponentsModel::appendNewTransform(
 
 //    int transformCount = m_transformComponent->transforms().count();
 //    beginInsertRows(QModelIndex(), transformCount, transformCount);
-//    Qt3DCore::QAbstractTransform *transform = Q_NULLPTR;
+//    Qt3DCore::QAbstractTransform *transform = nullptr;
 //    switch (type) {
 //    case Translate:
 //        transform = new Qt3DCore::QTranslateTransform();
@@ -169,7 +169,7 @@ void EditorSceneItemTransformComponentsModel::appendNewTransform(
 //        break;
 //    }
 
-//    if (transform == Q_NULLPTR)
+//    if (transform == nullptr)
 //        return;
 
 //    m_transformComponent->addTransform(transform);
@@ -187,7 +187,7 @@ void EditorSceneItemTransformComponentsModel::removeTransform(int index)
     // TODO: Different handling if type is (Composed)Matrix
 
     m_sceneComponentsModel->removeComponent(m_transformComponent);
-    m_transformComponent = Q_NULLPTR;
+    m_transformComponent = nullptr;
 }
 
 void EditorSceneItemTransformComponentsModel::moveTransform(int from, int to)

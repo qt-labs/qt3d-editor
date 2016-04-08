@@ -100,7 +100,7 @@ public:
     static bool isObjectInternal(QObject *obj);
     static void copyCameraProperties(Qt3DRender::QCamera *target, Qt3DRender::QCamera *source);
     static Qt3DCore::QEntity *duplicateEntity(Qt3DCore::QEntity *entity,
-                                              Qt3DCore::QEntity *newParent = Q_NULLPTR,
+                                              Qt3DCore::QEntity *newParent = nullptr,
                                               const QVector3D &duplicateOffset = QVector3D());
     static Qt3DCore::QComponent *duplicateComponent(Qt3DCore::QComponent *component);
     static void nameDuplicate(Qt3DCore::QEntity *duplicate, Qt3DCore::QEntity *original,

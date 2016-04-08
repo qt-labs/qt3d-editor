@@ -43,7 +43,7 @@
 EditorCameraController::EditorCameraController(EditorViewportItem *viewport,
                                                Qt3DCore::QNode *parent)
     : Qt3DCore::QEntity(parent)
-    , m_camera(Q_NULLPTR)
+    , m_camera(nullptr)
     , m_leftMouseButtonAction(new Qt3DInput::QAction())
     , m_rightMouseButtonAction(new Qt3DInput::QAction())
     , m_middleMouseButtonAction(new Qt3DInput::QAction())
@@ -136,7 +136,7 @@ void EditorCameraController::adjustCamera(const QVector3D &translateVec)
 
 void EditorCameraController::handleTriggered(float dt)
 {
-    if (m_camera != Q_NULLPTR) {
+    if (m_camera != nullptr) {
         if (m_rightMouseButtonAction->isActive()) {
             // Ignore first press so you don't get the initial jolt,
             // as the mouse delta is usually maximum into some direction.

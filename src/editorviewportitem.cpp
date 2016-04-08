@@ -54,7 +54,7 @@ class ContextSaver
 public:
     explicit ContextSaver(QOpenGLContext *context = QOpenGLContext::currentContext())
         : m_context(context)
-        , m_surface(context ? static_cast<QOffscreenSurface *>(context->surface()) : Q_NULLPTR)
+        , m_surface(context ? static_cast<QOffscreenSurface *>(context->surface()) : nullptr)
     {
     }
 
@@ -96,7 +96,7 @@ public:
 
     void render() Q_DECL_OVERRIDE
     {
-        if (m_item->scene() != Q_NULLPTR && m_aspectEngine->rootEntity()
+        if (m_item->scene() != nullptr && m_aspectEngine->rootEntity()
                 != m_item->scene()->rootEntity()) {
             scheduleRootEntityChange();
         }
@@ -138,12 +138,12 @@ public:
 
 EditorViewportItem::EditorViewportItem(QQuickItem *parent)
     : QQuickFramebufferObject(parent)
-    , m_scene(Q_NULLPTR)
+    , m_scene(nullptr)
     , m_aspectEngine(new Qt3DCore::QAspectEngine(this))
     , m_renderAspect(new Qt3DRender::QRenderAspect(Qt3DRender::QRenderAspect::Synchronous))
     , m_inputAspect(new Qt3DInput::QInputAspect)
     , m_logicAspect(new Qt3DLogic::QLogicAspect)
-    , m_cameraController(Q_NULLPTR)
+    , m_cameraController(nullptr)
     , m_inputEnabled(true)
 {
     setFlag(ItemHasContents, true);
@@ -181,7 +181,7 @@ void EditorViewportItem::setInputEnabled(bool enable)
             if (m_inputEnabled)
                 m_cameraController->setCamera(m_scene->m_freeViewCameraEntity);
             else
-                m_cameraController->setCamera(Q_NULLPTR);
+                m_cameraController->setCamera(nullptr);
         }
         emit inputEnabledChanged(m_inputEnabled);
     }
@@ -200,7 +200,7 @@ void EditorViewportItem::setScene(EditorScene *scene)
 
 void EditorViewportItem::applyRootEntityChange()
 {
-    if (m_scene != Q_NULLPTR && m_scene->rootEntity() != m_aspectEngine->rootEntity()) {
+    if (m_scene != nullptr && m_scene->rootEntity() != m_aspectEngine->rootEntity()) {
         m_aspectEngine->setRootEntity(Qt3DCore::QEntityPtr(m_scene->rootEntity()));
 
         m_cameraController = new EditorCameraController(this, m_scene->rootEntity());

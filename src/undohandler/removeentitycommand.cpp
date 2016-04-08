@@ -41,7 +41,7 @@ RemoveEntityCommand::RemoveEntityCommand(EditorSceneItemModel *sceneModel,
     m_sceneModel(sceneModel),
     m_entityName(entityName),
     m_row(0),
-    m_removedEntity(Q_NULLPTR)
+    m_removedEntity(nullptr)
 {
 }
 
@@ -56,7 +56,7 @@ void RemoveEntityCommand::undo()
         // Insert the entity back
         QModelIndex parentIndex = m_sceneModel->getModelIndexByName(m_parentEntityName);
         m_sceneModel->insertExistingEntity(m_removedEntity, m_row, parentIndex);
-        m_removedEntity = Q_NULLPTR;
+        m_removedEntity = nullptr;
     }
 }
 
@@ -67,6 +67,6 @@ void RemoveEntityCommand::redo()
     m_parentEntityName = m_sceneModel->entityName(parentIndex);
     m_row = index.row();
     EditorSceneItem *item = m_sceneModel->editorSceneItemFromIndex(index);
-    m_removedEntity = EditorUtils::duplicateEntity(item->entity(), Q_NULLPTR);
+    m_removedEntity = EditorUtils::duplicateEntity(item->entity(), nullptr);
     m_sceneModel->removeEntity(index);
 }

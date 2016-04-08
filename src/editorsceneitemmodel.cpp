@@ -60,10 +60,10 @@ QModelIndex EditorSceneItemModel::index(int row, int column, const QModelIndex &
         return QModelIndex();
 
     EditorSceneItem *parentItem = editorSceneItemFromIndex(parent);
-    EditorSceneItem *childItem = Q_NULLPTR;
+    EditorSceneItem *childItem = nullptr;
     if (parentItem->childItems().count() > row)
         childItem = parentItem->childItems().at(row);
-    if (childItem != Q_NULLPTR)
+    if (childItem != nullptr)
         return createIndex(row, column, childItem);
     else
         return QModelIndex();
@@ -213,7 +213,7 @@ Qt3DCore::QEntity *EditorSceneItemModel::insertEntity(EditorUtils::InsertableEnt
     EditorSceneItem *parentItem = editorSceneItemFromIndex(parentIndex);
     beginInsertRows(parentIndex, rows, rows);
 
-    Qt3DCore::QEntity *newEntity = Q_NULLPTR;
+    Qt3DCore::QEntity *newEntity = nullptr;
     if (type == EditorUtils::CameraEntity) {
         Qt3DRender::QCamera *newCamera = new Qt3DRender::QCamera(parentItem->entity());
         newCamera->setObjectName(generateValidName(tr("New Camera"), newEntity));
@@ -282,7 +282,7 @@ Qt3DCore::QEntity *EditorSceneItemModel::insertEntity(EditorUtils::InsertableEnt
     int childCount = parentItem->childItems().count();
     if (childCount) {
         EditorSceneItem *childItem = parentItem->childItems().at(childCount - 1);
-        if (childItem != Q_NULLPTR)
+        if (childItem != nullptr)
             m_lastInsertedIndex = createIndex(childCount - 1, 0, childItem);
     }
 

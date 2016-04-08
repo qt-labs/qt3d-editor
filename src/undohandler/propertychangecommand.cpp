@@ -115,7 +115,7 @@ QObject *PropertyChangeCommand::getTargetObject()
 {
     QModelIndex modelIndex = m_sceneModel->getModelIndexByName(m_entityName);
     EditorSceneItem *sceneItem = m_sceneModel->editorSceneItemFromIndex(modelIndex);
-    QObject *object = Q_NULLPTR;
+    QObject *object = nullptr;
     if (m_componentType == EditorSceneItemComponentsModel::GeneralEntity
             || m_componentType == EditorSceneItemComponentsModel::CameraEntity) {
         object = sceneItem->entity();

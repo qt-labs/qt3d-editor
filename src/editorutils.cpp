@@ -98,7 +98,7 @@ Qt3DCore::QEntity *EditorUtils::duplicateEntity(Qt3DCore::QEntity *entity,
     // Copies the entity, including making copies of all components and child entities
     // Both copies will retain their entity names.
 
-    Qt3DCore::QEntity *newEntity = Q_NULLPTR;
+    Qt3DCore::QEntity *newEntity = nullptr;
 
     // Check if it's a camera
     Qt3DRender::QCamera *oldCam = qobject_cast<Qt3DRender::QCamera *>(entity);
@@ -665,7 +665,7 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createCameraViewCenterMesh(float siz
 
 Qt3DRender::QGeometryRenderer *EditorUtils::createLightMesh(EditorUtils::ComponentTypes type)
 {
-    Qt3DRender::QGeometryRenderer *mesh = Q_NULLPTR;
+    Qt3DRender::QGeometryRenderer *mesh = nullptr;
 
     // TODO: Proper meshes
     switch (type) {
@@ -708,7 +708,7 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createLightMesh(EditorUtils::Compone
 
 Qt3DRender::QGeometryRenderer *EditorUtils::createMeshForInsertableType(InsertableEntities type)
 {
-    Qt3DRender::QGeometryRenderer *mesh = Q_NULLPTR;
+    Qt3DRender::QGeometryRenderer *mesh = nullptr;
     switch (type) {
     case CuboidEntity: {
         mesh = new Qt3DRender::QCuboidMesh();
@@ -779,7 +779,7 @@ void EditorUtils::updateCameraFrustumMesh(Qt3DRender::QGeometryRenderer *mesh,
 
     Qt3DRender::QGeometry *geometry = mesh->geometry();
 
-    Qt3DRender::QBuffer *dataBuffer = Q_NULLPTR;
+    Qt3DRender::QBuffer *dataBuffer = nullptr;
     Q_FOREACH (Qt3DRender::QAttribute *attribute, geometry->attributes()) {
         if (attribute->name() == Qt3DRender::QAttribute::defaultPositionAttributeName()) {
             dataBuffer = attribute->buffer();
@@ -821,7 +821,7 @@ Qt3DCore::QTransform *EditorUtils::entityTransform(Qt3DCore::QEntity *entity)
             return transform;
     }
 
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 Qt3DRender::QLight *EditorUtils::entityLight(Qt3DCore::QEntity *entity)
@@ -833,7 +833,7 @@ Qt3DRender::QLight *EditorUtils::entityLight(Qt3DCore::QEntity *entity)
             return light;
     }
 
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 Qt3DRender::QObjectPicker *EditorUtils::entityPicker(Qt3DCore::QEntity *entity)
@@ -846,7 +846,7 @@ Qt3DRender::QObjectPicker *EditorUtils::entityPicker(Qt3DCore::QEntity *entity)
             return picker;
     }
 
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 // Returns the intersection point of a plane and a ray.

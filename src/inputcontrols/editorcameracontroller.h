@@ -62,7 +62,7 @@ class EditorCameraController : public Qt3DCore::QEntity
 
 public:
     explicit EditorCameraController(EditorViewportItem *viewport,
-                                    Qt3DCore::QNode *parent = Q_NULLPTR);
+                                    Qt3DCore::QNode *parent = nullptr);
     ~EditorCameraController();
 
     Qt3DRender::QCamera *camera() const;

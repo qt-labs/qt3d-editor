@@ -247,7 +247,7 @@ bool EditorSceneParser::exportQmlScene(Qt3DCore::QEntity *sceneEntity, const QUr
     m_stream << indent() << componentsStart << outComponent(renderSettings)
              << componentsEnd << endl << endl;
 
-    forwardRenderer->setCamera(Q_NULLPTR);
+    forwardRenderer->setCamera(nullptr);
     delete renderSettings;
 
     m_stream << indent() << sceneStartTag << endl;
@@ -436,7 +436,7 @@ Qt3DCore::QEntity *EditorSceneParser::importQmlScene(const QUrl &fileUrl,
 
     if (!qmlFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning() << "Failed to open the qml file for reading:" << qmlFileAbsoluteFilePath;
-        return Q_NULLPTR;
+        return nullptr;
     }
 
     // If there is a resource file, read its contents
@@ -444,7 +444,7 @@ Qt3DCore::QEntity *EditorSceneParser::importQmlScene(const QUrl &fileUrl,
     if (resourceFile.exists()) {
         if (!resourceFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
             qWarning() << "Failed to open the qrc file for reading:" << resourceFileName;
-            return Q_NULLPTR;
+            return nullptr;
         }
         m_stream.reset();
         m_stream.setDevice(&resourceFile);
@@ -465,14 +465,14 @@ Qt3DCore::QEntity *EditorSceneParser::importQmlScene(const QUrl &fileUrl,
         }
     }
 
-    Qt3DCore::QEntity *sceneEntity = Q_NULLPTR;
+    Qt3DCore::QEntity *sceneEntity = nullptr;
 
     m_stream.reset();
     m_stream.setDevice(&qmlFile);
 
     QList<Qt3DCore::QEntity *> entityStack;
-    Qt3DCore::QEntity *currentEntity = Q_NULLPTR;
-    Qt3DCore::QComponent *currentComponent = Q_NULLPTR;
+    Qt3DCore::QEntity *currentEntity = nullptr;
+    Qt3DCore::QComponent *currentComponent = nullptr;
     QMap<QString, Qt3DCore::QComponent *> componentMap;
     QMap<QString, Qt3DCore::QEntity *> entityMap;
     bool startFound = false;
@@ -510,7 +510,7 @@ Qt3DCore::QEntity *EditorSceneParser::importQmlScene(const QUrl &fileUrl,
                 }
             } else if (line.compare(QStringLiteral("}")) == 0) {
                 if (currentComponent) {
-                    currentComponent = Q_NULLPTR;
+                    currentComponent = nullptr;
                 } else {
                     if (currentEntity)
                         currentEntity = qobject_cast<Qt3DCore::QEntity *>(currentEntity->parent());
@@ -760,9 +760,9 @@ void EditorSceneParser::outRenderSettings(Qt3DCore::QComponent *component)
 void EditorSceneParser::outTexturedMaterial(EditorSceneParser::EditorItemType type,
                                             Qt3DCore::QComponent *component)
 {
-    Qt3DRender::QAbstractTexture *diffuse = Q_NULLPTR;
-    Qt3DRender::QAbstractTexture *specular = Q_NULLPTR;
-    Qt3DRender::QAbstractTexture *normal = Q_NULLPTR;
+    Qt3DRender::QAbstractTexture *diffuse = nullptr;
+    Qt3DRender::QAbstractTexture *specular = nullptr;
+    Qt3DRender::QAbstractTexture *normal = nullptr;
 
     int textureTypes = getTextureProviders(type, component, diffuse, specular, normal);
 
@@ -1043,7 +1043,7 @@ Qt3DCore::QEntity *EditorSceneParser::createEntity(EditorSceneParser::EditorItem
         break;
     }
 
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 Qt3DCore::QComponent *EditorSceneParser::createComponent(EditorSceneParser::EditorItemType type)
@@ -1096,7 +1096,7 @@ Qt3DCore::QComponent *EditorSceneParser::createComponent(EditorSceneParser::Edit
     default:
         break;
     }
-    return Q_NULLPTR;
+    return nullptr;
 }
 
 void EditorSceneParser::parseAndSetProperty(const QString &propertyName,
@@ -1141,10 +1141,10 @@ void EditorSceneParser::parseAndSetTextureProperty(const QString &propertyName,
                                                    QObject *obj,
                                                    EditorSceneParser::EditorItemType type)
 {
-    Qt3DRender::QAbstractTexture *diffuse = Q_NULLPTR;
-    Qt3DRender::QAbstractTexture *specular = Q_NULLPTR;
-    Qt3DRender::QAbstractTexture *normal = Q_NULLPTR;
-    Qt3DRender::QAbstractTexture *targetProvider = Q_NULLPTR;
+    Qt3DRender::QAbstractTexture *diffuse = nullptr;
+    Qt3DRender::QAbstractTexture *specular = nullptr;
+    Qt3DRender::QAbstractTexture *normal = nullptr;
+    Qt3DRender::QAbstractTexture *targetProvider = nullptr;
 
     int textureTypes = getTextureProviders(type, obj, diffuse, specular, normal);
 
@@ -1178,8 +1178,8 @@ int EditorSceneParser::getTextureProviders(EditorSceneParser::EditorItemType typ
                 qobject_cast<Qt3DRender::QDiffuseMapMaterial *>(component);
         if (mat) {
             diffuse = mat->diffuse();
-            specular = Q_NULLPTR;
-            normal = Q_NULLPTR;
+            specular = nullptr;
+            normal = nullptr;
         }
         textureTypes = DiffuseTexture;
         break;
@@ -1190,7 +1190,7 @@ int EditorSceneParser::getTextureProviders(EditorSceneParser::EditorItemType typ
         if (mat) {
             diffuse = mat->diffuse();
             specular = mat->specular();
-            normal = Q_NULLPTR;
+            normal = nullptr;
         }
         textureTypes = DiffuseTexture | SpecularTexture;
         break;
@@ -1200,7 +1200,7 @@ int EditorSceneParser::getTextureProviders(EditorSceneParser::EditorItemType typ
                 qobject_cast<Qt3DRender::QNormalDiffuseMapMaterial *>(component);
         if (mat) {
             diffuse = mat->diffuse();
-            specular = Q_NULLPTR;
+            specular = nullptr;
             normal = mat->normal();
         }
         textureTypes = DiffuseTexture | NormalTexture;
@@ -1211,7 +1211,7 @@ int EditorSceneParser::getTextureProviders(EditorSceneParser::EditorItemType typ
                 qobject_cast<Qt3DRender::QNormalDiffuseMapAlphaMaterial *>(component);
         if (mat) {
             diffuse = mat->diffuse();
-            specular = Q_NULLPTR;
+            specular = nullptr;
             normal = mat->normal();
         }
         textureTypes = DiffuseTexture | NormalTexture;

@@ -52,10 +52,10 @@ EditorSceneItemComponentsModel::EditorSceneItemComponentsModel(EditorSceneItem *
                                                                QObject *parent)
     : QAbstractListModel(parent)
     , m_sceneItem(sceneItem)
-    , m_transformItem(Q_NULLPTR)
-    , m_materialItem(Q_NULLPTR)
-    , m_meshItem(Q_NULLPTR)
-    , m_lightItem(Q_NULLPTR)
+    , m_transformItem(nullptr)
+    , m_materialItem(nullptr)
+    , m_meshItem(nullptr)
+    , m_lightItem(nullptr)
 {
 }
 
@@ -129,7 +129,7 @@ void EditorSceneItemComponentsModel::initializeModel()
 
     // Camera entities have a special "component" for the entity itself
     if (qobject_cast<Qt3DRender::QCamera *>(m_sceneItem->entity()))
-        newInfoMap.insert(CameraEntity, ComponentInfo(Q_NULLPTR, CameraEntity));
+        newInfoMap.insert(CameraEntity, ComponentInfo(nullptr, CameraEntity));
 
     m_modelRowList.clear();
     // Resolve row indexes for components. We want to show components in predictable order.
@@ -230,7 +230,7 @@ QHash<int, QByteArray> EditorSceneItemComponentsModel::roleNames() const
 
 void EditorSceneItemComponentsModel::appendNewComponent(EditorSceneItemComponentTypes type)
 {
-    Qt3DCore::QComponent *component = Q_NULLPTR;
+    Qt3DCore::QComponent *component = nullptr;
 
     QMap<EditorSceneItemComponentTypes, ComponentInfo> typeInfoMap;
     foreach (ComponentInfo info, m_modelRowList) {
@@ -284,7 +284,7 @@ void EditorSceneItemComponentsModel::appendNewComponent(EditorSceneItemComponent
         break;
     }
 
-    if (component == Q_NULLPTR)
+    if (component == nullptr)
         return;
 
     // Figure out new model index for the type. We want types to be in predictable order, so
