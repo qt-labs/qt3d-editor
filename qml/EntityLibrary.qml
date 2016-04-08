@@ -35,25 +35,20 @@ Item {
 
     property int gridMargin: 10
     property int buttonSize: 80
+    property int optimalWidth: 2 * (buttonSize + gridMargin) + gridMargin
     property int splitHeight: entityViewHeader.height + 260
 
     signal createNewEntity(int entityType, int xPos, int yPos)
 
     Layout.minimumHeight: entityViewHeader.height
     height: splitHeight
-    width: buttonSize * 3 - gridMargin
+    // Adjust width automatically for scrollbar, unless width has been adjusted manually
+    width: ((gridRoot.cellHeight * (gridRoot.count / 2)) > entityView.height)
+           ? optimalWidth + 21 : optimalWidth
 
     ButtonViewHeader {
         id: entityViewHeader
         headerText: qsTr("Shapes") + editorScene.emptyString
-
-        onShowViewButtonPressed: {
-            entityLibrary.height = splitHeight
-        }
-        onHideViewButtonPressed: {
-            splitHeight = entityLibrary.height
-            entityLibrary.height = minimumHeaderHeight
-        }
     }
 
     Rectangle {
@@ -71,6 +66,8 @@ Item {
                 id: gridRoot
                 clip: true
                 topMargin: gridMargin
+                cellHeight: buttonSize + gridMargin
+                cellWidth: buttonSize + gridMargin
                 model: EntityModel { id: entityModel }
                 delegate: MouseArea {
                     id: delegateRoot
@@ -134,4 +131,5 @@ Item {
             }
         }
     }
+    Component.onCompleted: gridRoot.forceLayout()
 }
