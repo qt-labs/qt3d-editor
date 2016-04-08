@@ -53,13 +53,16 @@ class QAxis;
 class QAxisInput;
 }
 
+class EditorViewportItem;
+
 class EditorCameraController : public Qt3DCore::QEntity
 {
     Q_OBJECT
     Q_PROPERTY(Qt3DRender::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged)
 
 public:
-    explicit EditorCameraController(Qt3DCore::QNode *parent = Q_NULLPTR);
+    explicit EditorCameraController(EditorViewportItem *viewport,
+                                    Qt3DCore::QNode *parent = Q_NULLPTR);
     ~EditorCameraController();
 
     Qt3DRender::QCamera *camera() const;
@@ -77,25 +80,32 @@ private Q_SLOTS:
 
 private:
     void init();
+    void adjustCamera(const QVector3D &translateVec);
 
     Qt3DRender::QCamera *m_camera;
     Qt3DInput::QAction *m_leftMouseButtonAction;
     Qt3DInput::QAction *m_rightMouseButtonAction;
+    Qt3DInput::QAction *m_middleMouseButtonAction;
     Qt3DInput::QAxis *m_rxAxis;
     Qt3DInput::QAxis *m_ryAxis;
     Qt3DInput::QActionInput *m_leftMouseButtonInput;
     Qt3DInput::QActionInput *m_rightMouseButtonInput;
+    Qt3DInput::QActionInput *m_middleMouseButtonInput;
     Qt3DInput::QAxisInput *m_mouseRxInput;
     Qt3DInput::QAxisInput *m_mouseRyInput;
     Qt3DInput::QMouseDevice *m_mouseDevice;
     Qt3DInput::QLogicalDevice *m_logicalDevice;
     Qt3DLogic::QFrameAction *m_frameAction;
-    bool m_ignorefirstLeftMousePress;
-    bool m_ignorefirstRightMousePress;
+    bool m_ignoreFirstLeftMousePress;
+    bool m_ignoreFirstRightMousePress;
+    bool m_ignoreFirstMiddleMousePress;
+    bool m_adjustCameraAtMouseRelease;
     QVector3D m_cameraUp;
-    float m_lookSpeed;
+    float m_panSpeed;
+    float m_orbitSpeed;
     float m_translateSpeed;
     float m_wheelSpeed;
+    EditorViewportItem *m_viewport;
 };
 
 QT_END_NAMESPACE

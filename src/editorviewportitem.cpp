@@ -203,7 +203,7 @@ void EditorViewportItem::applyRootEntityChange()
     if (m_scene != Q_NULLPTR && m_scene->rootEntity() != m_aspectEngine->rootEntity()) {
         m_aspectEngine->setRootEntity(Qt3DCore::QEntityPtr(m_scene->rootEntity()));
 
-        m_cameraController = new EditorCameraController(m_scene->rootEntity());
+        m_cameraController = new EditorCameraController(this, m_scene->rootEntity());
         if (m_inputEnabled)
             m_cameraController->setCamera(m_scene->m_freeViewCameraEntity);
     }

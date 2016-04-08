@@ -716,7 +716,7 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
         QVector3D planeOrigin = m_dragInitialTranslationValue;
         QVector3D planeNormal;
         if (shiftDown)
-            planeNormal = frameGraphCameraNormal();
+            planeNormal = EditorUtils::cameraNormal(frameGraphCamera());
         else
             planeNormal = helperPlaneNormal();
 
@@ -829,9 +829,9 @@ void EditorScene::dragRotateSelectedEntity(const QPoint &newPos, bool shiftDown,
         if (ctrlDown) {
             // Rotate in larger increments
             // We need an additional check vector to determine which way the angle points
-            QVector3D checkVec = EditorUtils::rotateVector(unrotatedHandlePos,
-                                                           frameGraphCameraNormal(),
-                                                           M_PI / 2.0);
+            QVector3D checkVec = EditorUtils::rotateVector(
+                        unrotatedHandlePos, EditorUtils::cameraNormal(frameGraphCamera()),
+                        M_PI / 2.0);
             bool largeAngle = QVector3D::dotProduct(checkVec, desiredPos) > 0.0f;
             qreal radsOrig = qAcos(d - 1.0f);
             if (largeAngle)
@@ -844,9 +844,10 @@ void EditorScene::dragRotateSelectedEntity(const QPoint &newPos, bool shiftDown,
                 // Indicate rotation of 180 degrees
                 d = 0.0f;
             } else {
-                desiredPos = EditorUtils::rotateVector(unrotatedHandlePos,
-                                                       frameGraphCameraNormal(),
-                                                       radsAdjusted);
+                desiredPos = EditorUtils::rotateVector(
+                            unrotatedHandlePos,
+                            EditorUtils::cameraNormal(frameGraphCamera()),
+                            radsAdjusted);
             }
         }
         EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id());
@@ -862,13 +863,16 @@ void EditorScene::dragRotateSelectedEntity(const QPoint &newPos, bool shiftDown,
             } else {
                 // In case of camera, we rotate the upvector
                 QVector3D cameraNormal = cameraEntity->viewVector().normalized();
-                if (cameraNormal.distanceToPlane(QVector3D(), frameGraphCameraNormal()) < 0.0f)
+                if (cameraNormal.distanceToPlane(
+                            QVector3D(), EditorUtils::cameraNormal(frameGraphCamera())) < 0.0f) {
                     cameraNormal = -cameraNormal;
+                }
                 QVector3D initialUpVector =
                         EditorUtils::projectVectorOnPlane(m_dragInitialRotateCustomVector.normalized(),
                                                           cameraNormal);
-                QQuaternion planeRotation = QQuaternion::rotationTo(frameGraphCameraNormal(),
-                                                                    cameraNormal);
+                QQuaternion planeRotation =
+                        QQuaternion::rotationTo(EditorUtils::cameraNormal(frameGraphCamera()),
+                                                cameraNormal);
                 unrotatedHandlePos = planeRotation.rotatedVector(unrotatedHandlePos);
                 desiredPos = planeRotation.rotatedVector(desiredPos);
                 newRotation = QQuaternion::rotationTo(unrotatedHandlePos, desiredPos);
@@ -888,7 +892,7 @@ void EditorScene::dragRotateSelectedEntity(const QPoint &newPos, bool shiftDown,
                 // Rotation of 180 degrees
                 QVector3D rotationAxis;
                 if (shiftDown)
-                    rotationAxis = frameGraphCameraNormal();
+                    rotationAxis = EditorUtils::cameraNormal(frameGraphCamera());
                 else
                     rotationAxis = helperPlaneNormal();
                 newRotation = QQuaternion::fromAxisAndAngle(rotationAxis, 180.0f)
@@ -901,11 +905,12 @@ void EditorScene::dragRotateSelectedEntity(const QPoint &newPos, bool shiftDown,
             } else {
                 QVector3D rotationAxis;
                 if (shiftDown) {
-                    rotationAxis = frameGraphCameraNormal();
+                    rotationAxis = EditorUtils::cameraNormal(frameGraphCamera());
                 } else {
                     // Rotate vectors so that they lie on helper plane instead of camera plane
-                    QQuaternion planeRotation = QQuaternion::rotationTo(frameGraphCameraNormal(),
-                                                                        helperPlaneNormal());
+                    QQuaternion planeRotation =
+                            QQuaternion::rotationTo(EditorUtils::cameraNormal(frameGraphCamera()),
+                                                    helperPlaneNormal());
                     unrotatedHandlePos = planeRotation.rotatedVector(unrotatedHandlePos);
                     desiredPos = planeRotation.rotatedVector(desiredPos);
                     rotationAxis = helperPlaneNormal();
@@ -937,7 +942,7 @@ void EditorScene::dragRotateSelectedEntity(const QPoint &newPos, bool shiftDown,
                 // Rotation of 180 degrees
                 QVector3D rotationAxis;
                 if (shiftDown)
-                    rotationAxis = frameGraphCameraNormal();
+                    rotationAxis = EditorUtils::cameraNormal(frameGraphCamera());
                 else
                     rotationAxis = helperPlaneNormal();
                 rotationAxis = ancestralRotation.rotatedVector(rotationAxis);
@@ -949,8 +954,9 @@ void EditorScene::dragRotateSelectedEntity(const QPoint &newPos, bool shiftDown,
             } else {
                 if (!shiftDown) {
                     // Rotate vectors so that they lie on helper plane instead of camera plane
-                    QQuaternion planeRotation = QQuaternion::rotationTo(frameGraphCameraNormal(),
-                                                                        helperPlaneNormal());
+                    QQuaternion planeRotation =
+                            QQuaternion::rotationTo(EditorUtils::cameraNormal(frameGraphCamera()),
+                                                    helperPlaneNormal());
 
                     planeRotation = ancestralRotation * planeRotation;
                     unrotatedHandlePos = planeRotation.rotatedVector(unrotatedHandlePos);
@@ -2017,17 +2023,6 @@ QVector3D EditorScene::projectVectorOnCameraPlane(const QVector3D &vector) const
         }
     }
     return projectionVector;
-}
-
-QVector3D EditorScene::frameGraphCameraNormal() const
-{
-    QVector3D planeNormal;
-    Qt3DRender::QCamera *camera = frameGraphCamera();
-    if (camera) {
-        planeNormal = camera->position() - camera->viewCenter();
-        planeNormal.normalize();
-    }
-    return planeNormal;
 }
 
 void EditorScene::updateDragHandlePickers()

@@ -1052,3 +1052,14 @@ void EditorUtils::lockProperty(const QByteArray &lockPropertyName, QObject *obj,
     if (propVal.isValid() && propVal.toBool() != lock)
         obj->setProperty(lockPropertyName, QVariant::fromValue(lock));
 }
+
+QVector3D EditorUtils::cameraNormal(Qt3DRender::QCamera *camera)
+{
+    QVector3D planeNormal;
+    if (camera) {
+        planeNormal = camera->position() - camera->viewCenter();
+        planeNormal.normalize();
+    }
+    return planeNormal;
+}
+

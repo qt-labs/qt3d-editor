@@ -151,6 +151,7 @@ public:
     static const QString lockTransformPropertyName() {
         return QStringLiteral("allTransform_editorPropertyLock");
     }
+    static QVector3D cameraNormal(Qt3DRender::QCamera *camera);
 
 private:
     // Private constructor to ensure no actual instance is created

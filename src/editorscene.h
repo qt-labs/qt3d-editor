@@ -338,7 +338,6 @@ private:
     bool handleMouseMove(QMouseEvent *event);
     QVector3D helperPlaneNormal() const;
     QVector3D projectVectorOnCameraPlane(const QVector3D &vector) const;
-    QVector3D frameGraphCameraNormal() const;
     void updateDragHandlePickers();
     void updateDragHandlePicker(DragHandleData &handleData);
     void resizeCameraViewCenterEntity();
