@@ -1058,14 +1058,21 @@ void EditorScene::handlePropertyLocking(EditorSceneItem *item, const QString &lo
                 m_viewCenterLocked = locked;
         } else {
             if (lockProperty == lockTransformPropertyName()) {
-                if (item->itemType() != EditorSceneItem::Light) {
+                Qt3DCore::QTransform *transform =
+                        EditorUtils::entityTransform(m_selectedEntity);
+                if (item->itemType() == EditorSceneItem::Light) {
+                    if (locked) {
+                        m_dragHandleTranslate.entity->setEnabled(false);
+                    } else {
+                        m_dragHandleTranslate.entity->setEnabled(
+                                    !isPropertyLocked(QStringLiteral("translation"), transform));
+                    }
+                } else {
                     if (locked) {
                         m_dragHandleTranslate.entity->setEnabled(false);
                         m_dragHandleScale.entity->setEnabled(false);
                         m_dragHandleRotate.entity->setEnabled(false);
                     } else {
-                        Qt3DCore::QTransform *transform =
-                                EditorUtils::entityTransform(m_selectedEntity);
                         m_dragHandleTranslate.entity->setEnabled(
                                     !isPropertyLocked(QStringLiteral("translation"), transform));
                         m_dragHandleScale.entity->setEnabled(

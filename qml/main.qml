@@ -54,6 +54,7 @@ ApplicationWindow {
     property var sceneModel: EditorSceneItemComponentsModel
     property url saveFileUrl: ""
     property int currentHelperPlane: 1
+    property alias selectedEntityType: generalPropertyView.entityType
 
     property color labelTextColor: "white"
 

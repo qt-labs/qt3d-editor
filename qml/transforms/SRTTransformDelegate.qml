@@ -40,6 +40,7 @@ TransformDelegate {
         component: transformComponentData
         componentType: thisDelegate.componentType
         lockedField: enabledField
+        visible: selectedEntityType !== EditorSceneItem.Light
     }
 
     RotationPropertyInputField {
@@ -50,6 +51,7 @@ TransformDelegate {
         minimum: 0
         maximum: 359
         lockedField: enabledField
+        visible: selectedEntityType !== EditorSceneItem.Light
     }
 
     Vector3DPropertyInputField {
