@@ -89,105 +89,111 @@ Item {
             locale: "C"
         }
 
-        RowLayout {
-            Layout.alignment: Qt.AlignRight
+        Image {
+            source: "qrc:/images/fader.png"
+            anchors.right: slider.left
+        }
 
-            QLC.Slider {
-                id: slider
+        QLC.Slider {
+            id: slider
 
-                property bool blockCommit: false
-                property bool pendingValue: false
+            property bool blockCommit: false
+            property bool pendingValue: false
 
-                from: minimum
-                to: maximum
-                implicitWidth: floatSliderInputField.width * 0.4
-                enabled: lockButton.buttonEnabled
-                handle: Rectangle {
-                    x: slider.leftPadding + (horizontal ? slider.visualPosition
-                                                          * (slider.availableWidth - width)
-                                                        : (slider.availableWidth - width) / 2)
-                    y: slider.topPadding + (horizontal ? (slider.availableHeight - height) / 2
-                                                       : slider.visualPosition
-                                                         * (slider.availableHeight - height))
-                    implicitWidth: 20
-                    implicitHeight: 20
-                    radius: width / 2
-                    border.color: enabled ? "#353637" : "#bdbebf"
-                    color: enabled ? (slider.pressed ? "#bdbebf" : "#f6f6f6") : "lightgray"
+            from: minimum
+            to: maximum
+            implicitWidth: floatSliderInputField.width * 0.4 - 4
+            enabled: lockButton.buttonEnabled
+            anchors.right: floatInput.left
+            anchors.rightMargin: 4
+            handle: Rectangle {
+                x: slider.leftPadding + (horizontal ? slider.visualPosition
+                                                      * (slider.availableWidth - width)
+                                                    : (slider.availableWidth - width) / 2)
+                y: slider.topPadding + (horizontal ? (slider.availableHeight - height) / 2
+                                                   : slider.visualPosition
+                                                     * (slider.availableHeight - height))
+                implicitWidth: 20
+                implicitHeight: 20
+                radius: width / 2
+                border.color: enabled ? "#353637" : "#bdbebf"
+                color: enabled ? (slider.pressed ? "#bdbebf" : "#f6f6f6") : "lightgray"
 
-                    readonly property bool horizontal: slider.orientation === Qt.Horizontal
-                }
-                track: Rectangle {
-                    x: slider.leftPadding + (horizontal ? 0 : (slider.availableWidth - width) / 2)
-                    y: slider.topPadding + (horizontal ? (slider.availableHeight - height) / 2 : 0)
-                    implicitWidth: horizontal ? 200 : 6
-                    implicitHeight: horizontal ? 6 : 200
-                    width: horizontal ? slider.availableWidth : implicitWidth
-                    height: horizontal ? implicitHeight : slider.availableHeight
-                    radius: 3
-                    border.color: enabled ? "#353637" : "#bdbebf"
-                    color: enabled ? "#ffffff" : "transparent"
-                    scale: horizontal && slider.mirrored ? -1 : 1
+                readonly property bool horizontal: slider.orientation === Qt.Horizontal
+            }
+            track: Rectangle {
+                x: slider.leftPadding + (horizontal ? 0 : (slider.availableWidth - width) / 2)
+                y: slider.topPadding + (horizontal ? (slider.availableHeight - height) / 2 : 0)
+                implicitWidth: horizontal ? 200 : 6
+                implicitHeight: horizontal ? 6 : 200
+                width: horizontal ? slider.availableWidth : implicitWidth
+                height: horizontal ? implicitHeight : slider.availableHeight
+                radius: 3
+                border.color: enabled ? "#353637" : "#bdbebf"
+                color: enabled ? "#ffffff" : "transparent"
+                scale: horizontal && slider.mirrored ? -1 : 1
 
-                    readonly property bool horizontal: slider.orientation === Qt.Horizontal
-                }
+                readonly property bool horizontal: slider.orientation === Qt.Horizontal
+            }
 
-                onPositionChanged:  {
-                    var newValue = roundNumber((position * (to - from)) + from)
-                    floatInput.text = newValue
-                    if (!blockCommit) {
-                        // Do not try to commit immediately, if we do not have focus.
-                        // Instead, delay the commit until we get the focus. This should ensure
-                        // any onEditingFinishes in other fields get executed before slider value
-                        // creates its undo command into the stack, thus ensuring the undo stack
-                        // is kept in correct order.
-                        if (focus) {
-                            pendingValue = false
-                            tryCommitValue(newValue)
-                        } else {
-                            pendingValue = true
-                        }
-                    }
-                }
-
-                onPressedChanged: {
-                    // Grab focus if user presses the slider with mouse.
-                    // Note that if this is changed, pendingValue logic will likely break.
-                    if (pressed)
-                        forceActiveFocus(Qt.MouseFocusReason)
-                }
-
-                onFocusChanged: {
-                    if (focus && pendingValue) {
-                        tryCommitValue(value)
+            onPositionChanged:  {
+                var newValue = roundNumber((position * (to - from)) + from)
+                floatInput.text = newValue
+                if (!blockCommit) {
+                    // Do not try to commit immediately, if we do not have focus.
+                    // Instead, delay the commit until we get the focus. This should ensure
+                    // any onEditingFinishes in other fields get executed before slider value
+                    // creates its undo command into the stack, thus ensuring the undo stack
+                    // is kept in correct order.
+                    if (focus) {
                         pendingValue = false
+                        tryCommitValue(newValue)
+                    } else {
+                        pendingValue = true
                     }
                 }
             }
 
-            QLC.TextField {
-                id: floatInput
-                implicitWidth: floatSliderInputField.width * 0.2
-                validator: doubleValidator
-                inputMethodHints: Qt.ImhFormattedNumbersOnly
-                enabled: lockButton.buttonEnabled
-                background: TextFieldBackgroundRectangle {}
-
-                onEditingFinished: {
-                    tryCommitValue(floatInput.text)
-                }
-
-                Component.onCompleted: {
-                    text = roundNumber(slider.value)
-                }
+            onPressedChanged: {
+                // Grab focus if user presses the slider with mouse.
+                // Note that if this is changed, pendingValue logic will likely break.
+                if (pressed)
+                    forceActiveFocus(Qt.MouseFocusReason)
             }
 
-            PropertyLockButton {
-                id: lockButton
-                Layout.alignment: Qt.AlignVCenter
-                Layout.maximumWidth: 16
-                label: floatSliderInputField.label
+            onFocusChanged: {
+                if (focus && pendingValue) {
+                    tryCommitValue(value)
+                    pendingValue = false
+                }
             }
+        }
+
+        QLC.TextField {
+            id: floatInput
+            implicitWidth: floatSliderInputField.width * 0.2
+            anchors.right: lockButton.left
+            anchors.rightMargin: 4
+            validator: doubleValidator
+            inputMethodHints: Qt.ImhFormattedNumbersOnly
+            enabled: lockButton.buttonEnabled
+            background: TextFieldBackgroundRectangle {}
+
+            onEditingFinished: {
+                tryCommitValue(floatInput.text)
+            }
+
+            Component.onCompleted: {
+                text = roundNumber(slider.value)
+            }
+        }
+
+        PropertyLockButton {
+            id: lockButton
+            Layout.alignment: Qt.AlignVCenter
+            anchors.right: parent.right
+            Layout.maximumWidth: 16
+            label: floatSliderInputField.label
         }
     }
 }

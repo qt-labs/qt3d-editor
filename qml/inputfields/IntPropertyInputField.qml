@@ -60,8 +60,15 @@ PropertyInputField {
             Layout.alignment: Qt.AlignLeft
         }
 
+        Image {
+            source: "qrc:/images/fader.png"
+            anchors.right: valueInput.left
+        }
+
         QLC.SpinBox {
             id: valueInput
+            anchors.right: lockButton.left
+            anchors.rightMargin: 4
             Layout.alignment: Qt.AlignRight
             implicitWidth: intInput.width * 0.6
             implicitHeight: qlcControlHeight
@@ -83,6 +90,7 @@ PropertyInputField {
             id: lockButton
             Layout.alignment: Qt.AlignVCenter
             Layout.maximumWidth: 16
+            anchors.right: parent.right
             lockProperty: intInput.propertyName + editorScene.lockPropertySuffix
             lockComponent: intInput.component
             label: intInput.label

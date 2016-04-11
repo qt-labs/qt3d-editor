@@ -39,7 +39,7 @@ ApplicationWindow {
     title: qsTr("Qt 3D Scene Editor") + editorScene.emptyString
     width: 1280
     height: 800
-    visible: true
+    visible: false
     color: "lightGray"
     minimumHeight: 400
     minimumWidth: 640
@@ -588,7 +588,8 @@ ApplicationWindow {
             orientation: Qt.Vertical
             Layout.minimumWidth: 250
             Layout.maximumWidth: mainwindow.width - 10
-            width: mainwindow.width / 5
+            width: mainwindow.width / 4.5
+            anchors.right: parent.right
 
             // Entity list
             EntityTree {
@@ -632,5 +633,12 @@ ApplicationWindow {
     function resetCameraToDefault() {
         editorScene.freeView = true
         editorScene.resetFreeViewCamera()
+    }
+
+    Component.onCompleted: {
+        // Redraw everything to get rid of artifacts
+        showMaximized()
+        show()
+        visible = true
     }
 }

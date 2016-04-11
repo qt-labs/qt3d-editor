@@ -65,17 +65,32 @@ PropertyInputField {
             Layout.alignment: Qt.AlignLeft
         }
 
+        Image {
+            source: "qrc:/images/fader.png"
+            anchors.right: row.left
+            anchors.rightMargin: 12
+        }
+
         RowLayout {
+            id: row
+            anchors.right: parent.right
             Layout.alignment: Qt.AlignRight
             Layout.preferredWidth: sizeInput.width * 0.6
             property real cellwidth: (Layout.preferredWidth
                                       - widthLabel.contentWidth
-                                      - heightLabel.contentWidth) / 2 - 8 // 12 = column spacing * 2 (x3 because of labels)
+                                      - heightLabel.contentWidth) / 2 - 12 // 12 = column spacing * 2 (x3 because of labels)
 
             QLC.Label {
                 id: widthLabel
                 text: qsTr("X") + editorScene.emptyString
                 color: labelTextColor
+                anchors.right: widthInput.left
+                anchors.rightMargin: 4
+                background: Rectangle {
+                    color: "lightGray"
+                    anchors.fill: parent
+                    anchors.margins: -4 // Cover the label margin area
+                }
             }
 
             QLC.TextField {
@@ -85,6 +100,8 @@ PropertyInputField {
                 validator: intValidator
                 enabled: lockButton.buttonEnabled
                 background: TextFieldBackgroundRectangle {}
+                anchors.right: heightLabel.left
+                anchors.rightMargin: 4
 
                 onEditingFinished: {
                     newValue.height = component[propertyName].height
@@ -101,11 +118,15 @@ PropertyInputField {
                 id: heightLabel
                 text: qsTr("Y") + editorScene.emptyString
                 color: labelTextColor
+                anchors.right: heightInput.left
+                anchors.rightMargin: 4
             }
 
             QLC.TextField {
                 id: heightInput
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
+                anchors.right: lockButton.left
+                anchors.rightMargin: 4
                 validator: intValidator
                 implicitWidth: parent.cellwidth
                 enabled: lockButton.buttonEnabled
@@ -126,6 +147,7 @@ PropertyInputField {
                 id: lockButton
                 Layout.alignment: Qt.AlignVCenter
                 Layout.maximumWidth: 16
+                anchors.right: parent.right
                 lockProperty: sizeInput.propertyName + editorScene.lockPropertySuffix
                 lockComponent: sizeInput.component
                 label: sizeInput.label

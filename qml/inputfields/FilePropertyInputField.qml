@@ -72,10 +72,15 @@ PropertyInputField {
             Layout.alignment: Qt.AlignLeft
         }
 
+        Image {
+            source: "qrc:/images/fader.png"
+            anchors.right: fileButton.left
+        }
+
         QLC.Button {
             id: fileButton
             Layout.alignment: Qt.AlignRight
-            implicitWidth: fileInput.width * 0.6
+            implicitWidth: fileInput.width * 0.6 + 20 // Lockbutton width
             implicitHeight: qlcControlHeight
             text: url
             onClicked: fileDialog.open()

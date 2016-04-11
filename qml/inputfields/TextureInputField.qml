@@ -55,16 +55,19 @@ ModelRoleInputField {
         anchors.right: parent.right
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
+
         ColumnLayout {
             width: fileInput.width - fileInput.height
             Layout.alignment: Qt.AlignLeft
             height: fileInput.height
+
             QLC.Label {
                 id: fileLabel
                 text: qsTr("File") + editorScene.emptyString
                 color: labelTextColor
                 Layout.alignment: Qt.AlignLeft
             }
+
             QLC.Button {
                 id: fileButton
                 Layout.alignment: Qt.AlignLeft
@@ -73,6 +76,7 @@ ModelRoleInputField {
                 onClicked: fileDialog.open()
             }
         }
+
         Rectangle {
             id: textureImage
             Layout.preferredHeight: fileInput.height

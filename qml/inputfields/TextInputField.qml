@@ -60,10 +60,16 @@ Item {
             Layout.alignment: Qt.AlignLeft
         }
 
+        Image {
+            source: "qrc:/images/fader.png"
+            anchors.right: textInputCtrl.left
+        }
+
         QLC.TextField {
             id: textInputCtrl
             Layout.alignment: Qt.AlignRight
-            implicitWidth: textInput.width * 0.6
+            anchors.right: parent.right
+            implicitWidth: textInput.width * 0.6 + 20 // Lockbutton width
             text: textInput.displayText
             background: TextFieldBackgroundRectangle {}
 

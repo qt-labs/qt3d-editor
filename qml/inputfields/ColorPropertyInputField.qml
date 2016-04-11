@@ -87,9 +87,16 @@ PropertyInputField {
             Layout.alignment: Qt.AlignLeft
         }
 
+        Image {
+            source: "qrc:/images/fader.png"
+            anchors.right: colorButton.left
+        }
+
         QLC.Button {
             id: colorButton
             Layout.alignment: Qt.AlignRight
+            anchors.right: lockButton.left
+            anchors.rightMargin: 4
             implicitWidth: colorInput.width * 0.6
             implicitHeight: qlcControlHeight
             enabled: lockButton.buttonEnabled
@@ -106,6 +113,7 @@ PropertyInputField {
             id: lockButton
             Layout.alignment: Qt.AlignVCenter
             Layout.maximumWidth: 16
+            anchors.right: parent.right
             lockProperty: colorInput.propertyName + editorScene.lockPropertySuffix
             lockComponent: colorInput.component
             label: colorInput.label

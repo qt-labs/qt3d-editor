@@ -44,7 +44,6 @@ EnableButton {
             if (propertyLocked != undefined)
                 locked = propertyLocked
         }
-
     }
 
     onEnabledButtonClicked: {

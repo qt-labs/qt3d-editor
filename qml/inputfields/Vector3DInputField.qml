@@ -79,7 +79,7 @@ Item {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
         Layout.rightMargin: 1
-        columns: 3
+        columns: 4
         rowSpacing: 1
 
         QLC.Label {
@@ -89,8 +89,15 @@ Item {
             color: labelTextColor
         }
 
+        Image {
+            source: "qrc:/images/fader.png"
+            anchors.right: xInput.left
+        }
+
         QLC.SpinBox {
             id: xInput
+            anchors.right: lockButton.left
+            anchors.rightMargin: 4
             Layout.alignment: Qt.AlignRight
             implicitWidth: inputCellWidth
             implicitHeight: qlcControlHeight
@@ -128,6 +135,8 @@ Item {
             Layout.alignment: Qt.AlignHCenter
             Layout.maximumWidth: 16
             source: "/images/property_grouping_line.png"
+            anchors.right: parent.right
+            anchors.rightMargin: 3
         }
 
         QLC.Label {
@@ -137,8 +146,15 @@ Item {
             color: labelTextColor
         }
 
+        Image {
+            source: "qrc:/images/fader.png"
+            anchors.right: yInput.left
+        }
+
         QLC.SpinBox {
             id: yInput
+            anchors.right: lockButton.left
+            anchors.rightMargin: 4
             Layout.alignment: Qt.AlignRight
             implicitWidth: inputCellWidth
             implicitHeight: qlcControlHeight
@@ -176,6 +192,7 @@ Item {
             id: lockButton
             Layout.alignment: Qt.AlignVCenter
             Layout.maximumWidth: 16
+            anchors.right: parent.right
             label: vectorInput.label
         }
 
@@ -186,8 +203,15 @@ Item {
             color: labelTextColor
         }
 
+        Image {
+            source: "qrc:/images/fader.png"
+            anchors.right: zInput.left
+        }
+
         QLC.SpinBox {
             id: zInput
+            anchors.right: lockButton.left
+            anchors.rightMargin: 4
             Layout.alignment: Qt.AlignRight
             implicitWidth: inputCellWidth
             implicitHeight: qlcControlHeight
@@ -224,6 +248,8 @@ Item {
         Image {
             Layout.alignment: Qt.AlignHCenter
             Layout.maximumWidth: 16
+            anchors.right: parent.right
+            anchors.rightMargin: 3
             source: "/images/property_grouping_line.png"
         }
     }
