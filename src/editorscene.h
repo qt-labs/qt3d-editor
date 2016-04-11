@@ -293,6 +293,7 @@ signals:
     void languageChanged(const QString &language);
     void translationChanged(const QString &translation);
     void gridSizeChanged(int gridSize);
+    void mouseRightButtonReleasedWithoutDragging();
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
@@ -403,6 +404,7 @@ private:
     DragHandleData m_dragHandleTranslate;
     DragMode m_dragMode;
     QPoint m_previousMousePosition;
+    QPoint m_mousePressPosition;
     QVector3D m_dragHandleScaleCornerTranslation;
     QVector3D m_dragInitialTranslationValue;
     QVector3D m_dragInitialScaleValue;

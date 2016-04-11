@@ -500,6 +500,10 @@ ApplicationWindow {
             notification.open()
         }
 
+        onMouseRightButtonReleasedWithoutDragging: {
+            entityTree.menu.popup()
+        }
+
         function restoreSelection(entity) {
             var index = editorScene.sceneModel.getModelIndex(entity)
             // Expand tree view to the selection

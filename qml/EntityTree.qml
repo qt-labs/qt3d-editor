@@ -37,6 +37,7 @@ Item {
     property bool entityTreeViewEditing: entityTreeView.editing
 
     property alias view: entityTreeView
+    property alias menu: addComponentMenu
 
     Keys.onDeletePressed: {
         // Doublecheck that we don't try to remove the scene root

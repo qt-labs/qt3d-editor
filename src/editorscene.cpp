@@ -1950,6 +1950,7 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
 bool EditorScene::handleMousePress(QMouseEvent *event)
 {
     Q_UNUSED(event)
+    m_mousePressPosition = event->globalPos();
     cancelDrag();
     return false; // Never consume press event
 }
@@ -1957,6 +1958,11 @@ bool EditorScene::handleMousePress(QMouseEvent *event)
 bool EditorScene::handleMouseRelease(QMouseEvent *event)
 {
     Q_UNUSED(event)
+    if (event->button() == Qt::RightButton) {
+        QPoint delta = event->globalPos() - m_mousePressPosition;
+        if (delta.manhattanLength() < 10)
+            emit mouseRightButtonReleasedWithoutDragging();
+    }
     cancelDrag();
     return false; // Never consume release event
 }
