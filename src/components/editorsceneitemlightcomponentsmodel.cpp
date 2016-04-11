@@ -95,12 +95,18 @@ void EditorSceneItemLightComponentsModel::setLight(LightComponentTypes type)
             break;
         case Directional:
             light = new Qt3DRender::QDirectionalLight();
+            // Default the direction to such that doesn't align on any helper plane,
+            // so that rotate will always work by default
+            static_cast<Qt3DRender::QDirectionalLight *>(light)
+                    ->setWorldDirection(QVector3D(1.0f, -1.0f, 1.0f));
             break;
         case Point:
             light = new Qt3DRender::QPointLight();
             break;
         case Spot:
             light = new Qt3DRender::QSpotLight();
+            static_cast<Qt3DRender::QSpotLight *>(light)
+                    ->setLocalDirection(QVector3D(1.0f, -1.0f, 1.0f));
             break;
         default:
             //Unsupported light type
