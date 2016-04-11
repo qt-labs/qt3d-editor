@@ -65,6 +65,8 @@
 #include <Qt3DRender/QPointLight>
 #include <Qt3DRender/QSpotLight>
 
+#include <Qt3DInput/QInputSettings>
+
 #include <QtCore/QFile>
 #include <QtCore/QMetaObject>
 #include <QtCore/QMetaProperty>
@@ -79,8 +81,6 @@ static const QString generatedQmlFileTag = QStringLiteral("// Qt3D Editor genera
 static const QString generatorVersionTag = QStringLiteral("// v0.1");
 static const QString frameGraphCameraTag = QStringLiteral("@FRAMEGRAPH_CAMERA_TAG@");
 static const QString exposedPropertiesTag = QStringLiteral("@EXPOSED_PROPERTIES_TAG@");
-static const QString extraImportsTag = QStringLiteral("@EXTRA_IMPORTS_TAG@");
-static const QString extraAspectsTag = QStringLiteral("@EXTRA_ASPECTS_TAG@");
 static const QString endTag = QStringLiteral("@@@");
 static const QString sceneStartTag = QStringLiteral("// --- Scene start ---");
 static const QString imageNameTemplate = QStringLiteral("qrc:///%1/i%2_%3");
@@ -104,8 +104,6 @@ EditorSceneParser::EditorSceneParser(QObject *parent)
     : QObject(parent)
     , m_indentLevel(0)
     , m_imageIdCounter(0)
-    , m_needsInputAspect(false)
-    , m_needsInputImport(false)
 
 {
     m_spaceArray.fill(QLatin1Char(' '), 0x1000);
@@ -115,6 +113,7 @@ EditorSceneParser::EditorSceneParser(QObject *parent)
             << QStringLiteral("Camera")
             << QStringLiteral("Transform")
             << QStringLiteral("RenderSettings")
+            << QStringLiteral("InputSettings")
             << QStringLiteral("DiffuseMapMaterial")
             << QStringLiteral("DiffuseSpecularMapMaterial")
             << QStringLiteral("GoochMaterial")
@@ -142,6 +141,7 @@ EditorSceneParser::EditorSceneParser(QObject *parent)
     cacheProperties(Camera, new Qt3DRender::QCamera());
     cacheProperties(Transform, new Qt3DCore::QTransform());
     cacheProperties(RenderSettings, new Qt3DRender::QRenderSettings());
+    cacheProperties(InputSettings, new Qt3DInput::QInputSettings());
     cacheProperties(DiffuseMapMaterial, new Qt3DRender::QDiffuseMapMaterial());
     cacheProperties(DiffuseSpecularMapMaterial, new Qt3DRender::QDiffuseSpecularMapMaterial());
     cacheProperties(GoochMaterial, new Qt3DRender::QGoochMaterial());
@@ -223,32 +223,36 @@ bool EditorSceneParser::exportQmlScene(Qt3DCore::QEntity *sceneEntity, const QUr
              << QStringLiteral("import QtQuick.Scene3D 2.0") << endl
              << QStringLiteral("import Qt3D.Core 2.0") << endl
              << QStringLiteral("import Qt3D.Render 2.0") << endl
-             << extraImportsTag << endl
+             << QStringLiteral("import Qt3D.Input 2.0") << endl
              << endl;
 
     outStartType(Scene3D);
 
     m_stream << exposedPropertiesTag << endl;
 
-    m_stream << indent() << QStringLiteral("aspects: [\"render\"") << extraAspectsTag
-             << QStringLiteral("]") << endl;
+    m_stream << indent() << QStringLiteral("aspects: [\"render\",\"input\"]") << endl;
+
+    outHelperFunctions();
 
     // Top level container entity
     outStartType(Entity);
 
     // Create a dummy framegraph and output it
     Qt3DRender::QRenderSettings *renderSettings = new Qt3DRender::QRenderSettings();
-    renderSettings->setObjectName(QStringLiteral("Scene frame graph"));
+    renderSettings->setObjectName(QStringLiteral("Scene render settings"));
     Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
     forwardRenderer->setClearColor(Qt::lightGray);
     forwardRenderer->setCamera(activeSceneCamera);
     renderSettings->setActiveFrameGraph(forwardRenderer);
+    Qt3DInput::QInputSettings *inputSettings = new Qt3DInput::QInputSettings();
+    inputSettings->setObjectName(QStringLiteral("Scene Input settings"));
 
-    m_stream << indent() << componentsStart << outComponent(renderSettings)
-             << componentsEnd << endl << endl;
+    m_stream << indent() << componentsStart << outComponent(renderSettings) << QStringLiteral(",")
+             << outComponent(inputSettings) << componentsEnd << endl << endl;
 
     forwardRenderer->setCamera(nullptr);
     delete renderSettings;
+    delete inputSettings;
 
     m_stream << indent() << sceneStartTag << endl;
     outEntity(sceneEntity);
@@ -260,14 +264,6 @@ bool EditorSceneParser::exportQmlScene(Qt3DCore::QEntity *sceneEntity, const QUr
     QString replaceString;
     QTextStream replaceStream(&replaceString);
 
-    // Replace extra imports tag
-    if (m_needsInputImport) {
-        replaceStream << QStringLiteral("import Qt3D.Input 2.0") << endl;
-        outputString.replace(extraImportsTag, replaceString);
-    } else {
-        outputString.replace(extraImportsTag, replaceString);
-    }
-
     // Replace exposed properties tag
     replaceString.clear();
     replaceStream.reset();
@@ -277,18 +273,6 @@ bool EditorSceneParser::exportQmlScene(Qt3DCore::QEntity *sceneEntity, const QUr
                       << ": " << idPair.qmlId << endl;
     }
     outputString.replace(exposedPropertiesTag, replaceString);
-
-    // Replace extra aspects tag
-    replaceString.clear();
-    if (m_needsInputAspect) {
-        // According to docs, input aspect should be enabled by default, but if it is
-        // not explicitly added, picking objects exits the application.
-        replaceStream.reset();
-        replaceStream << QStringLiteral(",\"input\"");
-        outputString.replace(extraAspectsTag, replaceString);
-    } else {
-        outputString.replace(extraAspectsTag, replaceString);
-    }
 
     // Replace framegraph cameras with proper identifiers
     int frameGraphCameraIndex = outputString.indexOf(frameGraphCameraTag);
@@ -718,7 +702,6 @@ QString EditorSceneParser::outComponent(Qt3DCore::QComponent *component)
             outTexturedMaterial(type, component);
             break;
         case ObjectPicker:
-            m_needsInputAspect = true;
             outGenericProperties(type, component);
             break;
         default:
@@ -848,6 +831,35 @@ void EditorSceneParser::outGenericProperty(QObject *obj, const QMetaProperty &pr
         m_stream << indent() << property.name() << QStringLiteral(": ") << valueStr << endl;
 }
 
+void EditorSceneParser::outHelperFunctions()
+{
+    m_stream << indent() << QStringLiteral("function addComponentToEntity(entity, component) {") << endl;
+    m_indentLevel++;
+    m_stream << indent() << QStringLiteral("var entityComponents = []") << endl;
+    m_stream << indent() << QStringLiteral("for (var i = 0; i < entity.components.length; i++)") << endl;
+    m_indentLevel++;
+    m_stream << indent() << QStringLiteral("entityComponents.push(entity.components[i])") << endl;
+    m_indentLevel--;
+    m_stream << indent() << QStringLiteral("entityComponents.push(component)") << endl;
+    m_stream << indent() << QStringLiteral("entity.components = entityComponents") << endl;
+    m_indentLevel--;
+    m_stream << indent() << QStringLiteral("}") << endl;
+    m_stream << indent() << QStringLiteral("function removeComponentFromEntity(entity, component) {") << endl;
+    m_indentLevel++;
+    m_stream << indent() << QStringLiteral("var entityComponents = []") << endl;
+    m_stream << indent() << QStringLiteral("for (var i = 0; i < entity.components.length; i++) {") << endl;
+    m_indentLevel++;
+    m_stream << indent() << QStringLiteral("if (entity.components[i] !== component)") << endl;
+    m_indentLevel++;
+    m_stream << indent() << QStringLiteral("entityComponents.push(entity.components[i])") << endl;
+    m_indentLevel--;
+    m_indentLevel--;
+    m_stream << indent() << QStringLiteral("}") << endl;
+    m_stream << indent() << QStringLiteral("entity.components = entityComponents") << endl;
+    m_indentLevel--;
+    m_stream << indent() << QStringLiteral("}") << endl;
+}
+
 QString EditorSceneParser::indent() const
 {
     return QString(m_spaceArray.constData(), m_indentLevel * 4);
@@ -872,6 +884,8 @@ EditorSceneParser::EditorItemType EditorSceneParser::itemType(QObject *item) con
                     return TorusMesh;
             } else if (qobject_cast<Qt3DRender::QRenderSettings *>(item)) {
                 return RenderSettings;
+            } else if (qobject_cast<Qt3DInput::QInputSettings *>(item)) {
+                return InputSettings;
             } else if (qobject_cast<QDummyObjectPicker *>(item)) {
                 return ObjectPicker;
             } else if (qobject_cast<Qt3DRender::QDirectionalLight *>(item)) {
@@ -1053,6 +1067,8 @@ Qt3DCore::QComponent *EditorSceneParser::createComponent(EditorSceneParser::Edit
         return new Qt3DCore::QTransform();
     case RenderSettings:
         return new Qt3DRender::QRenderSettings();
+    case InputSettings:
+        return new Qt3DInput::QInputSettings();
     case DiffuseMapMaterial:
         return new Qt3DRender::QDiffuseMapMaterial();
     case DiffuseSpecularMapMaterial:
@@ -1105,7 +1121,8 @@ void EditorSceneParser::parseAndSetProperty(const QString &propertyName,
 {
     switch (type) {
     case RenderSettings:
-        // We ignore framegraphs for now
+    case InputSettings:
+        // We ignore settings for now
         break;
         // Materials with textures. Intentional fall-through.
     case DiffuseMapMaterial:

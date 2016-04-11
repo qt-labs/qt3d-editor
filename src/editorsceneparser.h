@@ -54,6 +54,7 @@ class EditorSceneParser : public QObject
         // Components
         Transform,
         RenderSettings,
+        InputSettings,
         DiffuseMapMaterial,
         DiffuseSpecularMapMaterial,
         GoochMaterial,
@@ -112,6 +113,7 @@ private:
     void outGenericProperties(EditorItemType type, QObject *obj);
     void outGenericProperty(QObject *obj,
                             const QMetaProperty &property, const QObject *defaultComponent);
+    void outHelperFunctions();
 
     QString indent() const;
     EditorItemType itemType(QObject *item) const;
@@ -146,8 +148,6 @@ private:
     QMap<QUrl, QString> m_exportResourceMap; // <texture url source, qml target>
     QMap<QString, QUrl> m_importResourceMap; // <qml source, texture url target>
     QString m_resourceDirName;
-    bool m_needsInputAspect;
-    bool m_needsInputImport;
     QMap<EditorItemType, int> m_currentEntityComponentTypeMap;
 };
 
