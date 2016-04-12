@@ -391,6 +391,16 @@ QString EditorScene::duplicateEntity(Qt3DCore::QEntity *entity)
     return duplicateName;
 }
 
+Qt3DRender::QCamera *EditorScene::inputCamera() const
+{
+    Qt3DRender::QCamera *inputCamera = nullptr;
+
+    if (m_freeView)
+        inputCamera =  m_freeViewCameraEntity;
+
+    return inputCamera;
+}
+
 // Resolves a world position for given viewport position.
 // The world position is the intersection of the eye ray at specified position and the active
 // helper plane. If there is no intersection, (0, 0, 0) position is returned.

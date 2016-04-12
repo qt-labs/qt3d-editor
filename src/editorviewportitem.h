@@ -72,6 +72,7 @@ public slots:
 
 private slots:
     void applyRootEntityChange();
+    void handleInputCameraChange();
 
 signals:
     void sceneChanged(EditorScene* scene);

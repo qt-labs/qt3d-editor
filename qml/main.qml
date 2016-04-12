@@ -634,7 +634,6 @@ ApplicationWindow {
                 id: editorViewport
                 anchors.fill: parent
                 scene: editorScene
-                //inputEnabled: editorScene.freeView // TODO: Why was editing disabled for scene cameras?
 
                 MouseArea {
                     anchors.fill: parent

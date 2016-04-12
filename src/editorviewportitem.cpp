@@ -177,12 +177,7 @@ void EditorViewportItem::setInputEnabled(bool enable)
 {
     if (enable != m_inputEnabled) {
         m_inputEnabled = enable;
-        if (m_cameraController) {
-            if (m_inputEnabled)
-                m_cameraController->setCamera(m_scene->m_freeViewCameraEntity);
-            else
-                m_cameraController->setCamera(nullptr);
-        }
+        handleInputCameraChange();
         emit inputEnabledChanged(m_inputEnabled);
     }
 }
@@ -193,6 +188,12 @@ void EditorViewportItem::setScene(EditorScene *scene)
         return;
 
     m_scene = scene;
+
+    connect(scene, &EditorScene::activeSceneCameraIndexChanged,
+            this, &EditorViewportItem::handleInputCameraChange);
+    connect(scene, &EditorScene::freeViewChanged,
+            this, &EditorViewportItem::handleInputCameraChange);
+
     emit sceneChanged(scene);
 
     update();
@@ -205,7 +206,17 @@ void EditorViewportItem::applyRootEntityChange()
 
         m_cameraController = new EditorCameraController(this, m_scene->rootEntity());
         if (m_inputEnabled)
-            m_cameraController->setCamera(m_scene->m_freeViewCameraEntity);
+            m_cameraController->setCamera(m_scene->inputCamera());
+    }
+}
+
+void EditorViewportItem::handleInputCameraChange()
+{
+    if (m_cameraController) {
+        if (m_inputEnabled)
+            m_cameraController->setCamera(m_scene->inputCamera());
+        else
+            m_cameraController->setCamera(nullptr);
     }
 }
 

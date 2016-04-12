@@ -235,6 +235,7 @@ public:
     QString duplicateEntity(Qt3DCore::QEntity *entity);
     void decrementDuplicateCount() { m_duplicateCount--; }
     Qt3DRender::QCamera *freeViewCamera() const { return m_freeViewCameraEntity; }
+    Qt3DRender::QCamera *inputCamera() const;
 
     bool isRemovable(Qt3DCore::QEntity *entity) const;
 
@@ -347,8 +348,6 @@ private:
     void cancelDrag();
 
 private:
-    friend class EditorViewportItem;
-
     Qt3DCore::QEntity *m_rootEntity;
     Qt3DCore::QEntity *m_componentCache;
     EditorSceneItem *m_rootItem;

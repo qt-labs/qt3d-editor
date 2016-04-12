@@ -136,7 +136,7 @@ void EditorCameraController::adjustCamera(const QVector3D &translateVec)
 
 void EditorCameraController::handleTriggered(float dt)
 {
-    if (m_camera != nullptr) {
+    if (m_camera) {
         if (m_rightMouseButtonAction->isActive()) {
             // Ignore first press so you don't get the initial jolt,
             // as the mouse delta is usually maximum into some direction.
@@ -175,41 +175,44 @@ void EditorCameraController::handleTriggered(float dt)
 
 void EditorCameraController::handleWheel(QWheelEvent *event)
 {
-    // Find intersection of cursor and camera far plane.
-    QVector3D planeNormal = EditorUtils::cameraNormal(m_camera);
-    QVector3D planeOrigin = m_camera->position() + m_camera->viewVector();
-    float cosAngle = QVector3D::dotProduct(planeOrigin.normalized(), planeNormal);
-    float planeOffset = planeOrigin.length() * cosAngle;
-    QVector3D ray = EditorUtils::unprojectRay(m_camera->viewMatrix(), m_camera->projectionMatrix(),
-                                              m_viewport->width(), m_viewport->height(),
-                                              event->pos());
-    float t = 0.0f;
-    QVector3D intersection = EditorUtils::findIntersection(m_camera->position(), ray,
-                                                           planeOffset, planeNormal, t);
+    if (m_camera) {
+        // Find intersection of cursor and camera far plane.
+        QVector3D planeNormal = EditorUtils::cameraNormal(m_camera);
+        QVector3D planeOrigin = m_camera->position() + m_camera->viewVector();
+        float cosAngle = QVector3D::dotProduct(planeOrigin.normalized(), planeNormal);
+        float planeOffset = planeOrigin.length() * cosAngle;
+        QVector3D ray = EditorUtils::unprojectRay(m_camera->viewMatrix(),
+                                                  m_camera->projectionMatrix(),
+                                                  m_viewport->width(), m_viewport->height(),
+                                                  event->pos());
+        float t = 0.0f;
+        QVector3D intersection = EditorUtils::findIntersection(m_camera->position(), ray,
+                                                               planeOffset, planeNormal, t);
 
-    // We want to keep the same world position under cursor, so we use this formula to find
-    // correct translation:
-    // x = camera viewVector
-    // y = vector from camera viewCenter to intersection
-    // x_delta = Camera translation in x vector direction
-    // y_delta = Camera translation in y vector direction
-    // To solve y_delta, we can use similar triangles:
-    // x.len()/y.len() = x_delta/y_delta
-    // --> y_delta = (y.len() * x_delta) / x.len()
+        // We want to keep the same world position under cursor, so we use this formula to find
+        // correct translation:
+        // x = camera viewVector
+        // y = vector from camera viewCenter to intersection
+        // x_delta = Camera translation in x vector direction
+        // y_delta = Camera translation in y vector direction
+        // To solve y_delta, we can use similar triangles:
+        // x.len()/y.len() = x_delta/y_delta
+        // --> y_delta = (y.len() * x_delta) / x.len()
 
-    QMatrix4x4 viewMatrix = m_camera->viewMatrix().inverted();
-    QVector3D translateVec(0.0f, 0.0f, event->angleDelta().y() * m_wheelSpeed);
-    translateVec = viewMatrix.mapVector(translateVec); // just x_delta vector for now
+        QMatrix4x4 viewMatrix = m_camera->viewMatrix().inverted();
+        QVector3D translateVec(0.0f, 0.0f, event->angleDelta().y() * m_wheelSpeed);
+        translateVec = viewMatrix.mapVector(translateVec); // just x_delta vector for now
 
-    float x_delta = translateVec.length();
-    if (event->angleDelta().y() < 0)
-        x_delta = -x_delta;
+        float x_delta = translateVec.length();
+        if (event->angleDelta().y() < 0)
+            x_delta = -x_delta;
 
-    // Add y_delta vector
-    translateVec += ((intersection - m_camera->viewCenter()) * x_delta)
-            / m_camera->viewVector().length();
+        // Add y_delta vector
+        translateVec += ((intersection - m_camera->viewCenter()) * x_delta)
+                / m_camera->viewVector().length();
 
-    adjustCamera(translateVec);
+        adjustCamera(translateVec);
+    }
 }
 
 void EditorCameraController::handleMousePress(QMouseEvent *event)
@@ -240,8 +243,6 @@ Qt3DRender::QCamera *EditorCameraController::camera() const
 
 void EditorCameraController::setCamera(Qt3DRender::QCamera *camera)
 {
-    if (m_camera != camera) {
+    if (m_camera != camera)
         m_camera = camera;
-        emit cameraChanged();
-    }
 }

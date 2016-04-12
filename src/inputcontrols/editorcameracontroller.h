@@ -58,7 +58,6 @@ class EditorViewportItem;
 class EditorCameraController : public Qt3DCore::QEntity
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QCamera *camera READ camera WRITE setCamera NOTIFY cameraChanged)
 
 public:
     explicit EditorCameraController(EditorViewportItem *viewport,
@@ -71,9 +70,6 @@ public:
     void handleWheel(QWheelEvent *event);
     void handleMousePress(QMouseEvent *event);
     void handleMouseRelease(QMouseEvent *event);
-
-Q_SIGNALS:
-    void cameraChanged();
 
 private Q_SLOTS:
     void handleTriggered(float dt);
