@@ -152,6 +152,9 @@ ComponentDelegate {
             id: nearPlaneField
             label: qsTr("Near Plane") + editorScene.emptyString
             propertyName: "nearPlane"
+            minimum: 0.01
+            roundDigits: 2
+            step: 1 // = 0.01 (because roundDigits is 2)
             component: componentData
             componentType: thisDelegate.componentType
         }
@@ -160,6 +163,8 @@ ComponentDelegate {
             id: farPlaneField
             label: qsTr("Far Plane") + editorScene.emptyString
             propertyName: "farPlane"
+            minimum: nearPlaneField.fieldValue
+            roundDigits: 2
             component: componentData
             componentType: thisDelegate.componentType
         }
@@ -181,6 +186,9 @@ ComponentDelegate {
             visible: componentData.projectionType === CameraLens.PerspectiveProjection
             label: qsTr("Aspect Ratio") + editorScene.emptyString
             propertyName: "aspectRatio"
+            minimum: 0.1
+            roundDigits: 3
+            step: 10 // = 0.01 (because roundDigits is 3)
             component: componentData
             componentType: thisDelegate.componentType
         }
