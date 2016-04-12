@@ -387,6 +387,9 @@ ApplicationWindow {
                 id: normalXButton
                 height: 32
                 width: 32
+                borderColor: "lightGray"
+                borderWidth: 1
+                borderRadius: 2
                 anchors.verticalCenter: parent.verticalCenter
                 enabledIconSource: "/images/helperplane_x_deselected.png"
                 disabledIconSource: "/images/helperplane_x_selected.png"
@@ -397,6 +400,9 @@ ApplicationWindow {
             EnableButton {
                 height: 32
                 width: 32
+                borderColor: "lightGray"
+                borderWidth: 1
+                borderRadius: 2
                 anchors.verticalCenter: parent.verticalCenter
                 enabledIconSource: "/images/helperplane_y_deselected.png"
                 disabledIconSource: "/images/helperplane_y_selected.png"
@@ -407,6 +413,9 @@ ApplicationWindow {
             EnableButton {
                 height: 32
                 width: 32
+                borderColor: "lightGray"
+                borderWidth: 1
+                borderRadius: 2
                 anchors.verticalCenter: parent.verticalCenter
                 enabledIconSource: "/images/helperplane_z_deselected.png"
                 disabledIconSource: "/images/helperplane_z_selected.png"
@@ -417,6 +426,9 @@ ApplicationWindow {
             EnableButton {
                 height: 32
                 width: 32
+                borderColor: "lightGray"
+                borderWidth: 1
+                borderRadius: 2
                 anchors.verticalCenter: parent.verticalCenter
                 enabledIconSource: "/images/helperplane_none_deselected.png"
                 disabledIconSource: "/images/helperplane_none_selected.png"
@@ -427,6 +439,9 @@ ApplicationWindow {
             EnableButton {
                 height: 32
                 width: 32
+                borderColor: "lightGray"
+                borderWidth: 1
+                borderRadius: 2
                 anchors.verticalCenter: parent.verticalCenter
                 enabledIconSource: "/images/reset_camera_to_default.png"
                 disabledIconSource: "/images/reset_camera_to_default.png"

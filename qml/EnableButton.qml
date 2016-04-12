@@ -37,6 +37,9 @@ Item {
     property string disabledIconSource
     property alias tooltip: propertyButton.tooltip
     property bool buttonEnabled
+    property color borderColor: "transparent"
+    property int borderWidth: 0
+    property int borderRadius: 0
 
     signal enabledButtonClicked()
 
@@ -49,7 +52,9 @@ Item {
             padding.right: 0
             padding.left: 0
             background: Rectangle {
-                border.width: 0
+                border.color: borderColor
+                border.width: propertyButton.hovered ? borderWidth : 0
+                radius: borderRadius
                 color: "transparent"
             }
         }
