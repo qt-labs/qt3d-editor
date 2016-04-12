@@ -334,7 +334,7 @@ void EditorScene::importEntity(const QUrl &fileUrl)
 
 QString EditorScene::cameraName(int index) const
 {
-    if (m_sceneCameras.size() < index)
+    if (m_sceneCameras.size() > index)
         return m_sceneCameras.at(index).cameraEntity->objectName();
     else
         return QString();
@@ -359,21 +359,6 @@ void EditorScene::resetFreeViewCamera()
     m_freeViewCameraEntity->setViewCenter(QVector3D(0, 0, 0));
 }
 
-void EditorScene::copyFreeViewToNewSceneCamera()
-{
-    // Set the new scene camera to freeview camera position
-    Qt3DRender::QCamera *newCam = qobject_cast<Qt3DRender::QCamera *>(m_sceneCameras.last().cameraEntity);
-    EditorUtils::copyCameraProperties(newCam, m_freeViewCameraEntity);
-}
-
-void EditorScene::moveActiveSceneCameraToFreeView()
-{
-    // Set the active scene camera to freeview camera position
-    Qt3DRender::QCamera *newCam = qobject_cast<Qt3DRender::QCamera *>(
-                m_sceneCameras.at(m_activeSceneCameraIndex).cameraEntity);
-    EditorUtils::copyCameraProperties(newCam, m_freeViewCameraEntity);
-}
-
 void EditorScene::snapFreeViewCameraToActiveSceneCamera()
 {
     // Set the freeview camera position and viewCenter to the active scene camera values
@@ -385,8 +370,10 @@ void EditorScene::snapFreeViewCameraToActiveSceneCamera()
     m_freeViewCameraEntity->setUpVector(QVector3D(0, 1, 0));
 }
 
-void EditorScene::duplicateEntity(Qt3DCore::QEntity *entity)
+QString EditorScene::duplicateEntity(Qt3DCore::QEntity *entity)
 {
+    QString duplicateName;
+
     QVector3D duplicateOffset =
             m_helperPlaneTransform->rotation().rotatedVector(QVector3D(0.5f, 0.5f, 0.0f)
                                                              * ++m_duplicateCount);
@@ -395,11 +382,13 @@ void EditorScene::duplicateEntity(Qt3DCore::QEntity *entity)
             EditorUtils::duplicateEntity(entity, m_sceneEntity, duplicateOffset);
 
     // Set name and add to scene
-    EditorUtils::nameDuplicate(newEntity, entity, m_sceneModel);
+    duplicateName = EditorUtils::nameDuplicate(newEntity, entity, m_sceneModel);
     addEntity(newEntity);
 
     // Refresh entity tree
     m_sceneModel->resetModel();
+
+    return duplicateName;
 }
 
 // Resolves a world position for given viewport position.

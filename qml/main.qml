@@ -145,7 +145,9 @@ ApplicationWindow {
                         checked: editorScene.activeSceneCameraIndex === index
                         exclusiveGroup: sceneCamerasGroup
                         onTriggered: {
-                            editorScene.activeSceneCameraIndex = index
+                            editorScene.undoHandler.createChangeGenericPropertyCommand(
+                                        editorScene, "activeSceneCameraIndex",
+                                        index, editorScene.activeSceneCameraIndex)
                         }
                     }
                     onObjectAdded: cameraMenu.insertItem(index, object)
@@ -175,18 +177,20 @@ ApplicationWindow {
                     text: qsTr("Add scene camera here") + editorScene.emptyString
                     onTriggered: {
                         entityTree.selectSceneRoot()
+                        editorScene.undoHandler.beginMacro(qsTr("Add scene camera"))
                         entityTree.addNewEntity(EditorUtils.CameraEntity)
-                        editorScene.copyFreeViewToNewSceneCamera()
-                        // TODO: Needs undo/redo support.
-                        // TODO: Also, adding and copying should be undone/redone in a single step
+                        // When a new camera is added, it is automatically selected
+                        editorScene.undoHandler.createCopyCameraPropertiesCommand(
+                                    selectedEntityName);
+                        editorScene.undoHandler.endMacro()
                     }
                 }
                 MenuItem {
                     enabled: freeViewCamera.checked
                     text: qsTr("Move active camera here") + editorScene.emptyString
                     onTriggered: {
-                        editorScene.moveActiveSceneCameraToFreeView()
-                        // TODO: Needs undo/redo support.
+                        editorScene.undoHandler.createCopyCameraPropertiesCommand(
+                                    editorScene.cameraName(editorScene.activeSceneCameraIndex));
                     }
                 }
                 MenuItem {
@@ -373,7 +377,9 @@ ApplicationWindow {
 
     Action {
         id: undoAction
-        text: editorScene.undoHandler.undoText === "" ? qsTr ("Undo") + editorScene.emptyString : qsTr ("Undo '%1'").arg(_undoHandler.undoText) + editorScene.emptyString
+        text: editorScene.undoHandler.undoText === ""
+              ? qsTr ("Undo") + editorScene.emptyString
+              : qsTr ("Undo '%1'").arg(editorScene.undoHandler.undoText) + editorScene.emptyString
         enabled: editorScene.undoHandler.canUndo
         shortcut: StandardKey.Undo
         onTriggered: editorScene.undoHandler.undo()
@@ -381,7 +387,9 @@ ApplicationWindow {
 
     Action {
         id: redoAction
-        text: editorScene.undoHandler.redoText === "" ? qsTr ("Redo") + editorScene.emptyString : qsTr ("Redo '%1'").arg(_undoHandler.redoText) + editorScene.emptyString
+        text: editorScene.undoHandler.redoText === ""
+              ? qsTr ("Redo") + editorScene.emptyString
+              : qsTr ("Redo '%1'").arg(editorScene.undoHandler.redoText) + editorScene.emptyString
         enabled: editorScene.undoHandler.canRedo
         shortcut: StandardKey.Redo
         onTriggered: editorScene.undoHandler.redo()

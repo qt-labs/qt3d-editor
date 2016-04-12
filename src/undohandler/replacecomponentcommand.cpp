@@ -35,6 +35,7 @@
 #include <Qt3DCore/QNode>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QComponent>
+#include <QtQml/QQmlEngine>
 
 ReplaceComponentCommand::ReplaceComponentCommand(EditorSceneItemModel *sceneModel,
                                                  const QString &entityName,
@@ -72,6 +73,8 @@ void ReplaceComponentCommand::replaceAndSwap()
         EditorSceneItem *sceneItem = m_sceneModel->editorSceneItemFromIndex(modelIndex);
         sceneItem->componentsModel()->replaceComponent(m_component2, m_component1);
         m_component2->setParent(static_cast<Qt3DCore::QNode *>(nullptr));
+        // Grab explicit ownership of the component, otherwise QML garbage collector may clean it up
+        QQmlEngine::setObjectOwnership(m_component2, QQmlEngine::CppOwnership);
         std::swap(m_component1, m_component2);
     }
 }

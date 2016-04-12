@@ -225,15 +225,16 @@ public:
     Q_INVOKABLE void importEntity(const QUrl &fileUrl);
     Q_INVOKABLE QString cameraName(int index) const;
     Q_INVOKABLE void resetFreeViewCamera();
-    Q_INVOKABLE void copyFreeViewToNewSceneCamera();
-    Q_INVOKABLE void moveActiveSceneCameraToFreeView();
     Q_INVOKABLE void snapFreeViewCameraToActiveSceneCamera();
-    Q_INVOKABLE void duplicateEntity(Qt3DCore::QEntity *entity);
     Q_INVOKABLE QVector3D getWorldPosition(int xPos, int yPos);
     Q_INVOKABLE void showPlaceholderEntity(const QString &name, int type);
     Q_INVOKABLE void movePlaceholderEntity(const QString &name, const QVector3D &worldPos);
     Q_INVOKABLE void hidePlaceholderEntity(const QString &name);
     Q_INVOKABLE void destroyPlaceholderEntity(const QString &name);
+
+    QString duplicateEntity(Qt3DCore::QEntity *entity);
+    void decrementDuplicateCount() { m_duplicateCount--; }
+    Qt3DRender::QCamera *freeViewCamera() const { return m_freeViewCameraEntity; }
 
     bool isRemovable(Qt3DCore::QEntity *entity) const;
 

@@ -41,10 +41,13 @@ PropertyInputField {
     property int roundMultiplier: Math.pow(10, roundDigits) // Calculated from roundDigits, do not set directly
     property int step: roundMultiplier
     property double fieldValue: component[propertyName]
+    property bool blockChange: false
 
     onComponentValueChanged: {
+        blockChange = true
         if (component !== null)
             valueInput.value = roundNumber(component[propertyName]) * roundMultiplier
+        blockChange = false
     }
 
     function roundNumber(number) {
@@ -103,9 +106,11 @@ PropertyInputField {
             }
 
             onValueChanged: {
-                var newValue = value
-                newValue = Math.max(value, minimum) / roundMultiplier
-                handleEditingFinished(newValue)
+                if (!blockChange) {
+                    var newValue = value
+                    newValue = Math.max(value, minimum) / roundMultiplier
+                    handleEditingFinished(newValue)
+                }
             }
         }
 

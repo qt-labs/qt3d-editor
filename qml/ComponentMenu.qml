@@ -67,8 +67,7 @@ Menu {
         enabled: !entityTreeView.sceneRootSelected
         iconSource: "qrc:/images/cross.png" // TODO: Replace with a real icon
         onTriggered: {
-            // TODO: Must be added to Undo -list
-            editorScene.duplicateEntity(selectedEntity.entity())
+            editorScene.undoHandler.createDuplicateEntityCommand(selectedEntityName)
             editorScene.restoreSelection(selectedEntity.entity())
         }
     }

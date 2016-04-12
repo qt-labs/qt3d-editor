@@ -25,52 +25,36 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-#include "removeentitycommand.h"
+#include "duplicateentitycommand.h"
 
 #include "editorscene.h"
-#include "editorsceneitem.h"
 #include "editorsceneitemmodel.h"
-#include "editorutils.h"
+#include "editorsceneitem.h"
 
 #include <Qt3DCore/QEntity>
-#include <QtQml/QQmlEngine>
 
-const QString internalPrefix = QStringLiteral("__internal");
-
-RemoveEntityCommand::RemoveEntityCommand(EditorSceneItemModel *sceneModel,
+DuplicateEntityCommand::DuplicateEntityCommand(EditorSceneItemModel *sceneModel,
                                          const QString &entityName) :
     m_sceneModel(sceneModel),
-    m_entityName(entityName),
-    m_row(0),
-    m_removedEntity(nullptr)
+    m_entityName(entityName)
 {
 }
 
-RemoveEntityCommand::~RemoveEntityCommand()
+void DuplicateEntityCommand::undo()
 {
-    delete m_removedEntity;
-}
-
-void RemoveEntityCommand::undo()
-{
-    if (m_removedEntity) {
-        // Insert the entity back
-        QModelIndex parentIndex = m_sceneModel->getModelIndexByName(m_parentEntityName);
-        m_sceneModel->insertExistingEntity(m_removedEntity, m_row, parentIndex);
-        m_removedEntity = nullptr;
+    if (!m_duplicateName.isEmpty()) {
+        QModelIndex index = m_sceneModel->getModelIndexByName(m_duplicateName);
+        EditorSceneItem *item = m_sceneModel->editorSceneItemFromIndex(index);
+        item->scene()->decrementDuplicateCount();
+        m_sceneModel->removeEntity(index);
+        m_duplicateName.clear();
     }
 }
 
-void RemoveEntityCommand::redo()
+void DuplicateEntityCommand::redo()
 {
     QModelIndex index = m_sceneModel->getModelIndexByName(m_entityName);
-    QModelIndex parentIndex = m_sceneModel->parent(index);
-    m_parentEntityName = m_sceneModel->entityName(parentIndex);
-    m_row = index.row();
     EditorSceneItem *item = m_sceneModel->editorSceneItemFromIndex(index);
-    m_removedEntity = EditorUtils::duplicateEntity(item->entity(), nullptr);
-    // Grab explicit ownership of the removed entity,
-    // otherwise QML garbage collector may clean it up.
-    QQmlEngine::setObjectOwnership(m_removedEntity, QQmlEngine::CppOwnership);
-    m_sceneModel->removeEntity(index);
+
+    m_duplicateName = item->scene()->duplicateEntity(item->entity());
 }

@@ -34,6 +34,9 @@
 #include "propertychangecommand.h"
 #include "modelrolechangecommand.h"
 #include "replacecomponentcommand.h"
+#include "duplicateentitycommand.h"
+#include "copycamerapropertiescommand.h"
+#include "genericpropertychangecommand.h"
 
 #include <QtWidgets/QUndoStack>
 
@@ -84,6 +87,16 @@ bool UndoHandler::isClean() const
 void UndoHandler::clear()
 {
     m_undoStack->clear();
+}
+
+void UndoHandler::beginMacro(const QString &macroName)
+{
+    m_undoStack->beginMacro(macroName);
+}
+
+void UndoHandler::endMacro()
+{
+    m_undoStack->endMacro();
 }
 
 void UndoHandler::createInsertEntityCommand(int type, const QString &parentName,
@@ -142,6 +155,35 @@ void UndoHandler::createReplaceComponentCommand(const QString &entityName, int c
     m_undoStack->push(new ReplaceComponentCommand(m_scene->sceneModel(), entityName,
                                                   EditorSceneItemComponentsModel::EditorSceneItemComponentTypes(componentType),
                                                   newComponent, oldComponent));
+}
+
+void UndoHandler::createDuplicateEntityCommand(const QString &entityName)
+{
+    if (entityName.isEmpty())
+        return;
+
+    m_undoStack->push(new DuplicateEntityCommand(m_scene->sceneModel(), entityName));
+}
+
+void UndoHandler::createCopyCameraPropertiesCommand(const QString &targetCamera,
+                                                    const QString &sourceCamera)
+{
+    if (sourceCamera == targetCamera)
+        return;
+
+    m_undoStack->push(new CopyCameraPropertiesCommand(m_scene->sceneModel(), sourceCamera,
+                                                      targetCamera));
+}
+
+// Note: The obj needs to be guaranteed to not be deleted by subsequent commands
+void UndoHandler::createChangeGenericPropertyCommand(QObject *obj, const QString &propertyName,
+                                                     const QVariant &newValue,
+                                                     const QVariant &oldValue)
+{
+    if (!obj || propertyName.isEmpty())
+        return;
+
+    m_undoStack->push(new GenericPropertyChangeCommand(obj, propertyName, newValue, oldValue));
 }
 
 void UndoHandler::redo()

@@ -66,6 +66,9 @@ public:
     void clear();
     Q_INVOKABLE bool isClean() const;
 
+    Q_INVOKABLE void beginMacro(const QString &macroName = QString());
+    Q_INVOKABLE void endMacro();
+
     // TODO: Add undo support for add/remove components, if that is generally supported.
 
     Q_INVOKABLE void createInsertEntityCommand(int type, const QString &parentName,
@@ -88,6 +91,13 @@ public:
                                        int componentType,
                                        Qt3DCore::QComponent *newComponent,
                                        Qt3DCore::QComponent *oldComponent);
+    Q_INVOKABLE void createDuplicateEntityCommand(const QString &entityName);
+    Q_INVOKABLE void createCopyCameraPropertiesCommand(const QString &targetCamera,
+                                                       const QString &sourceCamera = QString());
+    Q_INVOKABLE void createChangeGenericPropertyCommand(QObject *obj,
+                                                        const QString &propertyName,
+                                                        const QVariant &newValue,
+                                                        const QVariant &oldValue);
 
 signals:
     void canRedoChanged();

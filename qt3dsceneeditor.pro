@@ -26,6 +26,9 @@ SOURCES += src/main.cpp \
     src/undohandler/propertychangecommand.cpp \
     src/undohandler/modelrolechangecommand.cpp \
     src/undohandler/replacecomponentcommand.cpp \
+    src/undohandler/duplicateentitycommand.cpp \
+    src/undohandler/copycamerapropertiescommand.cpp \
+    src/undohandler/genericpropertychangecommand.cpp \
     src/materials/draghandleeffect.cpp \
     src/inputcontrols/editorcameracontroller.cpp
 
@@ -67,6 +70,9 @@ HEADERS += \
     src/undohandler/propertychangecommand.h \
     src/undohandler/modelrolechangecommand.h \
     src/undohandler/replacecomponentcommand.h \
+    src/undohandler/duplicateentitycommand.h \
+    src/undohandler/copycamerapropertiescommand.h \
+    src/undohandler/genericpropertychangecommand.h \
     src/materials/draghandleeffect.h \
     src/inputcontrols/editorcameracontroller.h
 

@@ -36,10 +36,13 @@ PropertyInputField {
 
     property alias label: intLabel.text
     property int minimum: 0
+    property bool blockChange: false
 
     onComponentValueChanged: {
+        blockChange = true
         if (component !== null)
             valueInput.value = component[propertyName]
+        blockChange = false
     }
 
     IntValidator {
@@ -80,9 +83,11 @@ PropertyInputField {
             enabled: lockButton.buttonEnabled
 
             onValueChanged: {
-                var newValue = value
-                newValue = Math.max(value, minimum)
-                handleEditingFinished(newValue)
+                if (!blockChange) {
+                    var newValue = value
+                    newValue = Math.max(value, minimum)
+                    handleEditingFinished(newValue)
+                }
             }
         }
 

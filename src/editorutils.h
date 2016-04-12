@@ -103,8 +103,8 @@ public:
                                               Qt3DCore::QEntity *newParent = nullptr,
                                               const QVector3D &duplicateOffset = QVector3D());
     static Qt3DCore::QComponent *duplicateComponent(Qt3DCore::QComponent *component);
-    static void nameDuplicate(Qt3DCore::QEntity *duplicate, Qt3DCore::QEntity *original,
-                              EditorSceneItemModel *sceneModel);
+    static QString nameDuplicate(Qt3DCore::QEntity *duplicate, Qt3DCore::QEntity *original,
+                                 EditorSceneItemModel *sceneModel);
 
     static Qt3DRender::QGeometryRenderer *createWireframeBoxMesh(float extent = 1.0f);
     static Qt3DRender::QGeometryRenderer *createWireframePlaneMesh(int lineCount);

@@ -421,15 +421,17 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
     return duplicate;
 }
 
-void EditorUtils::nameDuplicate(Qt3DCore::QEntity *duplicate, Qt3DCore::QEntity *original,
+QString EditorUtils::nameDuplicate(Qt3DCore::QEntity *duplicate, Qt3DCore::QEntity *original,
                                 EditorSceneItemModel *sceneModel)
 {
     if (original->objectName().isEmpty())
-        return;
+        return QString();
 
     QString newName = sceneModel->generateValidName(original->objectName() + QObject::tr("_Copy"),
                                                     original);
     duplicate->setObjectName(newName);
+
+    return newName;
 }
 
 Qt3DRender::QGeometryRenderer *EditorUtils::createWireframeBoxMesh(float extent)
