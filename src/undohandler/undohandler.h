@@ -64,6 +64,7 @@ public:
     QString redoText() const;
     QString undoText() const;
     void clear();
+    Q_INVOKABLE bool isClean() const;
 
     // TODO: Add undo support for add/remove components, if that is generally supported.
 

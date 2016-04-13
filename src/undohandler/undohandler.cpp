@@ -76,6 +76,11 @@ QString UndoHandler::undoText() const
     return m_undoStack->undoText();
 }
 
+bool UndoHandler::isClean() const
+{
+    return m_undoStack->isClean();
+}
+
 void UndoHandler::clear()
 {
     m_undoStack->clear();

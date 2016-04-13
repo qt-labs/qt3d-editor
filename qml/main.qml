@@ -112,7 +112,10 @@ ApplicationWindow {
             }
             MenuItem {
                 text: qsTr("E&xit") + editorScene.emptyString
-                onTriggered: Qt.quit()
+                onTriggered: {
+                    if (checkUnsavedChanges())
+                        Qt.quit()
+                }
             }
         }
         Menu {
@@ -294,8 +297,10 @@ ApplicationWindow {
         title: qsTr("Load Scene") + editorScene.emptyString
         nameFilters: [qsTr("Qt3D Scenes (*.qml)") + editorScene.emptyString]
         onAccepted: {
-            if (editorScene.loadScene(fileUrl))
+            if (editorScene.loadScene(fileUrl)) {
                 entityTree.selectSceneRoot()
+                saveFileUrl = fileUrl
+            }
         }
     }
 
@@ -303,11 +308,14 @@ ApplicationWindow {
         id: saveFileDialog
         selectMultiple: false
         selectExisting: false
+        property bool exiting: false
         title: qsTr("Save Scene") + editorScene.emptyString
         nameFilters: [qsTr("Qt3D Scenes (*.qml)") + editorScene.emptyString]
         onAccepted: {
             editorScene.saveScene(fileUrl)
             saveFileUrl = fileUrl
+            if (exiting)
+                Qt.quit()
         }
     }
 
@@ -510,7 +518,6 @@ ApplicationWindow {
 
         onErrorChanged: {
             notification.title = qsTr("Error") + editorScene.emptyString
-            notification.icon = StandardIcon.Warning
             notification.text = error
             notification.open()
         }
@@ -535,6 +542,7 @@ ApplicationWindow {
 
     MessageDialog {
         id: notification
+        icon: StandardIcon.Warning
     }
 
     Dialog {
@@ -562,6 +570,34 @@ ApplicationWindow {
         onAccepted: {
             editorScene.gridSize = gridSizeSpinBox.value
         }
+    }
+
+    MessageDialog {
+        id: closingDialog
+        icon: StandardIcon.Warning
+        standardButtons: StandardButton.Save | StandardButton.Cancel | StandardButton.Discard
+        title: qsTr("Exit Qt 3D Scene Editor") + editorScene.emptyString
+        text: qsTr("There are unsaved changes.\nQuit anyway?")
+              + editorScene.emptyString
+
+        onAccepted: {
+            if (saveFileUrl == "") {
+                saveFileDialog.exiting = true
+                saveFileDialog.open()
+                // No previous autosave file, no need to delete anything
+                saveFileDialog.exiting = false
+            } else {
+                editorScene.saveScene(saveFileUrl)
+                editorScene.deleteScene(saveFileUrl, true)
+                Qt.quit()
+            }
+        }
+
+        onDiscard: {
+            Qt.quit()
+        }
+
+        // Cancel doesn't need to do anything
     }
 
     SplitView {
@@ -707,6 +743,18 @@ ApplicationWindow {
     function resetCameraToDefault() {
         editorScene.freeView = true
         editorScene.resetFreeViewCamera()
+    }
+
+    function checkUnsavedChanges() {
+        if (!editorScene.undoHandler.isClean()) {
+            closingDialog.open()
+            return false
+        }
+        return true
+    }
+
+    onClosing: {
+        close.accepted = checkUnsavedChanges()
     }
 
     Component.onCompleted: {
