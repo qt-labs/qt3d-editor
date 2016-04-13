@@ -685,6 +685,13 @@ ApplicationWindow {
     }
 
     onWidthChanged: {
+        var maximumWidth = mainwindow.width - entityLibrary.width - 10
+        if (propertyPane.visibleWidth > maximumWidth) {
+            propertyPane.visibleWidth = maximumWidth
+            propertyPane.width = propertyPane.visibleWidth
+        } else if (propertyPane.visibleWidth > resizeRectangle.paneMinimumWidth) {
+            propertyPane.width = propertyPane.visibleWidth
+        }
         propertyPane.x = mainwindow.width - propertyPane.visibleWidth
     }
 
