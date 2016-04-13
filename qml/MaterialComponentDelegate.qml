@@ -43,7 +43,7 @@ ComponentDelegate {
     }
 
     Component.onCompleted: {
-        if (!transformViewVisible)
+        if (!materialViewVisible)
             height = minimumComponentHeight
     }
 

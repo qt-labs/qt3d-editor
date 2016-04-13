@@ -565,8 +565,11 @@ ApplicationWindow {
     }
 
     SplitView {
-        anchors.fill: parent
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: parent.left
         orientation: Qt.Horizontal
+        width: parent.width - propertyPane.visibleWidth
 
         // Entity library
         EntityLibrary {
@@ -598,39 +601,95 @@ ApplicationWindow {
                 }
             }
         }
+    }
 
-        SplitView {
-            orientation: Qt.Vertical
-            Layout.minimumWidth: 250
-            Layout.maximumWidth: mainwindow.width - 10
-            width: mainwindow.width / 4.5
-            anchors.right: parent.right
+    SplitView {
+        id: propertyPane
+        orientation: Qt.Vertical
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        width: mainwindow.width / 4.5
+        x: mainwindow.width - visibleWidth
 
-            // Entity list
-            EntityTree {
-                id: entityTree
+        property int visibleWidth: width
+
+        // Entity list
+        EntityTree {
+            id: entityTree
+        }
+
+        GeneralPropertyView {
+            id: generalPropertyView
+            entityName: selectedEntityName
+            entityType: editorScene.sceneModel.editorSceneItemFromIndex(entityTree.view.selection.currentIndex).itemType()
+            propertiesButtonVisible: {
+                (entityTree.view.selection.currentIndex
+                 !== editorScene.sceneModel.sceneEntityIndex())
+                        ? true : false
+            }
+        }
+
+        // Property (transform, material, etc.) list
+        ListView {
+            id: componentPropertiesView
+            Layout.fillHeight: true
+            delegate: ComponentPropertiesDelegate {}
+            flickableDirection: Flickable.VerticalFlick
+            boundsBehavior: Flickable.StopAtBounds
+            clip: true
+            visible: generalPropertyView.viewTitleVisible
+        }
+    }
+
+    onWidthChanged: {
+        propertyPane.x = mainwindow.width - propertyPane.visibleWidth
+    }
+
+    Rectangle {
+        id: resizeRectangle
+        width: 2
+        height: parent.height
+        anchors.right: propertyPane.left
+        color: "darkGray"
+
+        property int paneMinimumWidth: 250
+        property int paneMaximumWidth: mainwindow.width - entityLibrary.width - 10
+
+        MouseArea {
+            anchors.fill: parent
+            hoverEnabled: true
+
+            drag {
+                target: parent;
+                axis: Drag.XAxis
             }
 
-            GeneralPropertyView {
-                id: generalPropertyView
-                entityName: selectedEntityName
-                entityType: editorScene.sceneModel.editorSceneItemFromIndex(entityTree.view.selection.currentIndex).itemType()
-                propertiesButtonVisible: {
-                    (entityTree.view.selection.currentIndex
-                     !== editorScene.sceneModel.sceneEntityIndex())
-                            ? true : false
+            onEntered: {
+                cursorShape = Qt.SplitHCursor
+            }
+
+            onExited: {
+                cursorShape = Qt.ArrowCursor
+            }
+
+            onMouseXChanged: {
+                if (drag.active) {
+                    var newPaneWidth = propertyPane.width - mouseX
+                    if (propertyPane.visibleWidth < resizeRectangle.paneMinimumWidth
+                            || newPaneWidth < resizeRectangle.paneMinimumWidth) {
+                        var newXPos = propertyPane.x + mouseX
+                        if (newXPos < mainwindow.width) {
+                            propertyPane.visibleWidth = mainwindow.width - newXPos
+                            propertyPane.x = newXPos
+                        }
+                    }
+                    else if (newPaneWidth > resizeRectangle.paneMinimumWidth
+                             && newPaneWidth < resizeRectangle.paneMaximumWidth) {
+                        propertyPane.x = mainwindow.width - newPaneWidth
+                        propertyPane.width = newPaneWidth
+                        propertyPane.visibleWidth = propertyPane.width
+                    }
                 }
-            }
-
-            // Property (transform, material, etc.) list
-            ListView {
-                id: componentPropertiesView
-                Layout.fillHeight: true
-                delegate: ComponentPropertiesDelegate {}
-                flickableDirection: Flickable.VerticalFlick
-                boundsBehavior: Flickable.StopAtBounds
-                clip: true
-                visible: generalPropertyView.viewTitleVisible
             }
         }
     }
