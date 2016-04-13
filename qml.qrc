@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>meshes/cameracone.obj</file>
         <file>meshes/defaultmesh.obj</file>
+        <file>meshes/spotlight.obj</file>
         <file alias="main.qml">qml/main.qml</file>
         <file alias="CameraEntityDelegate.qml">qml/CameraEntityDelegate.qml</file>
         <file alias="ComponentDelegate.qml">qml/ComponentDelegate.qml</file>
@@ -17,6 +18,12 @@
         <file alias="TransformComponentDelegate.qml">qml/TransformComponentDelegate.qml</file>
         <file alias="TransformDelegate.qml">qml/TransformDelegate.qml</file>
         <file alias="UnknownComponentDelegate.qml">qml/UnknownComponentDelegate.qml</file>
+        <file alias="EntityMenu.qml">qml/EntityMenu.qml</file>
+        <file alias="EntityLibrary.qml">qml/EntityLibrary.qml</file>
+        <file alias="EntityModel.qml">qml/EntityModel.qml</file>
+        <file alias="EnableButton.qml">qml/EnableButton.qml</file>
+        <file alias="GeneralPropertyView.qml">qml/GeneralPropertyView.qml</file>
+        <file alias="ButtonViewHeader.qml">qml/ButtonViewHeader.qml</file>
         <file alias="ColorPropertyInputField.qml">qml/inputfields/ColorPropertyInputField.qml</file>
         <file alias="FilePropertyInputField.qml">qml/inputfields/FilePropertyInputField.qml</file>
         <file alias="FloatPropertyInputField.qml">qml/inputfields/FloatPropertyInputField.qml</file>
@@ -51,26 +58,20 @@
         <file alias="PointLightDelegate.qml">qml/lights/PointLightDelegate.qml</file>
         <file alias="SpotLightDelegate.qml">qml/lights/SpotLightDelegate.qml</file>
         <file alias="UnknownLightDelegate.qml">qml/lights/UnknownLightDelegate.qml</file>
-        <file alias="EntityMenu.qml">qml/EntityMenu.qml</file>
         <file alias="TextInputField.qml">qml/inputfields/TextInputField.qml</file>
         <file alias="PropertyInputField.qml">qml/inputfields/PropertyInputField.qml</file>
         <file alias="ModelRoleInputField.qml">qml/inputfields/ModelRoleInputField.qml</file>
         <file alias="TextureInputField.qml">qml/inputfields/TextureInputField.qml</file>
         <file alias="RotationPropertyInputField.qml">qml/inputfields/RotationPropertyInputField.qml</file>
-        <file alias="EntityLibrary.qml">qml/EntityLibrary.qml</file>
-        <file alias="EntityModel.qml">qml/EntityModel.qml</file>
         <file alias="Vector3DPropertyInputField.qml">qml/inputfields/Vector3DPropertyInputField.qml</file>
         <file alias="Matrix4x4PropertyInputField.qml">qml/inputfields/Matrix4x4PropertyInputField.qml</file>
         <file alias="CheckBoxPropertyInputField.qml">qml/inputfields/CheckBoxPropertyInputField.qml</file>
         <file alias="PropertyLockButton.qml">qml/inputfields/PropertyLockButton.qml</file>
+        <file alias="VisiblePropertyInputField.qml">qml/inputfields/VisiblePropertyInputField.qml</file>
+        <file alias="TextFieldBackgroundRectangle.qml">qml/inputfields/TextFieldBackgroundRectangle.qml</file>
         <file>shaders/draghandle.frag</file>
         <file>shaders/draghandle.vert</file>
-        <file alias="VisiblePropertyInputField.qml">qml/inputfields/VisiblePropertyInputField.qml</file>
-        <file alias="EnableButton.qml">qml/EnableButton.qml</file>
-        <file alias="GeneralPropertyView.qml">qml/GeneralPropertyView.qml</file>
         <file>qt3dsceneeditor_en.qm</file>
         <file>qt3dsceneeditor_fi.qm</file>
-        <file alias="ButtonViewHeader.qml">qml/ButtonViewHeader.qml</file>
-        <file alias="TextFieldBackgroundRectangle.qml">qml/inputfields/TextFieldBackgroundRectangle.qml</file>
     </qresource>
 </RCC>

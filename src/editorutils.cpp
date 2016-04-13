@@ -688,10 +688,8 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createLightMesh(EditorUtils::Compone
         break;
     }
     case LightSpot: {
-        Qt3DRender::QCuboidMesh *spotMesh = new Qt3DRender::QCuboidMesh;
-        spotMesh->setXExtent(0.3f);
-        spotMesh->setYExtent(0.3f);
-        spotMesh->setZExtent(0.9f);
+        Qt3DRender::QMesh *spotMesh = new Qt3DRender::QMesh();
+        spotMesh->setSource(QUrl(QStringLiteral("qrc:/meshes/spotlight.obj")));
         mesh = spotMesh;
         break;
     }
