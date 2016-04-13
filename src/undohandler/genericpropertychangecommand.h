@@ -35,7 +35,8 @@
 class GenericPropertyChangeCommand : public QUndoCommand
 {
 public:
-    GenericPropertyChangeCommand(QObject *obj,
+    GenericPropertyChangeCommand(const QString &text,
+                                 QObject *obj,
                                  const QString &propertyName,
                                  const QVariant &newValue,
                                  const QVariant &oldValue);

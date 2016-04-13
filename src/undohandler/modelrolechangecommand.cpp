@@ -35,7 +35,8 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QComponent>
 
-ModelRoleChangeCommand::ModelRoleChangeCommand(EditorSceneItemModel *sceneModel,
+ModelRoleChangeCommand::ModelRoleChangeCommand(const QString &text,
+                                               EditorSceneItemModel *sceneModel,
                                                const QString &entityName,
                                                EditorSceneItemComponentsModel::EditorSceneItemComponentTypes componentType,
                                                int roleIndex,
@@ -48,6 +49,10 @@ ModelRoleChangeCommand::ModelRoleChangeCommand(EditorSceneItemModel *sceneModel,
     m_newValue(newValue),
     m_oldValue(oldValue)
 {
+    if (text.isEmpty())
+        setText(QObject::tr("Change model role"));
+    else
+        setText(text);
 }
 
 void ModelRoleChangeCommand::undo()

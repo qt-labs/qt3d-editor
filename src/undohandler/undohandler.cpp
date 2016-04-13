@@ -115,11 +115,12 @@ void UndoHandler::createRemoveEntityCommand(const QString &entityName)
 void UndoHandler::createChangePropertyCommand(const QString &entityName,
                                               int componentType, const QString &propertyName,
                                               const QVariant &newValue, const QVariant &oldValue,
-                                              bool pushToStack)
+                                              bool pushToStack, const QString &text)
 {
-    PropertyChangeCommand *command = new PropertyChangeCommand(m_scene->sceneModel(), entityName,
-                                                               EditorSceneItemComponentsModel::EditorSceneItemComponentTypes(componentType),
-                                                               propertyName, newValue, oldValue);
+    PropertyChangeCommand *command = new PropertyChangeCommand(
+                text, m_scene->sceneModel(), entityName,
+                EditorSceneItemComponentsModel::EditorSceneItemComponentTypes(componentType),
+                propertyName, newValue, oldValue);
     if (pushToStack) {
         m_undoStack->push(command);
     } else {
@@ -131,9 +132,10 @@ void UndoHandler::createChangePropertyCommand(const QString &entityName,
 
 void UndoHandler::createChangeModelRoleCommand(const QString &entityName,
                                                int componentType, int roleIndex,
-                                               const QVariant &newValue, const QVariant &oldValue)
+                                               const QVariant &newValue, const QVariant &oldValue,
+                                               const QString &text)
 {
-    m_undoStack->push(new ModelRoleChangeCommand(m_scene->sceneModel(), entityName,
+    m_undoStack->push(new ModelRoleChangeCommand(text, m_scene->sceneModel(), entityName,
                                                  EditorSceneItemComponentsModel::EditorSceneItemComponentTypes(componentType),
                                                  roleIndex, newValue, oldValue));
 }
@@ -166,24 +168,27 @@ void UndoHandler::createDuplicateEntityCommand(const QString &entityName)
 }
 
 void UndoHandler::createCopyCameraPropertiesCommand(const QString &targetCamera,
-                                                    const QString &sourceCamera)
+                                                    const QString &sourceCamera,
+                                                    const QString &text)
 {
     if (sourceCamera == targetCamera)
         return;
 
-    m_undoStack->push(new CopyCameraPropertiesCommand(m_scene->sceneModel(), sourceCamera,
+    m_undoStack->push(new CopyCameraPropertiesCommand(text, m_scene->sceneModel(), sourceCamera,
                                                       targetCamera));
 }
 
 // Note: The obj needs to be guaranteed to not be deleted by subsequent commands
-void UndoHandler::createChangeGenericPropertyCommand(QObject *obj, const QString &propertyName,
+void UndoHandler::createChangeGenericPropertyCommand(QObject *obj,
+                                                     const QString &propertyName,
                                                      const QVariant &newValue,
-                                                     const QVariant &oldValue)
+                                                     const QVariant &oldValue,
+                                                     const QString &text)
 {
     if (!obj || propertyName.isEmpty())
         return;
 
-    m_undoStack->push(new GenericPropertyChangeCommand(obj, propertyName, newValue, oldValue));
+    m_undoStack->push(new GenericPropertyChangeCommand(text, obj, propertyName, newValue, oldValue));
 }
 
 void UndoHandler::redo()

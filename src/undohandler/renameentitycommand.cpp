@@ -37,7 +37,7 @@ RenameEntityCommand::RenameEntityCommand(EditorSceneItemModel *sceneModel,
     m_oldName(oldName),
     m_newName(newName)
 {
-
+    setText(QObject::tr("Rename entity"));
 }
 
 void RenameEntityCommand::undo()

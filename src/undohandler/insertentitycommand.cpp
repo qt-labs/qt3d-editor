@@ -40,6 +40,7 @@ InsertEntityCommand::InsertEntityCommand(EditorSceneItemModel *sceneModel,
     m_parentName(parentName),
     m_insertPosition(pos)
 {
+    setText(QObject::tr("Add new entity"));
 }
 
 void InsertEntityCommand::undo()

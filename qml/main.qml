@@ -147,7 +147,8 @@ ApplicationWindow {
                         onTriggered: {
                             editorScene.undoHandler.createChangeGenericPropertyCommand(
                                         editorScene, "activeSceneCameraIndex",
-                                        index, editorScene.activeSceneCameraIndex)
+                                        index, editorScene.activeSceneCameraIndex,
+                                        qsTr("Change active camera"))
                         }
                     }
                     onObjectAdded: cameraMenu.insertItem(index, object)
@@ -177,7 +178,7 @@ ApplicationWindow {
                     text: qsTr("Add scene camera here") + editorScene.emptyString
                     onTriggered: {
                         entityTree.selectSceneRoot()
-                        editorScene.undoHandler.beginMacro(qsTr("Add scene camera"))
+                        editorScene.undoHandler.beginMacro(text)
                         entityTree.addNewEntity(EditorUtils.CameraEntity)
                         // When a new camera is added, it is automatically selected
                         editorScene.undoHandler.createCopyCameraPropertiesCommand(
@@ -190,7 +191,8 @@ ApplicationWindow {
                     text: qsTr("Move active camera here") + editorScene.emptyString
                     onTriggered: {
                         editorScene.undoHandler.createCopyCameraPropertiesCommand(
-                                    editorScene.cameraName(editorScene.activeSceneCameraIndex));
+                                    editorScene.cameraName(editorScene.activeSceneCameraIndex),
+                                    "", text);
                     }
                 }
                 MenuItem {

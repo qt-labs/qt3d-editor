@@ -79,12 +79,14 @@ public:
                                                  const QString &propertyName,
                                                  const QVariant &newValue,
                                                  const QVariant &oldValue,
-                                                 bool pushToStack);
+                                                 bool pushToStack,
+                                                 const QString &text = QString());
     Q_INVOKABLE void createChangeModelRoleCommand(const QString &entityName,
                                                   int componentType,
                                                   int roleIndex,
                                                   const QVariant &newValue,
-                                                  const QVariant &oldValue);
+                                                  const QVariant &oldValue,
+                                                  const QString &text = QString());
     Q_INVOKABLE void createRenameEntityCommand(const QString &oldName,
                                                const QString &newName);
     void createReplaceComponentCommand(const QString &entityName,
@@ -93,11 +95,13 @@ public:
                                        Qt3DCore::QComponent *oldComponent);
     Q_INVOKABLE void createDuplicateEntityCommand(const QString &entityName);
     Q_INVOKABLE void createCopyCameraPropertiesCommand(const QString &targetCamera,
-                                                       const QString &sourceCamera = QString());
+                                                       const QString &sourceCamera = QString(),
+                                                       const QString &text = QString());
     Q_INVOKABLE void createChangeGenericPropertyCommand(QObject *obj,
                                                         const QString &propertyName,
                                                         const QVariant &newValue,
-                                                        const QVariant &oldValue);
+                                                        const QVariant &oldValue,
+                                                        const QString &text = QString());
 
 signals:
     void canRedoChanged();

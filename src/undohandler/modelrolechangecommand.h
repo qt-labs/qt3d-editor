@@ -37,7 +37,7 @@ class EditorSceneItemModel;
 class ModelRoleChangeCommand : public QUndoCommand
 {
 public:
-    ModelRoleChangeCommand(EditorSceneItemModel *sceneModel,
+    ModelRoleChangeCommand(const QString &text, EditorSceneItemModel *sceneModel,
                            const QString &entityName,
                            EditorSceneItemComponentsModel::EditorSceneItemComponentTypes componentType,
                            int roleIndex,

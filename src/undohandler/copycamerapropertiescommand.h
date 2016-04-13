@@ -41,7 +41,7 @@ namespace Qt3DRender {
 class CopyCameraPropertiesCommand : public QUndoCommand
 {
 public:
-    CopyCameraPropertiesCommand(EditorSceneItemModel *sceneModel,
+    CopyCameraPropertiesCommand(const QString &text, EditorSceneItemModel *sceneModel,
                                 const QString &sourceCamera,
                                 const QString &targetCamera);
     ~CopyCameraPropertiesCommand();

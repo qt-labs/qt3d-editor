@@ -35,7 +35,8 @@
 #include <Qt3DRender/QCamera>
 #include <QtQml/QQmlEngine>
 
-CopyCameraPropertiesCommand::CopyCameraPropertiesCommand(EditorSceneItemModel *sceneModel,
+CopyCameraPropertiesCommand::CopyCameraPropertiesCommand(const QString &text,
+                                                         EditorSceneItemModel *sceneModel,
                                                          const QString &sourceCamera,
                                                          const QString &targetCamera) :
     m_sceneModel(sceneModel),
@@ -44,6 +45,10 @@ CopyCameraPropertiesCommand::CopyCameraPropertiesCommand(EditorSceneItemModel *s
     m_originalSource(nullptr),
     m_originalTarget(nullptr)
 {
+    if (text.isEmpty())
+        setText(QObject::tr("Copy camera properties"));
+    else
+        setText(text);
 }
 
 CopyCameraPropertiesCommand::~CopyCameraPropertiesCommand()

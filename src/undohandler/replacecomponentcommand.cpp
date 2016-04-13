@@ -48,6 +48,7 @@ ReplaceComponentCommand::ReplaceComponentCommand(EditorSceneItemModel *sceneMode
     m_component1(newComponent),
     m_component2(oldComponent)
 {
+    setText(QObject::tr("Change component type"));
 }
 
 ReplaceComponentCommand::~ReplaceComponentCommand()

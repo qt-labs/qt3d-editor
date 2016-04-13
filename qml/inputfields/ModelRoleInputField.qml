@@ -32,12 +32,13 @@ Item {
     property int componentType: EditorSceneItemComponentsModel.Unknown
     property int modelRole: -1
     property var currentValue: null
+    property string undoText: ""
 
     function handleEditingFinished(newValue) {
         if (currentValue !== newValue) {
             editorScene.undoHandler.createChangeModelRoleCommand(
                         selectedEntityName, componentType,
-                        modelRole, newValue, currentValue);
+                        modelRole, newValue, currentValue, undoText);
         }
     }
 }

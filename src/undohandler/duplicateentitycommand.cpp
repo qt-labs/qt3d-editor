@@ -38,6 +38,7 @@ DuplicateEntityCommand::DuplicateEntityCommand(EditorSceneItemModel *sceneModel,
     m_sceneModel(sceneModel),
     m_entityName(entityName)
 {
+    setText(QObject::tr("Duplicate entity"));
 }
 
 void DuplicateEntityCommand::undo()

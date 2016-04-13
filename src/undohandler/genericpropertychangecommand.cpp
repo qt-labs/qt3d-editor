@@ -28,7 +28,7 @@
 #include "genericpropertychangecommand.h"
 #include "undohandler.h"
 
-GenericPropertyChangeCommand::GenericPropertyChangeCommand(QObject *obj,
+GenericPropertyChangeCommand::GenericPropertyChangeCommand(const QString &text, QObject *obj,
                                                            const QString &propertyName,
                                                            const QVariant &newValue,
                                                            const QVariant &oldValue) :
@@ -37,6 +37,10 @@ GenericPropertyChangeCommand::GenericPropertyChangeCommand(QObject *obj,
     m_newValue(newValue),
     m_oldValue(oldValue)
 {
+    if (text.isEmpty())
+        setText(QObject::tr("Change property"));
+    else
+        setText(text);
 }
 
 void GenericPropertyChangeCommand::undo()

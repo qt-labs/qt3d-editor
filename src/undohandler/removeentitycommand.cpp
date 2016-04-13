@@ -44,6 +44,7 @@ RemoveEntityCommand::RemoveEntityCommand(EditorSceneItemModel *sceneModel,
     m_row(0),
     m_removedEntity(nullptr)
 {
+    setText(QObject::tr("Remove entity"));
 }
 
 RemoveEntityCommand::~RemoveEntityCommand()

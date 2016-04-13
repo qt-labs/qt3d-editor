@@ -37,7 +37,7 @@ class EditorSceneItemModel;
 class PropertyChangeCommand : public QUndoCommand
 {
 public:
-    PropertyChangeCommand(EditorSceneItemModel *sceneModel,
+    PropertyChangeCommand(const QString &text, EditorSceneItemModel *sceneModel,
                           const QString &entityName,
                           EditorSceneItemComponentsModel::EditorSceneItemComponentTypes componentType,
                           const QString &propertyName,

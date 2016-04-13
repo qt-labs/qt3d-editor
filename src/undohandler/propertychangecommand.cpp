@@ -35,7 +35,7 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QComponent>
 
-PropertyChangeCommand::PropertyChangeCommand(EditorSceneItemModel *sceneModel,
+PropertyChangeCommand::PropertyChangeCommand(const QString &text, EditorSceneItemModel *sceneModel,
                                              const QString &entityName,
                                              EditorSceneItemComponentsModel::EditorSceneItemComponentTypes componentType,
                                              const QString &propertyName,
@@ -48,6 +48,10 @@ PropertyChangeCommand::PropertyChangeCommand(EditorSceneItemModel *sceneModel,
     m_newValue(newValue),
     m_oldValue(oldValue)
 {
+    if (text.isEmpty())
+        setText(QObject::tr("Change property"));
+    else
+        setText(text);
 }
 
 void PropertyChangeCommand::undo()

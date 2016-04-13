@@ -46,6 +46,7 @@ ModelRoleInputField {
         id: fileDialog
         title: fileLabel.text
         onAccepted: {
+            fileInput.undoText = qsTr("Change texture")
             handleEditingFinished(fileUrl)
         }
     }
