@@ -669,13 +669,10 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createLightMesh(EditorUtils::Compone
 {
     Qt3DRender::QGeometryRenderer *mesh = nullptr;
 
-    // TODO: Proper meshes
     switch (type) {
     case LightDirectional: {
-        Qt3DRender::QCuboidMesh *directionalMesh = new Qt3DRender::QCuboidMesh;
-        directionalMesh->setXExtent(0.5f);
-        directionalMesh->setYExtent(0.5f);
-        directionalMesh->setZExtent(0.9f);
+        Qt3DRender::QMesh *directionalMesh = new Qt3DRender::QMesh();
+        directionalMesh->setSource(QUrl(QStringLiteral("qrc:/meshes/directionallight.obj")));
         mesh = directionalMesh;
         break;
     }
