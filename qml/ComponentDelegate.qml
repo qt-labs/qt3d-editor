@@ -55,6 +55,9 @@ Item {
             id: componentTitle
             anchors.top: parent.top
             headerText: componentTitle
+            // Currently only Transform delegate has show/hide button,
+            // set transform specific tooltip
+            tooltip: qsTr("Show/Hide Transform Properties") + editorScene.emptyString
             showViewButtonShown: componentType == EditorSceneItemComponentsModel.Transform ?
                                      true : false
             lockTransformButtonShown: componentType == EditorSceneItemComponentsModel.Transform ?

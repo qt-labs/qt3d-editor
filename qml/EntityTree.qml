@@ -86,6 +86,7 @@ Item {
         id: treeViewHeader
         anchors.top: treeViewSplit.top
         headerText: qsTr("Scene") + editorScene.emptyString
+        tooltip: qsTr("Show/Hide Scene View") + editorScene.emptyString
 
         onShowViewButtonPressed: {
             treeViewSplit.height = splitHeight

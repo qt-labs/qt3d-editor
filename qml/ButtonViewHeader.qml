@@ -27,6 +27,8 @@
 ****************************************************************************/
 import QtQuick 2.5
 import Qt.labs.controls 1.0 as QLC
+import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 
 Rectangle {
     id: header
@@ -38,6 +40,7 @@ Rectangle {
     property bool lockTransformButtonShown: false
     property bool lockTransformFields: lockTransformButton.locked
     property int minimumHeaderHeight: viewHeaderText.implicitHeight + 12
+    property alias tooltip: showViewButton.tooltip
 
     signal showViewButtonPressed()
     signal hideViewButtonPressed()
@@ -93,14 +96,27 @@ Rectangle {
         }
     }
 
-    Item {
+    Button {
         id: showViewButton
         anchors.right: parent.right
         anchors.rightMargin: 8
         anchors.verticalCenter: parent.verticalCenter
         visible: showViewButtonShown
+        style: ButtonStyle {
+            padding.top: 0
+            padding.bottom: 0
+            padding.right: 0
+            padding.left: 0
+            background: Rectangle {
+                border.color: "transparent"
+                border.width: 0
+                color: "transparent"
+            }
+        }
+        activeFocusOnTab: false
         height: 10
         width: 20
+        tooltip: qsTr("Show/Hide View") + editorScene.emptyString // Default tooltip
 
         Image {
             id: collapseArrowImage

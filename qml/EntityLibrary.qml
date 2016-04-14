@@ -49,6 +49,7 @@ Item {
     ButtonViewHeader {
         id: entityViewHeader
         headerText: qsTr("Shapes") + editorScene.emptyString
+        tooltip: qsTr("Show/Hide Shapes View") + editorScene.emptyString
     }
 
     Rectangle {

@@ -63,6 +63,7 @@ Item {
             anchors.top: parent.top
             visibleEntityButtonShown: true
             headerText: qsTr("Properties") + editorScene.emptyString
+            tooltip: qsTr("Show/Hide Properties View") + editorScene.emptyString
 
             function showView() {
                 columnLayout.visible = true
