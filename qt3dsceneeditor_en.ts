@@ -19,79 +19,92 @@
     </message>
 </context>
 <context>
+    <name>ButtonViewHeader</name>
+    <message>
+        <location filename="qml/ButtonViewHeader.qml" line="72"/>
+        <source>Transform</source>
+        <translation>Transform</translation>
+    </message>
+    <message>
+        <location filename="qml/ButtonViewHeader.qml" line="119"/>
+        <source>Show/Hide View</source>
+        <translation>Show/Hide View</translation>
+    </message>
+</context>
+<context>
     <name>CameraEntityDelegate</name>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="38"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="37"/>
         <source>Camera</source>
         <translation>Camera</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="77"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="76"/>
         <source>Projection Type</source>
         <translation>Projection Type</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="82"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="80"/>
         <source>Orthographic</source>
         <translation>Orthographic</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="113"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="114"/>
         <source>Perspective</source>
         <translation>Perspective</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="147"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="153"/>
         <source>Near Plane</source>
         <translation>Near Plane</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="155"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="164"/>
         <source>Far Plane</source>
         <translation>Far Plane</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="164"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="175"/>
         <source>Field of View</source>
         <translation>Field of View</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="176"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="187"/>
         <source>Aspect Ratio</source>
         <translation>Aspect Ratio</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="184"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="198"/>
         <source>Left</source>
         <translation>Left</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="193"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="207"/>
         <source>Right</source>
         <translation>Right</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="202"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="216"/>
         <source>Bottom</source>
         <translation>Bottom</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="211"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="225"/>
         <source>Top</source>
         <translation>Top</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="220"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="234"/>
         <source>Position</source>
         <translation>Position</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="228"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="242"/>
         <source>Up</source>
         <translation>Up</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="237"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="251"/>
         <source>View Center</source>
         <translation>View Center</translation>
     </message>
@@ -106,13 +119,21 @@
 <context>
     <name>ColorPropertyInputField</name>
     <message>
-        <location filename="qml/inputfields/ColorPropertyInputField.qml" line="86"/>
+        <location filename="qml/inputfields/ColorPropertyInputField.qml" line="85"/>
         <source>Color</source>
         <translation>Color</translation>
     </message>
     <message>
         <source>Lock &apos;%1&apos; Properties</source>
         <translation type="vanished">Lock &apos;%1&apos; Properties</translation>
+    </message>
+</context>
+<context>
+    <name>ComponentDelegate</name>
+    <message>
+        <location filename="qml/ComponentDelegate.qml" line="60"/>
+        <source>Show/Hide Transform Properties</source>
+        <translation>Show/Hide Transform Properties</translation>
     </message>
 </context>
 <context>
@@ -336,37 +357,37 @@
 <context>
     <name>EditorScene</name>
     <message>
-        <location filename="src/editorscene.cpp" line="538"/>
+        <location filename="src/editorscene.cpp" line="543"/>
         <source>Failed to save the scene</source>
         <translation>Failed to save the scene</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="539"/>
+        <location filename="src/editorscene.cpp" line="544"/>
         <source>Failed to load a new scene</source>
         <translation>Failed to load the scene</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="540"/>
+        <location filename="src/editorscene.cpp" line="545"/>
         <source>Failed to import an Entity</source>
         <translation>Failed to import an Entity</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="541"/>
+        <location filename="src/editorscene.cpp" line="546"/>
         <source>Camera</source>
         <translation>Camera</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="542"/>
+        <location filename="src/editorscene.cpp" line="547"/>
         <source>Cube</source>
         <translation>Cube</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="543"/>
+        <location filename="src/editorscene.cpp" line="548"/>
         <source>Light</source>
         <translation>Light</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="537"/>
+        <location filename="src/editorscene.cpp" line="542"/>
         <source>Scene root</source>
         <translation>Scene Root</translation>
     </message>
@@ -429,9 +450,14 @@
 <context>
     <name>EntityLibrary</name>
     <message>
-        <location filename="qml/EntityLibrary.qml" line="48"/>
+        <location filename="qml/EntityLibrary.qml" line="51"/>
         <source>Shapes</source>
         <translation>Shapes</translation>
+    </message>
+    <message>
+        <location filename="qml/EntityLibrary.qml" line="52"/>
+        <source>Show/Hide Shapes View</source>
+        <translation>Show/Hide Shapes View</translation>
     </message>
 </context>
 <context>
@@ -518,17 +544,22 @@
 <context>
     <name>EntityTree</name>
     <message>
-        <location filename="qml/EntityTree.qml" line="176"/>
+        <location filename="qml/EntityTree.qml" line="178"/>
         <source>Entities</source>
         <translation>Entities</translation>
     </message>
     <message>
-        <location filename="qml/EntityTree.qml" line="87"/>
+        <location filename="qml/EntityTree.qml" line="88"/>
         <source>Scene</source>
         <translation>Scene</translation>
     </message>
     <message>
-        <location filename="qml/EntityTree.qml" line="181"/>
+        <location filename="qml/EntityTree.qml" line="89"/>
+        <source>Show/Hide Scene View</source>
+        <translation>Show/Hide Scene View</translation>
+    </message>
+    <message>
+        <location filename="qml/EntityTree.qml" line="183"/>
         <source>Visibility</source>
         <translation>Visibility</translation>
     </message>
@@ -544,7 +575,7 @@
 <context>
     <name>FloatPropertyInputField</name>
     <message>
-        <location filename="qml/inputfields/FloatPropertyInputField.qml" line="71"/>
+        <location filename="qml/inputfields/FloatPropertyInputField.qml" line="73"/>
         <source>Float Value</source>
         <translation>Float Value</translation>
     </message>
@@ -556,7 +587,7 @@
 <context>
     <name>FloatSliderInputField</name>
     <message>
-        <location filename="qml/inputfields/FloatSliderInputField.qml" line="83"/>
+        <location filename="qml/inputfields/FloatSliderInputField.qml" line="82"/>
         <source>Float Slider</source>
         <translation>Float Slider</translation>
     </message>
@@ -579,42 +610,47 @@
 <context>
     <name>GeneralPropertyView</name>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="64"/>
+        <location filename="qml/GeneralPropertyView.qml" line="65"/>
         <source>Properties</source>
         <translation>Properties</translation>
     </message>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="97"/>
+        <location filename="qml/GeneralPropertyView.qml" line="66"/>
+        <source>Show/Hide Properties View</source>
+        <translation>Show/Hide Properties View</translation>
+    </message>
+    <message>
+        <location filename="qml/GeneralPropertyView.qml" line="99"/>
         <source>Entity name</source>
         <translation>Entity Name</translation>
     </message>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="127"/>
+        <location filename="qml/GeneralPropertyView.qml" line="129"/>
         <source>Show Properties:</source>
         <translation>Show Properties:</translation>
     </message>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="139"/>
+        <location filename="qml/GeneralPropertyView.qml" line="141"/>
         <source>Show/Hide Light Properties</source>
         <translation>Show/Hide Light Properties</translation>
     </message>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="161"/>
+        <location filename="qml/GeneralPropertyView.qml" line="163"/>
         <source>Show/Hide Transform Properties</source>
         <translation>Show/Hide Transform Properties</translation>
     </message>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="184"/>
+        <location filename="qml/GeneralPropertyView.qml" line="186"/>
         <source>Show/Hide Camera Properties</source>
         <translation>Show/Hide Camera Properties</translation>
     </message>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="150"/>
+        <location filename="qml/GeneralPropertyView.qml" line="152"/>
         <source>Show/Hide Mesh Properties</source>
         <translation>Show/Hide Mesh Properties</translation>
     </message>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="173"/>
+        <location filename="qml/GeneralPropertyView.qml" line="175"/>
         <source>Show/Hide Material Properties</source>
         <translation>Show/Hide Material Properties</translation>
     </message>
@@ -664,7 +700,7 @@
 <context>
     <name>IntPropertyInputField</name>
     <message>
-        <location filename="qml/inputfields/IntPropertyInputField.qml" line="59"/>
+        <location filename="qml/inputfields/IntPropertyInputField.qml" line="61"/>
         <source>Integer Value</source>
         <translation>Integer Value</translation>
     </message>
@@ -825,7 +861,7 @@
         <translation type="vanished">Matrix</translation>
     </message>
     <message>
-        <location filename="qml/transforms/MatrixTransformDelegate.qml" line="40"/>
+        <location filename="qml/transforms/MatrixTransformDelegate.qml" line="39"/>
         <source>Transform Matrix</source>
         <translation>Transform Matrix</translation>
     </message>
@@ -988,12 +1024,12 @@
 <context>
     <name>ObjectPickerComponentDelegate</name>
     <message>
-        <location filename="qml/ObjectPickerComponentDelegate.qml" line="35"/>
+        <location filename="qml/ObjectPickerComponentDelegate.qml" line="34"/>
         <source>Object Picker</source>
         <translation>Object Picker</translation>
     </message>
     <message>
-        <location filename="qml/ObjectPickerComponentDelegate.qml" line="38"/>
+        <location filename="qml/ObjectPickerComponentDelegate.qml" line="37"/>
         <source>Hover Enabled</source>
         <translation>Hover Enabled</translation>
     </message>
@@ -1101,7 +1137,7 @@
         <translation type="vanished">Intensity</translation>
     </message>
     <message>
-        <location filename="qml/lights/PointLightDelegate.qml" line="45"/>
+        <location filename="qml/lights/PointLightDelegate.qml" line="47"/>
         <source>Attenuation</source>
         <translation>Attenuation</translation>
     </message>
@@ -1109,7 +1145,7 @@
 <context>
     <name>PropertyLockButton</name>
     <message>
-        <location filename="qml/inputfields/PropertyLockButton.qml" line="40"/>
+        <location filename="qml/inputfields/PropertyLockButton.qml" line="38"/>
         <source>Lock &apos;%1&apos; Properties</source>
         <translation>Lock &apos;%1&apos; Properties</translation>
     </message>
@@ -1117,7 +1153,7 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="src/editorutils.cpp" line="386"/>
+        <location filename="src/editorutils.cpp" line="430"/>
         <source>_Copy</source>
         <translation>_Copy</translation>
     </message>
@@ -1145,7 +1181,7 @@
         <translation>Rotate</translation>
     </message>
     <message>
-        <location filename="qml/inputfields/RotationPropertyInputField.qml" line="83"/>
+        <location filename="qml/inputfields/RotationPropertyInputField.qml" line="84"/>
         <source>Rotation Angle</source>
         <translation>Angle</translation>
     </message>
@@ -1157,12 +1193,12 @@
         <translation type="vanished">Scale, Rotate &amp; Translate</translation>
     </message>
     <message>
-        <location filename="qml/transforms/SRTTransformDelegate.qml" line="39"/>
+        <location filename="qml/transforms/SRTTransformDelegate.qml" line="38"/>
         <source>Scale</source>
         <translation>Scale</translation>
     </message>
     <message>
-        <location filename="qml/transforms/SRTTransformDelegate.qml" line="55"/>
+        <location filename="qml/transforms/SRTTransformDelegate.qml" line="58"/>
         <source>Translate</source>
         <translation>Translate</translation>
     </message>
@@ -1186,12 +1222,12 @@
         <translation>Size</translation>
     </message>
     <message>
-        <location filename="qml/inputfields/SizePropertyInputField.qml" line="77"/>
+        <location filename="qml/inputfields/SizePropertyInputField.qml" line="85"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="qml/inputfields/SizePropertyInputField.qml" line="101"/>
+        <location filename="qml/inputfields/SizePropertyInputField.qml" line="123"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
@@ -1207,22 +1243,22 @@
         <translation type="vanished">Sphere</translation>
     </message>
     <message>
-        <location filename="qml/meshes/SphereMeshDelegate.qml" line="37"/>
+        <location filename="qml/meshes/SphereMeshDelegate.qml" line="36"/>
         <source>Rings</source>
         <translation>Rings</translation>
     </message>
     <message>
-        <location filename="qml/meshes/SphereMeshDelegate.qml" line="45"/>
+        <location filename="qml/meshes/SphereMeshDelegate.qml" line="44"/>
         <source>Slices</source>
         <translation>Slices</translation>
     </message>
     <message>
-        <location filename="qml/meshes/SphereMeshDelegate.qml" line="53"/>
+        <location filename="qml/meshes/SphereMeshDelegate.qml" line="52"/>
         <source>Radius</source>
         <translation>Radius</translation>
     </message>
     <message>
-        <location filename="qml/meshes/SphereMeshDelegate.qml" line="60"/>
+        <location filename="qml/meshes/SphereMeshDelegate.qml" line="59"/>
         <source>Generate Tangents</source>
         <translation>Generate Tangents</translation>
     </message>
@@ -1263,7 +1299,12 @@
 <context>
     <name>TextureInputField</name>
     <message>
-        <location filename="qml/inputfields/TextureInputField.qml" line="64"/>
+        <location filename="qml/inputfields/TextureInputField.qml" line="49"/>
+        <source>Change texture</source>
+        <translation>Change Texture</translation>
+    </message>
+    <message>
+        <location filename="qml/inputfields/TextureInputField.qml" line="67"/>
         <source>File</source>
         <translation>File</translation>
     </message>
@@ -1303,12 +1344,12 @@
         <translation>Transform</translation>
     </message>
     <message>
-        <location filename="qml/TransformComponentDelegate.qml" line="71"/>
+        <location filename="qml/TransformComponentDelegate.qml" line="80"/>
         <source>Scale, Rotate &amp; Translate</source>
         <translation>Scale, Rotate &amp; Translate</translation>
     </message>
     <message>
-        <location filename="qml/TransformComponentDelegate.qml" line="72"/>
+        <location filename="qml/TransformComponentDelegate.qml" line="81"/>
         <source>Matrix</source>
         <translation>Matrix</translation>
     </message>
@@ -1327,27 +1368,27 @@
 <context>
     <name>UnknownComponentDelegate</name>
     <message>
-        <location filename="qml/UnknownComponentDelegate.qml" line="35"/>
+        <location filename="qml/UnknownComponentDelegate.qml" line="34"/>
         <source>Transform</source>
         <translation>Transform</translation>
     </message>
     <message>
-        <location filename="qml/UnknownComponentDelegate.qml" line="37"/>
+        <location filename="qml/UnknownComponentDelegate.qml" line="36"/>
         <source>Mesh</source>
         <translation>Mesh</translation>
     </message>
     <message>
-        <location filename="qml/UnknownComponentDelegate.qml" line="39"/>
+        <location filename="qml/UnknownComponentDelegate.qml" line="38"/>
         <source>Material</source>
         <translation>Material</translation>
     </message>
     <message>
-        <location filename="qml/UnknownComponentDelegate.qml" line="45"/>
+        <location filename="qml/UnknownComponentDelegate.qml" line="44"/>
         <source>Layer</source>
         <translation>Layer</translation>
     </message>
     <message>
-        <location filename="qml/UnknownComponentDelegate.qml" line="47"/>
+        <location filename="qml/UnknownComponentDelegate.qml" line="46"/>
         <source>Unknown</source>
         <translation>Unknown</translation>
     </message>
@@ -1384,17 +1425,17 @@
 <context>
     <name>Vector3DInputField</name>
     <message>
-        <location filename="qml/inputfields/Vector3DInputField.qml" line="41"/>
+        <location filename="qml/inputfields/Vector3DInputField.qml" line="40"/>
         <source>Vector3D</source>
         <translation>Vector3D</translation>
     </message>
     <message>
-        <location filename="qml/inputfields/Vector3DInputField.qml" line="87"/>
+        <location filename="qml/inputfields/Vector3DInputField.qml" line="88"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="qml/inputfields/Vector3DInputField.qml" line="133"/>
+        <location filename="qml/inputfields/Vector3DInputField.qml" line="149"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
@@ -1403,7 +1444,7 @@
         <translation type="vanished">Lock &apos;%1&apos; Properties</translation>
     </message>
     <message>
-        <location filename="qml/inputfields/Vector3DInputField.qml" line="180"/>
+        <location filename="qml/inputfields/Vector3DInputField.qml" line="210"/>
         <source>Z</source>
         <translation>Z</translation>
     </message>
@@ -1417,205 +1458,222 @@
         <translation>Qt 3D Scene Editor</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="72"/>
+        <location filename="qml/main.qml" line="76"/>
         <source>&amp;File</source>
         <translation>&amp;File</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="74"/>
+        <location filename="qml/main.qml" line="78"/>
         <source>&amp;New</source>
         <translation>&amp;New</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="93"/>
+        <location filename="qml/main.qml" line="97"/>
         <source>Enable autosave</source>
         <translation>Enable Autosave</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="113"/>
+        <location filename="qml/main.qml" line="117"/>
         <source>E&amp;xit</source>
         <translation>E&amp;xit</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="118"/>
+        <location filename="qml/main.qml" line="125"/>
         <source>&amp;Edit</source>
         <translation>&amp;Edit</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="128"/>
+        <location filename="qml/main.qml" line="135"/>
         <source>&amp;View</source>
         <translation>&amp;View</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="131"/>
+        <location filename="qml/main.qml" line="138"/>
         <source>&amp;Camera</source>
         <translation>&amp;Camera</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="156"/>
+        <location filename="qml/main.qml" line="154"/>
+        <source>Change active camera</source>
+        <translation>Change Active Camera</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="166"/>
         <source>Free viewing mode</source>
         <translation>Free Viewing Mode</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="164"/>
+        <location filename="qml/main.qml" line="174"/>
         <source>Reset</source>
         <translation>Reset to Default</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="171"/>
+        <location filename="qml/main.qml" line="181"/>
         <source>Add scene camera here</source>
-        <translation>Add Scene Camera Here</translation>
+        <translation>Add Scene Camera To Current Position</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="182"/>
+        <location filename="qml/main.qml" line="194"/>
         <source>Move active camera here</source>
-        <translation>Move Active Camera Here</translation>
+        <translation>Move Active Camera To Current Position</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="190"/>
+        <location filename="qml/main.qml" line="203"/>
         <source>Snap to active camera</source>
-        <translation>Snap to Active Camera</translation>
+        <translation>Snap to Active Camera Position</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="198"/>
+        <location filename="qml/main.qml" line="211"/>
         <source>&amp;Helper Plane</source>
         <translation>&amp;Helper Plane</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="204"/>
+        <location filename="qml/main.qml" line="217"/>
         <source>Normal &amp;X</source>
         <translation>Normal &amp;X</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="215"/>
+        <location filename="qml/main.qml" line="228"/>
         <source>Normal &amp;Y</source>
         <translation>Normal &amp;Y</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="226"/>
+        <location filename="qml/main.qml" line="239"/>
         <source>Normal &amp;Z</source>
         <translation>Normal &amp;Z</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="237"/>
+        <location filename="qml/main.qml" line="250"/>
         <source>Change Grid Size</source>
         <translation>Change Grid Spacing</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="245"/>
+        <location filename="qml/main.qml" line="258"/>
         <source>&amp;Hide</source>
         <translation>&amp;Hide</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="257"/>
+        <location filename="qml/main.qml" line="270"/>
         <source>&amp;Language</source>
         <translation>Language</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="263"/>
+        <location filename="qml/main.qml" line="276"/>
         <source>English</source>
         <translation>English</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="275"/>
+        <location filename="qml/main.qml" line="288"/>
         <source>Finnish</source>
         <translation>Finnish</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="293"/>
+        <location filename="qml/main.qml" line="306"/>
         <source>Load Scene</source>
         <translation>Load Scene</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="294"/>
-        <location filename="qml/main.qml" line="306"/>
+        <location filename="qml/main.qml" line="307"/>
+        <location filename="qml/main.qml" line="322"/>
         <source>Qt3D Scenes (*.qml)</source>
         <translation>Qt 3D Scenes (*.qml)</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="305"/>
+        <location filename="qml/main.qml" line="321"/>
         <source>Save Scene</source>
         <translation>Save Scene</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="317"/>
+        <location filename="qml/main.qml" line="335"/>
         <source>Import Entity</source>
         <translation>Import Entity</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="318"/>
+        <location filename="qml/main.qml" line="336"/>
         <source>All files (*)</source>
-        <translation>All files (*)</translation>
+        <translation>All Files (*)</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="326"/>
+        <location filename="qml/main.qml" line="344"/>
         <source>L&amp;oad</source>
         <translation>L&amp;oad</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="333"/>
+        <location filename="qml/main.qml" line="351"/>
         <source>&amp;Save</source>
         <translation>&amp;Save</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="348"/>
+        <location filename="qml/main.qml" line="366"/>
         <source>Save As</source>
         <translation>Save As</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="359"/>
+        <location filename="qml/main.qml" line="377"/>
         <source>&amp;Import Entity</source>
         <translation>&amp;Import Entity</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="367"/>
+        <location filename="qml/main.qml" line="386"/>
         <source>Undo</source>
         <translation>Undo</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="367"/>
+        <location filename="qml/main.qml" line="387"/>
         <source>Undo &apos;%1&apos;</source>
         <translation>Undo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="375"/>
+        <location filename="qml/main.qml" line="396"/>
         <source>Redo</source>
         <translation>Redo</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="375"/>
+        <location filename="qml/main.qml" line="397"/>
         <source>Redo &apos;%1&apos;</source>
         <translation>Redo &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="392"/>
+        <location filename="qml/main.qml" line="417"/>
         <source>Normal X (Ctrl + 1)</source>
-        <translation>Normal X (Ctrl + 1)</translation>
+        <translation>Helper Plane Normal on X Axis (Ctrl + 1)</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="402"/>
+        <location filename="qml/main.qml" line="430"/>
         <source>Normal Y (Ctrl + 2)</source>
-        <translation>Normal Y (Ctrl + 2)</translation>
+        <translation>Helper Plane Normal on Y Axis (Ctrl + 2)</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="412"/>
+        <location filename="qml/main.qml" line="443"/>
         <source>Normal Z (Ctrl + 3)</source>
-        <translation>Normal Z (Ctrl + 3)</translation>
+        <translation>Helper Plane Normal on Z Axis (Ctrl + 3)</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="422"/>
+        <location filename="qml/main.qml" line="456"/>
         <source>Hide helper plane (Ctrl + 4)</source>
-        <translation>Hide helper plane (Ctrl + 4)</translation>
+        <translation>Hide Helper Plane (Ctrl + 4)</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="432"/>
+        <location filename="qml/main.qml" line="469"/>
         <source>Reset to Default (Ctrl + R)</source>
         <translation>Reset to Default (Ctrl + R)</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="523"/>
+        <location filename="qml/main.qml" line="564"/>
         <source>Grid Size</source>
         <translation>Grid Spacing</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="592"/>
+        <source>Exit Qt 3D Scene Editor</source>
+        <translation>Exit Qt 3D Scene Editor</translation>
+    </message>
+    <message>
+        <location filename="qml/main.qml" line="593"/>
+        <source>There are unsaved changes.
+Quit anyway?</source>
+        <translation>There are unsaved changes.
+Quit anyway?</translation>
     </message>
     <message>
         <source>Normal X</source>
@@ -1638,7 +1696,7 @@
         <translation type="vanished">Reset to Default</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="496"/>
+        <location filename="qml/main.qml" line="533"/>
         <source>Error</source>
         <translation>Error</translation>
     </message>
