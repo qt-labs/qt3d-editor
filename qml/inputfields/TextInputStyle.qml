@@ -27,7 +27,14 @@
 ****************************************************************************/
 import QtQuick 2.5
 
-Rectangle {
-    color: parent.enabled ? "white" : "transparent"
-    border.color: parent.enabled ? "#bdbebf" : "white"
+TextInput {
+    text: parent.textFromValue(parent.value, parent.locale)
+    font: parent.font
+    color: mainwindow.textFieldColor
+    selectionColor: mainwindow.textFieldSelectionColor
+    selectedTextColor: mainwindow.textFieldSelectedColor
+    horizontalAlignment: Qt.AlignHCenter
+    verticalAlignment: Qt.AlignVCenter
+    validator: parent.validator
+    selectByMouse: true
 }

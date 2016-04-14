@@ -71,7 +71,11 @@ Item {
             anchors.right: parent.right
             implicitWidth: textInput.width * 0.6 + 20 // Lockbutton width
             text: textInput.displayText
-            background: TextFieldBackgroundRectangle {}
+            background: TextFieldBackgroundStyle {}
+            color: mainwindow.textFieldColor
+            selectionColor: mainwindow.textFieldSelectionColor
+            selectedTextColor: mainwindow.textFieldSelectedColor
+            selectByMouse: true
 
             onEditingFinished: {
                 textInput.desiredText = text

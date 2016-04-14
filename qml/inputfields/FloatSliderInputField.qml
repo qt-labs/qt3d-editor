@@ -177,7 +177,11 @@ Item {
             validator: doubleValidator
             inputMethodHints: Qt.ImhFormattedNumbersOnly
             enabled: lockButton.buttonEnabled
-            background: TextFieldBackgroundRectangle {}
+            background: TextFieldBackgroundStyle {}
+            color: textFieldColor
+            selectionColor: textFieldSelectionColor
+            selectedTextColor: textFieldSelectedColor
+            selectByMouse: true
 
             onEditingFinished: {
                 tryCommitValue(floatInput.text)

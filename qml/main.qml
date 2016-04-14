@@ -57,6 +57,9 @@ ApplicationWindow {
     property alias selectedEntityType: generalPropertyView.entityType
 
     property color labelTextColor: "white"
+    property color textFieldColor: "#353637"
+    property color textFieldSelectionColor: "gray"
+    property color textFieldSelectedColor: "lightGray"
 
     property bool transformViewVisible: true
     property bool materialViewVisible: true

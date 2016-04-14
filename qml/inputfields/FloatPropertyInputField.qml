@@ -93,6 +93,10 @@ PropertyInputField {
             editable: true
             enabled: lockButton.buttonEnabled
 
+            contentItem: TextInputStyle {
+                inputMethodHints: Qt.ImhFormattedNumbersOnly
+            }
+
             validator: DoubleValidator {
                 locale: "C"
             }

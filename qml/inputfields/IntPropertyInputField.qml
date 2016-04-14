@@ -82,6 +82,10 @@ PropertyInputField {
             value: component[propertyName]
             enabled: lockButton.buttonEnabled
 
+            contentItem: TextInputStyle {
+                inputMethodHints: Qt.ImhFormattedNumbersOnly
+            }
+
             onValueChanged: {
                 if (!blockChange) {
                     var newValue = value

@@ -69,7 +69,8 @@
         <file alias="CheckBoxPropertyInputField.qml">qml/inputfields/CheckBoxPropertyInputField.qml</file>
         <file alias="PropertyLockButton.qml">qml/inputfields/PropertyLockButton.qml</file>
         <file alias="VisiblePropertyInputField.qml">qml/inputfields/VisiblePropertyInputField.qml</file>
-        <file alias="TextFieldBackgroundRectangle.qml">qml/inputfields/TextFieldBackgroundRectangle.qml</file>
+        <file alias="TextFieldBackgroundStyle.qml">qml/inputfields/TextFieldBackgroundStyle.qml</file>
+        <file alias="TextInputStyle.qml">qml/inputfields/TextInputStyle.qml</file>
         <file>shaders/draghandle.frag</file>
         <file>shaders/draghandle.vert</file>
         <file>qt3dsceneeditor_en.qm</file>

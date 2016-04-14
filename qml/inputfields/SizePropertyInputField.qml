@@ -99,9 +99,13 @@ PropertyInputField {
                 implicitWidth: parent.cellwidth
                 validator: intValidator
                 enabled: lockButton.buttonEnabled
-                background: TextFieldBackgroundRectangle {}
+                background: TextFieldBackgroundStyle {}
                 anchors.right: heightLabel.left
                 anchors.rightMargin: 4
+                color: textFieldColor
+                selectionColor: textFieldSelectionColor
+                selectedTextColor: textFieldSelectedColor
+                selectByMouse: true
 
                 onEditingFinished: {
                     newValue.height = component[propertyName].height
@@ -130,7 +134,11 @@ PropertyInputField {
                 validator: intValidator
                 implicitWidth: parent.cellwidth
                 enabled: lockButton.buttonEnabled
-                background: TextFieldBackgroundRectangle {}
+                background: TextFieldBackgroundStyle {}
+                color: textFieldColor
+                selectionColor: textFieldSelectionColor
+                selectedTextColor: textFieldSelectedColor
+                selectByMouse: true
 
                 onEditingFinished: {
                     newValue.width = component[propertyName].width

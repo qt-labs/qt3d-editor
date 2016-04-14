@@ -99,7 +99,11 @@ Item {
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundRectangle {}
+                    background: TextFieldBackgroundStyle {}
+                    color: textFieldColor
+                    selectionColor: textFieldSelectionColor
+                    selectedTextColor: textFieldSelectedColor
+                    selectByMouse: true
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -117,7 +121,11 @@ Item {
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundRectangle {}
+                    background: TextFieldBackgroundStyle {}
+                    color: textFieldColor
+                    selectionColor: textFieldSelectionColor
+                    selectedTextColor: textFieldSelectedColor
+                    selectByMouse: true
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -135,7 +143,11 @@ Item {
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundRectangle {}
+                    background: TextFieldBackgroundStyle {}
+                    color: textFieldColor
+                    selectionColor: textFieldSelectionColor
+                    selectedTextColor: textFieldSelectedColor
+                    selectByMouse: true
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -153,7 +165,11 @@ Item {
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundRectangle {}
+                    background: TextFieldBackgroundStyle {}
+                    color: textFieldColor
+                    selectionColor: textFieldSelectionColor
+                    selectedTextColor: textFieldSelectedColor
+                    selectByMouse: true
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -174,7 +190,11 @@ Item {
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundRectangle {}
+                    background: TextFieldBackgroundStyle {}
+                    color: textFieldColor
+                    selectionColor: textFieldSelectionColor
+                    selectedTextColor: textFieldSelectedColor
+                    selectByMouse: true
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -192,7 +212,11 @@ Item {
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundRectangle {}
+                    background: TextFieldBackgroundStyle {}
+                    color: textFieldColor
+                    selectionColor: textFieldSelectionColor
+                    selectedTextColor: textFieldSelectedColor
+                    selectByMouse: true
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -210,7 +234,11 @@ Item {
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundRectangle {}
+                    background: TextFieldBackgroundStyle {}
+                    color: textFieldColor
+                    selectionColor: textFieldSelectionColor
+                    selectedTextColor: textFieldSelectedColor
+                    selectByMouse: true
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -228,7 +256,11 @@ Item {
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundRectangle {}
+                    background: TextFieldBackgroundStyle {}
+                    color: textFieldColor
+                    selectionColor: textFieldSelectionColor
+                    selectedTextColor: textFieldSelectedColor
+                    selectByMouse: true
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -248,7 +280,11 @@ Item {
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundRectangle {}
+                    background: TextFieldBackgroundStyle {}
+                    color: textFieldColor
+                    selectionColor: textFieldSelectionColor
+                    selectedTextColor: textFieldSelectedColor
+                    selectByMouse: true
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -266,7 +302,11 @@ Item {
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundRectangle {}
+                    background: TextFieldBackgroundStyle {}
+                    color: textFieldColor
+                    selectionColor: textFieldSelectionColor
+                    selectedTextColor: textFieldSelectedColor
+                    selectByMouse: true
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -284,7 +324,11 @@ Item {
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundRectangle {}
+                    background: TextFieldBackgroundStyle {}
+                    color: textFieldColor
+                    selectionColor: textFieldSelectionColor
+                    selectedTextColor: textFieldSelectedColor
+                    selectByMouse: true
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -302,7 +346,11 @@ Item {
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundRectangle {}
+                    background: TextFieldBackgroundStyle {}
+                    color: textFieldColor
+                    selectionColor: textFieldSelectionColor
+                    selectedTextColor: textFieldSelectedColor
+                    selectByMouse: true
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -323,7 +371,11 @@ Item {
                     validator: doubleValidator
                     implicitWidth: cellwidth
                     enabled: !affine
-                    background: TextFieldBackgroundRectangle {}
+                    background: TextFieldBackgroundStyle {}
+                    color: textFieldColor
+                    selectionColor: textFieldSelectionColor
+                    selectedTextColor: textFieldSelectedColor
+                    selectByMouse: true
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -342,7 +394,11 @@ Item {
                     validator: doubleValidator
                     implicitWidth: cellwidth
                     enabled: !affine
-                    background: TextFieldBackgroundRectangle {}
+                    background: TextFieldBackgroundStyle {}
+                    color: textFieldColor
+                    selectionColor: textFieldSelectionColor
+                    selectedTextColor: textFieldSelectedColor
+                    selectByMouse: true
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -361,7 +417,11 @@ Item {
                     validator: doubleValidator
                     implicitWidth: cellwidth
                     enabled: !affine
-                    background: TextFieldBackgroundRectangle {}
+                    background: TextFieldBackgroundStyle {}
+                    color: textFieldColor
+                    selectionColor: textFieldSelectionColor
+                    selectedTextColor: textFieldSelectedColor
+                    selectByMouse: true
 
                     onEditingFinished: {
                         if (text !== "") {
@@ -380,7 +440,11 @@ Item {
                     validator: doubleValidator
                     implicitWidth: cellwidth
                     enabled: !affine
-                    background: TextFieldBackgroundRectangle {}
+                    background: TextFieldBackgroundStyle {}
+                    color: textFieldColor
+                    selectionColor: textFieldSelectionColor
+                    selectedTextColor: textFieldSelectedColor
+                    selectByMouse: true
 
                     onEditingFinished: {
                         if (text !== "") {

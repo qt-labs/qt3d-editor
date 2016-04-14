@@ -107,6 +107,10 @@ Item {
             editable: true
             enabled: lockButton.buttonEnabled
 
+            contentItem: TextInputStyle {
+                inputMethodHints: Qt.ImhFormattedNumbersOnly
+            }
+
             validator: doubleValidator
 
             textFromValue: function(value) {
@@ -164,6 +168,10 @@ Item {
             editable: true
             enabled: lockButton.buttonEnabled
 
+            contentItem: TextInputStyle {
+                inputMethodHints: Qt.ImhFormattedNumbersOnly
+            }
+
             validator: doubleValidator
 
             textFromValue: function(value) {
@@ -220,6 +228,10 @@ Item {
             from: minimum * roundMultiplier
             editable: true
             enabled: lockButton.buttonEnabled
+
+            contentItem: TextInputStyle {
+                inputMethodHints: Qt.ImhFormattedNumbersOnly
+            }
 
             validator: doubleValidator
 
