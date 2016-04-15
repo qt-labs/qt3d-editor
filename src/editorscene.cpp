@@ -692,13 +692,13 @@ void EditorScene::connectDragHandles(EditorSceneItem *item, bool enable)
     }
 }
 
-void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown)
+void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown,
+                                              bool altDown)
 {
-    Q_UNUSED(ctrlDown)
-
     // By default, translate along helper plane
     // When shift is pressed, translate along camera plane
     // When ctrl is pressed, snap to grid
+    // When alt is pressed, translate along helper plane normal (lock to one axis)
 
     Qt3DRender::QCamera *camera = frameGraphCamera();
     if (camera && m_selectedEntityTransform) {
@@ -714,7 +714,7 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
 
         QVector3D planeOrigin = m_dragInitialTranslationValue;
         QVector3D planeNormal;
-        if (shiftDown)
+        if (shiftDown || altDown)
             planeNormal = EditorUtils::cameraNormal(frameGraphCamera());
         else
             planeNormal = helperPlaneNormal();
@@ -751,6 +751,14 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
                 m_snapToGridIntersection.setX(qRound(intersection.x() / m_gridSize) * m_gridSize);
                 m_snapToGridIntersection.setY(qRound(intersection.y() / m_gridSize) * m_gridSize);
                 m_snapToGridIntersection.setZ(qRound(intersection.z() / m_gridSize) * m_gridSize);
+            } else if (altDown) {
+                QVector3D lockedAxis = intersection * helperPlaneNormal();
+                if (!qFuzzyCompare(lockedAxis.x(), 0.0f))
+                    m_snapToGridIntersection.setX(lockedAxis.x());
+                else if (!qFuzzyCompare(lockedAxis.y(), 0.0f))
+                    m_snapToGridIntersection.setY(lockedAxis.y());
+                else if (!qFuzzyCompare(lockedAxis.z(), 0.0f))
+                    m_snapToGridIntersection.setZ(lockedAxis.z());
             } else {
                 m_snapToGridIntersection = intersection;
             }
@@ -1977,12 +1985,13 @@ bool EditorScene::handleMouseMove(QMouseEvent *event)
     if (!m_ignoringInitialDrag) {
         bool shiftDown = event->modifiers() & Qt::ShiftModifier;
         bool ctrlDown = event->modifiers() & Qt::ControlModifier;
+        bool altDown = event->modifiers() & Qt::AltModifier;
         // If selected entity changes mid-drag, cancel drag.
         if (m_dragMode != DragNone && m_dragEntity != m_selectedEntity)
             cancelDrag();
         switch (m_dragMode) {
         case DragTranslate: {
-            dragTranslateSelectedEntity(event->pos(), shiftDown, ctrlDown);
+            dragTranslateSelectedEntity(event->pos(), shiftDown, ctrlDown, altDown);
             break;
         }
         case DragScale: {

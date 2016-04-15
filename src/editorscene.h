@@ -332,7 +332,8 @@ private:
     void updateVisibleSceneCameraMatrix(const CameraData &cameraData);
     void retranslateUi();
     void connectDragHandles(EditorSceneItem *item, bool enable);
-    void dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown);
+    void dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown,
+                                     bool altDown);
     void dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown);
     void dragRotateSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown);
     QVector3D dragHandlePositionOffset(const QPoint &newPos);
