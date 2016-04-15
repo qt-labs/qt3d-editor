@@ -165,8 +165,8 @@ void EditorCameraController::handleTriggered(float dt)
                 m_ignoreFirstMiddleMousePress = false;
             } else {
                 // Orbit camera around viewCenter with middle mouse button
-                m_camera->panAboutViewCenter(m_rxAxis->value() * m_orbitSpeed * dt, m_cameraUp);
-                m_camera->tiltAboutViewCenter(m_ryAxis->value() * m_orbitSpeed * dt);
+                m_camera->panAboutViewCenter(-m_rxAxis->value() * m_orbitSpeed * dt, m_cameraUp);
+                m_camera->tiltAboutViewCenter(-m_ryAxis->value() * m_orbitSpeed * dt);
                 m_adjustCameraAtMouseRelease = true;
             }
         }
