@@ -45,8 +45,13 @@ ApplicationWindow {
     minimumWidth: 640
 
     Item {
+        // This item is used to map global mouse position
         id: applicationArea
         anchors.fill: parent
+    }
+
+    DragEntity {
+        id: dragEntityItem
     }
 
     property var selectedEntity: null
@@ -72,6 +77,7 @@ ApplicationWindow {
     property string systemLanguage: editorScene.language
 
     menuBar: MenuBar {
+        id: mainMenuBar
         Menu {
             title: qsTr("&File") + editorScene.emptyString
             MenuItem {
@@ -626,7 +632,7 @@ ApplicationWindow {
             Layout.minimumWidth: 100
             Layout.maximumWidth: mainwindow.width - 10
             onCreateNewEntity: {
-                entityTree.selectSceneRoot() //TODO: check where the entity is really added to
+                entityTree.selectSceneRoot()
                 entityTree.addNewEntity(entityType, xPos, yPos)
             }
         }
@@ -641,10 +647,18 @@ ApplicationWindow {
                 scene: editorScene
 
                 MouseArea {
+                    id: viewportMouseArea
                     anchors.fill: parent
                     onPressed: {
                         entityTree.focusTree()
                         mouse.accepted = false
+                    }
+                }
+                DropArea {
+                    anchors.fill: parent
+                    keys: [ "insertEntity" ]
+                    onContainsDragChanged: {
+                        dragEntityItem.opacity = containsDrag ? 0.1 : 1
                     }
                 }
             }

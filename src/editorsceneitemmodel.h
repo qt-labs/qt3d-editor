@@ -77,6 +77,7 @@ public:
     QModelIndex getModelIndexByName(const QString &entityName);
     QString generateValidName(const QString &desiredName, const Qt3DCore::QEntity *skipEntity);
     EditorScene *scene() { return m_scene; }
+    Q_INVOKABLE bool isCamera(const QModelIndex &index) const;
 
 signals:
     void freeViewChanged(bool enabled);

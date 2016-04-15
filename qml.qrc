@@ -25,6 +25,7 @@
         <file alias="EnableButton.qml">qml/EnableButton.qml</file>
         <file alias="GeneralPropertyView.qml">qml/GeneralPropertyView.qml</file>
         <file alias="ButtonViewHeader.qml">qml/ButtonViewHeader.qml</file>
+        <file alias="DragEntity.qml">qml/DragEntity.qml</file>
         <file alias="ColorPropertyInputField.qml">qml/inputfields/ColorPropertyInputField.qml</file>
         <file alias="FilePropertyInputField.qml">qml/inputfields/FilePropertyInputField.qml</file>
         <file alias="FloatPropertyInputField.qml">qml/inputfields/FloatPropertyInputField.qml</file>

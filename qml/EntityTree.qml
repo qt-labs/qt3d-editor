@@ -113,8 +113,44 @@ Item {
 
         property bool editing: false
         property bool sceneRootSelected: true
+        property bool cameraSelected: true
 
         itemDelegate: FocusScope {
+            DropArea {
+                anchors.fill: parent
+                keys: [ "insertEntity" ]
+                onDropped: {
+                    if (!editorScene.sceneModel.isCamera(styleData.index)
+                            && (styleData.index === editorScene.sceneModel.sceneEntityIndex()
+                                || drag.source.drag.target.entityType != EditorUtils.CameraEntity)) {
+                        dragHighlight.visible = false
+                        entityTreeView.selection.setCurrentIndex(styleData.index,
+                                                                 ItemSelectionModel.SelectCurrent)
+                        entityTree.addNewEntity(drag.source.drag.target.entityType)
+                        drop.action = Qt.CopyAction
+                        drop.accept()
+                    }
+                }
+                onEntered: {
+                    if (!editorScene.sceneModel.isCamera(styleData.index)
+                            && (styleData.index === editorScene.sceneModel.sceneEntityIndex()
+                                || drag.source.drag.target.entityType != EditorUtils.CameraEntity)) {
+                        dragHighlight.visible = true
+                        entityTreeView.expand(styleData.index)
+                    }
+                }
+                onExited: {
+                    dragHighlight.visible = false
+                }
+
+                Rectangle {
+                    id: dragHighlight
+                    anchors.fill: parent
+                    color: "#7700FF00"
+                    visible: false
+                }
+            }
+
             Text {
                 id: valueField
                 anchors.verticalCenter: parent.verticalCenter
@@ -220,6 +256,7 @@ Item {
                     selectedEntity = editorScene.sceneModel.editorSceneItemFromIndex(entityTreeView.selection.currentIndex)
                     if (selectedEntity) {
                         componentPropertiesView.model = selectedEntity.componentsModel
+                        entityTreeView.cameraSelected = editorScene.sceneModel.isCamera(entityTreeView.selection.currentIndex)
                         selectedEntityName = editorScene.sceneModel.entityName(entityTreeView.selection.currentIndex)
                         editorScene.clearSelectionBoxes()
                         selectedEntity.showSelectionBox = true

@@ -221,11 +221,13 @@ Qt3DCore::QEntity *EditorSceneItemModel::insertEntity(EditorUtils::InsertableEnt
         newEntity = newCamera;
     } else {
         newEntity = new Qt3DCore::QEntity(parentItem->entity());
+
+        // pos is worldPosition, adjust the actual position to account for ancestral transforms
+        QMatrix4x4 ancestralTransform = EditorUtils::totalAncestralTransform(newEntity);
+        QVector3D childPosition = ancestralTransform.inverted() * pos;
+
         Qt3DCore::QTransform *transform = new Qt3DCore::QTransform();
-        // This implementation assumes that entities inserted into a non-default position are
-        // inserted as children of the scene root. If this is not always true, we need to account
-        // for parent chain transforms when determining the initial translation.
-        transform->setTranslation(pos);
+        transform->setTranslation(childPosition);
         newEntity->addComponent(transform);
 
         Qt3DRender::QGeometryRenderer *mesh = EditorUtils::createMeshForInsertableType(type);
@@ -369,6 +371,12 @@ QString EditorSceneItemModel::generateValidName(const QString &desiredName,
         testName = nameTemplate.arg(desiredName).arg(counter++);
 
     return testName;
+}
+
+bool EditorSceneItemModel::isCamera(const QModelIndex &index) const
+{
+    EditorSceneItem *item = editorSceneItemFromIndex(index);
+    return qobject_cast<Qt3DRender::QCamera *>(item->entity());
 }
 
 QString EditorSceneItemModel::fixEntityName(const QString &desiredName)

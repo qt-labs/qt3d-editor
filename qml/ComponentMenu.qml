@@ -50,6 +50,7 @@ Menu {
 
     EntityMenu {
         iconSource: "qrc:/images/plus.png" // TODO: Replace with a real icon
+        enabled: !entityTreeView.cameraSelected
     }
     MenuItem {
         text: qsTr("Remove") + editorScene.emptyString

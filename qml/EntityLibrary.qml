@@ -78,10 +78,15 @@ Item {
                     property int dragPositionX
                     property int dragPositionY
 
+                    drag.target: dragEntityItem
+
                     onPressed: {
                         var globalPos = mapToItem(applicationArea, mouseX, mouseY)
                         dragPositionX = globalPos.x
                         dragPositionY = globalPos.y
+                        dragEntityItem.startDrag(delegateRoot, meshDragImage,
+                                                 "insertEntity", dragPositionX, dragPositionY,
+                                                 meshType, Qt.CopyAction)
                         editorScene.showPlaceholderEntity("dragInsert", meshType)
                     }
 
@@ -89,6 +94,7 @@ Item {
                         var globalPos = mapToItem(applicationArea, mouseX, mouseY)
                         dragPositionX = globalPos.x
                         dragPositionY = globalPos.y
+                        dragEntityItem.setPosition(dragPositionX, dragPositionY)
                         var scenePos = editorViewport.mapFromItem(applicationArea,
                                                                   dragPositionX,
                                                                   dragPositionY)
@@ -97,14 +103,19 @@ Item {
                     }
 
                     onReleased: {
-                        var scenePos = editorViewport.mapFromItem(applicationArea,
-                                                                  dragPositionX,
-                                                                  dragPositionY)
+                        var dropResult = dragEntityItem.endDrag(true)
                         editorScene.hidePlaceholderEntity("dragInsert")
-                        createNewEntity(meshType, scenePos.x, scenePos.y)
+                        // If no DropArea handled the drop, create new entity
+                        if (dropResult === Qt.IgnoreAction) {
+                            var scenePos = editorViewport.mapFromItem(applicationArea,
+                                                                      dragPositionX,
+                                                                      dragPositionY)
+                            createNewEntity(meshType, scenePos.x, scenePos.y)
+                        }
                     }
 
                     onCanceled: {
+                        dragEntityItem.endDrag(false)
                         editorScene.hidePlaceholderEntity("dragInsert")
                     }
 
