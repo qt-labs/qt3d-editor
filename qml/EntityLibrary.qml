@@ -86,7 +86,7 @@ Item {
                         dragPositionY = globalPos.y
                         dragEntityItem.startDrag(delegateRoot, meshDragImage,
                                                  "insertEntity", dragPositionX, dragPositionY,
-                                                 meshType, Qt.CopyAction)
+                                                 meshType)
                         editorScene.showPlaceholderEntity("dragInsert", meshType)
                     }
 

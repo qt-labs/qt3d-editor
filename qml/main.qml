@@ -547,13 +547,6 @@ ApplicationWindow {
 
         function restoreSelection(entity) {
             var index = editorScene.sceneModel.getModelIndex(entity)
-            // Expand tree view to the selection
-            var previous = index
-            do {
-                previous = previous.parent
-                entityTree.view.expand(previous)
-            } while (previous.valid)
-            // Highlight the selection
             entityTree.view.forceActiveFocus()
             entityTree.view.selection.setCurrentIndex(index, ItemSelectionModel.SelectCurrent)
         }
@@ -658,7 +651,7 @@ ApplicationWindow {
                     anchors.fill: parent
                     keys: [ "insertEntity" ]
                     onContainsDragChanged: {
-                        dragEntityItem.opacity = containsDrag ? 0.1 : 1
+                        dragEntityItem.visible = !containsDrag
                     }
                 }
             }

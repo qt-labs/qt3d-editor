@@ -179,19 +179,6 @@ void EditorScene::addEntity(Qt3DCore::QEntity *entity, int index, Qt3DCore::QEnt
     }
 }
 
-void EditorScene::moveEntity(Qt3DCore::QEntity *entity, Qt3DCore::QEntity *newParent)
-{
-    if (entity == nullptr || entity == m_rootEntity)
-        return;
-
-    Qt3DCore::QEntity *targetParent = newParent;
-
-    if (newParent == nullptr)
-        targetParent = m_rootEntity;
-
-    entity->setParent(targetParent);
-}
-
 // Removed entity is deleted
 void EditorScene::removeEntity(Qt3DCore::QEntity *entity)
 {
@@ -220,6 +207,10 @@ void EditorScene::removeEntity(Qt3DCore::QEntity *entity)
         handleLightRemoved(entity);
 
     m_sceneItems.remove(entity->id());
+
+    if (m_sceneEntity && m_selectedEntity == entity)
+        setSelection(m_sceneEntity);
+
     delete item;
     delete entity;
 }
@@ -252,6 +243,7 @@ void EditorScene::resetScene()
     emit freeViewChanged(m_freeView);
 
     // Reset entity tree
+    m_sceneModel->clearExpandedItems();
     m_sceneModel->resetModel();
 
     setSelection(m_sceneEntity);
@@ -292,6 +284,7 @@ bool EditorScene::loadScene(const QUrl &fileUrl)
         m_activeSceneCameraIndex--; // To force change
         setActiveSceneCameraIndex(cameraIndexForEntity(camera));
 
+        m_sceneModel->clearExpandedItems();
         m_sceneModel->resetModel();
     } else {
         m_errorString = m_loadFailString;
@@ -1360,6 +1353,7 @@ void EditorScene::setupDefaultScene()
     addEntity(lightEntity);
 #endif
     setActiveSceneCameraIndex(0);
+    m_sceneModel->clearExpandedItems();
     m_sceneModel->resetModel();
 }
 

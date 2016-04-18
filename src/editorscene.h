@@ -215,7 +215,6 @@ public:
     const QMap<Qt3DCore::QNodeId, EditorSceneItem *> &items() const { return m_sceneItems; }
 
     void addEntity(Qt3DCore::QEntity *entity, int index = -1, Qt3DCore::QEntity *parent = nullptr);
-    void moveEntity(Qt3DCore::QEntity *entity, Qt3DCore::QEntity *newParent = nullptr);
     void removeEntity(Qt3DCore::QEntity *entity);
 
     Q_INVOKABLE void resetScene();

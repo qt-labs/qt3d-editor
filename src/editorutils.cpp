@@ -27,6 +27,7 @@
 ****************************************************************************/
 #include "editorutils.h"
 #include "editorsceneitemmodel.h"
+#include "editorsceneitem.h"
 #include "qdummyobjectpicker.h"
 
 #include <Qt3DCore/QEntity>
@@ -1065,5 +1066,19 @@ QVector3D EditorUtils::cameraNormal(Qt3DRender::QCamera *camera)
         planeNormal.normalize();
     }
     return planeNormal;
+}
+
+bool EditorUtils::isDescendant(EditorSceneItem *ancestor, EditorSceneItem *descendantItem)
+{
+    bool descendant = ancestor == descendantItem;
+    if (!descendant) {
+        Q_FOREACH (EditorSceneItem *item, ancestor->childItems()) {
+            if (isDescendant(item, descendantItem)) {
+                descendant = true;
+                break;
+            }
+        }
+    }
+    return descendant;
 }
 

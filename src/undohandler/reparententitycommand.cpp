@@ -25,56 +25,35 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.5
+#include "reparententitycommand.h"
 
-Image {
-    z: 5
-    width: 32
-    height: 32
-    visible: false
+#include "editorscene.h"
+#include "editorsceneitemmodel.h"
 
-    property int xDiff: width / 2
-    property int yDiff: height / 2
-    property var entityType
-    property string entityName
-    property string dragKey
+#include <Qt3DCore/QEntity>
 
-    function startDrag(dragSource, image, key, startX, startY, meshType, startOpacity, name) {
-        source = image
-        Drag.source = dragSource
-        Drag.hotSpot.x = -xDiff
-        Drag.hotSpot.y = -yDiff
-        Drag.keys = [ key ]
-        dragKey = key
-        x = startX + xDiff
-        y = startY + yDiff
-        visible = true
-        entityType = meshType
-        if (name)
-            entityName = name
-        if (startOpacity)
-            opacity = startOpacity
-        else
-            opacity = 1.0
-        Drag.active = true
-    }
+ReparentEntityCommand::ReparentEntityCommand(EditorSceneItemModel *sceneModel,
+                                             const QString &newParentName,
+                                             const QString &entityName) :
+    m_sceneModel(sceneModel),
+    m_newParentName(newParentName),
+    m_entityName(entityName)
+{
+    setText(QObject::tr("Reparent entity"));
+}
 
-    function endDrag(drop) {
-        var dropResult = Qt.IgnoreAction
-        if (drop)
-            dropResult = Drag.drop()
+void ReparentEntityCommand::undo()
+{
+    QModelIndex newParentIndex = m_sceneModel->getModelIndexByName(m_originalParentName);
+    QModelIndex entityIndex = m_sceneModel->getModelIndexByName(m_entityName);
+    m_sceneModel->reparentEntity(newParentIndex, entityIndex);
+}
 
-        x = 0
-        y = 0
-        visible = false
-        Drag.active = false
-        dragKey = ""
-
-        return dropResult
-    }
-
-    function setPosition(xPos, yPos) {
-        x = xPos + xDiff
-        y = yPos + yDiff
-    }
+void ReparentEntityCommand::redo()
+{
+    QModelIndex newParentIndex = m_sceneModel->getModelIndexByName(m_newParentName);
+    QModelIndex entityIndex = m_sceneModel->getModelIndexByName(m_entityName);
+    if (m_originalParentName.isEmpty())
+        m_originalParentName = m_sceneModel->entityName(m_sceneModel->parent(entityIndex));
+    m_sceneModel->reparentEntity(newParentIndex, entityIndex);
 }

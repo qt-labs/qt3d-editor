@@ -25,56 +25,34 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.5
+#ifndef REPARENTENTITYCOMMAND_H
+#define REPARENTENTITYCOMMAND_H
 
-Image {
-    z: 5
-    width: 32
-    height: 32
-    visible: false
+#include "editorutils.h"
 
-    property int xDiff: width / 2
-    property int yDiff: height / 2
-    property var entityType
-    property string entityName
-    property string dragKey
+#include <QtWidgets/QUndoCommand>
+#include <QtGui/QVector3D>
 
-    function startDrag(dragSource, image, key, startX, startY, meshType, startOpacity, name) {
-        source = image
-        Drag.source = dragSource
-        Drag.hotSpot.x = -xDiff
-        Drag.hotSpot.y = -yDiff
-        Drag.keys = [ key ]
-        dragKey = key
-        x = startX + xDiff
-        y = startY + yDiff
-        visible = true
-        entityType = meshType
-        if (name)
-            entityName = name
-        if (startOpacity)
-            opacity = startOpacity
-        else
-            opacity = 1.0
-        Drag.active = true
-    }
+class EditorSceneItemModel;
 
-    function endDrag(drop) {
-        var dropResult = Qt.IgnoreAction
-        if (drop)
-            dropResult = Drag.drop()
-
-        x = 0
-        y = 0
-        visible = false
-        Drag.active = false
-        dragKey = ""
-
-        return dropResult
-    }
-
-    function setPosition(xPos, yPos) {
-        x = xPos + xDiff
-        y = yPos + yDiff
-    }
+namespace Qt3DCore {
+    class QEntity;
 }
+
+class ReparentEntityCommand : public QUndoCommand
+{
+public:
+    ReparentEntityCommand(EditorSceneItemModel *sceneModel,
+                          const QString &newParentName, const QString &entityName);
+
+    virtual void undo();
+    virtual void redo();
+
+private:
+    EditorSceneItemModel *m_sceneModel;
+    QString m_originalParentName;
+    QString m_newParentName;
+    QString m_entityName;
+};
+
+#endif // REPARENTENTITYCOMMAND_H

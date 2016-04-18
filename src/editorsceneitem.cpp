@@ -187,10 +187,10 @@ void EditorSceneItem::setParentItem(EditorSceneItem *parentItem)
     if (m_parentItem)
         m_parentItem->removeChild(this);
 
-    if (parentItem) {
+    if (parentItem)
         parentItem->addChild(this);
-        m_parentItem = parentItem;
-    }
+
+    m_parentItem = parentItem;
 }
 
 EditorSceneItemComponentsModel *EditorSceneItem::componentsModel() const

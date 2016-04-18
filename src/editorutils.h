@@ -46,6 +46,7 @@ class QCamera;
 }
 
 class EditorSceneItemModel;
+class EditorSceneItem;
 
 class EditorUtils : public QObject
 {
@@ -83,6 +84,7 @@ public:
     Q_ENUM(ComponentTypes)
 
     enum InsertableEntities {
+        InvalidEntity,
         GenericEntity,
         CuboidEntity,
         CylinderEntity,
@@ -152,6 +154,7 @@ public:
         return QStringLiteral("allTransform_editorPropertyLock");
     }
     static QVector3D cameraNormal(Qt3DRender::QCamera *camera);
+    static bool isDescendant(EditorSceneItem *ancestor, EditorSceneItem *descendantItem);
 
 private:
     // Private constructor to ensure no actual instance is created

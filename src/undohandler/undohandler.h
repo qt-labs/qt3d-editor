@@ -102,6 +102,8 @@ public:
                                                         const QVariant &newValue,
                                                         const QVariant &oldValue,
                                                         const QString &text = QString());
+    Q_INVOKABLE void createReparentEntityCommand(const QString &newParentName,
+                                                 const QString &entityName);
 
 signals:
     void canRedoChanged();

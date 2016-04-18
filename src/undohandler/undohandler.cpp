@@ -37,6 +37,7 @@
 #include "duplicateentitycommand.h"
 #include "copycamerapropertiescommand.h"
 #include "genericpropertychangecommand.h"
+#include "reparententitycommand.h"
 
 #include <QtWidgets/QUndoStack>
 
@@ -189,6 +190,15 @@ void UndoHandler::createChangeGenericPropertyCommand(QObject *obj,
         return;
 
     m_undoStack->push(new GenericPropertyChangeCommand(text, obj, propertyName, newValue, oldValue));
+}
+
+void UndoHandler::createReparentEntityCommand(const QString &newParentName,
+                                              const QString &entityName)
+{
+    if (newParentName.isEmpty() || entityName.isEmpty())
+        return;
+
+    m_undoStack->push(new ReparentEntityCommand(m_scene->sceneModel(), newParentName, entityName));
 }
 
 void UndoHandler::redo()

@@ -115,32 +115,146 @@ Item {
         property bool sceneRootSelected: true
         property bool cameraSelected: true
 
+        onExpanded: {
+            model.addExpandedItem(index)
+        }
+        onCollapsed: {
+            model.removeExpandedItem(index)
+        }
+
+        Connections {
+            target: editorScene.sceneModel
+            onExpandItems: {
+                for (var i = 0; i < items.length; i++)
+                    entityTreeView.expand(items[i])
+            }
+            onSelectIndex: {
+                entityTreeView.selection.setCurrentIndex(selectIndex,
+                                                         ItemSelectionModel.SelectCurrent)
+            }
+        }
+
         itemDelegate: FocusScope {
+            MouseArea {
+                id: treeItemMouseArea
+                anchors.fill: parent
+                acceptedButtons: Qt.LeftButton
+
+                property int dragPositionX
+                property int dragPositionY
+                drag.target: dragEntityItem
+
+                function startDrag() {
+                    var globalPos = mapToItem(applicationArea, mouseX, mouseY)
+                    dragPositionX = globalPos.x
+                    dragPositionY = globalPos.y
+                    var meshType
+                    var meshDragImage
+                    if (styleData.index === editorScene.sceneModel.sceneEntityIndex()
+                            || editorScene.sceneModel.isCamera(styleData.index)) {
+                        meshType = EditorUtils.InvalidEntity
+                        // TODO: make a proper "invalid drag" icon
+                        meshDragImage = "images/cross.png"
+                    } else if (editorScene.sceneModel.isLight(styleData.index)) {
+                        meshType = EditorUtils.LightEntity
+                        meshDragImage = "images/light-large.png"
+                    } else {
+                        meshType = EditorUtils.GenericEntity
+                        meshDragImage = "images/mesh-large.png"
+                    }
+
+                    dragEntityItem.startDrag(treeItemMouseArea, meshDragImage,
+                                             "changeParent", dragPositionX, dragPositionY,
+                                             meshType, 0.3,
+                                             editorScene.sceneModel.entityName(styleData.index))
+                }
+
+                onPressed: {
+                    entityTreeView.selection.setCurrentIndex(styleData.index,
+                                ItemSelectionModel.SelectCurrent)
+                    entityTreeView.expand(styleData.index)
+                }
+
+                onPositionChanged: {
+                    if (!dragEntityItem.Drag.active) {
+                        startDrag()
+                    } else {
+                        var globalPos = mapToItem(applicationArea, mouseX, mouseY)
+                        dragPositionX = globalPos.x
+                        dragPositionY = globalPos.y
+                        dragEntityItem.setPosition(dragPositionX, dragPositionY)
+                        entityTreeView.expand(styleData.index)
+                    }
+                }
+
+                onReleased: {
+                    var dropResult = dragEntityItem.endDrag(true)
+                }
+
+                onCanceled: {
+                    dragEntityItem.endDrag(false)
+                }
+
+                onDoubleClicked: {
+                    entityTreeView.editing = true
+                }
+            }
             DropArea {
                 anchors.fill: parent
-                keys: [ "insertEntity" ]
-                onDropped: {
-                    if (!editorScene.sceneModel.isCamera(styleData.index)
+                keys: [ "insertEntity", "changeParent" ]
+
+                function isValidDropTarget(dropSource) {
+                    // Dropping into camera is always invalid.
+                    // Camera can only be dropped into scene root
+                    // Light cannot be dropped into non-light
+                    var dropValid =
+                            dropSource.drag.target.entityType !== EditorUtils.InvalidEntity
+                            && !editorScene.sceneModel.isCamera(styleData.index)
+                            && (dropSource.drag.target.entityType !== EditorUtils.LightEntity
+                                || editorScene.sceneModel.isLight(styleData.index))
                             && (styleData.index === editorScene.sceneModel.sceneEntityIndex()
-                                || drag.source.drag.target.entityType != EditorUtils.CameraEntity)) {
+                                || dropSource.drag.target.entityType != EditorUtils.CameraEntity)
+                    if (dropValid && dropSource.drag.target.dragKey === "changeParent") {
+                        dropValid = editorScene.sceneModel.canReparent(
+                                    editorScene.sceneModel.editorSceneItemFromIndex(styleData.index),
+                                    editorScene.sceneModel.editorSceneItemFromIndex(
+                                        editorScene.sceneModel.getModelIndexByName(dropSource.drag.target.entityName)))
+                    }
+
+                    return dropValid
+                }
+
+                onDropped: {
+                    if (isValidDropTarget(drop.source)) {
                         dragHighlight.visible = false
                         entityTreeView.selection.setCurrentIndex(styleData.index,
                                                                  ItemSelectionModel.SelectCurrent)
-                        entityTree.addNewEntity(drag.source.drag.target.entityType)
-                        drop.action = Qt.CopyAction
+                        if (drop.source.drag.target.dragKey === "changeParent") {
+                            var entityName = editorScene.sceneModel.entityName(styleData.index)
+                            editorScene.undoHandler.createReparentEntityCommand(
+                                        entityName,
+                                        drag.source.drag.target.entityName)
+                            drop.action = Qt.MoveAction
+                            entityTreeView.expand(
+                                        editorScene.sceneModel.getModelIndexByName(entityName))
+                        } else {
+                            entityTree.addNewEntity(drag.source.drag.target.entityType)
+                            drop.action = Qt.CopyAction
+                        }
                         drop.accept()
                     }
                 }
                 onEntered: {
-                    if (!editorScene.sceneModel.isCamera(styleData.index)
-                            && (styleData.index === editorScene.sceneModel.sceneEntityIndex()
-                                || drag.source.drag.target.entityType != EditorUtils.CameraEntity)) {
+                    if (isValidDropTarget(drag.source)) {
                         dragHighlight.visible = true
-                        entityTreeView.expand(styleData.index)
+                        if (drag.source.drag.target.dragKey === "changeParent")
+                            dragEntityItem.opacity = 1
                     }
                 }
                 onExited: {
                     dragHighlight.visible = false
+                    if (drag.source.drag.target.dragKey === "changeParent")
+                        dragEntityItem.opacity = 0.3
                 }
 
                 Rectangle {
@@ -206,10 +320,6 @@ Item {
             entityTreeView.editing = true
         }
 
-        onCurrentIndexChanged: {
-            entityTreeView.editing = false
-        }
-
         TableViewColumn {
             title: qsTr("Entities") + editorScene.emptyString
             role: "name"
@@ -246,6 +356,7 @@ Item {
         Connections {
             target: entityTreeView.selection
             onCurrentIndexChanged: {
+                entityTreeView.editing = false
                 // If there is no current item selected for some reason, fall back to scene root
                 if (entityTreeView.selection.currentIndex.row === -1) {
                     selectedEntityName = ""

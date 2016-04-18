@@ -191,6 +191,15 @@ void EditorSceneItemModel::resetModel()
     connectEntity(m_scene->sceneEntityItem()->entity());
 
     endResetModel();
+
+    // Restore TreeView branch expansions, since resetting the model will collapse the branches
+    QModelIndexList expandedIndexList;
+    Q_FOREACH (const QString entityName, m_expandedItems)
+        expandedIndexList.append(getModelIndexByName(entityName));
+    emit expandItems(expandedIndexList);
+
+    // Select scene root after reset
+    emit selectIndex(sceneEntityIndex());
 }
 
 EditorSceneItem *EditorSceneItemModel::editorSceneItemFromIndex(const QModelIndex &index) const
@@ -323,6 +332,7 @@ void EditorSceneItemModel::removeEntity(const QModelIndex &index)
     if (m_scene->isRemovable(entity)) {
         beginRemoveRows(parentIndex, index.row(), index.row());
 
+        m_expandedItems.removeOne(entity->objectName());
         m_scene->removeEntity(entity);
 
         endRemoveRows();
@@ -377,6 +387,57 @@ bool EditorSceneItemModel::isCamera(const QModelIndex &index) const
 {
     EditorSceneItem *item = editorSceneItemFromIndex(index);
     return qobject_cast<Qt3DRender::QCamera *>(item->entity());
+}
+
+bool EditorSceneItemModel::isLight(const QModelIndex &index) const
+{
+    EditorSceneItem *item = editorSceneItemFromIndex(index);
+    return item->itemType() == EditorSceneItem::Light;
+}
+
+bool EditorSceneItemModel::canReparent(EditorSceneItem *newParentItem,
+                                       EditorSceneItem *movedItem)
+{
+    // Dropping into same parent is invalid.
+    // Dropping item into its descendant is invalid.
+    return movedItem->parentItem() != newParentItem
+            && movedItem != newParentItem
+            && !EditorUtils::isDescendant(movedItem, newParentItem);
+}
+
+void EditorSceneItemModel::reparentEntity(const QModelIndex &newParentIndex,
+                                          const QModelIndex &entityIndex)
+{
+    EditorSceneItem *newParentItem = editorSceneItemFromIndex(newParentIndex);
+    EditorSceneItem *entityItem = editorSceneItemFromIndex(entityIndex);
+
+    // Since Qt3D doesn't seem to like reparenting entities, we duplicate the moved entities
+    // under a new parent and remove the old ones.
+
+    Qt3DCore::QEntity *duplicate = EditorUtils::duplicateEntity(
+                entityItem->entity(), newParentItem->entity());
+
+    m_scene->removeEntity(entityItem->entity());
+    m_scene->addEntity(duplicate);
+
+    resetModel();
+
+    // Keep the moved item selected
+    emit selectIndex(getModelIndexByName(duplicate->objectName()));
+}
+
+void EditorSceneItemModel::addExpandedItem(const QModelIndex &index)
+{
+    EditorSceneItem *item = editorSceneItemFromIndex(index);
+    QString entityName = item->entity()->objectName();
+    if (!m_expandedItems.contains(entityName))
+        m_expandedItems.append(entityName);
+}
+
+void EditorSceneItemModel::removeExpandedItem(const QModelIndex &index)
+{
+    EditorSceneItem *item = editorSceneItemFromIndex(index);
+    m_expandedItems.removeOne(item->entity()->objectName());
 }
 
 QString EditorSceneItemModel::fixEntityName(const QString &desiredName)
