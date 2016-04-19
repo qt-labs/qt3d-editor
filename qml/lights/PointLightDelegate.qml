@@ -31,26 +31,74 @@ import com.theqtcompany.SceneEditor3D 1.0
 BasicLightDelegate {
     id: thisItem
 
-    // TODO: Attenuation is broken to three properties on pointlight.
-    // TODO: Same will probably happen for spotlight. Fix ui once both lights work similarly.
+    property vector3d attenuation: Qt.vector3d(0.0, 0.0, 0.002)
+
     Component.onCompleted: {
         initialState = false
-        if (parent.repeater.attenuationSet)
-            attenuationField.component[attenuationField.propertyName] = parent.repeater.lightAttenuation
-        else
-            parent.setNewAttenuation(attenuationField.component[attenuationField.propertyName])
+        if (parent.repeater.attenuationSet) {
+            constantAttenuationField.component[constantAttenuationField.propertyName]
+                    = parent.repeater.lightAttenuation.x
+            linearAttenuationField.component[linearAttenuationField.propertyName]
+                    = parent.repeater.lightAttenuation.y
+            quadraticAttenuationField.component[quadraticAttenuationField.propertyName]
+                    = parent.repeater.lightAttenuation.z
+        } else {
+            parent.setNewAttenuation(
+                        Qt.vector3d(
+                            constantAttenuationField.component[constantAttenuationField.propertyName],
+                            linearAttenuationField.component[linearAttenuationField.propertyName],
+                            quadraticAttenuationField.component[quadraticAttenuationField.propertyName]))
+        }
     }
 
-    Vector3DPropertyInputField {
-        id: attenuationField
+    FloatPropertyInputField {
+        id: quadraticAttenuationField
         parent: inputLayout
-        label: qsTr("Attenuation") + editorScene.emptyString
-        propertyName: "attenuation"
+        label: qsTr("Quadratic Attenuation") + editorScene.emptyString
+        propertyName: "quadraticAttenuation"
         component: lightComponentData
         componentType: thisItem.componentType
+        roundDigits: 4
+        step: 10 // = 0.001
+        minimum: 0
         onFieldValueChanged: {
+            attenuation.z = fieldValue
             if (!thisItem.initialState)
-                thisItem.parent.setNewAttenuation(fieldValue)
+                thisItem.parent.setNewAttenuation(attenuation)
+        }
+    }
+
+    FloatPropertyInputField {
+        id: linearAttenuationField
+        parent: inputLayout
+        label: qsTr("Linear Attenuation") + editorScene.emptyString
+        propertyName: "linearAttenuation"
+        component: lightComponentData
+        componentType: thisItem.componentType
+        roundDigits: 4
+        step: 10 // = 0.001
+        minimum: 0
+        onFieldValueChanged: {
+            attenuation.y = fieldValue
+            if (!thisItem.initialState)
+                thisItem.parent.setNewAttenuation(attenuation)
+        }
+    }
+
+    FloatPropertyInputField {
+        id: constantAttenuationField
+        parent: inputLayout
+        label: qsTr("Constant Attenuation") + editorScene.emptyString
+        propertyName: "constantAttenuation"
+        component: lightComponentData
+        componentType: thisItem.componentType
+        roundDigits: 4
+        step: 10 // = 0.001
+        minimum: 0
+        onFieldValueChanged: {
+            attenuation.x = fieldValue
+            if (!thisItem.initialState)
+                thisItem.parent.setNewAttenuation(attenuation)
         }
     }
 }

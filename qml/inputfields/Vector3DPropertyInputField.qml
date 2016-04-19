@@ -36,7 +36,10 @@ PropertyInputField {
     property alias xLabel: vectorInputField.xLabel
     property alias yLabel: vectorInputField.yLabel
     property alias zLabel: vectorInputField.zLabel
+    property alias minimum: vectorInputField.minimum
+    property alias maximum: vectorInputField.maximum
     property alias roundDigits: vectorInputField.roundDigits
+    property alias step: vectorInputField.step
     property vector3d fieldValue: component[propertyName]
     property bool lockedField: false
 

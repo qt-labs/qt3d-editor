@@ -35,10 +35,10 @@ PropertyInputField {
     height: mainLayout.height
 
     property alias label: floatLabel.text
-    property real minimum: -99999 // TODO: Do we need more sensible default minimum?
-    property real maximum: 99999 // TODO: Do we need more sensible default maximum?
     property int roundDigits: 4 // TODO: Determine nice default rounding
     property int roundMultiplier: Math.pow(10, roundDigits) // Calculated from roundDigits, do not set directly
+    property real minimum: -999999999 / roundMultiplier // TODO: Do we need more sensible default minimum?
+    property real maximum: 999999999 / roundMultiplier // TODO: Do we need more sensible default maximum?
     property int step: roundMultiplier
     property double fieldValue: component[propertyName]
     property bool blockChange: false

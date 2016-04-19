@@ -78,6 +78,9 @@ Item {
             propertyName: "intensity"
             component: lightComponentData
             componentType: thisItem.componentType
+            roundDigits: 1
+            step: 1 // = 0.1
+            minimum: 0
             onFieldValueChanged: {
                 if (!thisItem.initialState)
                     thisItem.parent.setNewIntensity(fieldValue)

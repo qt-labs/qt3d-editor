@@ -42,10 +42,10 @@ Item {
     property alias yLabel: yLabel.text
     property alias zLabel: zLabel.text
     property bool blockChange: false
-    property real minimum: -9999999 // TODO: Do we need more sensible default minimum?
-    property real maximum: 9999999 // TODO: Do we need more sensible default maximum?
     property int roundDigits: 2 // TODO: Determine nice default rounding
     property int roundMultiplier: Math.pow(10, roundDigits) // Calculated from roundDigits, do not set directly
+    property real minimum: -999999999 / roundMultiplier // TODO: Do we need more sensible default minimum?
+    property real maximum: 999999999 / roundMultiplier // TODO: Do we need more sensible default maximum?
     property int step: roundMultiplier
     property real inputCellWidth: vectorInput.width * 0.6
 
