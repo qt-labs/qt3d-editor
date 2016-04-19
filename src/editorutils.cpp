@@ -422,7 +422,7 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
 }
 
 QString EditorUtils::nameDuplicate(Qt3DCore::QEntity *duplicate, Qt3DCore::QEntity *original,
-                                EditorSceneItemModel *sceneModel)
+                                   EditorSceneItemModel *sceneModel)
 {
     if (original->objectName().isEmpty())
         return QString();
@@ -430,6 +430,13 @@ QString EditorUtils::nameDuplicate(Qt3DCore::QEntity *duplicate, Qt3DCore::QEnti
     QString newName = sceneModel->generateValidName(original->objectName() + QObject::tr("_Copy"),
                                                     original);
     duplicate->setObjectName(newName);
+
+    // Rename possible children
+    Q_FOREACH (QObject *child, duplicate->children()) {
+        Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
+        if (childEntity)
+            nameDuplicate(childEntity, childEntity, sceneModel);
+    }
 
     return newName;
 }
