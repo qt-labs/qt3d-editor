@@ -104,6 +104,7 @@ public:
                                                         const QString &text = QString());
     Q_INVOKABLE void createReparentEntityCommand(const QString &newParentName,
                                                  const QString &entityName);
+    Q_INVOKABLE void createImportEntityCommand(const QUrl &url);
 
 signals:
     void canRedoChanged();

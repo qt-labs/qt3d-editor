@@ -58,6 +58,8 @@ public:
         Camera = 1,
         Light,
         Mesh,
+        SceneLoader,
+        Transform,
         Other
     };
 

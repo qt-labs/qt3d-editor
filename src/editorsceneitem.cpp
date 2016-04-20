@@ -45,6 +45,7 @@
 #include <Qt3DRender/QSpotLight>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
+#include <Qt3DRender/QSceneLoader>
 
 #include <cfloat>
 
@@ -73,6 +74,7 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
     Qt3DCore::QComponentVector components = entity->components();
     Qt3DRender::QGeometryRenderer *entityMesh = nullptr;
     bool isLight = false;
+    bool isSceneLoader = false;
     Q_FOREACH (Qt3DCore::QComponent *component, components) {
         if (!m_entityTransform)
             m_entityTransform = qobject_cast<Qt3DCore::QTransform *>(component);
@@ -84,6 +86,9 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
                     && !qobject_cast<Qt3DRender::QSpotLight *>(component)) {
                 m_canRotate = false;
             }
+        }
+        if (qobject_cast<Qt3DRender::QSceneLoader *>(component)) {
+            isSceneLoader = true;
         }
     }
     bool isCamera = qobject_cast<Qt3DRender::QCamera *>(entity);
@@ -124,6 +129,10 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
         m_itemType = EditorSceneItem::Camera;
     else if (entityMesh)
         m_itemType = EditorSceneItem::Mesh;
+    else if (isSceneLoader)
+        m_itemType = EditorSceneItem::SceneLoader;
+    else if (m_entityTransform)
+        m_itemType = EditorSceneItem::Transform;
     else
         m_itemType = EditorSceneItem::Other;
 }

@@ -150,16 +150,27 @@ Item {
                     dragPositionY = globalPos.y
                     var meshType
                     var meshDragImage
+                    var itemType = editorScene.sceneModel.editorSceneItemFromIndex(
+                                styleData.index).itemType();
                     if (styleData.index === editorScene.sceneModel.sceneEntityIndex()
-                            || editorScene.sceneModel.isCamera(styleData.index)) {
+                            || itemType === EditorSceneItem.Camera
+                            || itemType === EditorSceneItem.SceneLoader) {
+                        // TODO: SceneLoader blocked because it currently crashes, and also
+                        // TODO: because it cannot be safely deleted, which is needed when
+                        // TODO: reparenting, which does duplicate+delete (QTBUG-52723).
                         meshType = EditorUtils.InvalidEntity
                         // TODO: make a proper "invalid drag" icon
                         meshDragImage = "images/cross.png"
-                    } else if (editorScene.sceneModel.isLight(styleData.index)) {
+                    } else if (itemType === EditorSceneItem.Light) {
                         meshType = EditorUtils.LightEntity
                         meshDragImage = "images/light-large.png"
+                    } else if (itemType === EditorSceneItem.Transform) {
+                        meshType = EditorUtils.TransformEntity
+                        // TODO: make a proper "transform entity drag" icon
+                        meshDragImage = "images/plus.png"
                     } else {
-                        meshType = EditorUtils.GenericEntity
+                        // Use cuboid type to indicate mesh
+                        meshType = EditorUtils.CuboidEntity
                         meshDragImage = "images/mesh-large.png"
                     }
 
@@ -204,16 +215,23 @@ Item {
                 keys: [ "insertEntity", "changeParent" ]
 
                 function isValidDropTarget(dropSource) {
-                    // Dropping into camera is always invalid.
+                    // Dropping into camera is always invalid
                     // Camera can only be dropped into scene root
-                    // Light cannot be dropped into non-light
+                    // Light can only be dropped to light or transform entity
+                    // Transform entities cannot be dropped under non-transform entities
+                    var itemType = editorScene.sceneModel.editorSceneItemFromIndex(
+                                styleData.index).itemType();
                     var dropValid =
                             dropSource.drag.target.entityType !== EditorUtils.InvalidEntity
-                            && !editorScene.sceneModel.isCamera(styleData.index)
+                            && itemType !== EditorSceneItem.Camera
                             && (dropSource.drag.target.entityType !== EditorUtils.LightEntity
-                                || editorScene.sceneModel.isLight(styleData.index))
+                                || itemType === EditorSceneItem.Light
+                                || itemType === EditorSceneItem.Transform)
                             && (styleData.index === editorScene.sceneModel.sceneEntityIndex()
-                                || dropSource.drag.target.entityType != EditorUtils.CameraEntity)
+                                || dropSource.drag.target.entityType !== EditorUtils.CameraEntity)
+                            && (dropSource.drag.target.entityType !== EditorUtils.TransformEntity
+                                || itemType === EditorSceneItem.Transform
+                                || styleData.index === editorScene.sceneModel.sceneEntityIndex())
                     if (dropValid && dropSource.drag.target.dragKey === "changeParent") {
                         dropValid = editorScene.sceneModel.canReparent(
                                     editorScene.sceneModel.editorSceneItemFromIndex(styleData.index),
@@ -367,8 +385,10 @@ Item {
                     selectedEntity = editorScene.sceneModel.editorSceneItemFromIndex(entityTreeView.selection.currentIndex)
                     if (selectedEntity) {
                         componentPropertiesView.model = selectedEntity.componentsModel
-                        entityTreeView.cameraSelected = editorScene.sceneModel.isCamera(entityTreeView.selection.currentIndex)
-                        selectedEntityName = editorScene.sceneModel.entityName(entityTreeView.selection.currentIndex)
+                        entityTreeView.cameraSelected =
+                                selectedEntity.itemType() === EditorSceneItem.Camera
+                        selectedEntityName = editorScene.sceneModel.entityName(
+                                    entityTreeView.selection.currentIndex)
                         editorScene.clearSelectionBoxes()
                         selectedEntity.showSelectionBox = true
                     } else {

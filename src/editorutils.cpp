@@ -32,9 +32,11 @@
 
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QCamera>
+#include <Qt3DRender/QCameraLens>
 #include <Qt3DRender/QAbstractTexture>
 #include <Qt3DRender/QTextureImage>
 #include <Qt3DRender/QObjectPicker>
+#include <Qt3DRender/QSceneLoader>
 
 #include <Qt3DCore/QTransform>
 
@@ -66,7 +68,6 @@
 #include <QtCore/QtMath>
 
 static const QString internalPrefix = QStringLiteral("__internal");
-static const QByteArray lockPropSuffix8 = EditorUtils::lockPropertySuffix().toLatin1();
 
 bool EditorUtils::isObjectInternal(QObject *obj)
 {
@@ -90,63 +91,6 @@ void EditorUtils::copyCameraProperties(Qt3DRender::QCamera *target, Qt3DRender::
     target->setTop(source->top());
     target->setUpVector(source->upVector());
     target->setViewCenter(source->viewCenter());
-}
-
-Qt3DCore::QEntity *EditorUtils::duplicateEntity(Qt3DCore::QEntity *entity,
-                                                Qt3DCore::QEntity *newParent,
-                                                const QVector3D &duplicateOffset)
-{
-    // Copies the entity, including making copies of all components and child entities
-    // Both copies will retain their entity names.
-
-    Qt3DCore::QEntity *newEntity = nullptr;
-
-    // Check if it's a camera
-    Qt3DRender::QCamera *oldCam = qobject_cast<Qt3DRender::QCamera *>(entity);
-    if (oldCam) {
-        Qt3DRender::QCamera *newCam = new Qt3DRender::QCamera(newParent);
-        copyCameraProperties(newCam, oldCam);
-        newEntity = newCam;
-
-        copyLockProperties(entity, newEntity);
-
-        // Unlock transform related properties in the duplicate
-        lockProperty(QByteArrayLiteral("position") + lockPropSuffix8, newEntity, false);
-        lockProperty(QByteArrayLiteral("upVector") + lockPropSuffix8, newEntity, false);
-        lockProperty(QByteArrayLiteral("viewCenter") + lockPropSuffix8, newEntity, false);
-
-        // Offset the position of the duplicate
-        newCam->setPosition(oldCam->position() + duplicateOffset);
-    } else {
-        newEntity = new Qt3DCore::QEntity(newParent);
-        // Duplicate non-internal components
-        // Internals will get recreated when duplicate entity is added to scene
-        Q_FOREACH (Qt3DCore::QComponent *component, entity->components()) {
-            if (!EditorUtils::isObjectInternal(component)) {
-                Qt3DCore::QComponent *newComponent = EditorUtils::duplicateComponent(component);
-                if (newComponent) {
-                    newEntity->addComponent(newComponent);
-                    Qt3DCore::QTransform *newTransform =
-                            qobject_cast<Qt3DCore::QTransform *>(newComponent);
-                    if (newTransform) {
-                        newTransform->setTranslation(newTransform->translation()
-                                                     + duplicateOffset * newTransform->scale3D());
-                    }
-                }
-            }
-        }
-    }
-
-    newEntity->setObjectName(entity->objectName());
-
-    // Duplicate child entities
-    Q_FOREACH (QObject *child, entity->children()) {
-        Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
-        if (childEntity)
-            duplicateEntity(childEntity, newEntity);
-    }
-
-    return newEntity;
 }
 
 Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *component)
@@ -407,6 +351,13 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         QDummyObjectPicker *source = qobject_cast<QDummyObjectPicker *>(component);
         QDummyObjectPicker *newComponent = new QDummyObjectPicker();
         newComponent->setHoverEnabled(source->hoverEnabled());
+        duplicate = newComponent;
+        break;
+    }
+    case SceneLoader: {
+        Qt3DRender::QSceneLoader *source = qobject_cast<Qt3DRender::QSceneLoader *>(component);
+        Qt3DRender::QSceneLoader *newComponent = new Qt3DRender::QSceneLoader();
+        newComponent->setSource(source->source());
         duplicate = newComponent;
         break;
     }
@@ -854,6 +805,19 @@ Qt3DRender::QObjectPicker *EditorUtils::entityPicker(Qt3DCore::QEntity *entity)
     return nullptr;
 }
 
+Qt3DRender::QSceneLoader *EditorUtils::entitySceneLoader(Qt3DCore::QEntity *entity)
+{
+    Qt3DCore::QComponentVector components = entity->components();
+    for (int i = 0; i < components.size(); i++) {
+        Qt3DRender::QSceneLoader *loader
+                = qobject_cast<Qt3DRender::QSceneLoader *>(components.value(i));
+        if (loader)
+            return loader;
+    }
+
+    return nullptr;
+}
+
 // Returns the intersection point of a plane and a ray.
 // Parameter t returns the distance in ray lengths. If t is negative, intersection
 // is behind rayOrigin.
@@ -956,6 +920,8 @@ EditorUtils::ComponentTypes EditorUtils::componentType(Qt3DCore::QComponent *com
         componentType = Transform;
     } else if (qobject_cast<QDummyObjectPicker *>(component)) {
         componentType = ObjectPicker;
+    } else if (qobject_cast<Qt3DRender::QSceneLoader *>(component)) {
+        componentType = SceneLoader;
     }
 
     return componentType;
@@ -1044,7 +1010,7 @@ void EditorUtils::copyLockProperties(const QObject *source, QObject *target)
 {
     QList<QByteArray> customProps = source->dynamicPropertyNames();
     Q_FOREACH (const QByteArray &propName, customProps) {
-        if (propName.endsWith(lockPropSuffix8)) {
+        if (propName.endsWith(lockPropertySuffix8())) {
             target->setProperty(propName.constData(),
                                 source->property(propName.constData()));
         }

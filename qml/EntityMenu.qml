@@ -69,7 +69,7 @@ Menu {
         iconSource: "qrc:/images/cross.png"
         enabled: !entityTreeView.cameraSelected
         onTriggered: {
-            entityTree.addNewEntity(EditorUtils.GenericEntity)
+            entityTree.addNewEntity(EditorUtils.TransformEntity)
         }
     }
 }

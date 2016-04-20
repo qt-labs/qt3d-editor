@@ -69,7 +69,7 @@ void RemoveEntityCommand::redo()
     m_parentEntityName = m_sceneModel->entityName(parentIndex);
     m_row = index.row();
     EditorSceneItem *item = m_sceneModel->editorSceneItemFromIndex(index);
-    m_removedEntity = EditorUtils::duplicateEntity(item->entity(), nullptr);
+    m_removedEntity = m_sceneModel->duplicateEntity(item->entity(), nullptr);
     // Grab explicit ownership of the removed entity,
     // otherwise QML garbage collector may clean it up.
     QQmlEngine::setObjectOwnership(m_removedEntity, QQmlEngine::CppOwnership);

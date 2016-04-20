@@ -341,7 +341,10 @@ ApplicationWindow {
         title: qsTr("Import Entity") + editorScene.emptyString
         nameFilters: [qsTr("All files (*)") + editorScene.emptyString]
         onAccepted: {
-            editorScene.importEntity(fileUrl)
+            editorScene.undoHandler.createImportEntityCommand(fileUrl)
+            var newItemIndex = editorScene.sceneModel.lastInsertedIndex()
+            entityTree.view.selection.setCurrentIndex(newItemIndex,
+                                                     ItemSelectionModel.SelectCurrent)
         }
     }
 

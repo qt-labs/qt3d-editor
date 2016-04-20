@@ -53,7 +53,6 @@
 #include <Qt3DRender/QForwardRenderer>
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
-#include <Qt3DRender/QSceneLoader>
 #include <Qt3DRender/QPickingSettings>
 
 #include <Qt3DInput/QInputSettings>
@@ -114,6 +113,7 @@ EditorScene::EditorScene(QObject *parent)
     , m_pickedDistance(-1.0f)
     , m_gridSize(3)
     , m_duplicateCount(0)
+    , m_previousDuplicate(nullptr)
 {
     retranslateUi();
     createRootEntity();
@@ -149,10 +149,10 @@ void EditorScene::addEntity(Qt3DCore::QEntity *entity, int index, Qt3DCore::QEnt
         entity->setParent(parent);
     }
 
-    if (m_sceneItems.value(entity->id(), nullptr) == nullptr) {
-        EditorSceneItem *item = new EditorSceneItem(this, entity,
-                                                    m_sceneItems.value(entity->parentEntity()->id(),
-                                                                       nullptr), index, this);
+    EditorSceneItem *item = m_sceneItems.value(entity->id(), nullptr);
+    if (!item) {
+        item = new EditorSceneItem(this, entity, m_sceneItems.value(entity->parentEntity()->id(),
+                                                                    nullptr), index, this);
 
         if (entity == m_sceneEntity)
             m_sceneEntityItem = item;
@@ -172,10 +172,12 @@ void EditorScene::addEntity(Qt3DCore::QEntity *entity, int index, Qt3DCore::QEnt
         item->componentsModel()->initializeModel();
     }
 
-    foreach (QObject *child, entity->children()) {
-        Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
-        if (childEntity)
-            addEntity(childEntity);
+    if (item->itemType() != EditorSceneItem::SceneLoader) {
+        foreach (QObject *child, entity->children()) {
+            Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
+            if (childEntity)
+                addEntity(childEntity);
+        }
     }
 }
 
@@ -192,17 +194,19 @@ void EditorScene::removeEntity(Qt3DCore::QEntity *entity)
 
     disconnect(entity, 0, this, 0);
 
-    foreach (QObject *child, entity->children()) {
-        Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
-        // Don't deparent child entities to preserve removed entity tree
-        removeEntity(childEntity);
+    EditorSceneItem *item = m_sceneItems.value(entity->id());
+
+    if (item->itemType() != EditorSceneItem::SceneLoader) {
+        foreach (QObject *child, entity->children()) {
+            Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
+            removeEntity(childEntity);
+        }
     }
 
     Qt3DRender::QCamera *camera = qobject_cast<Qt3DRender::QCamera *>(entity);
     if (camera)
         handleCameraRemoved(camera);
 
-    EditorSceneItem *item = m_sceneItems.value(entity->id());
     if (item && item->itemType() == EditorSceneItem::Light)
         handleLightRemoved(entity);
 
@@ -225,9 +229,7 @@ void EditorScene::resetScene()
     removeEntity(m_sceneEntity);
 
     // Create new scene root
-    m_sceneEntity = new Qt3DCore::QEntity();
-    m_sceneEntity->setObjectName(m_sceneRootString);
-    addEntity(m_sceneEntity);
+    setSceneEntity();
 
     // Set up default scene
     setupDefaultScene();
@@ -255,13 +257,10 @@ bool EditorScene::saveScene(const QUrl &fileUrl, bool autosave)
     if (m_activeSceneCameraIndex >= 0 && m_activeSceneCameraIndex < m_sceneCameras.size())
         camera = m_sceneCameras.at(m_activeSceneCameraIndex).cameraEntity;
     bool retval = m_sceneParser->exportQmlScene(m_sceneEntity, fileUrl, camera, autosave);
-    if (retval) {
+    if (retval)
         m_undoHandler->setClean();
-    } else {
-        m_errorString = m_saveFailString;
-        emit errorChanged(m_errorString);
-        qWarning() << m_errorString;
-    }
+    else
+        setError(m_saveFailString);
     return retval;
 }
 
@@ -287,9 +286,7 @@ bool EditorScene::loadScene(const QUrl &fileUrl)
         m_sceneModel->clearExpandedItems();
         m_sceneModel->resetModel();
     } else {
-        m_errorString = m_loadFailString;
-        emit errorChanged(m_errorString);
-        qWarning() << m_errorString;
+        setError(m_loadFailString);
     }
 
     return bool(newSceneEntity);
@@ -312,17 +309,6 @@ void EditorScene::deleteScene(const QUrl &fileUrl, bool autosave)
         resourceDirName.append(autoSavePostfix);
     QDir dir = QDir(resourceDirName);
     dir.removeRecursively();
-}
-
-void EditorScene::importEntity(const QUrl &fileUrl)
-{
-    // TODO: Scene loading doesn't work, pending QTBUG-51577
-    Qt3DCore::QEntity *sceneLoaderEntity = new Qt3DCore::QEntity(m_rootEntity);
-    Qt3DRender::QSceneLoader *sceneLoader = new Qt3DRender::QSceneLoader(sceneLoaderEntity);
-    QObject::connect(sceneLoader, &Qt3DRender::QSceneLoader::statusChanged,
-                     this, &EditorScene::handleSceneLoaderStatusChanged);
-    sceneLoader->setSource(fileUrl);
-    sceneLoaderEntity->addComponent(sceneLoader);
 }
 
 QString EditorScene::cameraName(int index) const
@@ -367,12 +353,17 @@ QString EditorScene::duplicateEntity(Qt3DCore::QEntity *entity)
 {
     QString duplicateName;
 
+    if (m_previousDuplicate != entity) {
+        m_duplicateCount = 0;
+        m_previousDuplicate = entity;
+    }
+
     QVector3D duplicateOffset =
             m_helperPlaneTransform->rotation().rotatedVector(QVector3D(0.5f, 0.5f, 0.0f)
                                                              * ++m_duplicateCount);
 
     Qt3DCore::QEntity *newEntity =
-            EditorUtils::duplicateEntity(entity, m_sceneEntity, duplicateOffset);
+            m_sceneModel->duplicateEntity(entity, m_sceneEntity, duplicateOffset);
 
     // Set name and add to scene
     duplicateName = EditorUtils::nameDuplicate(newEntity, entity, m_sceneModel);
@@ -535,7 +526,6 @@ void EditorScene::retranslateUi()
     m_sceneRootString = tr("Scene root");
     m_saveFailString = tr("Failed to save the scene");
     m_loadFailString = tr("Failed to load a new scene");
-    m_importFailString = tr("Failed to import an Entity");
     m_cameraString = tr("Camera");
     m_cubeString = tr("Cube");
     m_lightString = tr("Light");
@@ -1202,6 +1192,13 @@ void EditorScene::handleEnabledChanged(Qt3DCore::QEntity *entity, bool enabled)
     }
 }
 
+void EditorScene::setError(const QString &errorString)
+{
+    m_errorString = errorString;
+    emit errorChanged(m_errorString);
+    qWarning() << m_errorString;
+}
+
 bool EditorScene::isRemovable(Qt3DCore::QEntity *entity) const
 {
     if (entity == m_sceneEntity || entity == m_rootEntity)
@@ -1406,15 +1403,12 @@ void EditorScene::createRootEntity()
     m_rootEntity->addComponent(new Qt3DInput::QInputSettings());
 
     // Scene entity (i.e. the visible root)
-    m_sceneEntity = new Qt3DCore::QEntity();
-    m_sceneEntity->setObjectName(m_sceneRootString);
+    setSceneEntity();
 
     // Free view camera
     m_freeViewCameraEntity = new Qt3DRender::QCamera(m_rootEntity);
     m_freeViewCameraEntity->setObjectName(QStringLiteral("__internal free view camera"));
     resetFreeViewCamera();
-
-    addEntity(m_sceneEntity);
 
     // Helper plane
     createHelperPlane();
@@ -1563,8 +1557,6 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
                 connectDragHandles(item, true);
                 m_selectedEntityTransform = EditorUtils::entityTransform(m_selectedEntity);
             }
-
-            m_duplicateCount = 0;
 
             // Emit signal to highlight the entity from the list
             emit selectionChanged(m_selectedEntity);
@@ -1819,27 +1811,6 @@ void EditorScene::handleSelectionTransformChange()
     }
 }
 
-void EditorScene::handleSceneLoaderStatusChanged()
-{
-    Qt3DRender::QSceneLoader *sceneLoader = qobject_cast<Qt3DRender::QSceneLoader *>(sender());
-    if (sceneLoader) {
-        QVector<Qt3DCore::QEntity *> entities = sceneLoader->entities();
-        if (!entities.isEmpty()) {
-            Qt3DCore::QEntity *importedEntity = entities[0];
-            if (sceneLoader->status() == Qt3DRender::QSceneLoader::Ready) {
-                // TODO do we need to do something else here?
-                importedEntity->setParent(m_sceneEntity);
-                addEntity(importedEntity);
-            } else if (sceneLoader->status() == Qt3DRender::QSceneLoader::Error) {
-                importedEntity->deleteLater();
-                m_errorString = m_importFailString;
-                emit errorChanged(m_errorString);
-                qWarning() << m_errorString;
-            }
-        }
-    }
-}
-
 void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
 {
     if (m_dragMode == DragNone) {
@@ -2086,6 +2057,16 @@ void EditorScene::cancelDrag()
     m_pickedEntity = nullptr;
     m_pickedDistance = -1.0f;
     m_dragEntity = nullptr;
+}
+
+void EditorScene::setSceneEntity(Qt3DCore::QEntity *newSceneEntity)
+{
+    if (newSceneEntity)
+        m_sceneEntity = newSceneEntity;
+    else
+        m_sceneEntity = new Qt3DCore::QEntity();
+    m_sceneEntity->setObjectName(m_sceneRootString);
+    addEntity(m_sceneEntity);
 }
 
 void EditorScene::handleCameraAdded(Qt3DRender::QCamera *camera)

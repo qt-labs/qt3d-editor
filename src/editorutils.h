@@ -43,6 +43,8 @@ class QBuffer;
 class QLight;
 class QObjectPicker;
 class QCamera;
+class QCameraLens;
+class QSceneLoader;
 }
 
 class EditorSceneItemModel;
@@ -79,13 +81,14 @@ public:
         Transform,
         // Other
         ObjectPicker,
+        SceneLoader,
         Unknown = 1000
     };
     Q_ENUM(ComponentTypes)
 
     enum InsertableEntities {
         InvalidEntity,
-        GenericEntity,
+        TransformEntity,
         CuboidEntity,
         CylinderEntity,
         PlaneEntity,
@@ -101,9 +104,6 @@ public:
 public:
     static bool isObjectInternal(QObject *obj);
     static void copyCameraProperties(Qt3DRender::QCamera *target, Qt3DRender::QCamera *source);
-    static Qt3DCore::QEntity *duplicateEntity(Qt3DCore::QEntity *entity,
-                                              Qt3DCore::QEntity *newParent = nullptr,
-                                              const QVector3D &duplicateOffset = QVector3D());
     static Qt3DCore::QComponent *duplicateComponent(Qt3DCore::QComponent *component);
     static QString nameDuplicate(Qt3DCore::QEntity *duplicate, Qt3DCore::QEntity *original,
                                  EditorSceneItemModel *sceneModel);
@@ -131,6 +131,7 @@ public:
     static Qt3DCore::QTransform *entityTransform(Qt3DCore::QEntity *entity);
     static Qt3DRender::QLight *entityLight(Qt3DCore::QEntity *entity);
     static Qt3DRender::QObjectPicker *entityPicker(Qt3DCore::QEntity *entity);
+    static Qt3DRender::QSceneLoader *entitySceneLoader(Qt3DCore::QEntity *entity);
     static QVector3D findIntersection(const QVector3D &rayOrigin, const QVector3D &ray,
                                       float planeOffset, const QVector3D &planeNormal,
                                       float &t);
@@ -150,20 +151,20 @@ public:
     static QVector3D lightDirection(const Qt3DRender::QLight *light);
 
     static const QString lockPropertySuffix() { return QStringLiteral("_editorPropertyLock"); }
+    static const QByteArray lockPropertySuffix8() { return QByteArrayLiteral("_editorPropertyLock"); }
     static const QString lockTransformPropertyName() {
         return QStringLiteral("allTransform_editorPropertyLock");
     }
     static QVector3D cameraNormal(Qt3DRender::QCamera *camera);
     static bool isDescendant(EditorSceneItem *ancestor, EditorSceneItem *descendantItem);
+    static void copyLockProperties(const QObject *source, QObject *target);
+    static void lockProperty(const QByteArray &lockPropertyName, QObject *obj, bool lock);
 
 private:
     // Private constructor to ensure no actual instance is created
     explicit EditorUtils() {}
 
     static ComponentTypes componentType(Qt3DCore::QComponent *component);
-
-    static void copyLockProperties(const QObject *source, QObject *target);
-    static void lockProperty(const QByteArray &lockPropertyName, QObject *obj, bool lock);
 };
 
 #endif // EDITORUTILS_H

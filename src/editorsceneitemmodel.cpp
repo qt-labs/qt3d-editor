@@ -41,6 +41,7 @@
 #include <Qt3DRender/QTorusMesh>
 #include <Qt3DRender/QLight>
 #include <Qt3DRender/QPhongMaterial>
+#include <Qt3DRender/QSceneLoader>
 
 EditorSceneItemModel::EditorSceneItemModel(EditorScene *scene)
     : QAbstractItemModel(scene)
@@ -147,6 +148,22 @@ void EditorSceneItemModel::handleEntityNameChange()
             QVector<int> roles(1);
             roles[0] = NameRole;
             emit dataChanged(index, index, roles);
+        }
+    }
+}
+
+void EditorSceneItemModel::handleSceneLoaderStatusChanged()
+{
+    Qt3DRender::QSceneLoader *sceneLoader = qobject_cast<Qt3DRender::QSceneLoader *>(sender());
+    if (sceneLoader) {
+        QVector<Qt3DCore::QEntity *> entities = sceneLoader->entities();
+        if (!entities.isEmpty()) {
+            Qt3DCore::QEntity *importedEntity = entities[0];
+            if (sceneLoader->status() == Qt3DRender::QSceneLoader::Ready) {
+                // TODO: Add picker
+            } else if (sceneLoader->status() == Qt3DRender::QSceneLoader::Error) {
+                m_scene->setError(tr("Failed to import an Entity"));
+            }
         }
     }
 }
@@ -275,12 +292,15 @@ Qt3DCore::QEntity *EditorSceneItemModel::insertEntity(EditorUtils::InsertableEnt
             newEntity->addComponent(new Qt3DRender::QLight());
             break;
         }
+        case EditorUtils::TransformEntity: {
+            newEntity->setObjectName(generateValidName(tr("New Transform"), newEntity));
+            break;
+        }
         default:
             newEntity->setObjectName(generateValidName(tr("New Empty Entity"), newEntity));
             break;
         }
     }
-
 
     m_scene->addEntity(newEntity);
 
@@ -383,18 +403,6 @@ QString EditorSceneItemModel::generateValidName(const QString &desiredName,
     return testName;
 }
 
-bool EditorSceneItemModel::isCamera(const QModelIndex &index) const
-{
-    EditorSceneItem *item = editorSceneItemFromIndex(index);
-    return qobject_cast<Qt3DRender::QCamera *>(item->entity());
-}
-
-bool EditorSceneItemModel::isLight(const QModelIndex &index) const
-{
-    EditorSceneItem *item = editorSceneItemFromIndex(index);
-    return item->itemType() == EditorSceneItem::Light;
-}
-
 bool EditorSceneItemModel::canReparent(EditorSceneItem *newParentItem,
                                        EditorSceneItem *movedItem)
 {
@@ -414,8 +422,7 @@ void EditorSceneItemModel::reparentEntity(const QModelIndex &newParentIndex,
     // Since Qt3D doesn't seem to like reparenting entities, we duplicate the moved entities
     // under a new parent and remove the old ones.
 
-    Qt3DCore::QEntity *duplicate = EditorUtils::duplicateEntity(
-                entityItem->entity(), newParentItem->entity());
+    Qt3DCore::QEntity *duplicate = duplicateEntity(entityItem->entity(), newParentItem->entity());
 
     m_scene->removeEntity(entityItem->entity());
     m_scene->addEntity(duplicate);
@@ -438,6 +445,100 @@ void EditorSceneItemModel::removeExpandedItem(const QModelIndex &index)
 {
     EditorSceneItem *item = editorSceneItemFromIndex(index);
     m_expandedItems.removeOne(item->entity()->objectName());
+}
+
+Qt3DCore::QEntity *EditorSceneItemModel::importEntity(const QUrl &fileUrl)
+{
+    Qt3DCore::QEntity *sceneLoaderEntity =
+            new Qt3DCore::QEntity(m_scene->sceneEntityItem()->entity());
+    Qt3DRender::QSceneLoader *sceneLoader = new Qt3DRender::QSceneLoader(sceneLoaderEntity);
+    QObject::connect(sceneLoader, &Qt3DRender::QSceneLoader::statusChanged,
+                     this, &EditorSceneItemModel::handleSceneLoaderStatusChanged);
+    sceneLoader->setSource(fileUrl);
+    sceneLoaderEntity->addComponent(sceneLoader);
+    sceneLoaderEntity->setObjectName(generateValidName(tr("New Scene Loader"), sceneLoaderEntity));
+
+    Qt3DCore::QTransform *loaderTransform = new Qt3DCore::QTransform();
+    sceneLoaderEntity->addComponent(loaderTransform);
+
+    QModelIndex parentIndex = sceneEntityIndex();
+    int row = rowCount(parentIndex);
+    insertExistingEntity(sceneLoaderEntity, row, parentIndex);
+
+    return sceneLoaderEntity;
+}
+
+Qt3DCore::QEntity *EditorSceneItemModel::duplicateEntity(Qt3DCore::QEntity *entity,
+                                                         Qt3DCore::QEntity *newParent,
+                                                         const QVector3D &duplicateOffset)
+{
+    // Copies the entity, including making copies of all components and child entities
+    // Both copies will retain their entity names.
+
+    Qt3DCore::QEntity *newEntity = nullptr;
+    Qt3DRender::QSceneLoader *sceneLoader = nullptr;
+
+    // Check if it's a camera
+    Qt3DRender::QCamera *oldCam = qobject_cast<Qt3DRender::QCamera *>(entity);
+    if (oldCam) {
+        Qt3DRender::QCamera *newCam = new Qt3DRender::QCamera(newParent);
+        EditorUtils::copyCameraProperties(newCam, oldCam);
+        newEntity = newCam;
+
+        EditorUtils::copyLockProperties(entity, newEntity);
+
+        // Unlock transform related properties in the duplicate
+        EditorUtils::lockProperty(
+                    QByteArrayLiteral("position") + EditorUtils::lockPropertySuffix8(),
+                    newEntity, false);
+        EditorUtils::lockProperty(
+                    QByteArrayLiteral("upVector") + EditorUtils::lockPropertySuffix8(),
+                    newEntity, false);
+        EditorUtils::lockProperty(
+                    QByteArrayLiteral("viewCenter") + EditorUtils::lockPropertySuffix8(),
+                    newEntity, false);
+
+        // Offset the position of the duplicate
+        newCam->setPosition(oldCam->position() + duplicateOffset);
+    } else {
+        newEntity = new Qt3DCore::QEntity(newParent);
+        // Duplicate non-internal components
+        // Internals will get recreated when duplicate entity is added to scene
+        Q_FOREACH (Qt3DCore::QComponent *component, entity->components()) {
+            if (!EditorUtils::isObjectInternal(component)) {
+                Qt3DCore::QComponent *newComponent = EditorUtils::duplicateComponent(component);
+                if (newComponent) {
+                    if (!sceneLoader) {
+                        sceneLoader = qobject_cast<Qt3DRender::QSceneLoader *>(component);
+                        if (sceneLoader) {
+                            connect(sceneLoader, &Qt3DRender::QSceneLoader::statusChanged,
+                                    this, &EditorSceneItemModel::handleSceneLoaderStatusChanged);
+                        }
+                    }
+                    newEntity->addComponent(newComponent);
+                    Qt3DCore::QTransform *newTransform =
+                            qobject_cast<Qt3DCore::QTransform *>(newComponent);
+                    if (newTransform) {
+                        newTransform->setTranslation(newTransform->translation()
+                                                     + duplicateOffset * newTransform->scale3D());
+                    }
+                }
+            }
+        }
+    }
+
+    newEntity->setObjectName(entity->objectName());
+
+    if (!sceneLoader) {
+        // Duplicate child entities
+        Q_FOREACH (QObject *child, entity->children()) {
+            Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
+            if (childEntity)
+                duplicateEntity(childEntity, newEntity);
+        }
+    }
+
+    return newEntity;
 }
 
 QString EditorSceneItemModel::fixEntityName(const QString &desiredName)

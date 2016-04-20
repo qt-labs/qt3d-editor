@@ -30,6 +30,7 @@ SOURCES += src/main.cpp \
     src/undohandler/copycamerapropertiescommand.cpp \
     src/undohandler/genericpropertychangecommand.cpp \
     src/undohandler/reparententitycommand.cpp \
+    src/undohandler/importentitycommand.cpp \
     src/materials/draghandleeffect.cpp \
     src/inputcontrols/editorcameracontroller.cpp
 
@@ -75,6 +76,7 @@ HEADERS += \
     src/undohandler/copycamerapropertiescommand.h \
     src/undohandler/genericpropertychangecommand.h \
     src/undohandler/reparententitycommand.h \
+    src/undohandler/importentitycommand.h \
     src/materials/draghandleeffect.h \
     src/inputcontrols/editorcameracontroller.h
 

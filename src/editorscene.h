@@ -186,7 +186,7 @@ private:
           , transform(nullptr)
           , material(nullptr)
           , mesh(nullptr)
-          , type(EditorUtils::GenericEntity)
+          , type(EditorUtils::InvalidEntity)
         {}
         Qt3DCore::QEntity *entity;
         Qt3DCore::QTransform *transform;
@@ -221,7 +221,6 @@ public:
     Q_INVOKABLE bool saveScene(const QUrl &fileUrl, bool autosave = false);
     Q_INVOKABLE bool loadScene(const QUrl &fileUrl);
     Q_INVOKABLE void deleteScene(const QUrl &fileUrl, bool autosave = false);
-    Q_INVOKABLE void importEntity(const QUrl &fileUrl);
     Q_INVOKABLE QString cameraName(int index) const;
     Q_INVOKABLE void resetFreeViewCamera();
     Q_INVOKABLE void snapFreeViewCameraToActiveSceneCamera();
@@ -280,6 +279,7 @@ public:
     void updateLightVisibleTransform(Qt3DCore::QEntity *lightEntity);
 
     void handleEnabledChanged(Qt3DCore::QEntity *entity, bool enabled);
+    void setError(const QString &errorString);
 
 public slots:
     void clearSelectionBoxes();
@@ -307,7 +307,6 @@ private slots:
     void handleEntityNameChange();
     void endSelectionHandling();
     void handleSelectionTransformChange();
-    void handleSceneLoaderStatusChanged();
 
 private:
     void handleCameraAdded(Qt3DRender::QCamera *camera);
@@ -346,6 +345,7 @@ private:
     void resizeCameraViewCenterEntity();
     bool isPropertyLocked(const QString &propertyName, QObject *obj);
     void cancelDrag();
+    void setSceneEntity(Qt3DCore::QEntity *newSceneEntity = nullptr);
 
 private:
     Qt3DCore::QEntity *m_rootEntity;
@@ -420,6 +420,7 @@ private:
     QVector3D m_snapToGridIntersection;
     int m_gridSize;
     int m_duplicateCount;
+    Qt3DCore::QEntity *m_previousDuplicate;
 
     QMap<QString, PlaceholderEntityData *> m_placeholderEntityMap;
 };

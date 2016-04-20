@@ -77,21 +77,24 @@ public:
     Q_INVOKABLE QModelIndex getModelIndexByName(const QString &entityName);
     QString generateValidName(const QString &desiredName, const Qt3DCore::QEntity *skipEntity);
     EditorScene *scene() { return m_scene; }
-    Q_INVOKABLE bool isCamera(const QModelIndex &index) const;
-    Q_INVOKABLE bool isLight(const QModelIndex &index) const;
     Q_INVOKABLE bool canReparent(EditorSceneItem *newParentItem, EditorSceneItem *movedItem);
     void reparentEntity(const QModelIndex &newParentIndex, const QModelIndex &entityIndex);
     Q_INVOKABLE void addExpandedItem(const QModelIndex &index);
     Q_INVOKABLE void removeExpandedItem(const QModelIndex &index);
     void clearExpandedItems() { m_expandedItems.clear(); }
+    Qt3DCore::QEntity *importEntity(const QUrl &fileUrl);
+    Qt3DCore::QEntity *duplicateEntity(Qt3DCore::QEntity *entity,
+                                       Qt3DCore::QEntity *newParent = nullptr,
+                                       const QVector3D &duplicateOffset = QVector3D());
 
 signals:
     void freeViewChanged(bool enabled);
     void expandItems(const QModelIndexList &items);
     void selectIndex(const QModelIndex &selectIndex);
 
-public slots:
+private slots:
     void handleEntityNameChange();
+    void handleSceneLoaderStatusChanged();
 
 private:
     QString fixEntityName(const QString &desiredName);
