@@ -121,7 +121,7 @@ Item {
 
                 readonly property bool horizontal: slider.orientation === Qt.Horizontal
             }
-            track: Rectangle {
+            background: Rectangle {
                 x: slider.leftPadding + (horizontal ? 0 : (slider.availableWidth - width) / 2)
                 y: slider.topPadding + (horizontal ? (slider.availableHeight - height) / 2 : 0)
                 implicitWidth: horizontal ? 200 : 6
