@@ -132,6 +132,7 @@ public:
     static Qt3DRender::QLight *entityLight(Qt3DCore::QEntity *entity);
     static Qt3DRender::QObjectPicker *entityPicker(Qt3DCore::QEntity *entity);
     static Qt3DRender::QSceneLoader *entitySceneLoader(Qt3DCore::QEntity *entity);
+    static Qt3DRender::QGeometryRenderer *entityMesh(Qt3DCore::QEntity *entity);
     static QVector3D findIntersection(const QVector3D &rayOrigin, const QVector3D &ray,
                                       float planeOffset, const QVector3D &planeNormal,
                                       float &t);

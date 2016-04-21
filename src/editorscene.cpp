@@ -77,6 +77,7 @@
 
 static const QString cameraVisibleEntityName = QStringLiteral("__internal camera visible entity");
 static const QString lightVisibleEntityName = QStringLiteral("__internal light visible entity");
+static const QString sceneLoaderSubEntityName = QStringLiteral("__internal sceneloader sub entity");
 static const QString autoSavePostfix = QStringLiteral(".autosave");
 static const QVector3D defaultLightDirection(0.0f, -1.0f, 0.0f);
 static const float freeViewCameraNearPlane = 0.1f;
@@ -166,8 +167,9 @@ void EditorScene::addEntity(Qt3DCore::QEntity *entity, int index, Qt3DCore::QEnt
             handleCameraAdded(camera);
         else if (item->itemType() == EditorSceneItem::Light)
             handleLightAdded(entity);
-        else
+        else if (entity->isEnabled() && item->itemType() != EditorSceneItem::SceneLoader)
             createObjectPickerForEntity(entity);
+        // Note: Scene loader pickers are created asynchronously after scene is loaded fully
 
         item->componentsModel()->initializeModel();
     }
@@ -617,11 +619,18 @@ void EditorScene::clearSceneCamerasAndLights()
 
 Qt3DRender::QObjectPicker * EditorScene::createObjectPickerForEntity(Qt3DCore::QEntity *entity)
 {
-    Qt3DRender::QObjectPicker *picker = new Qt3DRender::QObjectPicker(entity);
-    picker->setHoverEnabled(false);
-    picker->setObjectName(QStringLiteral("__internal object picker ") + entity->objectName());
-    entity->addComponent(picker);
-    connect(picker, &Qt3DRender::QObjectPicker::pressed, this, &EditorScene::handlePickerPress);
+    Qt3DRender::QObjectPicker *picker = nullptr;
+    EditorSceneItem *item = m_sceneItems.value(entity->id());
+    if (item && item->itemType() == EditorSceneItem::SceneLoader) {
+        // Scene loaders need multiple pickers. Null picker is returned.
+        createSceneLoaderChildPickers(entity, item->internalPickers());
+    } else {
+        picker = new Qt3DRender::QObjectPicker(entity);
+        picker->setHoverEnabled(false);
+        picker->setObjectName(QStringLiteral("__internal object picker ") + entity->objectName());
+        entity->addComponent(picker);
+        connect(picker, &Qt3DRender::QObjectPicker::pressed, this, &EditorScene::handlePickerPress);
+    }
 
     return picker;
 }
@@ -1185,14 +1194,26 @@ void EditorScene::handleEnabledChanged(Qt3DCore::QEntity *entity, bool enabled)
             enableVisibleLight(*lightData, freeViewEnabled);
 
     } else {
-        // Picker doesn't get disabled with the entity - we have to delete it to disable
-        Qt3DRender::QObjectPicker *picker = EditorUtils::entityPicker(entity);
-        // Other objects aren't affected by m_freeView, so just check enabled flag
-        if (enabled) {
-            if (!picker)
-                createObjectPickerForEntity(entity);
+        EditorSceneItem *item = m_sceneItems.value(entity->id());
+        if (item && item->itemType() == EditorSceneItem::SceneLoader) {
+            if (enabled) {
+                if (item->internalPickers()->size() == 0)
+                    createObjectPickerForEntity(entity);
+            } else {
+                Q_FOREACH (Qt3DRender::QObjectPicker *picker, *item->internalPickers())
+                    delete picker;
+                item->internalPickers()->clear();
+            }
         } else {
-            delete picker;
+            // Picker doesn't get disabled with the entity - we have to delete it to disable
+            Qt3DRender::QObjectPicker *picker = EditorUtils::entityPicker(entity);
+            // Other objects aren't affected by m_freeView, so just check enabled flag
+            if (enabled) {
+                if (!picker)
+                    createObjectPickerForEntity(entity);
+            } else {
+                delete picker;
+            }
         }
     }
 }
@@ -1911,6 +1932,20 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
                                 select = true;
                             }
                         }
+                    } else if (pressedEntity->objectName() == sceneLoaderSubEntityName) {
+                        // Select the scene loader entity instead when picking one of loader's
+                        // internal mesh entites.
+                        Qt3DCore::QEntity *parentEntity = pressedEntity->parentEntity();
+                        while (parentEntity) {
+                            EditorSceneItem *parentItem = m_sceneItems.value(parentEntity->id());
+                            if (parentItem) {
+                                pressedEntity = parentEntity;
+                                select = true;
+                                break;
+                            } else {
+                                parentEntity = parentEntity->parentEntity();
+                            }
+                        }
                     }
                 }
                 if (select && !m_pickedEntity)
@@ -2072,6 +2107,22 @@ void EditorScene::setSceneEntity(Qt3DCore::QEntity *newSceneEntity)
         m_sceneEntity = new Qt3DCore::QEntity();
     m_sceneEntity->setObjectName(m_sceneRootString);
     addEntity(m_sceneEntity);
+}
+
+void EditorScene::createSceneLoaderChildPickers(Qt3DCore::QEntity *entity,
+                                                QList<Qt3DRender::QObjectPicker *> *pickers)
+{
+    if (EditorUtils::entityMesh(entity)) {
+        pickers->append(createObjectPickerForEntity(entity));
+        // Rename entity so we can identify it later
+        entity->setObjectName(sceneLoaderSubEntityName);
+    }
+
+    Q_FOREACH (QObject *child, entity->children()) {
+        Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
+        if (childEntity)
+            createSceneLoaderChildPickers(childEntity, pickers);
+    }
 }
 
 void EditorScene::handleCameraAdded(Qt3DRender::QCamera *camera)

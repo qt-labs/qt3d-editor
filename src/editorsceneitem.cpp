@@ -66,6 +66,7 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
     , m_entityMeshType(EditorSceneItemMeshComponentsModel::Unknown)
     , m_entityMeshExtents(1.0f, 1.0f, 1.0f)
     , m_canRotate(true)
+    , m_internalPickers(nullptr)
 {
     if (m_parentItem != nullptr)
         m_parentItem->addChild(this, index);
@@ -143,6 +144,7 @@ EditorSceneItem::~EditorSceneItem()
         m_selectionBox->setParent(static_cast<Qt3DCore::QNode *>(nullptr));
         m_selectionBox->deleteLater();
     }
+    delete m_internalPickers;
 }
 
 Qt3DCore::QEntity *EditorSceneItem::entity()
@@ -615,4 +617,11 @@ QVariant EditorSceneItem::customProperty(QObject *component, const QString name)
         return propertyVariant;
     else
         return QVariant();
+}
+
+QList<Qt3DRender::QObjectPicker *> *EditorSceneItem::internalPickers()
+{
+    if (!m_internalPickers)
+        m_internalPickers = new QList<Qt3DRender::QObjectPicker *>();
+    return m_internalPickers;
 }

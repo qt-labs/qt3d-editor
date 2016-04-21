@@ -158,12 +158,11 @@ void EditorSceneItemModel::handleSceneLoaderStatusChanged()
     if (sceneLoader) {
         QVector<Qt3DCore::QEntity *> entities = sceneLoader->entities();
         if (!entities.isEmpty()) {
-            //Qt3DCore::QEntity *importedEntity = entities[0]; // TODO: Not used, will it be?
-            if (sceneLoader->status() == Qt3DRender::QSceneLoader::Ready) {
-                // TODO: Add picker
-            } else if (sceneLoader->status() == Qt3DRender::QSceneLoader::Error) {
+            Qt3DCore::QEntity *importedEntity = entities[0];
+            if (sceneLoader->status() == Qt3DRender::QSceneLoader::Ready)
+                m_scene->createObjectPickerForEntity(importedEntity);
+            else if (sceneLoader->status() == Qt3DRender::QSceneLoader::Error)
                 m_scene->setError(tr("Failed to import an Entity"));
-            }
         }
     }
 }

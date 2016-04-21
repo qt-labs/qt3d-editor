@@ -280,6 +280,7 @@ public:
 
     void handleEnabledChanged(Qt3DCore::QEntity *entity, bool enabled);
     void setError(const QString &errorString);
+    Qt3DRender::QObjectPicker *createObjectPickerForEntity(Qt3DCore::QEntity *entity);
 
 public slots:
     void clearSelectionBoxes();
@@ -325,7 +326,6 @@ private:
     void enableVisibleLight(LightData &lightData, bool enable);
     void clearSceneCamerasAndLights();
     void resetSceneCamera(Qt3DCore::QEntity *sceneCameraEntity);
-    Qt3DRender::QObjectPicker *createObjectPickerForEntity(Qt3DCore::QEntity *entity);
     int cameraIndexForEntity(Qt3DCore::QEntity *entity);
     void updateVisibleSceneCameraMatrix(const CameraData &cameraData);
     void retranslateUi();
@@ -346,6 +346,8 @@ private:
     bool isPropertyLocked(const QString &propertyName, QObject *obj);
     void cancelDrag();
     void setSceneEntity(Qt3DCore::QEntity *newSceneEntity = nullptr);
+    void createSceneLoaderChildPickers(Qt3DCore::QEntity *entity,
+                                       QList<Qt3DRender::QObjectPicker *> *pickers);
 
 private:
     Qt3DCore::QEntity *m_rootEntity;

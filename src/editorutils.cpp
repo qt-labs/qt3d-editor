@@ -822,6 +822,19 @@ Qt3DRender::QSceneLoader *EditorUtils::entitySceneLoader(Qt3DCore::QEntity *enti
     return nullptr;
 }
 
+Qt3DRender::QGeometryRenderer *EditorUtils::entityMesh(Qt3DCore::QEntity *entity)
+{
+    Qt3DCore::QComponentVector components = entity->components();
+    for (int i = 0; i < components.size(); i++) {
+        Qt3DRender::QGeometryRenderer *mesh
+                = qobject_cast<Qt3DRender::QGeometryRenderer *>(components.value(i));
+        if (mesh)
+            return mesh;
+    }
+
+    return nullptr;
+}
+
 // Returns the intersection point of a plane and a ray.
 // Parameter t returns the distance in ray lengths. If t is negative, intersection
 // is behind rayOrigin.

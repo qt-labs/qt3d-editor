@@ -40,6 +40,7 @@ namespace Qt3DCore {
 
 namespace Qt3DRender {
     class QGeometryRenderer;
+    class QObjectPicker;
 }
 
 class EditorScene;
@@ -101,6 +102,8 @@ public:
     bool canRotate() const { return m_canRotate; }
     void setCanRotate(bool canRotate) { m_canRotate = canRotate; }
 
+    QList<Qt3DRender::QObjectPicker *> *internalPickers();
+
 public slots:
     void updateSelectionBoxTransform();
     void handleMeshChange(Qt3DRender::QGeometryRenderer *newMesh);
@@ -139,6 +142,9 @@ private:
     QVector3D m_selectionBoxCenter;
 
     bool m_canRotate;
+    // Internal pickers are for example pickers of hidden scene loader meshes.
+    // Pickers not owned, but the list itself is.
+    QList<Qt3DRender::QObjectPicker *> *m_internalPickers;
 };
 
 Q_DECLARE_METATYPE(EditorSceneItem*)
