@@ -65,11 +65,11 @@ Menu {
         }
     }
     MenuItem {
-        text: qsTr("Empty") + editorScene.emptyString
+        text: qsTr("Group") + editorScene.emptyString
         iconSource: "qrc:/images/cross.png"
         enabled: !entityTreeView.cameraSelected
         onTriggered: {
-            entityTree.addNewEntity(EditorUtils.TransformEntity)
+            entityTree.addNewEntity(EditorUtils.GroupEntity)
         }
     }
 }

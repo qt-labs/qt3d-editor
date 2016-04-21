@@ -419,20 +419,25 @@ QVector3D EditorScene::getWorldPosition(int xPos, int yPos)
 void EditorScene::showPlaceholderEntity(const QString &name, int type)
 {
     PlaceholderEntityData *data = m_placeholderEntityMap.value(name);
+    EditorUtils::InsertableEntities insertableType = EditorUtils::InsertableEntities(type);
     if (!data) {
         data = new PlaceholderEntityData();
         data->entity = new Qt3DCore::QEntity(m_rootEntity);
         data->transform = new Qt3DCore::QTransform();
         Qt3DRender::QPhongAlphaMaterial *material = new Qt3DRender::QPhongAlphaMaterial();
-        material->setAlpha(0.4f);
-        material->setAmbient(Qt::blue);
+        if (insertableType == EditorUtils::InsertableEntities::GroupEntity) {
+            material->setAlpha(0.2f);
+            material->setAmbient(Qt::yellow);
+        } else {
+            material->setAlpha(0.4f);
+            material->setAmbient(Qt::blue);
+        }
         data->material = material;
         data->entity->addComponent(data->transform);
         data->entity->addComponent(material);
         m_placeholderEntityMap.insert(name, data);
     }
 
-    EditorUtils::InsertableEntities insertableType = EditorUtils::InsertableEntities(type);
     if (data->type != insertableType) {
         data->type = insertableType;
         delete data->mesh;
@@ -1574,7 +1579,7 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
         } else {
             Qt3DCore::QTransform *transform = EditorUtils::entityTransform(m_selectedEntity);
             bool transformPropertiesLocked = item->customProperty(m_selectedEntity,
-                                                 lockTransformPropertyName()).toBool();
+                                                                  lockTransformPropertyName()).toBool();
             if (transformPropertiesLocked) {
                 m_dragHandleTranslate.entity->setEnabled(false);
             } else {

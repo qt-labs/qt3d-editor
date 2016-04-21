@@ -164,10 +164,9 @@ Item {
                     } else if (itemType === EditorSceneItem.Light) {
                         meshType = EditorUtils.LightEntity
                         meshDragImage = "images/light-large.png"
-                    } else if (itemType === EditorSceneItem.Transform) {
-                        meshType = EditorUtils.TransformEntity
-                        // TODO: make a proper "transform entity drag" icon
-                        meshDragImage = "images/plus.png"
+                    } else if (itemType === EditorSceneItem.Group) {
+                        meshType = EditorUtils.GroupEntity
+                        meshDragImage = "images/group-large.png"
                     } else {
                         // Use cuboid type to indicate mesh
                         meshType = EditorUtils.CuboidEntity
@@ -226,11 +225,11 @@ Item {
                             && itemType !== EditorSceneItem.Camera
                             && (dropSource.drag.target.entityType !== EditorUtils.LightEntity
                                 || itemType === EditorSceneItem.Light
-                                || itemType === EditorSceneItem.Transform)
+                                || itemType === EditorSceneItem.Group)
                             && (styleData.index === editorScene.sceneModel.sceneEntityIndex()
                                 || dropSource.drag.target.entityType !== EditorUtils.CameraEntity)
-                            && (dropSource.drag.target.entityType !== EditorUtils.TransformEntity
-                                || itemType === EditorSceneItem.Transform
+                            && (dropSource.drag.target.entityType !== EditorUtils.GroupEntity
+                                || itemType === EditorSceneItem.Group
                                 || styleData.index === editorScene.sceneModel.sceneEntityIndex())
                     if (dropValid && dropSource.drag.target.dragKey === "changeParent") {
                         dropValid = editorScene.sceneModel.canReparent(

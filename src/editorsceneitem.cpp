@@ -87,9 +87,8 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
                 m_canRotate = false;
             }
         }
-        if (qobject_cast<Qt3DRender::QSceneLoader *>(component)) {
+        if (qobject_cast<Qt3DRender::QSceneLoader *>(component))
             isSceneLoader = true;
-        }
     }
     bool isCamera = qobject_cast<Qt3DRender::QCamera *>(entity);
     if (isCamera)
@@ -132,7 +131,7 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
     else if (isSceneLoader)
         m_itemType = EditorSceneItem::SceneLoader;
     else if (m_entityTransform)
-        m_itemType = EditorSceneItem::Transform;
+        m_itemType = EditorSceneItem::Group;
     else
         m_itemType = EditorSceneItem::Other;
 }

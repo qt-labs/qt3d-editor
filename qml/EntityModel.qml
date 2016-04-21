@@ -40,6 +40,7 @@ ListModel {
         setProperty(5, "meshString", qsTr("Custom"))
         setProperty(6, "meshString", qsTr("Camera"))
         setProperty(7, "meshString", qsTr("Light"))
+        setProperty(8, "meshString", qsTr("Group"))
     }
 
     Component.onCompleted: {
@@ -89,5 +90,10 @@ ListModel {
         meshType: EditorUtils.LightEntity
         meshImage: "images/light-large.png"
         meshDragImage: "images/light-large.png"
+    }
+    ListElement {
+        meshType: EditorUtils.GroupEntity
+        meshImage: "images/group-large.png"
+        meshDragImage: "images/group-large.png"
     }
 }

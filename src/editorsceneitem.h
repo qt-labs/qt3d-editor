@@ -59,7 +59,7 @@ public:
         Light,
         Mesh,
         SceneLoader,
-        Transform,
+        Group,
         Other
     };
 

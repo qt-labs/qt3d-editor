@@ -690,6 +690,10 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createMeshForInsertableType(Insertab
         mesh = createDefaultCustomMesh();
         break;
     }
+    case GroupEntity: {
+        // TODO: A selection box only should be added
+        break;
+    }
     default:
         break;
     }

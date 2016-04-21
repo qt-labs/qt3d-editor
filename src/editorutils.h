@@ -88,7 +88,7 @@ public:
 
     enum InsertableEntities {
         InvalidEntity,
-        TransformEntity,
+        GroupEntity,
         CuboidEntity,
         CylinderEntity,
         PlaneEntity,

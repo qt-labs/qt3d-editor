@@ -166,7 +166,8 @@ Item {
                             transformViewVisible = !transformViewVisible
                         }
                         visible: (entityType === EditorSceneItem.Mesh
-                                  || entityType === EditorSceneItem.Light) ? true : false
+                                  || entityType === EditorSceneItem.Light
+                                  || entityType === EditorSceneItem.Group) ? true : false
                     }
                     EnableButton {
                         id: materialButton

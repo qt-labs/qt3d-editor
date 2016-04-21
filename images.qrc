@@ -70,5 +70,6 @@
         <file>images/helperplane_z_selected.png</file>
         <file>images/reset_camera_to_default.png</file>
         <file>images/fader.png</file>
+        <file>images/group-large.png</file>
     </qresource>
 </RCC>

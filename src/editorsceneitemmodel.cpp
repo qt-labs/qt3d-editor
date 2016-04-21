@@ -158,7 +158,7 @@ void EditorSceneItemModel::handleSceneLoaderStatusChanged()
     if (sceneLoader) {
         QVector<Qt3DCore::QEntity *> entities = sceneLoader->entities();
         if (!entities.isEmpty()) {
-            Qt3DCore::QEntity *importedEntity = entities[0];
+            //Qt3DCore::QEntity *importedEntity = entities[0]; // TODO: Not used, will it be?
             if (sceneLoader->status() == Qt3DRender::QSceneLoader::Ready) {
                 // TODO: Add picker
             } else if (sceneLoader->status() == Qt3DRender::QSceneLoader::Error) {
@@ -292,8 +292,8 @@ Qt3DCore::QEntity *EditorSceneItemModel::insertEntity(EditorUtils::InsertableEnt
             newEntity->addComponent(new Qt3DRender::QLight());
             break;
         }
-        case EditorUtils::TransformEntity: {
-            newEntity->setObjectName(generateValidName(tr("New Transform"), newEntity));
+        case EditorUtils::GroupEntity: {
+            newEntity->setObjectName(generateValidName(tr("New Group"), newEntity));
             break;
         }
         default:
