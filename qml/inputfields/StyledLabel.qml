@@ -28,44 +28,9 @@
 import QtQuick 2.5
 import Qt.labs.controls 1.0 as QLC
 
-PropertyInputField {
-    id: checkBoxInput
-    width: parent.width
-    height: checkBox.height
-
-    property string checkBoxLabel: checkBox.text
-    property bool blockChanges: false
-
-    onComponentValueChanged: {
-        blockChanges = true
-        if (component !== null)
-            checkBox.checked = component[propertyName]
-        blockChanges = false
-    }
-
-    StyledLabel {
-        text: checkBoxLabel
-        anchors.left: parent.left
-        anchors.verticalCenter: checkBox.verticalCenter
-        horizontalAlignment: Text.AlignLeft
-        verticalAlignment: Text.AlignVCenter
-    }
-
-    Image {
-        source: "qrc:/images/fader.png"
-        anchors.right: checkBox.left
-        anchors.rightMargin: -9 // checkbox box has some margins
-        anchors.verticalCenter: checkBox.verticalCenter
-    }
-
-    QLC.CheckBox {
-        id: checkBox
-        anchors.right: parent.right
-        anchors.rightMargin: 11
-        onCheckedChanged: {
-            if (!blockChanges)
-                handleEditingFinished(checked)
-        }
-    }
+QLC.Label {
+    color: mainwindow.textColor
+    font.family: mainwindow.labelFontFamily
+    font.weight: mainwindow.labelFontWeight
+    font.pixelSize: mainwindow.labelFontPixelSize
 }
-

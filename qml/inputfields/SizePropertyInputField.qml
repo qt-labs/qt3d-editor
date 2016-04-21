@@ -26,7 +26,6 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
-import Qt.labs.controls 1.0 as QLC
 import QtQuick.Layouts 1.2
 
 PropertyInputField {
@@ -58,10 +57,9 @@ PropertyInputField {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
 
-        QLC.Label {
+        StyledLabel {
             id: sizeLabel
             text: qsTr("Size") + editorScene.emptyString
-            color: labelTextColor
             Layout.alignment: Qt.AlignLeft
         }
 
@@ -80,31 +78,21 @@ PropertyInputField {
                                       - widthLabel.contentWidth
                                       - heightLabel.contentWidth) / 2 - 12 // 12 = column spacing * 2 (x3 because of labels)
 
-            QLC.Label {
+            StyledLabel {
                 id: widthLabel
                 text: qsTr("X") + editorScene.emptyString
-                color: labelTextColor
                 anchors.right: widthInput.left
                 anchors.rightMargin: 4
-                background: Rectangle {
-                    color: "lightGray"
-                    anchors.fill: parent
-                    anchors.margins: -4 // Cover the label margin area
-                }
             }
 
-            QLC.TextField {
+            StyledTextField {
                 id: widthInput
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
                 implicitWidth: parent.cellwidth
                 validator: intValidator
                 enabled: lockButton.buttonEnabled
-                background: TextFieldBackgroundStyle {}
                 anchors.right: heightLabel.left
                 anchors.rightMargin: 4
-                color: textFieldColor
-                selectionColor: textFieldSelectionColor
-                selectedTextColor: textFieldSelectedColor
                 selectByMouse: true
 
                 onEditingFinished: {
@@ -118,15 +106,14 @@ PropertyInputField {
                 }
             }
 
-            QLC.Label {
+            StyledLabel {
                 id: heightLabel
                 text: qsTr("Y") + editorScene.emptyString
-                color: labelTextColor
                 anchors.right: heightInput.left
                 anchors.rightMargin: 4
             }
 
-            QLC.TextField {
+            StyledTextField {
                 id: heightInput
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
                 anchors.right: lockButton.left
@@ -134,10 +121,6 @@ PropertyInputField {
                 validator: intValidator
                 implicitWidth: parent.cellwidth
                 enabled: lockButton.buttonEnabled
-                background: TextFieldBackgroundStyle {}
-                color: textFieldColor
-                selectionColor: textFieldSelectionColor
-                selectedTextColor: textFieldSelectedColor
                 selectByMouse: true
 
                 onEditingFinished: {

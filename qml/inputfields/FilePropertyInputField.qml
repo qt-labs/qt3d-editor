@@ -65,10 +65,9 @@ PropertyInputField {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
 
-        QLC.Label {
+        StyledLabel {
             id: fileLabel
             text: qsTr("File") + editorScene.emptyString
-            color: labelTextColor
             Layout.alignment: Qt.AlignLeft
         }
 

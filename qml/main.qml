@@ -28,6 +28,7 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
 import Qt.labs.controls 1.0 as QLC
+import QtQuick.Controls.Styles 1.4
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2
 import QtQml.Models 2.2
@@ -40,7 +41,7 @@ ApplicationWindow {
     width: 1280
     height: 800
     visible: false
-    color: "lightGray"
+    color: paneBackgroundColor
     minimumHeight: 400
     minimumWidth: 640
 
@@ -61,10 +62,17 @@ ApplicationWindow {
     property int currentHelperPlane: 1
     property alias selectedEntityType: generalPropertyView.entityType
 
-    property color labelTextColor: "white"
-    property color textFieldColor: "#353637"
-    property color textFieldSelectionColor: "gray"
-    property color textFieldSelectedColor: "lightGray"
+    property color textColor: "#ffffff"
+    property color selectionColor: "#43adee"
+    property color listHighlightColor: "#585a5c"
+    property color paneBackgroundColor: "#2e2f30"
+    property color paneColor: "#373839"
+    property color viewBorderColor: "#000000"
+    property color itemBackgroundColor: "#46484a"
+    property color menutItemColor: "#a0a1a2"
+    property string labelFontFamily: "Open Sans"
+    property int labelFontWeight: Font.Normal
+    property int labelFontPixelSize: 12
 
     property bool transformViewVisible: true
     property bool materialViewVisible: true
@@ -412,12 +420,18 @@ ApplicationWindow {
     toolBar: ToolBar {
         id: mainToolBar
         height: normalXButton.height + 4
+        style: ToolBarStyle {
+            background: Rectangle {
+                color: mainwindow.paneBackgroundColor
+            }
+        }
+
         RowLayout {
             EnableButton {
                 id: normalXButton
                 height: 32
                 width: 32
-                borderColor: "lightGray"
+                borderColor: mainwindow.listHighlightColor
                 borderWidth: 1
                 borderRadius: 2
                 anchors.verticalCenter: parent.verticalCenter
@@ -430,7 +444,7 @@ ApplicationWindow {
             EnableButton {
                 height: 32
                 width: 32
-                borderColor: "lightGray"
+                borderColor: mainwindow.listHighlightColor
                 borderWidth: 1
                 borderRadius: 2
                 anchors.verticalCenter: parent.verticalCenter
@@ -443,7 +457,7 @@ ApplicationWindow {
             EnableButton {
                 height: 32
                 width: 32
-                borderColor: "lightGray"
+                borderColor: mainwindow.listHighlightColor
                 borderWidth: 1
                 borderRadius: 2
                 anchors.verticalCenter: parent.verticalCenter
@@ -456,7 +470,7 @@ ApplicationWindow {
             EnableButton {
                 height: 32
                 width: 32
-                borderColor: "lightGray"
+                borderColor: mainwindow.listHighlightColor
                 borderWidth: 1
                 borderRadius: 2
                 anchors.verticalCenter: parent.verticalCenter
@@ -469,7 +483,7 @@ ApplicationWindow {
             EnableButton {
                 height: 32
                 width: 32
-                borderColor: "lightGray"
+                borderColor: mainwindow.listHighlightColor
                 borderWidth: 1
                 borderRadius: 2
                 anchors.verticalCenter: parent.verticalCenter
@@ -566,7 +580,7 @@ ApplicationWindow {
         title: qsTr("Grid Size") + editorScene.emptyString
         standardButtons: StandardButton.Cancel | StandardButton.Apply | StandardButton.Ok
 
-        QLC.SpinBox {
+        StyledSpinBox {
             id: gridSizeSpinBox
             anchors.horizontalCenter: parent.horizontalCenter
             to: 20
@@ -715,7 +729,7 @@ ApplicationWindow {
         width: 2
         height: parent.height
         anchors.right: propertyPane.left
-        color: "darkGray"
+        color: mainwindow.viewBorderColor
 
         property int paneMinimumWidth: 250
         property int paneMaximumWidth: mainwindow.width - entityLibrary.width - 10

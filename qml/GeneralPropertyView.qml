@@ -123,7 +123,7 @@ Item {
                     height: 8
                 }
 
-                QLC.Label {
+                StyledLabel {
                     id: showLabel
                     visible: propertiesLayout.visible
                     text: qsTr("Show Properties:") + editorScene.emptyString

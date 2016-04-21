@@ -26,7 +26,6 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
-import Qt.labs.controls 1.0 as QLC
 import QtQuick.Layouts 1.2
 
 Item {
@@ -84,25 +83,20 @@ Item {
         anchors.right: parent.right
         anchors.left: parent.left
 
-        QLC.Label {
+        StyledLabel {
             id: matrixLabel
             text: qsTr("Matrix4x4") + editorScene.emptyString
             Layout.alignment: Qt.AlignLeft
-            color: labelTextColor
         }
 
         ColumnLayout {
             Layout.alignment: Qt.AlignLeft
             RowLayout {
-                QLC.TextField {
+                StyledTextField {
                     id: m11Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundStyle {}
-                    color: textFieldColor
-                    selectionColor: textFieldSelectionColor
-                    selectedTextColor: textFieldSelectedColor
                     selectByMouse: true
 
                     onEditingFinished: {
@@ -116,15 +110,11 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m11)
                 }
-                QLC.TextField {
+                StyledTextField {
                     id: m12Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundStyle {}
-                    color: textFieldColor
-                    selectionColor: textFieldSelectionColor
-                    selectedTextColor: textFieldSelectedColor
                     selectByMouse: true
 
                     onEditingFinished: {
@@ -138,15 +128,11 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m12)
                 }
-                QLC.TextField {
+                StyledTextField {
                     id: m13Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundStyle {}
-                    color: textFieldColor
-                    selectionColor: textFieldSelectionColor
-                    selectedTextColor: textFieldSelectedColor
                     selectByMouse: true
 
                     onEditingFinished: {
@@ -160,15 +146,11 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m13)
                 }
-                QLC.TextField {
+                StyledTextField {
                     id: m14Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundStyle {}
-                    color: textFieldColor
-                    selectionColor: textFieldSelectionColor
-                    selectedTextColor: textFieldSelectedColor
                     selectByMouse: true
 
                     onEditingFinished: {
@@ -185,15 +167,11 @@ Item {
             }
 
             RowLayout {
-                QLC.TextField {
+                StyledTextField {
                     id: m21Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundStyle {}
-                    color: textFieldColor
-                    selectionColor: textFieldSelectionColor
-                    selectedTextColor: textFieldSelectedColor
                     selectByMouse: true
 
                     onEditingFinished: {
@@ -207,15 +185,11 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m21)
                 }
-                QLC.TextField {
+                StyledTextField {
                     id: m22Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundStyle {}
-                    color: textFieldColor
-                    selectionColor: textFieldSelectionColor
-                    selectedTextColor: textFieldSelectedColor
                     selectByMouse: true
 
                     onEditingFinished: {
@@ -229,15 +203,11 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m22)
                 }
-                QLC.TextField {
+                StyledTextField {
                     id: m23Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundStyle {}
-                    color: textFieldColor
-                    selectionColor: textFieldSelectionColor
-                    selectedTextColor: textFieldSelectedColor
                     selectByMouse: true
 
                     onEditingFinished: {
@@ -251,15 +221,11 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m23)
                 }
-                QLC.TextField {
+                StyledTextField {
                     id: m24Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundStyle {}
-                    color: textFieldColor
-                    selectionColor: textFieldSelectionColor
-                    selectedTextColor: textFieldSelectedColor
                     selectByMouse: true
 
                     onEditingFinished: {
@@ -275,15 +241,11 @@ Item {
                 }
             }
             RowLayout {
-                QLC.TextField {
+                StyledTextField {
                     id: m31Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundStyle {}
-                    color: textFieldColor
-                    selectionColor: textFieldSelectionColor
-                    selectedTextColor: textFieldSelectedColor
                     selectByMouse: true
 
                     onEditingFinished: {
@@ -297,15 +259,11 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m31)
                 }
-                QLC.TextField {
+                StyledTextField {
                     id: m32Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundStyle {}
-                    color: textFieldColor
-                    selectionColor: textFieldSelectionColor
-                    selectedTextColor: textFieldSelectedColor
                     selectByMouse: true
 
                     onEditingFinished: {
@@ -319,15 +277,11 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m32)
                 }
-                QLC.TextField {
+                StyledTextField {
                     id: m33Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundStyle {}
-                    color: textFieldColor
-                    selectionColor: textFieldSelectionColor
-                    selectedTextColor: textFieldSelectedColor
                     selectByMouse: true
 
                     onEditingFinished: {
@@ -341,15 +295,11 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m33)
                 }
-                QLC.TextField {
+                StyledTextField {
                     id: m34Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
-                    background: TextFieldBackgroundStyle {}
-                    color: textFieldColor
-                    selectionColor: textFieldSelectionColor
-                    selectedTextColor: textFieldSelectedColor
                     selectByMouse: true
 
                     onEditingFinished: {
@@ -365,16 +315,12 @@ Item {
                 }
             }
             RowLayout {
-                QLC.TextField {
+                StyledTextField {
                     id: m41Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
                     enabled: !affine
-                    background: TextFieldBackgroundStyle {}
-                    color: textFieldColor
-                    selectionColor: textFieldSelectionColor
-                    selectedTextColor: textFieldSelectedColor
                     selectByMouse: true
 
                     onEditingFinished: {
@@ -388,16 +334,12 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m41)
                 }
-                QLC.TextField {
+                StyledTextField {
                     id: m42Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
                     enabled: !affine
-                    background: TextFieldBackgroundStyle {}
-                    color: textFieldColor
-                    selectionColor: textFieldSelectionColor
-                    selectedTextColor: textFieldSelectedColor
                     selectByMouse: true
 
                     onEditingFinished: {
@@ -411,16 +353,12 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m42)
                 }
-                QLC.TextField {
+                StyledTextField {
                     id: m43Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
                     enabled: !affine
-                    background: TextFieldBackgroundStyle {}
-                    color: textFieldColor
-                    selectionColor: textFieldSelectionColor
-                    selectedTextColor: textFieldSelectedColor
                     selectByMouse: true
 
                     onEditingFinished: {
@@ -434,16 +372,12 @@ Item {
 
                     Component.onCompleted: text = roundNumber(matrix4x4Input.value.m43)
                 }
-                QLC.TextField {
+                StyledTextField {
                     id: m44Field
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                     validator: doubleValidator
                     implicitWidth: cellwidth
                     enabled: !affine
-                    background: TextFieldBackgroundStyle {}
-                    color: textFieldColor
-                    selectionColor: textFieldSelectionColor
-                    selectedTextColor: textFieldSelectedColor
                     selectByMouse: true
 
                     onEditingFinished: {

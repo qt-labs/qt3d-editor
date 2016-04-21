@@ -26,7 +26,6 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
-import Qt.labs.controls 1.0 as QLC
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 
@@ -48,19 +47,19 @@ Rectangle {
 
     height: minimumHeaderHeight
     width: parent.width
-    color: "darkGray"
+    color: mainwindow.paneColor
 
     onViewVisibleChanged: {
         showViewTitle(viewVisible)
     }
 
-    QLC.Label {
+    StyledLabel {
         id: viewHeaderText
         anchors.left: parent.left
         anchors.leftMargin: 8
         anchors.verticalCenter: parent.verticalCenter
         text: headerText
-        font.bold: true
+        font.weight: Font.Bold
     }
 
     PropertyLockButton {
@@ -120,6 +119,7 @@ Rectangle {
 
         Image {
             id: collapseArrowImage
+            anchors.verticalCenter: parent.verticalCenter
             source: "images/arrow.png"
         }
     }

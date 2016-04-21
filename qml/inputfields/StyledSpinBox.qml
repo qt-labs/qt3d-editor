@@ -28,44 +28,40 @@
 import QtQuick 2.5
 import Qt.labs.controls 1.0 as QLC
 
-PropertyInputField {
-    id: checkBoxInput
-    width: parent.width
-    height: checkBox.height
+QLC.SpinBox {
+    id: control
+    font.family: mainwindow.labelFontFamily
+    font.weight: mainwindow.labelFontWeight
+    font.pixelSize: mainwindow.labelFontPixelSize
 
-    property string checkBoxLabel: checkBox.text
-    property bool blockChanges: false
-
-    onComponentValueChanged: {
-        blockChanges = true
-        if (component !== null)
-            checkBox.checked = component[propertyName]
-        blockChanges = false
+    background: Rectangle {
+        border.color: mainwindow.listHighlightColor
+        color: mainwindow.paneBackgroundColor
     }
 
-    StyledLabel {
-        text: checkBoxLabel
-        anchors.left: parent.left
-        anchors.verticalCenter: checkBox.verticalCenter
-        horizontalAlignment: Text.AlignLeft
-        verticalAlignment: Text.AlignVCenter
+    down.indicator: Rectangle {
+        x: control.mirrored ? parent.width - width : 0
+        height: parent.height
+        implicitWidth: 40
+        implicitHeight: 40
+        border.color: mainwindow.listHighlightColor
+        color: mainwindow.listHighlightColor
+        Image {
+            anchors.centerIn: parent
+            source: "/images/spinbox_down.png"
+        }
     }
 
-    Image {
-        source: "qrc:/images/fader.png"
-        anchors.right: checkBox.left
-        anchors.rightMargin: -9 // checkbox box has some margins
-        anchors.verticalCenter: checkBox.verticalCenter
-    }
-
-    QLC.CheckBox {
-        id: checkBox
-        anchors.right: parent.right
-        anchors.rightMargin: 11
-        onCheckedChanged: {
-            if (!blockChanges)
-                handleEditingFinished(checked)
+    up.indicator: Rectangle {
+        x: control.mirrored ? 0 : parent.width - width
+        height: parent.height
+        implicitWidth: 40
+        implicitHeight: 40
+        border.color: mainwindow.listHighlightColor
+        color: mainwindow.listHighlightColor
+        Image {
+            anchors.centerIn: parent
+            source: "/images/spinbox_up.png"
         }
     }
 }
-

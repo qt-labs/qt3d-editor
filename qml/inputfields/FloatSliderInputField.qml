@@ -77,11 +77,10 @@ Item {
         id: sliderLayout
         width: parent.width
 
-        QLC.Label {
+        StyledLabel {
             id: title
             text: qsTr("Float Slider") + editorScene.emptyString
             Layout.alignment: Qt.AlignLeft
-            color: labelTextColor
         }
 
         DoubleValidator {
@@ -116,8 +115,10 @@ Item {
                 implicitWidth: 20
                 implicitHeight: 20
                 radius: width / 2
-                border.color: enabled ? "#353637" : "#bdbebf"
-                color: enabled ? (slider.pressed ? "#bdbebf" : "#f6f6f6") : "lightgray"
+                border.color: enabled ? listHighlightColor : "#bdbebf"
+                color: enabled ? (slider.pressed ? mainwindow.textColor
+                                                 : mainwindow.listHighlightColor)
+                               : "lightgray"
 
                 readonly property bool horizontal: slider.orientation === Qt.Horizontal
             }
@@ -129,8 +130,8 @@ Item {
                 width: horizontal ? slider.availableWidth : implicitWidth
                 height: horizontal ? implicitHeight : slider.availableHeight
                 radius: 3
-                border.color: enabled ? "#353637" : "#bdbebf"
-                color: enabled ? "#ffffff" : "transparent"
+                border.color: enabled ? mainwindow.listHighlightColor : "#bdbebf"
+                color: enabled ? mainwindow.listHighlightColor : "transparent"
                 scale: horizontal && slider.mirrored ? -1 : 1
 
                 readonly property bool horizontal: slider.orientation === Qt.Horizontal
@@ -169,7 +170,7 @@ Item {
             }
         }
 
-        QLC.TextField {
+        StyledTextField {
             id: floatInput
             implicitWidth: floatSliderInputField.width * 0.2
             anchors.right: lockButton.left
@@ -177,10 +178,6 @@ Item {
             validator: doubleValidator
             inputMethodHints: Qt.ImhFormattedNumbersOnly
             enabled: lockButton.buttonEnabled
-            background: TextFieldBackgroundStyle {}
-            color: textFieldColor
-            selectionColor: textFieldSelectionColor
-            selectedTextColor: textFieldSelectedColor
             selectByMouse: true
 
             onEditingFinished: {

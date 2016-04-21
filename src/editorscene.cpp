@@ -427,10 +427,10 @@ void EditorScene::showPlaceholderEntity(const QString &name, int type)
         Qt3DRender::QPhongAlphaMaterial *material = new Qt3DRender::QPhongAlphaMaterial();
         if (insertableType == EditorUtils::InsertableEntities::GroupEntity) {
             material->setAlpha(0.2f);
-            material->setAmbient(Qt::yellow);
+            material->setAmbient("#f4be04");
         } else {
             material->setAlpha(0.4f);
-            material->setAmbient(Qt::blue);
+            material->setAmbient("#53adee");
         }
         data->material = material;
         data->entity->addComponent(data->transform);
@@ -1377,7 +1377,7 @@ void EditorScene::createRootEntity()
     // Selection box material and mesh need to be created before any
     // EditorSceneItem are created
     Qt3DRender::QPhongMaterial *selectionBoxMaterial = new Qt3DRender::QPhongMaterial();
-    selectionBoxMaterial->setAmbient(QColor(Qt::yellow));
+    selectionBoxMaterial->setAmbient(QColor("#f4be04"));
     selectionBoxMaterial->setDiffuse(QColor(Qt::black));
     selectionBoxMaterial->setSpecular(QColor(Qt::black));
     selectionBoxMaterial->setShininess(0);
@@ -1442,7 +1442,7 @@ void EditorScene::createRootEntity()
     Qt3DRender::QMaterial *dragHandleMaterial = new Qt3DRender::QMaterial();
     dragHandleMaterial->setEffect(new DragHandleEffect());
     dragHandleMaterial->addParameter(new Qt3DRender::QParameter(QStringLiteral("handleColor"),
-                                                                QColor(Qt::yellow)));
+                                                                QColor("#f4be04")));
 
     m_dragHandleScale.entity->addComponent(dragHandleMaterial);
     m_dragHandleRotate.entity->addComponent(dragHandleMaterial);
@@ -1471,7 +1471,7 @@ void EditorScene::createRootEntity()
     Qt3DRender::QGeometryRenderer *viewCenterMesh = EditorUtils::createCameraViewCenterMesh(1.0f);
 
     Qt3DRender::QPhongMaterial *frustumMaterial = new Qt3DRender::QPhongMaterial();
-    frustumMaterial->setAmbient(QColor(Qt::magenta));
+    frustumMaterial->setAmbient(QColor("#c22555"));
     frustumMaterial->setDiffuse(QColor(Qt::black));
     frustumMaterial->setSpecular(QColor(Qt::black));
     frustumMaterial->setShininess(0);
@@ -1507,7 +1507,7 @@ void EditorScene::createHelperPlane()
     Qt3DRender::QGeometryRenderer *planeMesh = EditorUtils::createWireframePlaneMesh(51);
 
     Qt3DRender::QPhongMaterial *helperPlaneMaterial = new Qt3DRender::QPhongMaterial();
-    helperPlaneMaterial->setAmbient(QColor(Qt::darkGray));
+    helperPlaneMaterial->setAmbient(QColor("#585a5c"));
     helperPlaneMaterial->setDiffuse(QColor(Qt::black));
     helperPlaneMaterial->setSpecular(QColor(Qt::black));
     helperPlaneMaterial->setShininess(0);
@@ -2083,7 +2083,7 @@ void EditorScene::handleCameraAdded(Qt3DRender::QCamera *camera)
     Qt3DRender::QGeometryRenderer *visibleMesh = EditorUtils::createVisibleCameraMesh();
 
     Qt3DRender::QPhongMaterial *cameraMaterial = new Qt3DRender::QPhongMaterial();
-    cameraMaterial->setAmbient(QColor(Qt::magenta));
+    cameraMaterial->setAmbient(QColor("#c22555"));
     cameraMaterial->setDiffuse(QColor(Qt::black));
     cameraMaterial->setSpecular(QColor(Qt::black));
     cameraMaterial->setShininess(0);

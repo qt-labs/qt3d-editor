@@ -62,10 +62,9 @@ ModelRoleInputField {
             Layout.alignment: Qt.AlignLeft
             height: fileInput.height
 
-            QLC.Label {
+            StyledLabel {
                 id: fileLabel
                 text: qsTr("File") + editorScene.emptyString
-                color: labelTextColor
                 Layout.alignment: Qt.AlignLeft
             }
 
@@ -83,7 +82,7 @@ ModelRoleInputField {
             Layout.preferredHeight: fileInput.height
             Layout.preferredWidth: Layout.preferredHeight
             Layout.alignment: Qt.AlignRight
-            border.color: "black"
+            border.color: listHighlightColor
             border.width: 1
             Image {
                 source: url

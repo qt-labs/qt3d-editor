@@ -57,8 +57,8 @@ Item {
         anchors.top: entityViewHeader.bottom
         height: entityLibrary.height - entityViewHeader.height
         width: parent.width
-        color: "lightGray"
-        border.color: "darkGray"
+        color: mainwindow.paneBackgroundColor
+        border.color: mainwindow.viewBorderColor
         visible: entityViewHeader.viewVisible
         ScrollView {
             anchors.fill: parent
@@ -125,6 +125,7 @@ Item {
                         height: buttonSize
                         anchors.horizontalCenter: parent.horizontalCenter
                         anchors.verticalCenter: parent.verticalCenter
+                        color: mainwindow.itemBackgroundColor
                         Column {
                             anchors.centerIn: parent
                             Image {
@@ -136,6 +137,10 @@ Item {
                             Text {
                                 text: meshString
                                 anchors.horizontalCenter: parent.horizontalCenter
+                                color: mainwindow.textColor
+                                font.family: mainwindow.labelFontFamily
+                                font.weight: mainwindow.labelFontWeight
+                                font.pixelSize: mainwindow.labelFontPixelSize
                             }
                         }
                     }

@@ -26,7 +26,6 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
-import Qt.labs.controls 1.0 as QLC
 import QtQuick.Layouts 1.2
 
 Item {
@@ -82,11 +81,10 @@ Item {
         columns: 4
         rowSpacing: 1
 
-        QLC.Label {
+        StyledLabel {
             id: xLabel
             Layout.alignment: Qt.AlignLeft
             text: label + " " + qsTr("X") + editorScene.emptyString
-            color: labelTextColor
         }
 
         Image {
@@ -94,7 +92,7 @@ Item {
             anchors.right: xInput.left
         }
 
-        QLC.SpinBox {
+        StyledSpinBox {
             id: xInput
             anchors.right: lockButton.left
             anchors.rightMargin: 4
@@ -107,7 +105,7 @@ Item {
             editable: true
             enabled: lockButton.buttonEnabled
 
-            contentItem: TextInputStyle {
+            contentItem: StyledTextInput {
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
             }
 
@@ -138,16 +136,17 @@ Item {
         Image {
             Layout.alignment: Qt.AlignHCenter
             Layout.maximumWidth: 16
-            source: "/images/property_grouping_line.png"
+            source: (lockButton.locked || !lockButton.enabled)
+                    ? "/images/property_grouping_line_locked.png"
+                    : "/images/property_grouping_line_open.png"
             anchors.right: parent.right
             anchors.rightMargin: 3
         }
 
-        QLC.Label {
+        StyledLabel {
             id: yLabel
             Layout.alignment: Qt.AlignLeft
             text: label + " " + qsTr("Y") + editorScene.emptyString
-            color: labelTextColor
         }
 
         Image {
@@ -155,7 +154,7 @@ Item {
             anchors.right: yInput.left
         }
 
-        QLC.SpinBox {
+        StyledSpinBox {
             id: yInput
             anchors.right: lockButton.left
             anchors.rightMargin: 4
@@ -168,7 +167,7 @@ Item {
             editable: true
             enabled: lockButton.buttonEnabled
 
-            contentItem: TextInputStyle {
+            contentItem: StyledTextInput {
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
             }
 
@@ -204,11 +203,10 @@ Item {
             label: vectorInput.label
         }
 
-        QLC.Label {
+        StyledLabel {
             id: zLabel
             Layout.alignment: Qt.AlignLeft
             text: label + " " + qsTr("Z") + editorScene.emptyString
-            color: labelTextColor
         }
 
         Image {
@@ -216,7 +214,7 @@ Item {
             anchors.right: zInput.left
         }
 
-        QLC.SpinBox {
+        StyledSpinBox {
             id: zInput
             anchors.right: lockButton.left
             anchors.rightMargin: 4
@@ -229,7 +227,7 @@ Item {
             editable: true
             enabled: lockButton.buttonEnabled
 
-            contentItem: TextInputStyle {
+            contentItem: StyledTextInput {
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
             }
 
@@ -262,7 +260,9 @@ Item {
             Layout.maximumWidth: 16
             anchors.right: parent.right
             anchors.rightMargin: 3
-            source: "/images/property_grouping_line.png"
+            source: (lockButton.locked || !lockButton.enabled)
+                    ? "/images/property_grouping_line_locked.png"
+                    : "/images/property_grouping_line_open.png"
         }
     }
 }

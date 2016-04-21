@@ -30,6 +30,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.1
 import QtQml.Models 2.2
 import com.theqtcompany.SceneEditor3D 1.0
+import QtQuick.Controls.Styles 1.4
 
 Item {
     id: treeViewSplit
@@ -110,6 +111,12 @@ Item {
         headerVisible: false
         alternatingRowColors: false
         backgroundVisible: false
+        style: TreeViewStyle {
+            textColor: mainwindow.textColor
+            highlightedTextColor: mainwindow.textColor
+            backgroundColor: mainwindow.paneBackgroundColor
+            alternateBackgroundColor: mainwindow.paneBackgroundColor
+        }
 
         property bool editing: false
         property bool sceneRootSelected: true
@@ -277,7 +284,7 @@ Item {
                 Rectangle {
                     id: dragHighlight
                     anchors.fill: parent
-                    color: "#7700FF00"
+                    color: mainwindow.selectionColor
                     visible: false
                 }
             }
@@ -285,7 +292,7 @@ Item {
             Text {
                 id: valueField
                 anchors.verticalCenter: parent.verticalCenter
-                color: styleData.textColor
+                color: mainwindow.textColor
                 elide: styleData.elideMode
                 text: styleData.value
                 visible: !entityTreeView.editing || !styleData.selected
@@ -295,8 +302,8 @@ Item {
             Rectangle {
                 id: renameField
                 anchors.fill: parent
-                color: "white"
-                border.color: "lightGray"
+                color: mainwindow.paneBackgroundColor
+                border.color: mainwindow.listHighlightColor
                 visible: !valueField.visible
                 TextInput {
                     id: renameTextiInput
@@ -305,6 +312,12 @@ Item {
                     visible: !valueField.visible
                     selectByMouse: true
                     focus: true
+                    color: mainwindow.textColor
+                    selectionColor: mainwindow.selectionColor
+                    selectedTextColor: mainwindow.textColor
+                    font.family: mainwindow.labelFontFamily
+                    font.weight: mainwindow.labelFontWeight
+                    font.pixelSize: mainwindow.labelFontPixelSize
                     validator: RegExpValidator {
                         regExp: /^[A-Za-z_][A-Za-z0-9_ ]*$/
                     }

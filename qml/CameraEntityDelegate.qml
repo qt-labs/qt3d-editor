@@ -77,7 +77,6 @@ ComponentDelegate {
             Row {
                 QLC.RadioButton {
                     id: orthoButton
-                    text: qsTr("Orthographic") + editorScene.emptyString
                     checked: componentData.projectionType === CameraLens.OrthographicProjection
                     indicator: Rectangle {
                         implicitWidth: 20
@@ -91,8 +90,9 @@ ComponentDelegate {
 
                         radius: width / 2
                         border.width: 1
-                        border.color: (orthoButton.pressed ? "#26282a" : "#353637")
-                        color: orthoButton.pressed ? "#e4e4e4" : "#f6f6f6"
+                        border.color: orthoButton.pressed ? mainwindow.listHighlightColor
+                                                          : "#353637"
+                        color: orthoButton.pressed ? mainwindow.paneBackgroundColor : "#f6f6f6"
 
                         Rectangle {
                             x: (parent.width - width) / 2
@@ -100,7 +100,8 @@ ComponentDelegate {
                             width: 14
                             height: 14
                             radius: width / 2
-                            color: orthoButton.pressed ? "#26282a" : "#353637"
+                            color: orthoButton.pressed ? mainwindow.textColor
+                                                       : mainwindow.selectionColor
                             visible: orthoButton.checked
                         }
                     }
@@ -109,9 +110,18 @@ ComponentDelegate {
                             changeProjectionType(CameraLens.OrthographicProjection)
                     }
                 }
+                Rectangle {
+                    color: "transparent"
+                    width: orthoLabel.width
+                    height: orthoButton.height
+                    StyledLabel {
+                        id: orthoLabel
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: qsTr("Orthographic") + editorScene.emptyString
+                    }
+                }
                 QLC.RadioButton {
                     id: perspectiveButton
-                    text: qsTr("Perspective") + editorScene.emptyString
                     checked: componentData.projectionType === CameraLens.PerspectiveProjection
                     indicator: Rectangle {
                         implicitWidth: 20
@@ -127,8 +137,10 @@ ComponentDelegate {
 
                         radius: width / 2
                         border.width: 1
-                        border.color: (perspectiveButton.pressed ? "#26282a" : "#353637")
-                        color: perspectiveButton.pressed ? "#e4e4e4" : "#f6f6f6"
+                        border.color: perspectiveButton.pressed ? mainwindow.listHighlightColor
+                                                                : "#353637"
+                        color: perspectiveButton.pressed ? mainwindow.paneBackgroundColor
+                                                         : "#f6f6f6"
 
                         Rectangle {
                             x: (parent.width - width) / 2
@@ -136,13 +148,25 @@ ComponentDelegate {
                             width: 14
                             height: 14
                             radius: width / 2
-                            color: perspectiveButton.pressed ? "#26282a" : "#353637"
+                            color: perspectiveButton.pressed ? mainwindow.textColor
+                                                             : mainwindow.selectionColor
                             visible: perspectiveButton.checked
                         }
                     }
+
                     onCheckedChanged: {
                         if (checked)
                             changeProjectionType(CameraLens.PerspectiveProjection)
+                    }
+                }
+                Rectangle {
+                    color: "transparent"
+                    width: perspectiveLabel.width
+                    height: perspectiveButton.height
+                    StyledLabel {
+                        id: perspectiveLabel
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: qsTr("Perspective") + editorScene.emptyString
                     }
                 }
             }

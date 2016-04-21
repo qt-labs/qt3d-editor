@@ -49,13 +49,13 @@ Menu {
     MenuSeparator {}
 
     EntityMenu {
-        iconSource: "qrc:/images/plus.png" // TODO: Replace with a real icon
+        iconSource: "qrc:/images/plus.png"
         enabled: !entityTreeView.cameraSelected
     }
     MenuItem {
         text: qsTr("Remove") + editorScene.emptyString
         enabled: !entityTreeView.sceneRootSelected
-        iconSource: "qrc:/images/minus.png" // TODO: Replace with a real icon
+        iconSource: "qrc:/images/minus.png"
         onTriggered: {
             entityTreeView.editing = false
             // Doublecheck that we don't try to remove the scene root
@@ -66,7 +66,7 @@ Menu {
     MenuItem {
         text: qsTr("Duplicate") + editorScene.emptyString
         enabled: !entityTreeView.sceneRootSelected
-        iconSource: "qrc:/images/cross.png" // TODO: Replace with a real icon
+        iconSource: "qrc:/images/duplicate.png"
         onTriggered: {
             var currentSelection = selectedEntity.entity()
             editorScene.undoHandler.createDuplicateEntityCommand(selectedEntityName)

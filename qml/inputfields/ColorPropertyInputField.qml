@@ -80,10 +80,9 @@ PropertyInputField {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
 
-        QLC.Label {
+        StyledLabel {
             id: colorLabel
             text: qsTr("Color") + editorScene.emptyString
-            color: labelTextColor
             Layout.alignment: Qt.AlignLeft
         }
 
@@ -102,7 +101,7 @@ PropertyInputField {
             enabled: lockButton.buttonEnabled
             background: Rectangle {
                 border.width: colorButton.activeFocus ? 2 : 1
-                border.color: enabled ? "#353637" : "#bdbebf"
+                border.color: enabled ? mainwindow.listHighlightColor : "#bdbebf"
                 color: enabled ? colorValue : Qt.rgba(colorValue.r, colorValue.g, colorValue.b,
                                                       0.5)
             }

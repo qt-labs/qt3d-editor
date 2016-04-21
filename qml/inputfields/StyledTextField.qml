@@ -26,15 +26,14 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
+import Qt.labs.controls 1.0 as QLC
 
-TextInput {
-    text: parent.textFromValue(parent.value, parent.locale)
-    font: parent.font
-    color: mainwindow.textFieldColor
-    selectionColor: mainwindow.textFieldSelectionColor
-    selectedTextColor: mainwindow.textFieldSelectedColor
-    horizontalAlignment: Qt.AlignHCenter
-    verticalAlignment: Qt.AlignVCenter
-    validator: parent.validator
-    selectByMouse: true
+QLC.TextField {
+    background: TextFieldBackgroundStyle {}
+    color: mainwindow.textColor
+    selectionColor: mainwindow.selectionColor
+    selectedTextColor: mainwindow.textColor
+    font.family: mainwindow.labelFontFamily
+    font.weight: mainwindow.labelFontWeight
+    font.pixelSize: mainwindow.labelFontPixelSize
 }

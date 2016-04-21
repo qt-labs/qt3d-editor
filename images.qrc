@@ -59,7 +59,8 @@
         <file>images/property_light_shown.png</file>
         <file>images/property_camera_hidden.png</file>
         <file>images/property_camera_shown.png</file>
-        <file>images/property_grouping_line.png</file>
+        <file>images/property_grouping_line_locked.png</file>
+        <file>images/property_grouping_line_open.png</file>
         <file>images/helperplane_none_deselected.png</file>
         <file>images/helperplane_none_selected.png</file>
         <file>images/helperplane_x_deselected.png</file>
@@ -71,5 +72,8 @@
         <file>images/reset_camera_to_default.png</file>
         <file>images/fader.png</file>
         <file>images/group-large.png</file>
+        <file>images/duplicate.png</file>
+        <file>images/spinbox_down.png</file>
+        <file>images/spinbox_up.png</file>
     </qresource>
 </RCC>

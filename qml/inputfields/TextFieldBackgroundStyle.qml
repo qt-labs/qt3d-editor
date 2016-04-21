@@ -28,6 +28,6 @@
 import QtQuick 2.5
 
 Rectangle {
-    color: parent.enabled ? "white" : "transparent"
-    border.color: parent.enabled ? "#bdbebf" : "white"
+    color: parent.enabled ? mainwindow.paneBackgroundColor : "transparent"
+    border.color: parent.enabled ? mainwindow.listHighlightColor : "white"
 }

@@ -26,7 +26,6 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
-import Qt.labs.controls 1.0 as QLC
 import QtQuick.Layouts 1.2
 
 Item {
@@ -54,7 +53,7 @@ Item {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
 
-        QLC.Label {
+        StyledLabel {
             id: textLabel
             text: qsTr("Text") + editorScene.emptyString
             Layout.alignment: Qt.AlignLeft
@@ -65,16 +64,12 @@ Item {
             anchors.right: textInputCtrl.left
         }
 
-        QLC.TextField {
+        StyledTextField {
             id: textInputCtrl
             Layout.alignment: Qt.AlignRight
             anchors.right: parent.right
             implicitWidth: textInput.width * 0.6 + 20 // Lockbutton width
             text: textInput.displayText
-            background: TextFieldBackgroundStyle {}
-            color: mainwindow.textFieldColor
-            selectionColor: mainwindow.textFieldSelectionColor
-            selectedTextColor: mainwindow.textFieldSelectedColor
             selectByMouse: true
 
             onEditingFinished: {

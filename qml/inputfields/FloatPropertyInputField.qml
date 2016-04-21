@@ -26,7 +26,6 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
-import Qt.labs.controls 1.0 as QLC
 import QtQuick.Layouts 1.2
 
 PropertyInputField {
@@ -68,10 +67,9 @@ PropertyInputField {
         anchors.left: parent.left
         anchors.verticalCenter: parent.verticalCenter
 
-        QLC.Label {
+        StyledLabel {
             id: floatLabel
             text: qsTr("Float Value") + editorScene.emptyString
-            color: labelTextColor
             Layout.alignment: Qt.AlignLeft
         }
 
@@ -80,7 +78,7 @@ PropertyInputField {
             anchors.right: valueInput.left
         }
 
-        QLC.SpinBox {
+        StyledSpinBox {
             id: valueInput
             anchors.right: lockButton.left
             anchors.rightMargin: 4
@@ -93,7 +91,7 @@ PropertyInputField {
             editable: true
             enabled: lockButton.buttonEnabled
 
-            contentItem: TextInputStyle {
+            contentItem: StyledTextInput {
                 inputMethodHints: Qt.ImhFormattedNumbersOnly
             }
 
