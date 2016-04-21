@@ -26,9 +26,7 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
-//import Qt.labs.controls 1.0 as QLC
+import Qt.labs.controls 1.0 as QLC
 
 PropertyInputField {
     id: checkBoxInput
@@ -45,34 +43,29 @@ PropertyInputField {
         blockChanges = false
     }
 
-//    QLC.CheckBox {
-//        id: checkBox
-//        anchors.right: parent.right
-//        anchors.left: parent.left
-//        // TODO: label does not work currently, try every now and then if it's fixed
-//        label: QLC.Label {
-//            text: checkBoxLabel
-//            color: labelTextColor
-//        }
-//        onCheckedChanged: {
-//            if (!blockChanges)
-//                handleEditingFinished(checked)
-//        }
-//    }
+    QLC.Label {
+        text: checkBoxLabel
+        color: labelTextColor
+        anchors.left: parent.left
+        anchors.verticalCenter: checkBox.verticalCenter
+        horizontalAlignment: Text.AlignLeft
+        verticalAlignment: Text.AlignVCenter
+    }
 
-    CheckBox {
+    Image {
+        source: "qrc:/images/fader.png"
+        anchors.right: checkBox.left
+        anchors.rightMargin: -9 // checkbox box has some margins
+        anchors.verticalCenter: checkBox.verticalCenter
+    }
+
+    QLC.CheckBox {
         id: checkBox
         anchors.right: parent.right
-        anchors.left: parent.left
+        anchors.rightMargin: 11
         onCheckedChanged: {
             if (!blockChanges)
                 handleEditingFinished(checked)
-        }
-        style: CheckBoxStyle {
-            label: Label {
-                text: checkBoxLabel
-                color: labelTextColor
-            }
         }
     }
 }
