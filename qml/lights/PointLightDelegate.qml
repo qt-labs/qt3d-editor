@@ -36,12 +36,13 @@ BasicLightDelegate {
     Component.onCompleted: {
         initialState = false
         if (parent.repeater.attenuationSet) {
+            attenuation = parent.repeater.lightAttenuation
             constantAttenuationField.component[constantAttenuationField.propertyName]
-                    = parent.repeater.lightAttenuation.x
+                    = attenuation.x
             linearAttenuationField.component[linearAttenuationField.propertyName]
-                    = parent.repeater.lightAttenuation.y
+                    = attenuation.y
             quadraticAttenuationField.component[quadraticAttenuationField.propertyName]
-                    = parent.repeater.lightAttenuation.z
+                    = attenuation.z
         } else {
             parent.setNewAttenuation(
                         Qt.vector3d(
