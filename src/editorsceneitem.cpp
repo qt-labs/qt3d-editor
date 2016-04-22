@@ -98,8 +98,22 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
     // Selection transform is needed for child items, even if we don't have a box
     m_selectionTransform = new Qt3DCore::QTransform;
 
-    // Don't show box itself unless the entity has mesh
-    if (entityMesh || isLight || isCamera) {
+    // Save entity item type
+    if (isLight)
+        m_itemType = EditorSceneItem::Light;
+    else if (isCamera)
+        m_itemType = EditorSceneItem::Camera;
+    else if (entityMesh)
+        m_itemType = EditorSceneItem::Mesh;
+    else if (isSceneLoader)
+        m_itemType = EditorSceneItem::SceneLoader;
+    else if (m_entityTransform)
+        m_itemType = EditorSceneItem::Group;
+    else
+        m_itemType = EditorSceneItem::Other;
+
+    // Show box if entity has transform
+    if (m_entityTransform) {
         m_selectionBox = new Qt3DCore::QEntity(m_scene->rootEntity());
 
         m_selectionBox->setObjectName(QStringLiteral("__internal selection box"));
@@ -114,27 +128,14 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
         connect(m_selectionBox, &Qt3DCore::QEntity::enabledChanged,
                 this, &EditorSceneItem::showSelectionBoxChanged);
 
-        if (isLight || isCamera)
+        // SceneLoader updated mesh extents asynchronously
+        if (isLight || isCamera || m_itemType == EditorSceneItem::Group || isSceneLoader)
             updateSelectionBoxTransform();
         else
             handleMeshChange(entityMesh);
     } else {
         updateSelectionBoxTransform();
     }
-
-    // Save entity item type
-    if (isLight)
-        m_itemType = EditorSceneItem::Light;
-    else if (isCamera)
-        m_itemType = EditorSceneItem::Camera;
-    else if (entityMesh)
-        m_itemType = EditorSceneItem::Mesh;
-    else if (isSceneLoader)
-        m_itemType = EditorSceneItem::SceneLoader;
-    else if (m_entityTransform)
-        m_itemType = EditorSceneItem::Group;
-    else
-        m_itemType = EditorSceneItem::Other;
 }
 
 EditorSceneItem::~EditorSceneItem()
@@ -236,7 +237,7 @@ void EditorSceneItem::recalculateMeshExtents()
     m_entityMeshCenter = QVector3D();
     switch (m_entityMeshType) {
     case EditorSceneItemMeshComponentsModel::Custom: {
-        recalculateCustomMeshExtents(m_entityMesh);
+        recalculateCustomMeshExtents(m_entityMesh, m_entityMeshExtents, m_entityMeshCenter);
         break;
     }
     case EditorSceneItemMeshComponentsModel::Cuboid: {
@@ -281,22 +282,25 @@ void EditorSceneItem::recalculateMeshExtents()
     updateSelectionBoxTransform();
 }
 
-void EditorSceneItem::recalculateCustomMeshExtents(Qt3DRender::QGeometryRenderer *mesh)
+void EditorSceneItem::recalculateCustomMeshExtents(Qt3DRender::QGeometryRenderer *mesh,
+                                                   QVector3D &meshExtents,
+                                                   QVector3D &meshCenter)
 {
     // For custom meshes we need to calculate the extents from geometry
-    Qt3DRender::QGeometry *meshGeometry = nullptr;
-    Qt3DRender::QGeometryFactoryPtr geometryFunctorPtr = mesh->geometryFactory();
-
-    if (geometryFunctorPtr.data()) {
-        // Execute the geometry functor to get the geometry, since its not normally available
-        // on the application side.
-        meshGeometry = geometryFunctorPtr.data()->operator()();
+    Qt3DRender::QGeometry *meshGeometry = mesh->geometry();
+    if (!meshGeometry) {
+        Qt3DRender::QGeometryFactoryPtr geometryFunctorPtr = mesh->geometryFactory();
+        if (geometryFunctorPtr.data()) {
+            // Execute the geometry functor to get the geometry, since its not normally available
+            // on the application side.
+            meshGeometry = geometryFunctorPtr.data()->operator()();
+        }
     }
 
     if (meshGeometry) {
         // Set default in case we can't determine the geometry: normalized mesh in range [-1,1]
-        m_entityMeshExtents = QVector3D(2.0f, 2.0f, 2.0f);
-        m_entityMeshCenter =  QVector3D();
+        meshExtents = QVector3D(2.0f, 2.0f, 2.0f);
+        meshCenter =  QVector3D();
 
         Qt3DRender::QAttribute *vPosAttribute = nullptr;
         Q_FOREACH (Qt3DRender::QAttribute *attribute, meshGeometry->attributes()) {
@@ -321,9 +325,9 @@ void EditorSceneItem::recalculateCustomMeshExtents(Qt3DRender::QGeometryRenderer
             float minX = FLT_MAX;
             float minY = FLT_MAX;
             float minZ = FLT_MAX;
-            float maxX = FLT_MIN;
-            float maxY = FLT_MIN;
-            float maxZ = FLT_MIN;
+            float maxX = -FLT_MAX;
+            float maxY = -FLT_MAX;
+            float maxZ = -FLT_MAX;
 
             if (stride)
                 stride = stride - 3; // Three floats per vertex
@@ -339,14 +343,77 @@ void EditorSceneItem::recalculateCustomMeshExtents(Qt3DRender::QGeometryRenderer
                 maxZ = qMax(zVal, maxZ);
                 bufferPtr += stride;
             }
-            m_entityMeshExtents = QVector3D(maxX - minX, maxY - minY, maxZ - minZ);
-            m_entityMeshCenter = QVector3D(minX + m_entityMeshExtents.x() / 2.0f,
-                                           minY + m_entityMeshExtents.y() / 2.0f,
-                                           minZ + m_entityMeshExtents.z() / 2.0f);
+            meshExtents = QVector3D(maxX - minX, maxY - minY, maxZ - minZ);
+            meshCenter = QVector3D(minX + meshExtents.x() / 2.0f,
+                                   minY + meshExtents.y() / 2.0f,
+                                   minZ + meshExtents.z() / 2.0f);
         }
     } else {
-        m_entityMeshExtents = QVector3D();
-        m_entityMeshCenter =  QVector3D();
+        meshExtents = QVector3D();
+        meshCenter =  QVector3D();
+    }
+}
+
+void EditorSceneItem::recalculateSubMeshesExtents()
+{
+    QVector<QVector3D> subMeshPoints;
+    m_entityMeshType = EditorSceneItemMeshComponentsModel::SubMeshes;
+
+    populateSubMeshData(m_entity, subMeshPoints);
+
+    if (subMeshPoints.size()) {
+        // Calculate complete extents from submesh data
+        float minX = FLT_MAX;
+        float minY = FLT_MAX;
+        float minZ = FLT_MAX;
+        float maxX = -FLT_MAX;
+        float maxY = -FLT_MAX;
+        float maxZ = -FLT_MAX;
+        Q_FOREACH (QVector3D points, subMeshPoints) {
+            minX = qMin(points.x(), minX);
+            maxX = qMax(points.x(), maxX);
+            minY = qMin(points.y(), minY);
+            maxY = qMax(points.y(), maxY);
+            minZ = qMin(points.z(), minZ);
+            maxZ = qMax(points.z(), maxZ);
+        }
+
+        m_entityMeshExtents = QVector3D(maxX - minX, maxY - minY, maxZ - minZ);
+        m_entityMeshCenter = QVector3D(minX + m_entityMeshExtents.x() / 2.0f,
+                                       minY + m_entityMeshExtents.y() / 2.0f,
+                                       minZ + m_entityMeshExtents.z() / 2.0f);
+    }
+    updateSelectionBoxTransform();
+}
+
+void EditorSceneItem::populateSubMeshData(Qt3DCore::QEntity *entity,
+                                          QVector<QVector3D> &subMeshPoints)
+{
+    Qt3DRender::QGeometryRenderer *mesh = EditorUtils::entityMesh(entity);
+    if (mesh) {
+        QVector3D meshExtents;
+        QVector3D meshCenter;
+        recalculateCustomMeshExtents(mesh, meshExtents, meshCenter);
+        Qt3DCore::QTransform *transform = EditorUtils::entityTransform(entity);
+        if (transform) {
+            // We are only interested on internal transforms when determining the extents
+            QMatrix4x4 totalTransform;
+            QList<Qt3DCore::QTransform *> transforms =
+                    EditorUtils::ancestralTransforms(entity, m_entity);
+            for (int i = transforms.size() - 1; i >= 0; i--)
+                totalTransform *= transforms.at(i)->matrix();
+            totalTransform *= transform->matrix();
+            // Apply transform to two opposite extent box corners to find actual geometry points
+            QVector3D halfExtents = meshExtents / 2.0f;
+            subMeshPoints.append(totalTransform.map(meshCenter + halfExtents));
+            subMeshPoints.append(totalTransform.map(meshCenter - halfExtents));
+        }
+    }
+
+    Q_FOREACH (QObject *child, entity->children()) {
+        Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
+        if (childEntity)
+            populateSubMeshData(childEntity, subMeshPoints);
     }
 }
 

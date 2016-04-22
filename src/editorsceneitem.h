@@ -103,6 +103,7 @@ public:
     void setCanRotate(bool canRotate) { m_canRotate = canRotate; }
 
     QList<Qt3DRender::QObjectPicker *> *internalPickers();
+    void recalculateSubMeshesExtents();
 
 public slots:
     void updateSelectionBoxTransform();
@@ -117,7 +118,10 @@ private:
     void connectSelectionBoxTransformsRecursive(bool enabled);
     QMatrix4x4 composeSelectionBoxTransform();
     void connectEntityMesh(bool enabled);
-    void recalculateCustomMeshExtents(Qt3DRender::QGeometryRenderer *mesh);
+    void recalculateCustomMeshExtents(Qt3DRender::QGeometryRenderer *mesh,
+                                      QVector3D &meshExtents,
+                                      QVector3D &meshCenter);
+    void populateSubMeshData(Qt3DCore::QEntity *entity, QVector<QVector3D> &subMeshPoints);
     void updateChildLightTransforms();
 
     Qt3DCore::QEntity *m_entity; // Not owned

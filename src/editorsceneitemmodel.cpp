@@ -159,10 +159,14 @@ void EditorSceneItemModel::handleSceneLoaderStatusChanged()
         QVector<Qt3DCore::QEntity *> entities = sceneLoader->entities();
         if (!entities.isEmpty()) {
             Qt3DCore::QEntity *importedEntity = entities[0];
-            if (sceneLoader->status() == Qt3DRender::QSceneLoader::Ready)
+            if (sceneLoader->status() == Qt3DRender::QSceneLoader::Ready) {
+                EditorSceneItem *item = m_scene->entityItem(importedEntity);
+                if (item)
+                    item->recalculateSubMeshesExtents();
                 m_scene->createObjectPickerForEntity(importedEntity);
-            else if (sceneLoader->status() == Qt3DRender::QSceneLoader::Error)
+            } else if (sceneLoader->status() == Qt3DRender::QSceneLoader::Error) {
                 m_scene->setError(tr("Failed to import an Entity"));
+            }
         }
     }
 }
@@ -255,10 +259,12 @@ Qt3DCore::QEntity *EditorSceneItemModel::insertEntity(EditorUtils::InsertableEnt
         transform->setTranslation(childPosition);
         newEntity->addComponent(transform);
 
-        Qt3DRender::QGeometryRenderer *mesh = EditorUtils::createMeshForInsertableType(type);
-        if (mesh) {
-            newEntity->addComponent(mesh);
-            newEntity->addComponent(new Qt3DRender::QPhongMaterial());
+        if (type != EditorUtils::GroupEntity) {
+            Qt3DRender::QGeometryRenderer *mesh = EditorUtils::createMeshForInsertableType(type);
+            if (mesh) {
+                newEntity->addComponent(mesh);
+                newEntity->addComponent(new Qt3DRender::QPhongMaterial());
+            }
         }
 
         switch (type) {
@@ -508,7 +514,7 @@ Qt3DCore::QEntity *EditorSceneItemModel::duplicateEntity(Qt3DCore::QEntity *enti
                 Qt3DCore::QComponent *newComponent = EditorUtils::duplicateComponent(component);
                 if (newComponent) {
                     if (!sceneLoader) {
-                        sceneLoader = qobject_cast<Qt3DRender::QSceneLoader *>(component);
+                        sceneLoader = qobject_cast<Qt3DRender::QSceneLoader *>(newComponent);
                         if (sceneLoader) {
                             connect(sceneLoader, &Qt3DRender::QSceneLoader::statusChanged,
                                     this, &EditorSceneItemModel::handleSceneLoaderStatusChanged);

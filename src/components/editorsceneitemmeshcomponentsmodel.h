@@ -49,6 +49,7 @@ public:
         Plane,
         Sphere,
         Torus,
+        SubMeshes, // E.g. SceneLoader entity
         Unknown = 1000
     };
 

@@ -691,7 +691,8 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createMeshForInsertableType(Insertab
         break;
     }
     case GroupEntity: {
-        // TODO: A selection box only should be added
+        // Group entity mesh is only used for drag-insert placeholder
+        mesh = new Qt3DRender::QCuboidMesh();
         break;
     }
     default:
@@ -996,11 +997,12 @@ QQuaternion EditorUtils::totalAncestralRotation(Qt3DCore::QEntity *entity)
     return totalRotation;
 }
 
-QList<Qt3DCore::QTransform *> EditorUtils::ancestralTransforms(Qt3DCore::QEntity *entity)
+QList<Qt3DCore::QTransform *> EditorUtils::ancestralTransforms(Qt3DCore::QEntity *entity,
+                                                               Qt3DCore::QEntity *topAncestor)
 {
     Qt3DCore::QEntity *parent = entity->parentEntity();
     QList<Qt3DCore::QTransform *> transforms;
-    while (parent) {
+    while (parent && parent != topAncestor) {
         Qt3DCore::QTransform *transform = entityTransform(parent);
         if (transform)
             transforms.append(transform);

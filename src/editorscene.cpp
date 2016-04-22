@@ -137,6 +137,11 @@ EditorScene::~EditorScene()
     delete m_componentCache;
 }
 
+EditorSceneItem *EditorScene::entityItem(Qt3DCore::QEntity *entity) const
+{
+    return m_sceneItems.value(entity->id());
+}
+
 void EditorScene::addEntity(Qt3DCore::QEntity *entity, int index, Qt3DCore::QEntity *parent)
 {
     if (entity == nullptr)

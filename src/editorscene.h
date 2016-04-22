@@ -210,6 +210,7 @@ public:
     Qt3DCore::QEntity *rootEntity() const { return m_rootEntity; }
     EditorSceneItem *rootItem() const { return m_rootItem; }
     EditorSceneItem *sceneEntityItem() const { return m_sceneEntityItem; }
+    EditorSceneItem *entityItem(Qt3DCore::QEntity *entity) const;
     Qt3DRender::QForwardRenderer *renderer() const { return m_renderer; }
     EditorSceneItemModel *sceneModel() const { return m_sceneModel; }
     const QMap<Qt3DCore::QNodeId, EditorSceneItem *> &items() const { return m_sceneItems; }

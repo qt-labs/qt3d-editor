@@ -148,7 +148,8 @@ public:
     static QMatrix4x4 totalAncestralTransform(Qt3DCore::QEntity *entity);
     static QVector3D totalAncestralScale(Qt3DCore::QEntity *entity);
     static QQuaternion totalAncestralRotation(Qt3DCore::QEntity *entity);
-    static QList<Qt3DCore::QTransform *> ancestralTransforms(Qt3DCore::QEntity *entity);
+    static QList<Qt3DCore::QTransform *> ancestralTransforms(
+            Qt3DCore::QEntity *entity, Qt3DCore::QEntity *topAncestor = nullptr);
     static QVector3D lightDirection(const Qt3DRender::QLight *light);
 
     static const QString lockPropertySuffix() { return QStringLiteral("_editorPropertyLock"); }
