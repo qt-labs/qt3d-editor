@@ -67,7 +67,7 @@ Menu {
     MenuItem {
         text: qsTr("Group") + editorScene.emptyString
         iconSource: "qrc:/images/cross.png"
-        enabled: !entityTreeView.cameraSelected
+        enabled: entityTreeView.groupSelected || entityTreeView.sceneRootSelected
         onTriggered: {
             entityTree.addNewEntity(EditorUtils.GroupEntity)
         }

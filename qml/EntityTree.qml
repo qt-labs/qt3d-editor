@@ -121,6 +121,7 @@ Item {
         property bool editing: false
         property bool sceneRootSelected: true
         property bool cameraSelected: true
+        property bool groupSelected: true
 
         onExpanded: {
             model.addExpandedItem(index)
@@ -224,7 +225,7 @@ Item {
                     // Dropping into camera is always invalid
                     // Camera can only be dropped into scene root
                     // Light can only be dropped to light or transform entity
-                    // Transform entities cannot be dropped under non-transform entities
+                    // Group entities cannot be dropped under non-group entities
                     var itemType = editorScene.sceneModel.editorSceneItemFromIndex(
                                 styleData.index).itemType();
                     var dropValid =
@@ -399,6 +400,8 @@ Item {
                         componentPropertiesView.model = selectedEntity.componentsModel
                         entityTreeView.cameraSelected =
                                 selectedEntity.itemType() === EditorSceneItem.Camera
+                        entityTreeView.groupSelected =
+                                selectedEntity.itemType() === EditorSceneItem.Group
                         selectedEntityName = editorScene.sceneModel.entityName(
                                     entityTreeView.selection.currentIndex)
                         editorScene.clearSelectionBoxes()
