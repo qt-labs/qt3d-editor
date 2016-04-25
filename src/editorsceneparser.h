@@ -75,6 +75,7 @@ class EditorSceneParser : public QObject
         DirectionalLight,
         PointLight,
         SpotLight,
+        SceneLoader,
         Unknown
     };
 
@@ -114,6 +115,7 @@ private:
     void outGenericProperty(QObject *obj,
                             const QMetaProperty &property, const QObject *defaultComponent);
     void outHelperFunctions();
+    void outSceneLoader(Qt3DCore::QComponent *component);
 
     QString indent() const;
     EditorItemType itemType(QObject *item) const;
@@ -133,9 +135,10 @@ private:
                             Qt3DRender::QAbstractTexture *&normal);
     QString getAbsoluteResourceFileName(const QFileInfo &qmlFileInfo,
                                         const QString &resourceDirName);
+    QString urlToResourceString(const QUrl &url);
 
     int m_indentLevel;
-    int m_imageIdCounter;
+    int m_resourceIdCounter;
 
     QTextStream m_stream;
     QString m_spaceArray;
@@ -149,6 +152,7 @@ private:
     QMap<QString, QUrl> m_importResourceMap; // <qml source, texture url target>
     QString m_resourceDirName;
     QMap<EditorItemType, int> m_currentEntityComponentTypeMap;
+
 };
 
 #endif // EDITORSCENEPARSER_H

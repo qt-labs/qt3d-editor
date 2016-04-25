@@ -64,6 +64,7 @@
 #include <Qt3DRender/QLight>
 #include <Qt3DRender/QPointLight>
 #include <Qt3DRender/QSpotLight>
+#include <Qt3DRender/QSceneLoader>
 
 #include <Qt3DInput/QInputSettings>
 
@@ -83,8 +84,9 @@ static const QString frameGraphCameraTag = QStringLiteral("@FRAMEGRAPH_CAMERA_TA
 static const QString exposedPropertiesTag = QStringLiteral("@EXPOSED_PROPERTIES_TAG@");
 static const QString endTag = QStringLiteral("@@@");
 static const QString sceneStartTag = QStringLiteral("// --- Scene start ---");
-static const QString imageNameTemplate = QStringLiteral("qrc:///%1/i%2_%3");
+static const QString resourceNameTemplate = QStringLiteral("qrc:///%1/r%2_%3");
 static const QString resourceDirTemplate = QStringLiteral("%1_scene_res");
+static const QString doubleQuotedStringTemplate = QStringLiteral("\"%1\"");
 static const QString tempExportSuffix = QStringLiteral("_temp");
 static const QString resourceFileTemplate = QStringLiteral("%1/%2/%3.qrc");
 static const QString internalNamePrefix = QStringLiteral("__internal");
@@ -97,13 +99,14 @@ static const QString qrcFileEndTag = QStringLiteral("</file>");
 static const QString diffuseProperty = QStringLiteral("diffuse");
 static const QString specularProperty = QStringLiteral("specular");
 static const QString normalProperty = QStringLiteral("normal");
+static const QString sourceProperty = QStringLiteral("source");
 static const QString enumPropertyTag = QStringLiteral(" // ENUM:");
 static const QString autoSavePostfix = QStringLiteral(".autosave");
 
 EditorSceneParser::EditorSceneParser(QObject *parent)
     : QObject(parent)
     , m_indentLevel(0)
-    , m_imageIdCounter(0)
+    , m_resourceIdCounter(0)
 
 {
     m_spaceArray.fill(QLatin1Char(' '), 0x1000);
@@ -124,7 +127,7 @@ EditorSceneParser::EditorSceneParser(QObject *parent)
             << QStringLiteral("PhongAlphaMaterial")
             << QStringLiteral("PhongMaterial")
             << QStringLiteral("CuboidMesh")
-            << QStringLiteral("CustomMesh")
+            << QStringLiteral("Mesh") // CustomMesh
             << QStringLiteral("CylinderMesh")
             << QStringLiteral("PlaneMesh")
             << QStringLiteral("SphereMesh")
@@ -134,6 +137,7 @@ EditorSceneParser::EditorSceneParser(QObject *parent)
             << QStringLiteral("DirectionalLight")
             << QStringLiteral("PointLight")
             << QStringLiteral("SpotLight")
+            << QStringLiteral("SceneLoader")
             << QStringLiteral("Unknown");
     m_stream.setCodec("UTF-8");
 
@@ -162,6 +166,7 @@ EditorSceneParser::EditorSceneParser(QObject *parent)
     cacheProperties(DirectionalLight, new Qt3DRender::QDirectionalLight());
     cacheProperties(PointLight, new Qt3DRender::QPointLight());
     cacheProperties(SpotLight, new Qt3DRender::QSpotLight());
+    cacheProperties(SceneLoader, new Qt3DRender::QSceneLoader());
 }
 
 EditorSceneParser::~EditorSceneParser()
@@ -564,7 +569,7 @@ void EditorSceneParser::cacheProperties(EditorSceneParser::EditorItemType type,
 void EditorSceneParser::resetParser()
 {
     m_indentLevel = 0;
-    m_imageIdCounter = 0;
+    m_resourceIdCounter = 0;
     m_idMap.clear();
     m_exportResourceMap.clear();
     m_importResourceMap.clear();
@@ -634,6 +639,7 @@ void EditorSceneParser::outEntity(Qt3DCore::QEntity *entity)
         // Output components
         Qt3DCore::QComponentVector componentList = entity->components();
         int componentCount = componentList.size();
+        bool sceneLoader = false;
         if (componentCount) {
             QStringList componentIds;
             m_currentEntityComponentTypeMap.clear();
@@ -646,6 +652,8 @@ void EditorSceneParser::outEntity(Qt3DCore::QEntity *entity)
                         continue;
                     }
                 }
+                if (qobject_cast<Qt3DRender::QSceneLoader *>(componentList.at(i)))
+                    sceneLoader = true;
                 QString componentId = outComponent(componentList.at(i));
                 // Empty component id typically means internal component
                 if (!componentId.isEmpty())
@@ -667,10 +675,12 @@ void EditorSceneParser::outEntity(Qt3DCore::QEntity *entity)
         }
 
         // Output child entities
-        foreach (QObject *child, entity->children()) {
-            Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
-            if (childEntity)
-                outEntity(childEntity);
+        if (!sceneLoader) {
+            foreach (QObject *child, entity->children()) {
+                Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
+                if (childEntity)
+                    outEntity(childEntity);
+            }
         }
 
         outEndType();
@@ -702,8 +712,8 @@ QString EditorSceneParser::outComponent(Qt3DCore::QComponent *component)
         case NormalDiffuseSpecularMapMaterial:
             outTexturedMaterial(type, component);
             break;
-        case ObjectPicker:
-            outGenericProperties(type, component);
+        case SceneLoader:
+            outSceneLoader(component);
             break;
         default:
             // The rest
@@ -775,22 +785,7 @@ void EditorSceneParser::outTextureProperty(const QString &propertyName,
         const Qt3DRender::QTextureImage *textureImage =
                 qobject_cast<const Qt3DRender::QTextureImage *>(textureProvider->textureImages().at(0));
         if (textureImage) {
-            QString imageName = m_exportResourceMap.value(textureImage->source());
-
-            if (imageName.isEmpty()) {
-                QString fileName = textureImage->source().toString();
-                // If we are sourcing generated images, strip the "i<number>_" prefix from them
-                // to avoid consecutive load/save cycles gradually changing the names.
-                QString generatedExp = QStringLiteral("%1/i*\\d_");
-                generatedExp = generatedExp.arg(m_resourceDirName);
-                QRegularExpression re(generatedExp);
-                fileName.replace(re, QString());
-                fileName = fileName.mid(fileName.lastIndexOf(QLatin1Char('/')) + 1);
-                imageName = imageNameTemplate.arg(m_resourceDirName)
-                        .arg(m_imageIdCounter++).arg(fileName);
-                m_exportResourceMap.insert(textureImage->source(), imageName);
-            }
-
+            QString imageName = urlToResourceString(textureImage->source());
             m_stream << indent() << propertyName << QStringLiteral(": \"")
                      << imageName
                      << QStringLiteral("\"") << endl;
@@ -828,6 +823,7 @@ void EditorSceneParser::outGenericProperty(QObject *obj, const QMetaProperty &pr
     } else {
         valueStr = variantToQMLString(objectValue);
     }
+
     if (defaultValue != objectValue)
         m_stream << indent() << property.name() << QStringLiteral(": ") << valueStr << endl;
 }
@@ -859,6 +855,11 @@ void EditorSceneParser::outHelperFunctions()
     m_stream << indent() << QStringLiteral("entity.components = entityComponents") << endl;
     m_indentLevel--;
     m_stream << indent() << QStringLiteral("}") << endl;
+}
+
+void EditorSceneParser::outSceneLoader(Qt3DCore::QComponent *component)
+{
+    outGenericProperties(SceneLoader, component);
 }
 
 QString EditorSceneParser::indent() const
@@ -918,6 +919,8 @@ EditorSceneParser::EditorItemType EditorSceneParser::itemType(QObject *item) con
                     return PhongAlphaMaterial;
                 else if (qobject_cast<Qt3DExtras::QPhongMaterial *>(item))
                     return PhongMaterial;
+            } else if (qobject_cast<Qt3DRender::QSceneLoader *>(item)) {
+                return SceneLoader;
             }
         } else if (qobject_cast<Qt3DCore::QEntity *>(item)) {
             if (qobject_cast<Qt3DRender::QCamera *>(item))
@@ -960,11 +963,11 @@ QString EditorSceneParser::variantToQMLString(const QVariant &var)
         return retVal.arg(vec.x()).arg(vec.y()).arg(vec.z());
     }
     case QVariant::Color:
-    case QVariant::Url:
     case QVariant::String: {
-
-        QString retVal = QStringLiteral("\"%1\"");
-        return retVal.arg(var.toString());
+        return doubleQuotedStringTemplate.arg(var.toString());
+    }
+    case QVariant::Url: {
+        return doubleQuotedStringTemplate.arg(urlToResourceString(var.toUrl()));
     }
     default:
         break;
@@ -1019,10 +1022,15 @@ QVariant EditorSceneParser::QMLStringToVariant(QVariant::Type type, const QStrin
             return QVariant::fromValue(QColor(qmlStr.mid(1, qmlStr.size() - 2)));
     }
     case QVariant::Url: {
-        if (qmlStr.size() < 3)
+        if (qmlStr.size() < 3) {
             return QVariant::fromValue(QUrl());
-        else
-            return QVariant::fromValue(QUrl(qmlStr.mid(1, qmlStr.size() - 2)));
+        } else {
+            QUrl resourceUrl = m_importResourceMap.value(qmlStr);
+            if (resourceUrl.isEmpty())
+                return QVariant::fromValue(QUrl(qmlStr.mid(1, qmlStr.size() - 2)));
+            else
+                return QVariant::fromValue(resourceUrl);
+        }
     }
     case QVariant::String: {
         if (qmlStr.size() < 3)
@@ -1110,6 +1118,8 @@ Qt3DCore::QComponent *EditorSceneParser::createComponent(EditorSceneParser::Edit
         return new Qt3DRender::QPointLight();
     case SpotLight:
         return new Qt3DRender::QSpotLight();
+    case SceneLoader:
+        return new Qt3DRender::QSceneLoader();
     default:
         break;
     }
@@ -1258,4 +1268,25 @@ QString EditorSceneParser::getAbsoluteResourceFileName(const QFileInfo &qmlFileI
 {
     return resourceFileTemplate.arg(qmlFileInfo.absolutePath())
             .arg(resourceDirName).arg(qmlFileInfo.baseName());
+}
+
+QString EditorSceneParser::urlToResourceString(const QUrl &url)
+{
+    QString urlString = m_exportResourceMap.value(url);
+
+    if (urlString.isEmpty()) {
+        QString fileName = url.toString();
+        // If we are sourcing generated files, strip the "r<number>_" prefix from them
+        // to avoid consecutive load/save cycles gradually changing the names.
+        QString generatedExp = QStringLiteral("%1/r*\\d_");
+        generatedExp = generatedExp.arg(m_resourceDirName);
+        QRegularExpression re(generatedExp);
+        fileName.replace(re, QString());
+        fileName = fileName.mid(fileName.lastIndexOf(QLatin1Char('/')) + 1);
+        urlString = resourceNameTemplate.arg(m_resourceDirName)
+                .arg(m_resourceIdCounter++).arg(fileName);
+        m_exportResourceMap.insert(url, urlString);
+    }
+
+    return urlString;
 }
