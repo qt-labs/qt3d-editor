@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += qml quick widgets 3dcore 3drender 3dinput 3dlogic 3dquick 3drender-private
+QT += qml quick widgets 3dcore 3drender 3dextras 3dinput 3dlogic 3dquick 3drender-private
 
 SOURCES += src/main.cpp \
     src/editorviewportitem.cpp \

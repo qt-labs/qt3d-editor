@@ -40,7 +40,7 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DRender/QRenderAspect>
 #include <Qt3DRender/QCamera>
-#include <Qt3DRender/QForwardRenderer>
+#include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QRenderSurfaceSelector>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DInput/QInputAspect>

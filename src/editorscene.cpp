@@ -37,10 +37,10 @@
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QMesh>
-#include <Qt3DRender/QCuboidMesh>
-#include <Qt3DRender/QDiffuseSpecularMapMaterial>
-#include <Qt3DRender/QPhongAlphaMaterial>
-#include <Qt3DRender/QPhongMaterial>
+#include <Qt3DExtras/QCuboidMesh>
+#include <Qt3DExtras/QDiffuseSpecularMapMaterial>
+#include <Qt3DExtras/QPhongAlphaMaterial>
+#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QLight>
 #include <Qt3DRender/QDirectionalLight>
 #include <Qt3DRender/QSpotLight>
@@ -50,7 +50,7 @@
 #include <Qt3DRender/QCameraLens>
 #include <Qt3DRender/QTexture>
 #include <Qt3DRender/QRenderSettings>
-#include <Qt3DRender/QForwardRenderer>
+#include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
 #include <Qt3DRender/QPickingSettings>
@@ -431,7 +431,7 @@ void EditorScene::showPlaceholderEntity(const QString &name, int type)
         data = new PlaceholderEntityData();
         data->entity = new Qt3DCore::QEntity(m_rootEntity);
         data->transform = new Qt3DCore::QTransform();
-        Qt3DRender::QPhongAlphaMaterial *material = new Qt3DRender::QPhongAlphaMaterial();
+        Qt3DExtras::QPhongAlphaMaterial *material = new Qt3DExtras::QPhongAlphaMaterial();
         if (insertableType == EditorUtils::InsertableEntities::GroupEntity) {
             material->setAlpha(0.2f);
             material->setAmbient("#f4be04");
@@ -1131,7 +1131,7 @@ void EditorScene::handleLightTypeChanged(EditorSceneItem *item)
             if (lightData) {
                 lightData->lightComponent = light;
                 connect(light, &Qt3DRender::QLight::colorChanged,
-                        lightData->visibleMaterial, &Qt3DRender::QPhongAlphaMaterial::setAmbient);
+                        lightData->visibleMaterial, &Qt3DExtras::QPhongAlphaMaterial::setAmbient);
                 delete lightData->visibleMesh;
                 Qt3DRender::QDirectionalLight *dirLight =
                         qobject_cast<Qt3DRender::QDirectionalLight *>(light);
@@ -1351,12 +1351,12 @@ void EditorScene::setupDefaultScene()
     // Cube
     Qt3DCore::QEntity *cubeEntity = new Qt3DCore::QEntity(m_sceneEntity);
     cubeEntity->setObjectName(m_cubeString);
-    Qt3DRender::QCuboidMesh *cubeMesh = new Qt3DRender::QCuboidMesh();
+    Qt3DExtras::QCuboidMesh *cubeMesh = new Qt3DExtras::QCuboidMesh();
     Qt3DCore::QTransform *cubeTransform = new Qt3DCore::QTransform();
     cubeTransform->setTranslation(QVector3D(0.0f, 0.0f, 5.0f));
     cubeTransform->setRotation(QQuaternion::fromAxisAndAngle(QVector3D(0.0f, 0.0f, 1.0f), 180.0f));
-    Qt3DRender::QDiffuseSpecularMapMaterial *cubeMaterial
-            = new Qt3DRender::QDiffuseSpecularMapMaterial();
+    Qt3DExtras::QDiffuseSpecularMapMaterial *cubeMaterial
+            = new Qt3DExtras::QDiffuseSpecularMapMaterial();
     Qt3DRender::QTextureImage *diffuseTextureImage = new Qt3DRender::QTextureImage();
     cubeMaterial->diffuse()->addTextureImage(diffuseTextureImage);
     diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo.png")));
@@ -1402,7 +1402,7 @@ void EditorScene::createRootEntity()
 
     // Selection box material and mesh need to be created before any
     // EditorSceneItem are created
-    Qt3DRender::QPhongMaterial *selectionBoxMaterial = new Qt3DRender::QPhongMaterial();
+    Qt3DExtras::QPhongMaterial *selectionBoxMaterial = new Qt3DExtras::QPhongMaterial();
     selectionBoxMaterial->setAmbient(QColor("#f4be04"));
     selectionBoxMaterial->setDiffuse(QColor(Qt::black));
     selectionBoxMaterial->setSpecular(QColor(Qt::black));
@@ -1424,7 +1424,7 @@ void EditorScene::createRootEntity()
     //m_renderSettings->pickingSettings()->setPickMethod(Qt3DRender::QPickingSettings::TrianglePicking);
     m_renderSettings->pickingSettings()->setPickResultMode(Qt3DRender::QPickingSettings::AllPicks);
     m_renderSettings->setObjectName(QStringLiteral("__internal Scene frame graph"));
-    m_renderer = new Qt3DRender::QForwardRenderer();
+    m_renderer = new Qt3DExtras::QForwardRenderer();
     m_renderer->setClearColor(Qt::lightGray);
     m_renderSettings->setActiveFrameGraph(m_renderer);
 
@@ -1496,7 +1496,7 @@ void EditorScene::createRootEntity()
     Qt3DRender::QGeometryRenderer *viewVectorMesh = EditorUtils::createCameraViewVectorMesh();
     Qt3DRender::QGeometryRenderer *viewCenterMesh = EditorUtils::createCameraViewCenterMesh(1.0f);
 
-    Qt3DRender::QPhongMaterial *frustumMaterial = new Qt3DRender::QPhongMaterial();
+    Qt3DExtras::QPhongMaterial *frustumMaterial = new Qt3DExtras::QPhongMaterial();
     frustumMaterial->setAmbient(QColor("#c22555"));
     frustumMaterial->setDiffuse(QColor(Qt::black));
     frustumMaterial->setSpecular(QColor(Qt::black));
@@ -1532,7 +1532,7 @@ void EditorScene::createHelperPlane()
     // Helper plane origin must be at the meeting point of lines, hence the odd lineCount
     Qt3DRender::QGeometryRenderer *planeMesh = EditorUtils::createWireframePlaneMesh(51);
 
-    Qt3DRender::QPhongMaterial *helperPlaneMaterial = new Qt3DRender::QPhongMaterial();
+    Qt3DExtras::QPhongMaterial *helperPlaneMaterial = new Qt3DExtras::QPhongMaterial();
     helperPlaneMaterial->setAmbient(QColor("#585a5c"));
     helperPlaneMaterial->setDiffuse(QColor(Qt::black));
     helperPlaneMaterial->setSpecular(QColor(Qt::black));
@@ -2138,7 +2138,7 @@ void EditorScene::handleCameraAdded(Qt3DRender::QCamera *camera)
 
     Qt3DRender::QGeometryRenderer *visibleMesh = EditorUtils::createVisibleCameraMesh();
 
-    Qt3DRender::QPhongMaterial *cameraMaterial = new Qt3DRender::QPhongMaterial();
+    Qt3DExtras::QPhongMaterial *cameraMaterial = new Qt3DExtras::QPhongMaterial();
     cameraMaterial->setAmbient(QColor("#c22555"));
     cameraMaterial->setDiffuse(QColor(Qt::black));
     cameraMaterial->setSpecular(QColor(Qt::black));
@@ -2191,7 +2191,7 @@ void EditorScene::handleLightAdded(Qt3DCore::QEntity *lightEntity)
 
     Qt3DRender::QLight *lightComponent = EditorUtils::entityLight(lightEntity);
 
-    Qt3DRender::QPhongAlphaMaterial *visibleMaterial = new Qt3DRender::QPhongAlphaMaterial();
+    Qt3DExtras::QPhongAlphaMaterial *visibleMaterial = new Qt3DExtras::QPhongAlphaMaterial();
     visibleMaterial->setDiffuse(Qt::black);
     visibleMaterial->setSpecular(Qt::black);
     visibleMaterial->setAmbient(lightComponent->color());

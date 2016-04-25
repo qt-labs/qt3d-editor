@@ -32,15 +32,15 @@
 #include "undohandler.h"
 #include "materialcomponentproxyitem.h"
 #include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QDiffuseMapMaterial>
-#include <Qt3DRender/QDiffuseSpecularMapMaterial>
-#include <Qt3DRender/QGoochMaterial>
-#include <Qt3DRender/QNormalDiffuseMapMaterial>
-#include <Qt3DRender/QNormalDiffuseMapAlphaMaterial>
-#include <Qt3DRender/QNormalDiffuseSpecularMapMaterial>
-#include <Qt3DRender/QPerVertexColorMaterial>
-#include <Qt3DRender/QPhongAlphaMaterial>
-#include <Qt3DRender/QPhongMaterial>
+#include <Qt3DExtras/QDiffuseMapMaterial>
+#include <Qt3DExtras/QDiffuseSpecularMapMaterial>
+#include <Qt3DExtras/QGoochMaterial>
+#include <Qt3DExtras/QNormalDiffuseMapMaterial>
+#include <Qt3DExtras/QNormalDiffuseMapAlphaMaterial>
+#include <Qt3DExtras/QNormalDiffuseSpecularMapMaterial>
+#include <Qt3DExtras/QPerVertexColorMaterial>
+#include <Qt3DExtras/QPhongAlphaMaterial>
+#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QAbstractTexture>
 #include <Qt3DRender/QTextureImage>
 #include <Qt3DCore/QEntity>
@@ -180,15 +180,15 @@ void EditorSceneItemMaterialComponentsModel::setMaterial(
         Qt3DRender::QMaterial *material = nullptr;
         switch (type) {
         case DiffuseMap: {
-            Qt3DRender::QDiffuseMapMaterial *newMat = new Qt3DRender::QDiffuseMapMaterial();
+            Qt3DExtras::QDiffuseMapMaterial *newMat = new Qt3DExtras::QDiffuseMapMaterial();
             Qt3DRender::QTextureImage *diffuseTextureImage = new Qt3DRender::QTextureImage();
             diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo.png")));
             newMat->diffuse()->addTextureImage(diffuseTextureImage);
             material = newMat;
             break;
         } case DiffuseSpecularMap: {
-            Qt3DRender::QDiffuseSpecularMapMaterial *newMat =
-                    new Qt3DRender::QDiffuseSpecularMapMaterial();
+            Qt3DExtras::QDiffuseSpecularMapMaterial *newMat =
+                    new Qt3DExtras::QDiffuseSpecularMapMaterial();
             Qt3DRender::QTextureImage *diffuseTextureImage = new Qt3DRender::QTextureImage();
             Qt3DRender::QTextureImage *specularTextureImage = new Qt3DRender::QTextureImage();
             diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo.png")));
@@ -199,11 +199,11 @@ void EditorSceneItemMaterialComponentsModel::setMaterial(
             break;
         }
         case Gooch:
-            material = new Qt3DRender::QGoochMaterial();
+            material = new Qt3DExtras::QGoochMaterial();
             break;
         case NormalDiffuseMap: {
-            Qt3DRender::QNormalDiffuseMapMaterial *newMat =
-                    new Qt3DRender::QNormalDiffuseMapMaterial();
+            Qt3DExtras::QNormalDiffuseMapMaterial *newMat =
+                    new Qt3DExtras::QNormalDiffuseMapMaterial();
             Qt3DRender::QTextureImage *diffuseTextureImage = new Qt3DRender::QTextureImage();
             Qt3DRender::QTextureImage *normalTextureImage = new Qt3DRender::QTextureImage();
             diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo.png")));
@@ -214,8 +214,8 @@ void EditorSceneItemMaterialComponentsModel::setMaterial(
             break;
         }
         case NormalDiffuseMapAlpha: {
-            Qt3DRender::QNormalDiffuseMapAlphaMaterial *newMat =
-                    new Qt3DRender::QNormalDiffuseMapAlphaMaterial();
+            Qt3DExtras::QNormalDiffuseMapAlphaMaterial *newMat =
+                    new Qt3DExtras::QNormalDiffuseMapAlphaMaterial();
             Qt3DRender::QTextureImage *diffuseTextureImage = new Qt3DRender::QTextureImage();
             Qt3DRender::QTextureImage *normalTextureImage = new Qt3DRender::QTextureImage();
             diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo.png")));
@@ -226,8 +226,8 @@ void EditorSceneItemMaterialComponentsModel::setMaterial(
             break;
         }
         case NormalDiffuseSpecularMap: {
-            Qt3DRender::QNormalDiffuseSpecularMapMaterial *newMat =
-                    new Qt3DRender::QNormalDiffuseSpecularMapMaterial();
+            Qt3DExtras::QNormalDiffuseSpecularMapMaterial *newMat =
+                    new Qt3DExtras::QNormalDiffuseSpecularMapMaterial();
             Qt3DRender::QTextureImage *diffuseTextureImage = new Qt3DRender::QTextureImage();
             Qt3DRender::QTextureImage *specularTextureImage = new Qt3DRender::QTextureImage();
             Qt3DRender::QTextureImage *normalTextureImage = new Qt3DRender::QTextureImage();
@@ -241,13 +241,13 @@ void EditorSceneItemMaterialComponentsModel::setMaterial(
             break;
         }
         case PerVertexColor:
-            material = new Qt3DRender::QPerVertexColorMaterial();
+            material = new Qt3DExtras::QPerVertexColorMaterial();
             break;
         case PhongAlpha:
-            material = new Qt3DRender::QPhongAlphaMaterial();
+            material = new Qt3DExtras::QPhongAlphaMaterial();
             break;
         case Phong: {
-            material = new  Qt3DRender::QPhongMaterial();
+            material = new  Qt3DExtras::QPhongMaterial();
             break;
         }
         default:
@@ -293,24 +293,24 @@ void EditorSceneItemMaterialComponentsModel::endReplace(Qt3DRender::QMaterial *n
 EditorSceneItemMaterialComponentsModel::MaterialComponentTypes
 EditorSceneItemMaterialComponentsModel::materialType(Qt3DRender::QMaterial *material) const
 {
-    if (qobject_cast<Qt3DRender::QDiffuseMapMaterial *>(material))
+    if (qobject_cast<Qt3DExtras::QDiffuseMapMaterial *>(material))
         return DiffuseMap;
-    else if (qobject_cast<Qt3DRender::QDiffuseSpecularMapMaterial *>(material))
+    else if (qobject_cast<Qt3DExtras::QDiffuseSpecularMapMaterial *>(material))
         return DiffuseSpecularMap;
-    else if (qobject_cast<Qt3DRender::QGoochMaterial *>(material))
+    else if (qobject_cast<Qt3DExtras::QGoochMaterial *>(material))
         return Gooch;
     // QNormalDiffuseMapAlphaMaterial inherits QNormalDiffuseMapMaterial, so it must be first
-    else if (qobject_cast<Qt3DRender::QNormalDiffuseMapAlphaMaterial *>(material))
+    else if (qobject_cast<Qt3DExtras::QNormalDiffuseMapAlphaMaterial *>(material))
         return NormalDiffuseMapAlpha;
-    else if (qobject_cast<Qt3DRender::QNormalDiffuseMapMaterial *>(material))
+    else if (qobject_cast<Qt3DExtras::QNormalDiffuseMapMaterial *>(material))
         return NormalDiffuseMap;
-    else if (qobject_cast<Qt3DRender::QNormalDiffuseSpecularMapMaterial *>(material))
+    else if (qobject_cast<Qt3DExtras::QNormalDiffuseSpecularMapMaterial *>(material))
         return NormalDiffuseSpecularMap;
-    else if (qobject_cast<Qt3DRender::QPerVertexColorMaterial *>(material))
+    else if (qobject_cast<Qt3DExtras::QPerVertexColorMaterial *>(material))
         return PerVertexColor;
-    else if (qobject_cast<Qt3DRender::QPhongAlphaMaterial *>(material))
+    else if (qobject_cast<Qt3DExtras::QPhongAlphaMaterial *>(material))
         return PhongAlpha;
-    else if (qobject_cast<Qt3DRender::QPhongMaterial *>(material))
+    else if (qobject_cast<Qt3DExtras::QPhongMaterial *>(material))
         return Phong;
     else
         return Unknown;
@@ -320,36 +320,36 @@ Qt3DRender::QAbstractTexture *EditorSceneItemMaterialComponentsModel::getDiffuse
 {
     switch (m_type) {
     case DiffuseMap: {
-        Qt3DRender::QDiffuseMapMaterial *mat =
-                qobject_cast<Qt3DRender::QDiffuseMapMaterial *>(m_materialComponent);
+        Qt3DExtras::QDiffuseMapMaterial *mat =
+                qobject_cast<Qt3DExtras::QDiffuseMapMaterial *>(m_materialComponent);
         if (mat)
             return mat->diffuse();
         break;
     }
     case DiffuseSpecularMap: {
-        Qt3DRender::QDiffuseSpecularMapMaterial *mat =
-                qobject_cast<Qt3DRender::QDiffuseSpecularMapMaterial *>(m_materialComponent);
+        Qt3DExtras::QDiffuseSpecularMapMaterial *mat =
+                qobject_cast<Qt3DExtras::QDiffuseSpecularMapMaterial *>(m_materialComponent);
         if (mat)
             return mat->diffuse();
         break;
     }
     case NormalDiffuseMap: {
-        Qt3DRender::QNormalDiffuseMapMaterial *mat =
-                qobject_cast<Qt3DRender::QNormalDiffuseMapMaterial *>(m_materialComponent);
+        Qt3DExtras::QNormalDiffuseMapMaterial *mat =
+                qobject_cast<Qt3DExtras::QNormalDiffuseMapMaterial *>(m_materialComponent);
         if (mat)
             return mat->diffuse();
         break;
     }
     case NormalDiffuseMapAlpha: {
-        Qt3DRender::QNormalDiffuseMapAlphaMaterial *mat =
-                qobject_cast<Qt3DRender::QNormalDiffuseMapAlphaMaterial *>(m_materialComponent);
+        Qt3DExtras::QNormalDiffuseMapAlphaMaterial *mat =
+                qobject_cast<Qt3DExtras::QNormalDiffuseMapAlphaMaterial *>(m_materialComponent);
         if (mat)
             return mat->diffuse();
         break;
     }
     case NormalDiffuseSpecularMap: {
-        Qt3DRender::QNormalDiffuseSpecularMapMaterial *mat =
-                qobject_cast<Qt3DRender::QNormalDiffuseSpecularMapMaterial *>(m_materialComponent);
+        Qt3DExtras::QNormalDiffuseSpecularMapMaterial *mat =
+                qobject_cast<Qt3DExtras::QNormalDiffuseSpecularMapMaterial *>(m_materialComponent);
         if (mat)
             return mat->diffuse();
         break;
@@ -364,15 +364,15 @@ Qt3DRender::QAbstractTexture *EditorSceneItemMaterialComponentsModel::getSpecula
 {
     switch (m_type) {
     case DiffuseSpecularMap: {
-        Qt3DRender::QDiffuseSpecularMapMaterial *mat =
-                qobject_cast<Qt3DRender::QDiffuseSpecularMapMaterial *>(m_materialComponent);
+        Qt3DExtras::QDiffuseSpecularMapMaterial *mat =
+                qobject_cast<Qt3DExtras::QDiffuseSpecularMapMaterial *>(m_materialComponent);
         if (mat)
             return mat->specular();
         break;
     }
     case NormalDiffuseSpecularMap: {
-        Qt3DRender::QNormalDiffuseSpecularMapMaterial *mat =
-                qobject_cast<Qt3DRender::QNormalDiffuseSpecularMapMaterial *>(m_materialComponent);
+        Qt3DExtras::QNormalDiffuseSpecularMapMaterial *mat =
+                qobject_cast<Qt3DExtras::QNormalDiffuseSpecularMapMaterial *>(m_materialComponent);
         if (mat)
             return mat->specular();
         break;
@@ -387,22 +387,22 @@ Qt3DRender::QAbstractTexture *EditorSceneItemMaterialComponentsModel::getNormalT
 {
     switch (m_type) {
     case NormalDiffuseMap: {
-        Qt3DRender::QNormalDiffuseMapMaterial *mat =
-                qobject_cast<Qt3DRender::QNormalDiffuseMapMaterial *>(m_materialComponent);
+        Qt3DExtras::QNormalDiffuseMapMaterial *mat =
+                qobject_cast<Qt3DExtras::QNormalDiffuseMapMaterial *>(m_materialComponent);
         if (mat)
             return mat->normal();
         break;
     }
     case NormalDiffuseMapAlpha: {
-        Qt3DRender::QNormalDiffuseMapAlphaMaterial *mat =
-                qobject_cast<Qt3DRender::QNormalDiffuseMapAlphaMaterial *>(m_materialComponent);
+        Qt3DExtras::QNormalDiffuseMapAlphaMaterial *mat =
+                qobject_cast<Qt3DExtras::QNormalDiffuseMapAlphaMaterial *>(m_materialComponent);
         if (mat)
             return mat->normal();
         break;
     }
     case NormalDiffuseSpecularMap: {
-        Qt3DRender::QNormalDiffuseSpecularMapMaterial *mat =
-                qobject_cast<Qt3DRender::QNormalDiffuseSpecularMapMaterial *>(m_materialComponent);
+        Qt3DExtras::QNormalDiffuseSpecularMapMaterial *mat =
+                qobject_cast<Qt3DExtras::QNormalDiffuseSpecularMapMaterial *>(m_materialComponent);
         if (mat)
             return mat->normal();
         break;

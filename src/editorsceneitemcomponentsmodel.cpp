@@ -37,15 +37,15 @@
 #include <Qt3DCore/QComponent>
 
 #include <Qt3DCore/QTransform>
-#include <Qt3DRender/QCuboidMesh>
-#include <Qt3DRender/QSphereMesh>
+#include <Qt3DExtras/QCuboidMesh>
+#include <Qt3DExtras/QSphereMesh>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QCameraLens>
 #include <Qt3DRender/QLight>
 #include <Qt3DRender/QDirectionalLight>
 #include <Qt3DRender/QSpotLight>
-#include <Qt3DRender/QPhongMaterial>
-#include <Qt3DRender/QPhongAlphaMaterial>
+#include <Qt3DExtras/QPhongMaterial>
+#include <Qt3DExtras/QPhongAlphaMaterial>
 #include <Qt3DRender/QObjectPicker>
 
 EditorSceneItemComponentsModel::EditorSceneItemComponentsModel(EditorSceneItem *sceneItem,
@@ -251,7 +251,7 @@ void EditorSceneItemComponentsModel::appendNewComponent(EditorSceneItemComponent
         break;
     case Material: {
         if (!m_materialItem) {
-            Qt3DRender::QMaterial *materialComponent = new Qt3DRender::QPhongMaterial();
+            Qt3DRender::QMaterial *materialComponent = new Qt3DExtras::QPhongMaterial();
             m_materialItem = new MaterialComponentProxyItem(this, materialComponent);
             component = materialComponent;
         }
@@ -259,7 +259,7 @@ void EditorSceneItemComponentsModel::appendNewComponent(EditorSceneItemComponent
     }
     case Mesh: {
         if (!m_meshItem) {
-            Qt3DRender::QGeometryRenderer *meshComponent = new Qt3DRender::QCuboidMesh();
+            Qt3DRender::QGeometryRenderer *meshComponent = new Qt3DExtras::QCuboidMesh();
             m_meshItem = new MeshComponentProxyItem(this, meshComponent);
             component = meshComponent;
         }

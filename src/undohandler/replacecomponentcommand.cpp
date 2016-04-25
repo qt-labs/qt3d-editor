@@ -32,7 +32,6 @@
 #include "editorsceneitemmodel.h"
 #include "undohandler.h"
 
-#include <Qt3DCore/QNode>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QComponent>
 #include <QtQml/QQmlEngine>

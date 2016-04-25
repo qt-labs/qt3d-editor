@@ -28,7 +28,7 @@
 import QtQuick 2.5
 import com.theqtcompany.SceneEditor3D 1.0
 import Qt.labs.controls 1.0 as QLC
-import Qt3D.Render 2.0
+import Qt3D.Extras 2.0
 
 ComponentDelegate {
     id: materialDelegate

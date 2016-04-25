@@ -36,27 +36,27 @@
 #include <Qt3DRender/QTexture>
 
 #include <Qt3DCore/QTransform>
-#include <Qt3DRender/QForwardRenderer>
+#include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QObjectPicker>
 
 #include <Qt3DRender/QMesh>
-#include <Qt3DRender/QCuboidMesh>
-#include <Qt3DRender/QCylinderMesh>
-#include <Qt3DRender/QPlaneMesh>
-#include <Qt3DRender/QSphereMesh>
-#include <Qt3DRender/QTorusMesh>
+#include <Qt3DExtras/QCuboidMesh>
+#include <Qt3DExtras/QCylinderMesh>
+#include <Qt3DExtras/QPlaneMesh>
+#include <Qt3DExtras/QSphereMesh>
+#include <Qt3DExtras/QTorusMesh>
 
 #include <Qt3DRender/QMaterial>
-#include <Qt3DRender/QDiffuseMapMaterial>
-#include <Qt3DRender/QDiffuseSpecularMapMaterial>
-#include <Qt3DRender/QGoochMaterial>
-#include <Qt3DRender/QNormalDiffuseMapMaterial>
-#include <Qt3DRender/QNormalDiffuseMapAlphaMaterial>
-#include <Qt3DRender/QNormalDiffuseSpecularMapMaterial>
-#include <Qt3DRender/QPerVertexColorMaterial>
-#include <Qt3DRender/QPhongAlphaMaterial>
-#include <Qt3DRender/QPhongMaterial>
+#include <Qt3DExtras/QDiffuseMapMaterial>
+#include <Qt3DExtras/QDiffuseSpecularMapMaterial>
+#include <Qt3DExtras/QGoochMaterial>
+#include <Qt3DExtras/QNormalDiffuseMapMaterial>
+#include <Qt3DExtras/QNormalDiffuseMapAlphaMaterial>
+#include <Qt3DExtras/QNormalDiffuseSpecularMapMaterial>
+#include <Qt3DExtras/QPerVertexColorMaterial>
+#include <Qt3DExtras/QPhongAlphaMaterial>
+#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QAbstractTexture>
 #include <Qt3DRender/QTextureImage>
 
@@ -142,21 +142,21 @@ EditorSceneParser::EditorSceneParser(QObject *parent)
     cacheProperties(Transform, new Qt3DCore::QTransform());
     cacheProperties(RenderSettings, new Qt3DRender::QRenderSettings());
     cacheProperties(InputSettings, new Qt3DInput::QInputSettings());
-    cacheProperties(DiffuseMapMaterial, new Qt3DRender::QDiffuseMapMaterial());
-    cacheProperties(DiffuseSpecularMapMaterial, new Qt3DRender::QDiffuseSpecularMapMaterial());
-    cacheProperties(GoochMaterial, new Qt3DRender::QGoochMaterial());
-    cacheProperties(NormalDiffuseMapMaterial, new Qt3DRender::QNormalDiffuseMapMaterial());
-    cacheProperties(NormalDiffuseMapAlphaMaterial, new Qt3DRender::QNormalDiffuseMapAlphaMaterial());
-    cacheProperties(NormalDiffuseSpecularMapMaterial, new Qt3DRender::QNormalDiffuseSpecularMapMaterial());
-    cacheProperties(PerVertexColorMaterial, new Qt3DRender::QPerVertexColorMaterial());
-    cacheProperties(PhongAlphaMaterial, new Qt3DRender::QPhongAlphaMaterial());
-    cacheProperties(PhongMaterial, new Qt3DRender::QPhongMaterial());
-    cacheProperties(CuboidMesh, new Qt3DRender::QCuboidMesh());
+    cacheProperties(DiffuseMapMaterial, new Qt3DExtras::QDiffuseMapMaterial());
+    cacheProperties(DiffuseSpecularMapMaterial, new Qt3DExtras::QDiffuseSpecularMapMaterial());
+    cacheProperties(GoochMaterial, new Qt3DExtras::QGoochMaterial());
+    cacheProperties(NormalDiffuseMapMaterial, new Qt3DExtras::QNormalDiffuseMapMaterial());
+    cacheProperties(NormalDiffuseMapAlphaMaterial, new Qt3DExtras::QNormalDiffuseMapAlphaMaterial());
+    cacheProperties(NormalDiffuseSpecularMapMaterial, new Qt3DExtras::QNormalDiffuseSpecularMapMaterial());
+    cacheProperties(PerVertexColorMaterial, new Qt3DExtras::QPerVertexColorMaterial());
+    cacheProperties(PhongAlphaMaterial, new Qt3DExtras::QPhongAlphaMaterial());
+    cacheProperties(PhongMaterial, new Qt3DExtras::QPhongMaterial());
+    cacheProperties(CuboidMesh, new Qt3DExtras::QCuboidMesh());
     cacheProperties(CustomMesh, new Qt3DRender::QMesh());
-    cacheProperties(CylinderMesh, new Qt3DRender::QCylinderMesh());
-    cacheProperties(PlaneMesh, new Qt3DRender::QPlaneMesh());
-    cacheProperties(SphereMesh, new Qt3DRender::QSphereMesh());
-    cacheProperties(TorusMesh, new Qt3DRender::QTorusMesh());
+    cacheProperties(CylinderMesh, new Qt3DExtras::QCylinderMesh());
+    cacheProperties(PlaneMesh, new Qt3DExtras::QPlaneMesh());
+    cacheProperties(SphereMesh, new Qt3DExtras::QSphereMesh());
+    cacheProperties(TorusMesh, new Qt3DExtras::QTorusMesh());
     cacheProperties(ObjectPicker, new Qt3DRender::QObjectPicker());
     cacheProperties(Light, new Qt3DRender::QLight());
     cacheProperties(DirectionalLight, new Qt3DRender::QDirectionalLight());
@@ -223,6 +223,7 @@ bool EditorSceneParser::exportQmlScene(Qt3DCore::QEntity *sceneEntity, const QUr
              << QStringLiteral("import QtQuick.Scene3D 2.0") << endl
              << QStringLiteral("import Qt3D.Core 2.0") << endl
              << QStringLiteral("import Qt3D.Render 2.0") << endl
+             << QStringLiteral("import Qt3D.Extras 2.0") << endl
              << QStringLiteral("import Qt3D.Input 2.0") << endl
              << endl;
 
@@ -240,7 +241,7 @@ bool EditorSceneParser::exportQmlScene(Qt3DCore::QEntity *sceneEntity, const QUr
     // Create a dummy framegraph and output it
     Qt3DRender::QRenderSettings *renderSettings = new Qt3DRender::QRenderSettings();
     renderSettings->setObjectName(QStringLiteral("Scene render settings"));
-    Qt3DRender::QForwardRenderer *forwardRenderer = new Qt3DRender::QForwardRenderer();
+    Qt3DExtras::QForwardRenderer *forwardRenderer = new Qt3DExtras::QForwardRenderer();
     forwardRenderer->setClearColor(Qt::lightGray);
     forwardRenderer->setCamera(activeSceneCamera);
     renderSettings->setActiveFrameGraph(forwardRenderer);
@@ -722,7 +723,7 @@ void EditorSceneParser::outRenderSettings(Qt3DCore::QComponent *component)
 {
     Qt3DRender::QRenderSettings *renderSettings = qobject_cast<Qt3DRender::QRenderSettings *>(component);
     Qt3DRender::QFrameGraphNode *activeFrameGraph = renderSettings->activeFrameGraph();
-    Qt3DRender::QForwardRenderer *forwardRenderer = qobject_cast<Qt3DRender::QForwardRenderer *>(activeFrameGraph);
+    Qt3DExtras::QForwardRenderer *forwardRenderer = qobject_cast<Qt3DExtras::QForwardRenderer *>(activeFrameGraph);
     if (forwardRenderer) {
         m_stream << indent() << QStringLiteral("activeFrameGraph: ForwardRenderer {") << endl;
         m_indentLevel++;
@@ -872,15 +873,15 @@ EditorSceneParser::EditorItemType EditorSceneParser::itemType(QObject *item) con
             if (qobject_cast<Qt3DRender::QGeometryRenderer *>(item)) {
                 if (qobject_cast<Qt3DRender::QMesh *>(item))
                     return CustomMesh;
-                else if (qobject_cast<Qt3DRender::QCuboidMesh *>(item))
+                else if (qobject_cast<Qt3DExtras::QCuboidMesh *>(item))
                     return CuboidMesh;
-                else if (qobject_cast<Qt3DRender::QCylinderMesh *>(item))
+                else if (qobject_cast<Qt3DExtras::QCylinderMesh *>(item))
                     return CylinderMesh;
-                else if (qobject_cast<Qt3DRender::QPlaneMesh *>(item))
+                else if (qobject_cast<Qt3DExtras::QPlaneMesh *>(item))
                     return PlaneMesh;
-                else if (qobject_cast<Qt3DRender::QSphereMesh *>(item))
+                else if (qobject_cast<Qt3DExtras::QSphereMesh *>(item))
                     return SphereMesh;
-                else if (qobject_cast<Qt3DRender::QTorusMesh *>(item))
+                else if (qobject_cast<Qt3DExtras::QTorusMesh *>(item))
                     return TorusMesh;
             } else if (qobject_cast<Qt3DRender::QRenderSettings *>(item)) {
                 return RenderSettings;
@@ -899,23 +900,23 @@ EditorSceneParser::EditorItemType EditorSceneParser::itemType(QObject *item) con
             } else if (qobject_cast<Qt3DCore::QTransform *>(item)) {
                 return Transform;
             } else if (qobject_cast<Qt3DRender::QMaterial *>(item)) {
-                if (qobject_cast<Qt3DRender::QDiffuseMapMaterial *>(item))
+                if (qobject_cast<Qt3DExtras::QDiffuseMapMaterial *>(item))
                     return DiffuseMapMaterial;
-                else if (qobject_cast<Qt3DRender::QDiffuseSpecularMapMaterial *>(item))
+                else if (qobject_cast<Qt3DExtras::QDiffuseSpecularMapMaterial *>(item))
                     return DiffuseSpecularMapMaterial;
-                else if (qobject_cast<Qt3DRender::QGoochMaterial *>(item))
+                else if (qobject_cast<Qt3DExtras::QGoochMaterial *>(item))
                     return GoochMaterial;
-                else if (qobject_cast<Qt3DRender::QNormalDiffuseMapMaterial *>(item))
+                else if (qobject_cast<Qt3DExtras::QNormalDiffuseMapMaterial *>(item))
                     return NormalDiffuseMapMaterial;
-                else if (qobject_cast<Qt3DRender::QNormalDiffuseMapAlphaMaterial *>(item))
+                else if (qobject_cast<Qt3DExtras::QNormalDiffuseMapAlphaMaterial *>(item))
                     return NormalDiffuseMapAlphaMaterial;
-                else if (qobject_cast<Qt3DRender::QNormalDiffuseSpecularMapMaterial *>(item))
+                else if (qobject_cast<Qt3DExtras::QNormalDiffuseSpecularMapMaterial *>(item))
                     return NormalDiffuseSpecularMapMaterial;
-                else if (qobject_cast<Qt3DRender::QPerVertexColorMaterial *>(item))
+                else if (qobject_cast<Qt3DExtras::QPerVertexColorMaterial *>(item))
                     return PerVertexColorMaterial;
-                else if (qobject_cast<Qt3DRender::QPhongAlphaMaterial *>(item))
+                else if (qobject_cast<Qt3DExtras::QPhongAlphaMaterial *>(item))
                     return PhongAlphaMaterial;
-                else if (qobject_cast<Qt3DRender::QPhongMaterial *>(item))
+                else if (qobject_cast<Qt3DExtras::QPhongMaterial *>(item))
                     return PhongMaterial;
             }
         } else if (qobject_cast<Qt3DCore::QEntity *>(item)) {
@@ -1070,35 +1071,35 @@ Qt3DCore::QComponent *EditorSceneParser::createComponent(EditorSceneParser::Edit
     case InputSettings:
         return new Qt3DInput::QInputSettings();
     case DiffuseMapMaterial:
-        return new Qt3DRender::QDiffuseMapMaterial();
+        return new Qt3DExtras::QDiffuseMapMaterial();
     case DiffuseSpecularMapMaterial:
-        return new Qt3DRender::QDiffuseSpecularMapMaterial();
+        return new Qt3DExtras::QDiffuseSpecularMapMaterial();
     case GoochMaterial:
-        return new Qt3DRender::QGoochMaterial();
+        return new Qt3DExtras::QGoochMaterial();
     case NormalDiffuseMapMaterial:
-        return new Qt3DRender::QNormalDiffuseMapMaterial();
+        return new Qt3DExtras::QNormalDiffuseMapMaterial();
     case NormalDiffuseMapAlphaMaterial:
-        return new Qt3DRender::QNormalDiffuseMapAlphaMaterial();
+        return new Qt3DExtras::QNormalDiffuseMapAlphaMaterial();
     case NormalDiffuseSpecularMapMaterial:
-        return new Qt3DRender::QNormalDiffuseSpecularMapMaterial();
+        return new Qt3DExtras::QNormalDiffuseSpecularMapMaterial();
     case PerVertexColorMaterial:
-        return new Qt3DRender::QPerVertexColorMaterial();
+        return new Qt3DExtras::QPerVertexColorMaterial();
     case PhongAlphaMaterial:
-        return new Qt3DRender::QPhongAlphaMaterial();
+        return new Qt3DExtras::QPhongAlphaMaterial();
     case PhongMaterial:
-        return new Qt3DRender::QPhongMaterial();
+        return new Qt3DExtras::QPhongMaterial();
     case CuboidMesh:
-        return new Qt3DRender::QCuboidMesh();
+        return new Qt3DExtras::QCuboidMesh();
     case CustomMesh:
         return new Qt3DRender::QMesh();
     case CylinderMesh:
-        return new Qt3DRender::QCylinderMesh();
+        return new Qt3DExtras::QCylinderMesh();
     case PlaneMesh:
-        return new Qt3DRender::QPlaneMesh();
+        return new Qt3DExtras::QPlaneMesh();
     case SphereMesh:
-        return new Qt3DRender::QSphereMesh();
+        return new Qt3DExtras::QSphereMesh();
     case TorusMesh:
-        return new Qt3DRender::QTorusMesh();
+        return new Qt3DExtras::QTorusMesh();
     case ObjectPicker:
         return new QDummyObjectPicker();
     case DirectionalLight:
@@ -1191,8 +1192,8 @@ int EditorSceneParser::getTextureProviders(EditorSceneParser::EditorItemType typ
 
     switch (type) {
     case DiffuseMapMaterial: {
-        Qt3DRender::QDiffuseMapMaterial *mat =
-                qobject_cast<Qt3DRender::QDiffuseMapMaterial *>(component);
+        Qt3DExtras::QDiffuseMapMaterial *mat =
+                qobject_cast<Qt3DExtras::QDiffuseMapMaterial *>(component);
         if (mat) {
             diffuse = mat->diffuse();
             specular = nullptr;
@@ -1202,8 +1203,8 @@ int EditorSceneParser::getTextureProviders(EditorSceneParser::EditorItemType typ
         break;
     }
     case DiffuseSpecularMapMaterial: {
-        Qt3DRender::QDiffuseSpecularMapMaterial *mat =
-                qobject_cast<Qt3DRender::QDiffuseSpecularMapMaterial *>(component);
+        Qt3DExtras::QDiffuseSpecularMapMaterial *mat =
+                qobject_cast<Qt3DExtras::QDiffuseSpecularMapMaterial *>(component);
         if (mat) {
             diffuse = mat->diffuse();
             specular = mat->specular();
@@ -1213,8 +1214,8 @@ int EditorSceneParser::getTextureProviders(EditorSceneParser::EditorItemType typ
         break;
     }
     case NormalDiffuseMapMaterial: {
-        Qt3DRender::QNormalDiffuseMapMaterial *mat =
-                qobject_cast<Qt3DRender::QNormalDiffuseMapMaterial *>(component);
+        Qt3DExtras::QNormalDiffuseMapMaterial *mat =
+                qobject_cast<Qt3DExtras::QNormalDiffuseMapMaterial *>(component);
         if (mat) {
             diffuse = mat->diffuse();
             specular = nullptr;
@@ -1224,8 +1225,8 @@ int EditorSceneParser::getTextureProviders(EditorSceneParser::EditorItemType typ
         break;
     }
     case NormalDiffuseMapAlphaMaterial: {
-        Qt3DRender::QNormalDiffuseMapAlphaMaterial *mat =
-                qobject_cast<Qt3DRender::QNormalDiffuseMapAlphaMaterial *>(component);
+        Qt3DExtras::QNormalDiffuseMapAlphaMaterial *mat =
+                qobject_cast<Qt3DExtras::QNormalDiffuseMapAlphaMaterial *>(component);
         if (mat) {
             diffuse = mat->diffuse();
             specular = nullptr;
@@ -1235,8 +1236,8 @@ int EditorSceneParser::getTextureProviders(EditorSceneParser::EditorItemType typ
         break;
     }
     case NormalDiffuseSpecularMapMaterial: {
-        Qt3DRender::QNormalDiffuseSpecularMapMaterial *mat =
-                qobject_cast<Qt3DRender::QNormalDiffuseSpecularMapMaterial *>(component);
+        Qt3DExtras::QNormalDiffuseSpecularMapMaterial *mat =
+                qobject_cast<Qt3DExtras::QNormalDiffuseSpecularMapMaterial *>(component);
         if (mat) {
             diffuse = mat->diffuse();
             specular = mat->specular();

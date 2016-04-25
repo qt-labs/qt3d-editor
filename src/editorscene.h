@@ -50,10 +50,13 @@ namespace Qt3DRender {
     class QObjectPicker;
     class QRenderSettings;
     class QMaterial;
-    class QPhongAlphaMaterial;
     class QGeometryRenderer;
     class QCamera;
     class QCameraLens;
+}
+
+namespace Qt3DExtras {
+    class QPhongAlphaMaterial;
     class QForwardRenderer;
 }
 
@@ -145,7 +148,7 @@ private:
                   Qt3DCore::QTransform *transform,
                   Qt3DCore::QEntity *visEntity,
                   Qt3DCore::QTransform *visTransform,
-                  Qt3DRender::QPhongAlphaMaterial *visMaterial,
+                  Qt3DExtras::QPhongAlphaMaterial *visMaterial,
                   Qt3DRender::QGeometryRenderer *visMesh,
                   Qt3DRender::QObjectPicker *picker) :
             lightEntity(entity)
@@ -163,7 +166,7 @@ private:
         Qt3DCore::QTransform *lightTransform;
         Qt3DCore::QEntity *visibleEntity;
         Qt3DCore::QTransform *visibleTransform;
-        Qt3DRender::QPhongAlphaMaterial *visibleMaterial;
+        Qt3DExtras::QPhongAlphaMaterial *visibleMaterial;
         Qt3DRender::QGeometryRenderer *visibleMesh;
         Qt3DRender::QObjectPicker *visiblePicker;
     };
@@ -211,7 +214,7 @@ public:
     EditorSceneItem *rootItem() const { return m_rootItem; }
     EditorSceneItem *sceneEntityItem() const { return m_sceneEntityItem; }
     EditorSceneItem *entityItem(Qt3DCore::QEntity *entity) const;
-    Qt3DRender::QForwardRenderer *renderer() const { return m_renderer; }
+    Qt3DExtras::QForwardRenderer *renderer() const { return m_renderer; }
     EditorSceneItemModel *sceneModel() const { return m_sceneModel; }
     const QMap<Qt3DCore::QNodeId, EditorSceneItem *> &items() const { return m_sceneItems; }
 
@@ -360,7 +363,7 @@ private:
 
     EditorSceneParser *m_sceneParser;
     Qt3DRender::QRenderSettings *m_renderSettings;
-    Qt3DRender::QForwardRenderer *m_renderer;
+    Qt3DExtras::QForwardRenderer *m_renderer;
     Qt3DCore::QEntity *m_sceneEntity;
     EditorSceneItem *m_sceneEntityItem;
     Qt3DCore::QEntity *m_selectedEntity;

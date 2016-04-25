@@ -38,8 +38,7 @@ class QDummyObjectPicker : public Qt3DCore::QComponent
     Q_PROPERTY(bool hoverEnabled READ hoverEnabled WRITE setHoverEnabled NOTIFY hoverEnabledChanged)
 
 public:
-    explicit QDummyObjectPicker(QNode *parent = nullptr);
-    ~QDummyObjectPicker();
+    explicit QDummyObjectPicker(Qt3DCore::QNode *parent = nullptr);
 
     void setHoverEnabled(bool hoverEnabled);
     bool hoverEnabled() const;

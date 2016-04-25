@@ -34,13 +34,13 @@
 #include <Qt3DCore/QNodeId>
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QMesh>
-#include <Qt3DRender/QCuboidMesh>
-#include <Qt3DRender/QCylinderMesh>
-#include <Qt3DRender/QPlaneMesh>
-#include <Qt3DRender/QSphereMesh>
-#include <Qt3DRender/QTorusMesh>
+#include <Qt3DExtras/QCuboidMesh>
+#include <Qt3DExtras/QCylinderMesh>
+#include <Qt3DExtras/QPlaneMesh>
+#include <Qt3DExtras/QSphereMesh>
+#include <Qt3DExtras/QTorusMesh>
 #include <Qt3DRender/QLight>
-#include <Qt3DRender/QPhongMaterial>
+#include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QSceneLoader>
 
 EditorSceneItemModel::EditorSceneItemModel(EditorScene *scene)
@@ -263,7 +263,7 @@ Qt3DCore::QEntity *EditorSceneItemModel::insertEntity(EditorUtils::InsertableEnt
             Qt3DRender::QGeometryRenderer *mesh = EditorUtils::createMeshForInsertableType(type);
             if (mesh) {
                 newEntity->addComponent(mesh);
-                newEntity->addComponent(new Qt3DRender::QPhongMaterial());
+                newEntity->addComponent(new Qt3DExtras::QPhongMaterial());
             }
         }
 

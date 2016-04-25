@@ -29,7 +29,6 @@
 #include "editorsceneitemlightcomponentsmodel.h"
 
 #include <Qt3DRender/QLight>
-#include <Qt3DRender/QPhongAlphaMaterial>
 
 LightComponentProxyItem::LightComponentProxyItem(EditorSceneItemComponentsModel *sceneItemModel,
                                                  Qt3DRender::QLight *component,

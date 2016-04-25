@@ -34,12 +34,12 @@
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DRender/QGeometryFactory>
-#include <Qt3DRender/QCuboidMesh>
+#include <Qt3DExtras/QCuboidMesh>
 #include <Qt3DRender/QMesh>
-#include <Qt3DRender/QCylinderMesh>
-#include <Qt3DRender/QPlaneMesh>
-#include <Qt3DRender/QSphereMesh>
-#include <Qt3DRender/QTorusMesh>
+#include <Qt3DExtras/QCylinderMesh>
+#include <Qt3DExtras/QPlaneMesh>
+#include <Qt3DExtras/QSphereMesh>
+#include <Qt3DExtras/QTorusMesh>
 #include <Qt3DRender/QLight>
 #include <Qt3DRender/QDirectionalLight>
 #include <Qt3DRender/QSpotLight>
@@ -241,34 +241,34 @@ void EditorSceneItem::recalculateMeshExtents()
         break;
     }
     case EditorSceneItemMeshComponentsModel::Cuboid: {
-        Qt3DRender::QCuboidMesh *mesh =
-                qobject_cast<Qt3DRender::QCuboidMesh *>(m_entityMesh);
+        Qt3DExtras::QCuboidMesh *mesh =
+                qobject_cast<Qt3DExtras::QCuboidMesh *>(m_entityMesh);
         m_entityMeshExtents = QVector3D(mesh->xExtent(), mesh->yExtent(), mesh->zExtent());
         break;
     }
     case EditorSceneItemMeshComponentsModel::Cylinder: {
-        Qt3DRender::QCylinderMesh *mesh =
-                qobject_cast<Qt3DRender::QCylinderMesh *>(m_entityMesh);
+        Qt3DExtras::QCylinderMesh *mesh =
+                qobject_cast<Qt3DExtras::QCylinderMesh *>(m_entityMesh);
         float diameter = mesh->radius() * 2.0f;
         m_entityMeshExtents = QVector3D(diameter, mesh->length(), diameter);
         break;
     }
     case EditorSceneItemMeshComponentsModel::Plane: {
-        Qt3DRender::QPlaneMesh *mesh =
-                qobject_cast<Qt3DRender::QPlaneMesh *>(m_entityMesh);
+        Qt3DExtras::QPlaneMesh *mesh =
+                qobject_cast<Qt3DExtras::QPlaneMesh *>(m_entityMesh);
         m_entityMeshExtents = QVector3D(mesh->width(), 0, mesh->height());
         break;
     }
     case EditorSceneItemMeshComponentsModel::Sphere: {
-        Qt3DRender::QSphereMesh *mesh =
-                qobject_cast<Qt3DRender::QSphereMesh *>(m_entityMesh);
+        Qt3DExtras::QSphereMesh *mesh =
+                qobject_cast<Qt3DExtras::QSphereMesh *>(m_entityMesh);
         float diameter = mesh->radius() * 2.0f;
         m_entityMeshExtents = QVector3D(diameter, diameter, diameter);
         break;
     }
     case EditorSceneItemMeshComponentsModel::Torus: {
-        Qt3DRender::QTorusMesh *mesh =
-                qobject_cast<Qt3DRender::QTorusMesh *>(m_entityMesh);
+        Qt3DExtras::QTorusMesh *mesh =
+                qobject_cast<Qt3DExtras::QTorusMesh *>(m_entityMesh);
         float minorDiameter = mesh->minorRadius() * 2.0f;
         float diameter = mesh->radius() * 2.0f + minorDiameter;
         m_entityMeshExtents = QVector3D(diameter, diameter, minorDiameter);
@@ -484,47 +484,47 @@ void EditorSceneItem::connectEntityMesh(bool enabled)
             break;
         }
         case EditorSceneItemMeshComponentsModel::Cuboid: {
-            Qt3DRender::QCuboidMesh *mesh =
-                    qobject_cast<Qt3DRender::QCuboidMesh *>(m_entityMesh);
-            connect(mesh, &Qt3DRender::QCuboidMesh::xExtentChanged,
+            Qt3DExtras::QCuboidMesh *mesh =
+                    qobject_cast<Qt3DExtras::QCuboidMesh *>(m_entityMesh);
+            connect(mesh, &Qt3DExtras::QCuboidMesh::xExtentChanged,
                     this, &EditorSceneItem::recalculateMeshExtents);
-            connect(mesh, &Qt3DRender::QCuboidMesh::yExtentChanged,
+            connect(mesh, &Qt3DExtras::QCuboidMesh::yExtentChanged,
                     this, &EditorSceneItem::recalculateMeshExtents);
-            connect(mesh, &Qt3DRender::QCuboidMesh::zExtentChanged,
+            connect(mesh, &Qt3DExtras::QCuboidMesh::zExtentChanged,
                     this, &EditorSceneItem::recalculateMeshExtents);
             break;
         }
         case EditorSceneItemMeshComponentsModel::Cylinder: {
-            Qt3DRender::QCylinderMesh *mesh =
-                    qobject_cast<Qt3DRender::QCylinderMesh *>(m_entityMesh);
-            connect(mesh, &Qt3DRender::QCylinderMesh::radiusChanged,
+            Qt3DExtras::QCylinderMesh *mesh =
+                    qobject_cast<Qt3DExtras::QCylinderMesh *>(m_entityMesh);
+            connect(mesh, &Qt3DExtras::QCylinderMesh::radiusChanged,
                     this, &EditorSceneItem::recalculateMeshExtents);
-            connect(mesh, &Qt3DRender::QCylinderMesh::lengthChanged,
+            connect(mesh, &Qt3DExtras::QCylinderMesh::lengthChanged,
                     this, &EditorSceneItem::recalculateMeshExtents);
             break;
         }
         case EditorSceneItemMeshComponentsModel::Plane: {
-            Qt3DRender::QPlaneMesh *mesh =
-                    qobject_cast<Qt3DRender::QPlaneMesh *>(m_entityMesh);
-            connect(mesh, &Qt3DRender::QPlaneMesh::widthChanged,
+            Qt3DExtras::QPlaneMesh *mesh =
+                    qobject_cast<Qt3DExtras::QPlaneMesh *>(m_entityMesh);
+            connect(mesh, &Qt3DExtras::QPlaneMesh::widthChanged,
                     this, &EditorSceneItem::recalculateMeshExtents);
-            connect(mesh, &Qt3DRender::QPlaneMesh::heightChanged,
+            connect(mesh, &Qt3DExtras::QPlaneMesh::heightChanged,
                     this, &EditorSceneItem::recalculateMeshExtents);
             break;
         }
         case EditorSceneItemMeshComponentsModel::Sphere: {
-            Qt3DRender::QSphereMesh *mesh =
-                    qobject_cast<Qt3DRender::QSphereMesh *>(m_entityMesh);
-            connect(mesh, &Qt3DRender::QSphereMesh::radiusChanged,
+            Qt3DExtras::QSphereMesh *mesh =
+                    qobject_cast<Qt3DExtras::QSphereMesh *>(m_entityMesh);
+            connect(mesh, &Qt3DExtras::QSphereMesh::radiusChanged,
                     this, &EditorSceneItem::recalculateMeshExtents);
             break;
         }
         case EditorSceneItemMeshComponentsModel::Torus: {
-            Qt3DRender::QTorusMesh *mesh =
-                    qobject_cast<Qt3DRender::QTorusMesh *>(m_entityMesh);
-            connect(mesh, &Qt3DRender::QTorusMesh::radiusChanged,
+            Qt3DExtras::QTorusMesh *mesh =
+                    qobject_cast<Qt3DExtras::QTorusMesh *>(m_entityMesh);
+            connect(mesh, &Qt3DExtras::QTorusMesh::radiusChanged,
                     this, &EditorSceneItem::recalculateMeshExtents);
-            connect(mesh, &Qt3DRender::QTorusMesh::minorRadiusChanged,
+            connect(mesh, &Qt3DExtras::QTorusMesh::minorRadiusChanged,
                     this, &EditorSceneItem::recalculateMeshExtents);
             break;
         }
@@ -541,47 +541,47 @@ void EditorSceneItem::connectEntityMesh(bool enabled)
             break;
         }
         case EditorSceneItemMeshComponentsModel::Cuboid: {
-            Qt3DRender::QCuboidMesh *mesh =
-                    qobject_cast<Qt3DRender::QCuboidMesh *>(m_entityMesh);
-            disconnect(mesh, &Qt3DRender::QCuboidMesh::xExtentChanged,
+            Qt3DExtras::QCuboidMesh *mesh =
+                    qobject_cast<Qt3DExtras::QCuboidMesh *>(m_entityMesh);
+            disconnect(mesh, &Qt3DExtras::QCuboidMesh::xExtentChanged,
                        this, &EditorSceneItem::recalculateMeshExtents);
-            disconnect(mesh, &Qt3DRender::QCuboidMesh::yExtentChanged,
+            disconnect(mesh, &Qt3DExtras::QCuboidMesh::yExtentChanged,
                        this, &EditorSceneItem::recalculateMeshExtents);
-            disconnect(mesh, &Qt3DRender::QCuboidMesh::zExtentChanged,
+            disconnect(mesh, &Qt3DExtras::QCuboidMesh::zExtentChanged,
                        this, &EditorSceneItem::recalculateMeshExtents);
             break;
         }
         case EditorSceneItemMeshComponentsModel::Cylinder: {
-            Qt3DRender::QCylinderMesh *mesh =
-                    qobject_cast<Qt3DRender::QCylinderMesh *>(m_entityMesh);
-            disconnect(mesh, &Qt3DRender::QCylinderMesh::radiusChanged,
+            Qt3DExtras::QCylinderMesh *mesh =
+                    qobject_cast<Qt3DExtras::QCylinderMesh *>(m_entityMesh);
+            disconnect(mesh, &Qt3DExtras::QCylinderMesh::radiusChanged,
                        this, &EditorSceneItem::recalculateMeshExtents);
-            disconnect(mesh, &Qt3DRender::QCylinderMesh::lengthChanged,
+            disconnect(mesh, &Qt3DExtras::QCylinderMesh::lengthChanged,
                        this, &EditorSceneItem::recalculateMeshExtents);
             break;
         }
         case EditorSceneItemMeshComponentsModel::Plane: {
-            Qt3DRender::QPlaneMesh *mesh =
-                    qobject_cast<Qt3DRender::QPlaneMesh *>(m_entityMesh);
-            disconnect(mesh, &Qt3DRender::QPlaneMesh::widthChanged,
+            Qt3DExtras::QPlaneMesh *mesh =
+                    qobject_cast<Qt3DExtras::QPlaneMesh *>(m_entityMesh);
+            disconnect(mesh, &Qt3DExtras::QPlaneMesh::widthChanged,
                        this, &EditorSceneItem::recalculateMeshExtents);
-            disconnect(mesh, &Qt3DRender::QPlaneMesh::heightChanged,
+            disconnect(mesh, &Qt3DExtras::QPlaneMesh::heightChanged,
                        this, &EditorSceneItem::recalculateMeshExtents);
             break;
         }
         case EditorSceneItemMeshComponentsModel::Sphere: {
-            Qt3DRender::QSphereMesh *mesh =
-                    qobject_cast<Qt3DRender::QSphereMesh *>(m_entityMesh);
-            disconnect(mesh, &Qt3DRender::QSphereMesh::radiusChanged,
+            Qt3DExtras::QSphereMesh *mesh =
+                    qobject_cast<Qt3DExtras::QSphereMesh *>(m_entityMesh);
+            disconnect(mesh, &Qt3DExtras::QSphereMesh::radiusChanged,
                        this, &EditorSceneItem::recalculateMeshExtents);
             break;
         }
         case EditorSceneItemMeshComponentsModel::Torus: {
-            Qt3DRender::QTorusMesh *mesh =
-                    qobject_cast<Qt3DRender::QTorusMesh *>(m_entityMesh);
-            disconnect(mesh, &Qt3DRender::QTorusMesh::radiusChanged,
+            Qt3DExtras::QTorusMesh *mesh =
+                    qobject_cast<Qt3DExtras::QTorusMesh *>(m_entityMesh);
+            disconnect(mesh, &Qt3DExtras::QTorusMesh::radiusChanged,
                        this, &EditorSceneItem::recalculateMeshExtents);
-            disconnect(mesh, &Qt3DRender::QTorusMesh::minorRadiusChanged,
+            disconnect(mesh, &Qt3DExtras::QTorusMesh::minorRadiusChanged,
                        this, &EditorSceneItem::recalculateMeshExtents);
             break;
         }

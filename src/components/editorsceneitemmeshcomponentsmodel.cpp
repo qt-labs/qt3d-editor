@@ -33,11 +33,11 @@
 #include "undohandler.h"
 #include "meshcomponentproxyitem.h"
 #include <Qt3DRender/QMesh>
-#include <Qt3DRender/QCuboidMesh>
-#include <Qt3DRender/QCylinderMesh>
-#include <Qt3DRender/QPlaneMesh>
-#include <Qt3DRender/QSphereMesh>
-#include <Qt3DRender/QTorusMesh>
+#include <Qt3DExtras/QCuboidMesh>
+#include <Qt3DExtras/QCylinderMesh>
+#include <Qt3DExtras/QPlaneMesh>
+#include <Qt3DExtras/QSphereMesh>
+#include <Qt3DExtras/QTorusMesh>
 #include <Qt3DCore/QEntity>
 #include <QtCore/QStack>
 
@@ -97,19 +97,19 @@ void EditorSceneItemMeshComponentsModel::setMesh(MeshComponentTypes type)
             mesh = EditorUtils::createDefaultCustomMesh();
             break;
         case Cuboid:
-            mesh = new Qt3DRender::QCuboidMesh();
+            mesh = new Qt3DExtras::QCuboidMesh();
             break;
         case Cylinder:
-            mesh = new Qt3DRender::QCylinderMesh();
+            mesh = new Qt3DExtras::QCylinderMesh();
             break;
         case Plane:
-            mesh = new Qt3DRender::QPlaneMesh();
+            mesh = new Qt3DExtras::QPlaneMesh();
             break;
         case Sphere:
-            mesh = new Qt3DRender::QSphereMesh();
+            mesh = new Qt3DExtras::QSphereMesh();
             break;
         case Torus:
-            mesh = new Qt3DRender::QTorusMesh();
+            mesh = new Qt3DExtras::QTorusMesh();
             break;
         default:
             //Unsupported mesh type
@@ -155,15 +155,15 @@ EditorSceneItemMeshComponentsModel::meshType(Qt3DRender::QGeometryRenderer *mesh
 {
     if (qobject_cast<Qt3DRender::QMesh *>(mesh))
         return Custom;
-    else if (qobject_cast<Qt3DRender::QCuboidMesh *>(mesh))
+    else if (qobject_cast<Qt3DExtras::QCuboidMesh *>(mesh))
         return Cuboid;
-    else if (qobject_cast<Qt3DRender::QCylinderMesh *>(mesh))
+    else if (qobject_cast<Qt3DExtras::QCylinderMesh *>(mesh))
         return Cylinder;
-    else if (qobject_cast<Qt3DRender::QPlaneMesh *>(mesh))
+    else if (qobject_cast<Qt3DExtras::QPlaneMesh *>(mesh))
         return Plane;
-    else if (qobject_cast<Qt3DRender::QSphereMesh *>(mesh))
+    else if (qobject_cast<Qt3DExtras::QSphereMesh *>(mesh))
         return Sphere;
-    else if (qobject_cast<Qt3DRender::QTorusMesh *>(mesh))
+    else if (qobject_cast<Qt3DExtras::QTorusMesh *>(mesh))
         return Torus;
     else
         return Unknown;

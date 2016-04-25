@@ -35,11 +35,6 @@ QDummyObjectPicker::QDummyObjectPicker(Qt3DCore::QNode *parent)
     Q_UNUSED(parent)
 }
 
-QDummyObjectPicker::~QDummyObjectPicker()
-{
-    QComponent::cleanup();
-}
-
 void QDummyObjectPicker::setHoverEnabled(bool hoverEnabled)
 {
     if (hoverEnabled != m_hoverEnabled) {
@@ -53,7 +48,7 @@ bool QDummyObjectPicker::hoverEnabled() const
     return m_hoverEnabled;
 }
 
-void QDummyObjectPicker::copy(const QNode *ref)
+void QDummyObjectPicker::copy(const Qt3DCore::QNode *ref)
 {
     Q_UNUSED(ref)
 }
