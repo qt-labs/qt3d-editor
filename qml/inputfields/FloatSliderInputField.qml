@@ -88,9 +88,13 @@ Item {
             locale: "C"
         }
 
-        Image {
-            source: "qrc:/images/fader.png"
-            anchors.right: slider.left
+        Rectangle {
+            color: mainwindow.paneBackgroundColor
+            height: floatSliderInputField.height
+            width: floatSliderInputField.width * 0.6 > mainwindow.maximumControlWidth
+                   ? mainwindow.maximumControlWidth + mainwindow.controlMargin
+                   : floatSliderInputField.width * 0.62
+            anchors.right: floatInput.right
         }
 
         QLC.Slider {
@@ -101,7 +105,9 @@ Item {
 
             from: minimum
             to: maximum
-            implicitWidth: floatSliderInputField.width * 0.4 - 4
+            implicitWidth: floatSliderInputField.width * 0.6 > mainwindow.maximumControlWidth
+                           ? mainwindow.maximumControlWidth * 0.65
+                           : floatSliderInputField.width * 0.4 - 4
             enabled: lockButton.buttonEnabled
             anchors.right: floatInput.left
             anchors.rightMargin: 4
@@ -115,10 +121,11 @@ Item {
                 implicitWidth: 20
                 implicitHeight: 20
                 radius: width / 2
-                border.color: enabled ? listHighlightColor : "#bdbebf"
-                color: enabled ? (slider.pressed ? mainwindow.textColor
+                border.color: enabled ? mainwindow.listHighlightColor
+                                      : mainwindow.itemBackgroundColor
+                color: enabled ? (slider.pressed ? mainwindow.selectionColor
                                                  : mainwindow.listHighlightColor)
-                               : "lightgray"
+                               : mainwindow.itemBackgroundColor
 
                 readonly property bool horizontal: slider.orientation === Qt.Horizontal
             }
@@ -130,8 +137,9 @@ Item {
                 width: horizontal ? slider.availableWidth : implicitWidth
                 height: horizontal ? implicitHeight : slider.availableHeight
                 radius: 3
-                border.color: enabled ? mainwindow.listHighlightColor : "#bdbebf"
-                color: enabled ? mainwindow.listHighlightColor : "transparent"
+                border.color: enabled ? mainwindow.listHighlightColor
+                                      : mainwindow.itemBackgroundColor
+                color: enabled ? mainwindow.listHighlightColor : mainwindow.itemBackgroundColor
                 scale: horizontal && slider.mirrored ? -1 : 1
 
                 readonly property bool horizontal: slider.orientation === Qt.Horizontal
@@ -172,7 +180,9 @@ Item {
 
         StyledTextField {
             id: floatInput
-            implicitWidth: floatSliderInputField.width * 0.2
+            implicitWidth: floatSliderInputField.width * 0.6 > mainwindow.maximumControlWidth
+                           ? mainwindow.maximumControlWidth * 0.34
+                           : floatSliderInputField.width * 0.2
             anchors.right: lockButton.left
             anchors.rightMargin: 4
             validator: doubleValidator

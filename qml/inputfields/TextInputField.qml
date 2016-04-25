@@ -59,9 +59,11 @@ Item {
             Layout.alignment: Qt.AlignLeft
         }
 
-        Image {
-            source: "qrc:/images/fader.png"
-            anchors.right: textInputCtrl.left
+        Rectangle {
+            color: mainwindow.paneBackgroundColor
+            height: textLabel.height
+            implicitWidth: textInputCtrl.width + mainwindow.controlMargin
+            anchors.right: textInputCtrl.right
         }
 
         StyledTextField {

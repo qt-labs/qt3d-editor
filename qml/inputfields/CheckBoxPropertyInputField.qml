@@ -51,11 +51,11 @@ PropertyInputField {
         verticalAlignment: Text.AlignVCenter
     }
 
-    Image {
-        source: "qrc:/images/fader.png"
-        anchors.right: checkBox.left
-        anchors.rightMargin: -9 // checkbox box has some margins
-        anchors.verticalCenter: checkBox.verticalCenter
+    Rectangle {
+        color: mainwindow.paneBackgroundColor
+        height: checkBoxInput.height
+        width: checkBox.width + mainwindow.controlMargin
+        anchors.right: checkBox.right
     }
 
     QLC.CheckBox {

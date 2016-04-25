@@ -63,20 +63,26 @@ PropertyInputField {
             Layout.alignment: Qt.AlignLeft
         }
 
-        Image {
-            source: "qrc:/images/fader.png"
-            anchors.right: row.left
-            anchors.rightMargin: 12
-        }
-
         RowLayout {
             id: row
             anchors.right: parent.right
             Layout.alignment: Qt.AlignRight
-            Layout.preferredWidth: sizeInput.width * 0.6
+            Layout.preferredWidth: sizeInput.width * 0.6 > mainwindow.maximumControlWidth
+                                   ? mainwindow.maximumControlWidth
+                                   : sizeInput.width * 0.6
             property real cellwidth: (Layout.preferredWidth
                                       - widthLabel.contentWidth
-                                      - heightLabel.contentWidth) / 2 - 12 // 12 = column spacing * 2 (x3 because of labels)
+                                      - heightLabel.contentWidth) / 2 - 6 // 6 = column spacing
+
+
+            Rectangle {
+                color: mainwindow.paneBackgroundColor
+                height: sizeInput.height
+                width: sizeInput.width * 0.6 > mainwindow.maximumControlWidth
+                       ? mainwindow.maximumControlWidth + mainwindow.controlMargin
+                       : sizeInput.width * 0.62
+                anchors.right: heightInput.right
+            }
 
             StyledLabel {
                 id: widthLabel

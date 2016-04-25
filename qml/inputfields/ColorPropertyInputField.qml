@@ -86,9 +86,11 @@ PropertyInputField {
             Layout.alignment: Qt.AlignLeft
         }
 
-        Image {
-            source: "qrc:/images/fader.png"
-            anchors.right: colorButton.left
+        Rectangle {
+            color: mainwindow.paneBackgroundColor
+            implicitHeight: colorInput.height
+            implicitWidth: colorButton.width + mainwindow.controlMargin
+            anchors.right: colorButton.right
         }
 
         QLC.Button {
@@ -96,12 +98,15 @@ PropertyInputField {
             Layout.alignment: Qt.AlignRight
             anchors.right: lockButton.left
             anchors.rightMargin: 4
-            implicitWidth: colorInput.width * 0.6
+            implicitWidth: colorInput.width * 0.6 > mainwindow.maximumControlWidth
+                           ? mainwindow.maximumControlWidth
+                           : colorInput.width * 0.6
             implicitHeight: qlcControlHeight
             enabled: lockButton.buttonEnabled
             background: Rectangle {
                 border.width: colorButton.activeFocus ? 2 : 1
-                border.color: enabled ? mainwindow.listHighlightColor : "#bdbebf"
+                border.color: enabled ? mainwindow.listHighlightColor
+                                      : mainwindow.itemBackgroundColor
                 color: enabled ? colorValue : Qt.rgba(colorValue.r, colorValue.g, colorValue.b,
                                                       0.5)
             }

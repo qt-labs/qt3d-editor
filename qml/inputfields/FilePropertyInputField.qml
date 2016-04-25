@@ -71,8 +71,10 @@ PropertyInputField {
             Layout.alignment: Qt.AlignLeft
         }
 
-        Image {
-            source: "qrc:/images/fader.png"
+        Rectangle {
+            color: mainwindow.paneBackgroundColor
+            height: fileLabel.height
+            width: mainwindow.controlMargin
             anchors.right: fileButton.left
         }
 

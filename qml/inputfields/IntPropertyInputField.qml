@@ -61,9 +61,13 @@ PropertyInputField {
             Layout.alignment: Qt.AlignLeft
         }
 
-        Image {
-            source: "qrc:/images/fader.png"
-            anchors.right: valueInput.left
+        Rectangle {
+            color: mainwindow.paneBackgroundColor
+            height: intInput.height
+            width: intInput.width * 0.6 > mainwindow.maximumControlWidth
+                   ? mainwindow.maximumControlWidth + mainwindow.controlMargin
+                   : intInput.width * 0.62
+            anchors.right: valueInput.right
         }
 
         StyledSpinBox {
@@ -71,7 +75,9 @@ PropertyInputField {
             anchors.right: lockButton.left
             anchors.rightMargin: 4
             Layout.alignment: Qt.AlignRight
-            implicitWidth: intInput.width * 0.6
+            implicitWidth: intInput.width * 0.6 > mainwindow.maximumControlWidth
+                           ? mainwindow.maximumControlWidth
+                           : intInput.width * 0.6
             implicitHeight: qlcControlHeight
             to: 100
             stepSize: 1

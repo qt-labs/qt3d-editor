@@ -46,7 +46,9 @@ Item {
     property real minimum: -999999999 / roundMultiplier // TODO: Do we need more sensible default minimum?
     property real maximum: 999999999 / roundMultiplier // TODO: Do we need more sensible default maximum?
     property int step: roundMultiplier
-    property real inputCellWidth: vectorInput.width * 0.6
+    property real inputCellWidth: vectorInput.width * 0.6 > mainwindow.maximumControlWidth
+                                  ? mainwindow.maximumControlWidth
+                                  : vectorInput.width * 0.6
 
     property vector3d value: Qt.vector3d(0, 0, 0)
 
@@ -87,9 +89,11 @@ Item {
             text: label + " " + qsTr("X") + editorScene.emptyString
         }
 
-        Image {
-            source: "qrc:/images/fader.png"
-            anchors.right: xInput.left
+        Rectangle {
+            color: mainwindow.paneBackgroundColor
+            implicitHeight: xInput.height
+            implicitWidth: inputCellWidth + mainwindow.controlMargin
+            anchors.right: xInput.right
         }
 
         StyledSpinBox {
@@ -149,9 +153,11 @@ Item {
             text: label + " " + qsTr("Y") + editorScene.emptyString
         }
 
-        Image {
-            source: "qrc:/images/fader.png"
-            anchors.right: yInput.left
+        Rectangle {
+            color: mainwindow.paneBackgroundColor
+            implicitHeight: yInput.height
+            implicitWidth: inputCellWidth + mainwindow.controlMargin
+            anchors.right: yInput.right
         }
 
         StyledSpinBox {
@@ -209,9 +215,11 @@ Item {
             text: label + " " + qsTr("Z") + editorScene.emptyString
         }
 
-        Image {
-            source: "qrc:/images/fader.png"
-            anchors.right: zInput.left
+        Rectangle {
+            color: mainwindow.paneBackgroundColor
+            implicitHeight: zInput.height
+            implicitWidth: inputCellWidth + mainwindow.controlMargin
+            anchors.right: zInput.right
         }
 
         StyledSpinBox {

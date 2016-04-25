@@ -73,6 +73,8 @@ ApplicationWindow {
     property string labelFontFamily: "Open Sans"
     property int labelFontWeight: Font.Normal
     property int labelFontPixelSize: 12
+    property int maximumControlWidth: 200
+    property int controlMargin: 4
 
     property bool transformViewVisible: true
     property bool materialViewVisible: true
