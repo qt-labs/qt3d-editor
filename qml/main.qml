@@ -63,6 +63,7 @@ ApplicationWindow {
     property alias selectedEntityType: generalPropertyView.entityType
 
     property color textColor: "#ffffff"
+    property color disabledTextColor: "#a0a1a2"
     property color selectionColor: "#43adee"
     property color listHighlightColor: "#585a5c"
     property color paneBackgroundColor: "#2e2f30"

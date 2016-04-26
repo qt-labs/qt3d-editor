@@ -70,6 +70,7 @@ PropertyInputField {
         StyledLabel {
             id: floatLabel
             text: qsTr("Float Value") + editorScene.emptyString
+            enabled: lockButton.buttonEnabled
             Layout.alignment: Qt.AlignLeft
         }
 

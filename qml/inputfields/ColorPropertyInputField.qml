@@ -83,6 +83,7 @@ PropertyInputField {
         StyledLabel {
             id: colorLabel
             text: qsTr("Color") + editorScene.emptyString
+            enabled: lockButton.buttonEnabled
             Layout.alignment: Qt.AlignLeft
         }
 

@@ -80,6 +80,7 @@ Item {
         StyledLabel {
             id: title
             text: qsTr("Float Slider") + editorScene.emptyString
+            enabled: lockButton.buttonEnabled
             Layout.alignment: Qt.AlignLeft
         }
 

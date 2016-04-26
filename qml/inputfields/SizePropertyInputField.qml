@@ -60,6 +60,7 @@ PropertyInputField {
         StyledLabel {
             id: sizeLabel
             text: qsTr("Size") + editorScene.emptyString
+            enabled: lockButton.buttonEnabled
             Layout.alignment: Qt.AlignLeft
         }
 
@@ -87,6 +88,7 @@ PropertyInputField {
             StyledLabel {
                 id: widthLabel
                 text: qsTr("X") + editorScene.emptyString
+                enabled: lockButton.buttonEnabled
                 anchors.right: widthInput.left
                 anchors.rightMargin: 4
             }
@@ -115,6 +117,7 @@ PropertyInputField {
             StyledLabel {
                 id: heightLabel
                 text: qsTr("Y") + editorScene.emptyString
+                enabled: lockButton.buttonEnabled
                 anchors.right: heightInput.left
                 anchors.rightMargin: 4
             }

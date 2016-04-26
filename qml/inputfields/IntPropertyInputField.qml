@@ -58,6 +58,7 @@ PropertyInputField {
         StyledLabel {
             id: intLabel
             text: qsTr("Integer Value") + editorScene.emptyString
+            enabled: lockButton.buttonEnabled
             Layout.alignment: Qt.AlignLeft
         }
 
