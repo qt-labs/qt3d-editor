@@ -87,6 +87,7 @@ Item {
             id: xLabel
             Layout.alignment: Qt.AlignLeft
             text: label + " " + qsTr("X") + editorScene.emptyString
+            enabled: lockButton.buttonEnabled
         }
 
         Rectangle {
@@ -151,6 +152,7 @@ Item {
             id: yLabel
             Layout.alignment: Qt.AlignLeft
             text: label + " " + qsTr("Y") + editorScene.emptyString
+            enabled: lockButton.buttonEnabled
         }
 
         Rectangle {
@@ -213,6 +215,7 @@ Item {
             id: zLabel
             Layout.alignment: Qt.AlignLeft
             text: label + " " + qsTr("Z") + editorScene.emptyString
+            enabled: lockButton.buttonEnabled
         }
 
         Rectangle {
