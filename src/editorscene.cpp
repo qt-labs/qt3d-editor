@@ -772,11 +772,13 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
     }
 }
 
-void EditorScene::dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown)
+void EditorScene::dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown,
+                                          bool altDown)
 {
     // By default, scale each dimension individually
     // When shift is pressed, scale uniformly
     // When ctrl is pressed, scale in integers
+    // When alt is pressed, scale along helper plane normal (lock to one axis)
 
     QVector3D posOffset = dragHandlePositionOffset(newPos);
     if (!posOffset.isNull()) {
@@ -804,17 +806,29 @@ void EditorScene::dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, 
             moveFactors = QVector3D(averageFactor, averageFactor, averageFactor);
         }
 
-        QVector3D newScale = m_dragInitialScaleValue * EditorUtils::maxVector3D(moveFactors, 0.0001f);
+        QVector3D newScale = m_dragInitialScaleValue * EditorUtils::maxVector3D(moveFactors,
+                                                                                0.0001f);
 
         if (ctrlDown) {
             newScale.setX(qMax(qRound(newScale.x()), 1));
             newScale.setY(qMax(qRound(newScale.y()), 1));
             newScale.setZ(qMax(qRound(newScale.z()), 1));
+            m_lockToAxisScale = newScale;
+        } else if (altDown) {
+            QVector3D lockedAxis = newScale * helperPlaneNormal();
+            if (!qFuzzyCompare(lockedAxis.x(), 0.0f))
+                m_lockToAxisScale.setX(lockedAxis.x());
+            else if (!qFuzzyCompare(lockedAxis.y(), 0.0f))
+                m_lockToAxisScale.setY(lockedAxis.y());
+            else if (!qFuzzyCompare(lockedAxis.z(), 0.0f))
+                m_lockToAxisScale.setZ(lockedAxis.z());
+        } else {
+            m_lockToAxisScale = newScale;
         }
 
         m_undoHandler->createChangePropertyCommand(m_selectedEntity->objectName(),
                                                    EditorSceneItemComponentsModel::Transform,
-                                                   QStringLiteral("scale3D"), newScale,
+                                                   QStringLiteral("scale3D"), m_lockToAxisScale,
                                                    m_selectedEntityTransform->scale3D(), true);
     }
 }
@@ -1958,6 +1972,8 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
                 m_pickedEntity = pressedEntity;
                 // Get the position of the picked entity, and copy it to m_snapToGridIntersection
                 m_snapToGridIntersection = EditorUtils::entityTransform(m_pickedEntity)->translation();
+                // Get the scale of the picked entity, and copy it to m_lockToAxisScale
+                m_lockToAxisScale = EditorUtils::entityTransform(m_pickedEntity)->scale3D();
             }
         }
     }
@@ -2005,7 +2021,7 @@ bool EditorScene::handleMouseMove(QMouseEvent *event)
             break;
         }
         case DragScale: {
-            dragScaleSelectedEntity(event->pos(), shiftDown, ctrlDown);
+            dragScaleSelectedEntity(event->pos(), shiftDown, ctrlDown, altDown);
             break;
         }
         case DragRotate: {

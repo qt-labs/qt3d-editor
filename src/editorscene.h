@@ -336,7 +336,7 @@ private:
     void connectDragHandles(EditorSceneItem *item, bool enable);
     void dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown,
                                      bool altDown);
-    void dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown);
+    void dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown, bool altDown);
     void dragRotateSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown);
     QVector3D dragHandlePositionOffset(const QPoint &newPos);
     bool handleMousePress(QMouseEvent *event);
@@ -424,6 +424,7 @@ private:
     Qt3DCore::QEntity *m_pickedEntity;
     float m_pickedDistance;
     QVector3D m_snapToGridIntersection;
+    QVector3D m_lockToAxisScale;
     int m_gridSize;
     int m_duplicateCount;
     Qt3DCore::QEntity *m_previousDuplicate;
