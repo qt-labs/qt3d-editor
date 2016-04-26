@@ -71,6 +71,7 @@ ApplicationWindow {
     property color viewBorderColor: "#000000"
     property color itemBackgroundColor: "#46484a"
     property color menutItemColor: "#a0a1a2"
+    property color iconHighlightColor: "#26282a"
     property string labelFontFamily: "Open Sans"
     property int labelFontWeight: Font.Normal
     property int labelFontPixelSize: 12
@@ -422,24 +423,29 @@ ApplicationWindow {
 
     toolBar: ToolBar {
         id: mainToolBar
-        height: normalXButton.height + 4
+        height: normalXButton.height
         style: ToolBarStyle {
+            padding.top: 0
+            padding.bottom: 0
+            padding.right: 0
+            padding.left: 0
             background: Rectangle {
-                color: mainwindow.paneBackgroundColor
+                implicitHeight: normalXButton.height
+                color: mainwindow.itemBackgroundColor
             }
         }
 
         RowLayout {
+            spacing: 0
             EnableButton {
                 id: normalXButton
                 height: 32
                 width: 32
-                borderColor: mainwindow.listHighlightColor
-                borderWidth: 1
-                borderRadius: 2
                 anchors.verticalCenter: parent.verticalCenter
                 enabledIconSource: "/images/helperplane_x_deselected.png"
                 disabledIconSource: "/images/helperplane_x_selected.png"
+                hoveredBgColor: mainwindow.listHighlightColor
+                selectedBgColor: mainwindow.iconHighlightColor
                 tooltip: qsTr("Normal X (Ctrl + 1)") + editorScene.emptyString
                 buttonEnabled: currentHelperPlane === 0 ? false : true
                 onEnabledButtonClicked: mainwindow.showNormalXPlane()
@@ -447,12 +453,11 @@ ApplicationWindow {
             EnableButton {
                 height: 32
                 width: 32
-                borderColor: mainwindow.listHighlightColor
-                borderWidth: 1
-                borderRadius: 2
                 anchors.verticalCenter: parent.verticalCenter
                 enabledIconSource: "/images/helperplane_y_deselected.png"
                 disabledIconSource: "/images/helperplane_y_selected.png"
+                hoveredBgColor: mainwindow.listHighlightColor
+                selectedBgColor: mainwindow.iconHighlightColor
                 tooltip: qsTr("Normal Y (Ctrl + 2)") + editorScene.emptyString
                 buttonEnabled: currentHelperPlane === 1 ? false : true
                 onEnabledButtonClicked: mainwindow.showNormalYPlane()
@@ -460,12 +465,11 @@ ApplicationWindow {
             EnableButton {
                 height: 32
                 width: 32
-                borderColor: mainwindow.listHighlightColor
-                borderWidth: 1
-                borderRadius: 2
                 anchors.verticalCenter: parent.verticalCenter
                 enabledIconSource: "/images/helperplane_z_deselected.png"
                 disabledIconSource: "/images/helperplane_z_selected.png"
+                hoveredBgColor: mainwindow.listHighlightColor
+                selectedBgColor: mainwindow.iconHighlightColor
                 tooltip: qsTr("Normal Z (Ctrl + 3)") + editorScene.emptyString
                 buttonEnabled: currentHelperPlane === 2 ? false : true
                 onEnabledButtonClicked: mainwindow.showNormalZPlane()
@@ -473,25 +477,32 @@ ApplicationWindow {
             EnableButton {
                 height: 32
                 width: 32
-                borderColor: mainwindow.listHighlightColor
-                borderWidth: 1
-                borderRadius: 2
                 anchors.verticalCenter: parent.verticalCenter
                 enabledIconSource: "/images/helperplane_none_deselected.png"
                 disabledIconSource: "/images/helperplane_none_selected.png"
+                hoveredBgColor: mainwindow.listHighlightColor
+                selectedBgColor: mainwindow.iconHighlightColor
                 tooltip: qsTr("Hide helper plane (Ctrl + 4)") + editorScene.emptyString
                 buttonEnabled: currentHelperPlane === 3 ? false : true
                 onEnabledButtonClicked: mainwindow.hideHelperPlane()
             }
+            Rectangle {
+                // menu item separator
+                height: 24
+                width: 3
+                color: mainwindow.listHighlightColor
+                border.color: mainwindow.itemBackgroundColor
+                border.width: 1
+            }
+
             EnableButton {
                 height: 32
                 width: 32
-                borderColor: mainwindow.listHighlightColor
-                borderWidth: 1
-                borderRadius: 2
                 anchors.verticalCenter: parent.verticalCenter
                 enabledIconSource: "/images/reset_camera_to_default.png"
                 disabledIconSource: "/images/reset_camera_to_default.png"
+                hoveredBgColor: mainwindow.listHighlightColor
+                selectedBgColor: mainwindow.iconHighlightColor
                 tooltip: qsTr("Reset to Default (Ctrl + R)") + editorScene.emptyString
                 buttonEnabled: true
                 onEnabledButtonClicked: resetCameraToDefault()

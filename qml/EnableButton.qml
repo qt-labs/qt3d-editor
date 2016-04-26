@@ -30,6 +30,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 
 Item {
+    id: enableButton
     height: 16
     width: 16
 
@@ -37,9 +38,10 @@ Item {
     property string disabledIconSource
     property alias tooltip: propertyButton.tooltip
     property bool buttonEnabled
-    property color borderColor: "transparent"
-    property int borderWidth: 0
-    property int borderRadius: 0
+    property color defaultBgColor: "transparent"
+    property color hoveredBgColor: "transparent"
+    property color selectedBgColor: "transparent"
+
 
     signal enabledButtonClicked()
 
@@ -52,10 +54,20 @@ Item {
             padding.right: 0
             padding.left: 0
             background: Rectangle {
-                border.color: borderColor
-                border.width: propertyButton.hovered ? borderWidth : 0
-                radius: borderRadius
-                color: "transparent"
+                implicitHeight: enableButton.height
+                implicitWidth: enableButton.width
+                color: {
+                    if (buttonEnabled && enabled) {
+                        if (propertyButton.hovered)
+                            hoveredBgColor
+                        else
+                            defaultBgColor
+                    } else {
+                        selectedBgColor
+                    }
+                    if (propertyButton.pressed)
+                        selectedBgColor
+                }
             }
         }
     }
