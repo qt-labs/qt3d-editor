@@ -133,8 +133,7 @@ private:
                             Qt3DRender::QAbstractTexture *&diffuse,
                             Qt3DRender::QAbstractTexture *&specular,
                             Qt3DRender::QAbstractTexture *&normal);
-    QString getAbsoluteResourceFileName(const QFileInfo &qmlFileInfo,
-                                        const QString &resourceDirName);
+    QString getAbsoluteQmlFileName(const QFileInfo &qrcFileInfo, const QString &resourceDirName);
     QString urlToResourceString(const QUrl &url);
 
     int m_indentLevel;

@@ -88,13 +88,14 @@ static const QString resourceNameTemplate = QStringLiteral("qrc:///%1/r%2_%3");
 static const QString resourceDirTemplate = QStringLiteral("%1_scene_res");
 static const QString doubleQuotedStringTemplate = QStringLiteral("\"%1\"");
 static const QString tempExportSuffix = QStringLiteral("_temp");
-static const QString resourceFileTemplate = QStringLiteral("%1/%2/%3.qrc");
+static const QString qmlFileTemplate = QStringLiteral("%1/%2/%3.qml");
 static const QString internalNamePrefix = QStringLiteral("__internal");
 static const QString componentsStart = QStringLiteral("components: [");
 static const QString componentsEnd = QStringLiteral("]");
 static const QString idPropertyStr = QStringLiteral("id:");
 static const QString cameraPropertyStr = QStringLiteral("camera:");
 static const QString qrcFileStartTag = QStringLiteral("<file>");
+static const QString qrcQmlFileStartTag = QStringLiteral("<file alias=\"%1.qml\">");
 static const QString qrcFileEndTag = QStringLiteral("</file>");
 static const QString diffuseProperty = QStringLiteral("diffuse");
 static const QString specularProperty = QStringLiteral("specular");
@@ -179,41 +180,53 @@ EditorSceneParser::~EditorSceneParser()
 bool EditorSceneParser::exportQmlScene(Qt3DCore::QEntity *sceneEntity, const QUrl &fileUrl,
                                        Qt3DCore::QEntity *activeSceneCamera, bool autosave)
 {
-    // TODO: Maybe change exporting so that use selects the target .qrc file, and generate
-    // TODO: qml in the subdirectory? That way user only needs to add the .qrc to the project.
     resetParser();
 
-    // Figure out the final target qml file and directory
-    QString qmlFinalFileAbsoluteFilePath = fileUrl.toLocalFile();
+    // Figure out the final target qrc file and directory
+    QString qrcFinalFileAbsoluteFilePath = fileUrl.toLocalFile();
     if (autosave)
-        qmlFinalFileAbsoluteFilePath.append(autoSavePostfix);
-    qDebug() << "Exporting scene to " << qmlFinalFileAbsoluteFilePath;
-    QFile qmlFinalFile(qmlFinalFileAbsoluteFilePath);
-    QFileInfo qmlFinalFileInfo(qmlFinalFile);
-    QDir finalTargetDir = qmlFinalFileInfo.absoluteDir();
-    m_resourceDirName = resourceDirTemplate.arg(qmlFinalFileInfo.baseName());
+        qrcFinalFileAbsoluteFilePath.append(autoSavePostfix);
+    QFile qrcFinalFile(qrcFinalFileAbsoluteFilePath);
+    QFileInfo qrcFinalFileInfo(qrcFinalFile);
+    QDir finalTargetDir = qrcFinalFileInfo.absoluteDir();
+    m_resourceDirName = resourceDirTemplate.arg(qrcFinalFileInfo.baseName());
     if (autosave)
         m_resourceDirName.append(autoSavePostfix);
 
-    QString finalResourceFileName = getAbsoluteResourceFileName(qmlFinalFileInfo,
-                                                                m_resourceDirName);
+    QString finalQmlFileName = getAbsoluteQmlFileName(qrcFinalFileInfo, m_resourceDirName);
 
     // Create a unique backup suffix from current time
     QDateTime currentTime = QDateTime::currentDateTime();
     QString uniqueSuffix = currentTime.toString(QStringLiteral("yyyyMMddHHmmsszzz"));
     QString backupResDirName = m_resourceDirName + uniqueSuffix;
-    QString backupQmlFileName = qmlFinalFileAbsoluteFilePath + uniqueSuffix;
+    QString backupQrcFileName = qrcFinalFileAbsoluteFilePath + uniqueSuffix;
 
-    // Figure out the temporary qml file and resource directory name
-    QString qmlTempFileAbsoluteFilePath = qmlFinalFileAbsoluteFilePath + uniqueSuffix + tempExportSuffix;
-    QFile qmlTempFile(qmlTempFileAbsoluteFilePath);
-    QFileInfo qmlTempFileInfo(qmlTempFile);
+    // Figure out the temporary qrc file and resource directory name
+    QString qrcTempFileAbsoluteFilePath =
+            qrcFinalFileAbsoluteFilePath + uniqueSuffix + tempExportSuffix;
+    QFile qrcTempFile(qrcTempFileAbsoluteFilePath);
+    QFileInfo qrcTempFileInfo(qrcTempFile);
     QString tempResourceDirName = m_resourceDirName + uniqueSuffix + tempExportSuffix;
-    QString tempResourceFileName = getAbsoluteResourceFileName(qmlTempFileInfo,
-                                                               tempResourceDirName);
+    QString tempQmlFileName = getAbsoluteQmlFileName(qrcTempFileInfo, tempResourceDirName);
+    QFile qmlTempFile(tempQmlFileName);
+
+    // Make a temporary directory for exporting
+    QDir tempResourceDir = finalTargetDir;
+    if (tempResourceDir.cd(tempResourceDirName)) {
+        // Clean temporary resource dir if it exists for some reason
+        tempResourceDir.removeRecursively();
+        tempResourceDir = finalTargetDir;
+        QCoreApplication::processEvents();
+    }
+
+    tempResourceDir.mkdir(tempResourceDirName);
+    if (!tempResourceDir.cd(tempResourceDirName)) {
+        qWarning() << "Failed to create a directory for resources:" << tempResourceDirName;
+        return false;
+    }
 
     if (!qmlTempFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-        qWarning() << "Failed to open the qml file for writing:" << qmlTempFileAbsoluteFilePath;
+        qWarning() << "Failed to open the qml file for writing:" << tempQmlFileName;
         return false;
     }
 
@@ -293,90 +306,85 @@ bool EditorSceneParser::exportQmlScene(Qt3DCore::QEntity *sceneEntity, const QUr
     }
 
     if (qmlTempFile.write(outputString.toUtf8()) < 0) {
-        qWarning() << "Failed to write the qml file:" << qmlTempFileAbsoluteFilePath;
-        qmlTempFile.remove();
+        qWarning() << "Failed to write the qml file:" << tempQmlFileName;
+        qrcTempFile.remove();
+        return false;
+    }
+    qmlTempFile.close();
+
+    // Add qml file to resource map
+    m_exportResourceMap.insert(QUrl(finalQmlFileName), finalQmlFileName);
+
+    // Copy resources to temporary dir and generate a resource file.
+    if (!qrcTempFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning() << "Failed to create a resource file:" << qrcTempFileAbsoluteFilePath;
+        if (tempResourceDir.exists() && tempResourceDir != finalTargetDir)
+            tempResourceDir.removeRecursively();
         return false;
     }
 
-    // Copy resources to temporary dir and generate a resource file.
-    QDir tempResourceDir = finalTargetDir;
-    if (m_exportResourceMap.size()) {
-        // Make a temporary directory for exporting
-        if (tempResourceDir.cd(tempResourceDirName)) {
-            // Clean temporary resource dir if it exists for some reason
-            tempResourceDir.removeRecursively();
-            tempResourceDir = finalTargetDir;
-            QCoreApplication::processEvents();
-        }
+    QTextStream resStream(&qrcTempFile);
+    resStream.setCodec("UTF-8");
 
-        tempResourceDir.mkdir(tempResourceDirName);
-        if (!tempResourceDir.cd(tempResourceDirName)) {
-            qWarning() << "Failed to create a directory for resources:" << tempResourceDirName;
-            qmlTempFile.remove();
-            return false;
-        }
+    resStream << QStringLiteral("<RCC>") << endl
+              << QStringLiteral("    <qresource prefix=\"/\">") << endl;
 
-        QFile resFile(tempResourceFileName);
-        if (!resFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            qWarning() << "Failed to create a resource file:" << tempResourceFileName;
-            qmlTempFile.remove();
+    m_indentLevel = 2;
+    QMapIterator<QUrl, QString> i(m_exportResourceMap);
+    while (i.hasNext()) {
+        i.next();
+        QString source = i.key().toString();
+        bool isSceneQmlFile = (i.value() == finalQmlFileName);
+        if (source.startsWith(QStringLiteral("qrc:")))
+            source = source.mid(3);
+        else
+            source = i.key().toLocalFile();
+
+        QString target = tempResourceDir.absoluteFilePath(i.value().mid(7));
+        int removeIndex = target.lastIndexOf(m_resourceDirName);
+        if (removeIndex >= 0)
+            target.remove(removeIndex, m_resourceDirName.length() + 1);
+
+        if (!isSceneQmlFile && !QFile::copy(source, target)) {
+            qWarning() << "Failed to copy a file:" << source << "to:" << target;
+            qrcTempFile.remove();
             if (tempResourceDir.exists() && tempResourceDir != finalTargetDir)
                 tempResourceDir.removeRecursively();
             return false;
         }
 
-        QTextStream resStream(&resFile);
-        resStream.setCodec("UTF-8");
-
-        resStream << QStringLiteral("<RCC>") << endl
-                  << QStringLiteral("    <qresource prefix=\"/") << m_resourceDirName
-                  << QStringLiteral("/\">") << endl;
-
-        QMapIterator<QUrl, QString> i(m_exportResourceMap);
-        while (i.hasNext()) {
-            i.next();
-            QString source = i.key().toString();
-            if (source.startsWith(QStringLiteral("qrc:")))
-                source = source.mid(3);
-            else
-                source = i.key().toLocalFile();
-
-            QString target = tempResourceDir.absoluteFilePath(i.value().mid(7));
-            int removeIndex = target.lastIndexOf(m_resourceDirName);
-            if (removeIndex >= 0)
-                target.remove(removeIndex, m_resourceDirName.length() + 1);
-
-            if (!QFile::copy(source, target)) {
-                qWarning() << "Failed to copy a file:" << source << "to:" << target;
-                qmlTempFile.remove();
-                if (tempResourceDir.exists() && tempResourceDir != finalTargetDir)
-                    tempResourceDir.removeRecursively();
-                return false;
-            }
-
-            resStream << qrcFileStartTag
-                      << target.mid(target.lastIndexOf(QLatin1Char('/')) + 1)
-                      << qrcFileEndTag << endl;
+        if (isSceneQmlFile) {
+            // Ensure that the file alias starts with uppercase letter so that it can
+            // be used as item type in qml.
+            QString baseName = qrcFinalFileInfo.baseName();
+            if (!baseName.isEmpty())
+                baseName[0] = baseName.at(0).toUpper();
+            resStream << indent() << qrcQmlFileStartTag.arg(baseName);
+        } else {
+            resStream << indent() << qrcFileStartTag;
         }
-
-        resStream << QStringLiteral("    </qresource>") << endl
-                  << QStringLiteral("</RCC>") << endl;
+        resStream << m_resourceDirName << QStringLiteral("/")
+                  << target.mid(target.lastIndexOf(QLatin1Char('/')) + 1)
+                  << qrcFileEndTag << endl;
     }
+
+    resStream << QStringLiteral("    </qresource>") << endl
+              << QStringLiteral("</RCC>") << endl;
 
     // Rename existing export qml file and resource directory
     if (finalTargetDir.exists(m_resourceDirName)) {
         if (!finalTargetDir.rename(m_resourceDirName, backupResDirName)) {
             qWarning() << "Failed to rename the old resource dir:" << m_resourceDirName;
-            qmlTempFile.remove();
+            qrcTempFile.remove();
             if (tempResourceDir.exists() && tempResourceDir != finalTargetDir)
                 tempResourceDir.removeRecursively();
             return false;
         }
     }
-    if (qmlFinalFile.exists()) {
-        if (!qmlFinalFile.rename(backupQmlFileName)) {
-            qWarning() << "Failed to rename the old qml file:" << qmlFinalFileAbsoluteFilePath;
-            qmlTempFile.remove();
+    if (qrcFinalFile.exists()) {
+        if (!qrcFinalFile.rename(backupQrcFileName)) {
+            qWarning() << "Failed to rename the old qml file:" << qrcFinalFileAbsoluteFilePath;
+            qrcTempFile.remove();
             if (tempResourceDir.exists() && tempResourceDir != finalTargetDir)
                 tempResourceDir.removeRecursively();
             return false;
@@ -387,21 +395,21 @@ bool EditorSceneParser::exportQmlScene(Qt3DCore::QEntity *sceneEntity, const QUr
     if (finalTargetDir.exists(tempResourceDirName)) {
         if (!finalTargetDir.rename(tempResourceDirName, m_resourceDirName)) {
             qWarning() << "Failed to rename the temp resource dir:" << tempResourceDirName;
-            qmlTempFile.remove();
+            qrcTempFile.remove();
             if (tempResourceDir.exists() && tempResourceDir != finalTargetDir)
                 tempResourceDir.removeRecursively();
             return false;
         }
     }
 
-    if (!qmlTempFile.rename(qmlFinalFileAbsoluteFilePath)) {
-        qWarning() << "Failed to rename the temp qml file:" << (qmlTempFileAbsoluteFilePath);
-        qmlTempFile.remove();
+    if (!qrcTempFile.rename(qrcFinalFileAbsoluteFilePath)) {
+        qWarning() << "Failed to rename the temp qml file:" << (qrcTempFileAbsoluteFilePath);
+        qrcTempFile.remove();
         return false;
     }
 
     // If everything went well, remove the renamed originals.
-    QFile::remove(backupQmlFileName);
+    QFile::remove(backupQrcFileName);
     tempResourceDir = finalTargetDir;
     if (tempResourceDir.cd(backupResDirName))
         tempResourceDir.removeRecursively();
@@ -414,45 +422,41 @@ bool EditorSceneParser::exportQmlScene(Qt3DCore::QEntity *sceneEntity, const QUr
 Qt3DCore::QEntity *EditorSceneParser::importQmlScene(const QUrl &fileUrl,
                                                      Qt3DCore::QEntity *&cameraEntity)
 {
-    qDebug() << "Importing scene from " << fileUrl;
-
     resetParser();
 
-    QString qmlFileAbsoluteFilePath = fileUrl.toLocalFile();
-    QFile qmlFile(qmlFileAbsoluteFilePath);
-    QFileInfo qmlFileInfo(qmlFile);
-    QString resourceDirName = resourceDirTemplate.arg(qmlFileInfo.baseName());
-    QString resourceFileName = getAbsoluteResourceFileName(qmlFileInfo, resourceDirName);
+    QString qrcFileAbsoluteFilePath = fileUrl.toLocalFile();
+    QFile qrcFile(qrcFileAbsoluteFilePath);
+    QFileInfo qrcFileInfo(qrcFile);
+    QString resourceDirName = resourceDirTemplate.arg(qrcFileInfo.baseName());
+    QString qmlFileName = getAbsoluteQmlFileName(qrcFileInfo, resourceDirName);
 
-    if (!qmlFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qWarning() << "Failed to open the qml file for reading:" << qmlFileAbsoluteFilePath;
+    // Read qrc file contents
+    if (!qrcFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning() << "Failed to open the qrc file for reading:" << qrcFileAbsoluteFilePath;
         return nullptr;
     }
+    m_stream.reset();
+    m_stream.setDevice(&qrcFile);
 
-    // If there is a resource file, read its contents
-    QFile resourceFile(resourceFileName);
-    if (resourceFile.exists()) {
-        if (!resourceFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            qWarning() << "Failed to open the qrc file for reading:" << resourceFileName;
-            return nullptr;
+    QString targetUrlTemplate = QStringLiteral("file:///%1/%2");
+    targetUrlTemplate = targetUrlTemplate.arg(qrcFileInfo.absolutePath());
+    QString sourceResourceUrlTemplate = QStringLiteral("\"qrc:///%1\"");
+
+    while (!m_stream.atEnd()) {
+        QString line = m_stream.readLine().trimmed();
+        if (line.startsWith(qrcFileStartTag)) {
+            QString fileName = line.mid(qrcFileStartTag.size(), line.size()
+                                        - qrcFileStartTag.size() - qrcFileEndTag.size());
+            m_importResourceMap.insert(sourceResourceUrlTemplate.arg(fileName),
+                                       QUrl(targetUrlTemplate.arg(fileName)));
         }
-        m_stream.reset();
-        m_stream.setDevice(&resourceFile);
+    }
 
-        QString targetUrlTemplate = QStringLiteral("file:///%1/%2/%3");
-        targetUrlTemplate = targetUrlTemplate.arg(qmlFileInfo.absolutePath()).arg(resourceDirName);
-        QString sourceResourceUrlTemplate = QStringLiteral("\"qrc:///%1/%2\"");
-        sourceResourceUrlTemplate =  sourceResourceUrlTemplate.arg(resourceDirName);
-
-        while (!m_stream.atEnd()) {
-            QString line = m_stream.readLine().trimmed();
-            if (line.startsWith(qrcFileStartTag)) {
-                QString fileName = line.mid(qrcFileStartTag.size(), line.size()
-                                            - qrcFileStartTag.size() - qrcFileEndTag.size());
-                m_importResourceMap.insert(sourceResourceUrlTemplate.arg(fileName),
-                                           QUrl(targetUrlTemplate.arg(fileName)));
-            }
-        }
+    // Open qml file for reading
+    QFile qmlFile(qmlFileName);
+    if (!qmlFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning() << "Failed to open the qml file for reading:" << qmlFileName;
+        return nullptr;
     }
 
     Qt3DCore::QEntity *sceneEntity = nullptr;
@@ -1263,11 +1267,11 @@ int EditorSceneParser::getTextureProviders(EditorSceneParser::EditorItemType typ
     return textureTypes;
 }
 
-QString EditorSceneParser::getAbsoluteResourceFileName(const QFileInfo &qmlFileInfo,
-                                                       const QString &resourceDirName)
+QString EditorSceneParser::getAbsoluteQmlFileName(const QFileInfo &qrcFileInfo,
+                                                  const QString &resourceDirName)
 {
-    return resourceFileTemplate.arg(qmlFileInfo.absolutePath())
-            .arg(resourceDirName).arg(qmlFileInfo.baseName());
+    return qmlFileTemplate.arg(qrcFileInfo.absolutePath())
+            .arg(resourceDirName).arg(qrcFileInfo.baseName());
 }
 
 QString EditorSceneParser::urlToResourceString(const QUrl &url)
