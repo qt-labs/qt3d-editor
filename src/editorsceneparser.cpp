@@ -78,6 +78,8 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QRegularExpression>
 
+#include <QtQml/QQmlEngine>
+
 static const QString generatedQmlFileTag = QStringLiteral("// Qt3D Editor generated file");
 static const QString generatorVersionTag = QStringLiteral("// v0.1");
 static const QString frameGraphCameraTag = QStringLiteral("@FRAMEGRAPH_CAMERA_TAG@");
@@ -549,6 +551,10 @@ void EditorSceneParser::cacheProperties(EditorSceneParser::EditorItemType type,
     // Store the default object for property comparisons
     m_defaultObjectMap.insert(type, defaultObject);
 
+    // Grab explicit ownership of the default object,
+    // otherwise QML garbage collector may clean it up.
+    QQmlEngine::setObjectOwnership(defaultObject, QQmlEngine::CppOwnership);
+
     // Cache metaproperties of supported types (but not their parent class types)
     const QMetaObject *meta = defaultObject->metaObject();
     QVector<QMetaProperty> properties;
@@ -563,7 +569,16 @@ void EditorSceneParser::cacheProperties(EditorSceneParser::EditorItemType type,
         properties.append(m_propertyMap.value(Light));
     }
 
-    // TODO: "enabled" property for all entities, if we are going to support that in editor
+    // Store enabled property for entities
+    Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>(defaultObject);
+    if (entity) {
+        for (int i = meta->propertyOffset(); i > 0; i--) {
+            if (QByteArray(meta->property(i).name()) == QByteArrayLiteral("enabled")) {
+                properties.append(meta->property(i));
+                break;
+            }
+        }
+    }
 
     m_propertyMap.insert(type, properties);
 
