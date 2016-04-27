@@ -424,6 +424,14 @@ void EditorSceneItemModel::reparentEntity(const QModelIndex &newParentIndex,
     EditorSceneItem *newParentItem = editorSceneItemFromIndex(newParentIndex);
     EditorSceneItem *entityItem = editorSceneItemFromIndex(entityIndex);
 
+    // Find the complete world transform of the entityItem
+    QMatrix4x4 totalOldMatrix = EditorUtils::totalAncestralTransform(entityItem->entity());
+    QMatrix4x4 entityOldMatrix;
+    Qt3DCore::QTransform *entityTransform = EditorUtils::entityTransform(entityItem->entity());
+    if (entityTransform)
+        entityOldMatrix = entityTransform->matrix();
+    QMatrix4x4 worldMatrix = totalOldMatrix * entityOldMatrix;
+
     // Since Qt3D doesn't seem to like reparenting entities, we duplicate the moved entities
     // under a new parent and remove the old ones.
 
@@ -431,6 +439,13 @@ void EditorSceneItemModel::reparentEntity(const QModelIndex &newParentIndex,
 
     m_scene->removeEntity(entityItem->entity());
     m_scene->addEntity(duplicate);
+
+    // Make sure the world transform doesn't change when reparenting
+    QMatrix4x4 totalNewMatrix = EditorUtils::totalAncestralTransform(duplicate);
+    QMatrix4x4 newMatrix = totalNewMatrix.inverted() * worldMatrix;
+    entityTransform = EditorUtils::entityTransform(duplicate);
+    if (entityTransform)
+        entityTransform->setMatrix(newMatrix);
 
     resetModel();
 
