@@ -592,26 +592,49 @@ ApplicationWindow {
         id: gridSizeDialog
         property int previousSize: editorScene.gridSize
         title: qsTr("Grid Size") + editorScene.emptyString
-        standardButtons: StandardButton.Cancel | StandardButton.Apply | StandardButton.Ok
+        width: buttonRow.width
 
-        StyledSpinBox {
-            id: gridSizeSpinBox
-            anchors.horizontalCenter: parent.horizontalCenter
-            to: 20
-            stepSize: 1
-            from: 1
-        }
+        contentItem: Rectangle {
+            color: mainwindow.paneBackgroundColor
+            StyledSpinBox {
+                id: gridSizeSpinBox
+                anchors.centerIn: parent
+                implicitWidth: 140
+                to: 20
+                stepSize: 1
+                from: 1
+                contentItem: StyledTextInput {
+                    inputMethodHints: Qt.ImhFormattedNumbersOnly
+                }
+            }
 
-        onRejected: {
-            editorScene.gridSize = previousSize
-        }
+            RowLayout {
+                id: buttonRow
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 4
+                spacing: 4
 
-        onApply: {
-            editorScene.gridSize = gridSizeSpinBox.value
-        }
-
-        onAccepted: {
-            editorScene.gridSize = gridSizeSpinBox.value
+                StyledButton {
+                    text: qsTr("Apply")
+                    onButtonClicked: {
+                        editorScene.gridSize = gridSizeSpinBox.value
+                    }
+                }
+                StyledButton {
+                    text: qsTr("Cancel")
+                    onButtonClicked: {
+                        editorScene.gridSize = gridSizeDialog.previousSize
+                        gridSizeDialog.close()
+                    }
+                }
+                StyledButton {
+                    text: qsTr("Ok")
+                    onButtonClicked: {
+                        editorScene.gridSize = gridSizeSpinBox.value
+                        gridSizeDialog.close()
+                    }
+                }
+            }
         }
     }
 

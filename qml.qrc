@@ -75,6 +75,7 @@
         <file alias="StyledLabel.qml">qml/inputfields/StyledLabel.qml</file>
         <file alias="StyledSpinBox.qml">qml/inputfields/StyledSpinBox.qml</file>
         <file alias="StyledTextField.qml">qml/inputfields/StyledTextField.qml</file>
+        <file alias="StyledButton.qml">qml/inputfields/StyledButton.qml</file>
         <file>shaders/draghandle.frag</file>
         <file>shaders/draghandle.vert</file>
         <file>qt3dsceneeditor_en.qm</file>
