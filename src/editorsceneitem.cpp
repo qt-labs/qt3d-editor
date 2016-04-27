@@ -594,31 +594,31 @@ void EditorSceneItem::connectEntityMesh(bool enabled)
 
 void EditorSceneItem::updateSelectionBoxTransform()
 {
-    // Transform mesh extents, first scale, then translate
-    QMatrix4x4 transformMatrix = composeSelectionBoxTransform();
-    transformMatrix.translate(m_entityMeshCenter);
-    m_selectionBoxCenter = transformMatrix * QVector3D();
-    m_selectionBoxExtents = m_entityMeshExtents + QVector3D(0.002f, 0.002f, 0.002f);
-    transformMatrix.scale(m_selectionBoxExtents);
+    if (isSelectionBoxShowing()) {
+        // Transform mesh extents, first scale, then translate
+        QMatrix4x4 transformMatrix = composeSelectionBoxTransform();
+        transformMatrix.translate(m_entityMeshCenter);
+        m_selectionBoxCenter = transformMatrix * QVector3D();
+        m_selectionBoxExtents = m_entityMeshExtents + QVector3D(0.002f, 0.002f, 0.002f);
+        transformMatrix.scale(m_selectionBoxExtents);
 
-    QVector3D ancestralScale = EditorUtils::totalAncestralScale(m_entity);
-    m_selectionBoxExtents *= ancestralScale;
-    if (m_entityTransform)
-        m_selectionBoxExtents *= m_entityTransform->scale3D();
+        QVector3D ancestralScale = EditorUtils::totalAncestralScale(m_entity);
+        m_selectionBoxExtents *= ancestralScale;
+        if (m_entityTransform)
+            m_selectionBoxExtents *= m_entityTransform->scale3D();
 
-    m_selectionTransform->setMatrix(transformMatrix);
+        m_selectionTransform->setMatrix(transformMatrix);
 
-    // Check if we have lights as children and update their visible translations, as they are
-    // not part of the normal scene.
-    updateChildLightTransforms();
+        // Check if we have lights as children and update their visible translations, as they are
+        // not part of the normal scene.
+        updateChildLightTransforms();
 
-    emit selectionBoxTransformChanged(this);
+        emit selectionBoxTransformChanged(this);
+    }
 
-    // TODO: How to handle group selection?
-    // TODO: Currently there is no box for entity, unless it has a mesh.
-    // TODO: Calculating and keeping group box updated seems potentially complicated, if the box
-    // TODO: is supposed to encompass all the child items
-    // TODO: Additional problem with groups is that group parent entity may have a mesh itself
+    // Update selection boxes of all child entites, too
+    Q_FOREACH (EditorSceneItem *child, childItems())
+        child->updateSelectionBoxTransform();
 }
 
 void EditorSceneItem::setShowSelectionBox(bool enabled)
@@ -626,6 +626,7 @@ void EditorSceneItem::setShowSelectionBox(bool enabled)
     if (m_selectionBox) {
         connectSelectionBoxTransformsRecursive(enabled);
         connectEntityMesh(enabled);
+        m_selectionBox->setEnabled(enabled);
 
         if (enabled) {
             // Update mesh extents if they are dirty, otherwise just update transform
@@ -634,8 +635,6 @@ void EditorSceneItem::setShowSelectionBox(bool enabled)
             else
                 updateSelectionBoxTransform();
         }
-
-        m_selectionBox->setEnabled(enabled);
     }
 }
 
