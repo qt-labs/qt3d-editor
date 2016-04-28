@@ -105,6 +105,7 @@ public:
     Q_INVOKABLE void createReparentEntityCommand(const QString &newParentName,
                                                  const QString &entityName);
     Q_INVOKABLE void createImportEntityCommand(const QUrl &url);
+    Q_INVOKABLE void createResetEntityCommand(const QString &entityName);
 
 signals:
     void canRedoChanged();

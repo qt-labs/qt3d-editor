@@ -68,6 +68,9 @@ public:
                                     const QModelIndex &parentIndex = QModelIndex());
     void insertExistingEntity(Qt3DCore::QEntity *entity, int row,
                               const QModelIndex &parentIndex = QModelIndex());
+    Qt3DCore::QEntity *createEntity(EditorUtils::InsertableEntities type,
+                                    const QVector3D &pos,
+                                    const QModelIndex &parentIndex);
     Q_INVOKABLE QModelIndex lastInsertedIndex();
     void removeEntity(const QModelIndex &index = QModelIndex());
     const QString setEntityName(const QModelIndex &index, const QString &name);

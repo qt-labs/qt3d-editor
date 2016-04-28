@@ -39,6 +39,7 @@
 #include "genericpropertychangecommand.h"
 #include "reparententitycommand.h"
 #include "importentitycommand.h"
+#include "resetentitycommand.h"
 
 #include <QtWidgets/QUndoStack>
 
@@ -208,6 +209,11 @@ void UndoHandler::createImportEntityCommand(const QUrl &url)
         return;
 
     m_undoStack->push(new ImportEntityCommand(m_scene->sceneModel(), url));
+}
+
+void UndoHandler::createResetEntityCommand(const QString &entityName)
+{
+    m_undoStack->push(new ResetEntityCommand(m_scene->sceneModel(), entityName));
 }
 
 void UndoHandler::redo()

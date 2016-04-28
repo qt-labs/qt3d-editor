@@ -242,6 +242,32 @@ Qt3DCore::QEntity *EditorSceneItemModel::insertEntity(EditorUtils::InsertableEnt
     EditorSceneItem *parentItem = editorSceneItemFromIndex(parentIndex);
     beginInsertRows(parentIndex, rows, rows);
 
+    Qt3DCore::QEntity *newEntity = createEntity(type, pos, parentIndex);
+
+    m_scene->addEntity(newEntity);
+
+    endInsertRows();
+
+    connectEntity(newEntity);
+
+    // Store the index for the newly inserted item. It is the last child of parent.
+    m_lastInsertedIndex = QModelIndex();
+    int childCount = parentItem->childItems().count();
+    if (childCount) {
+        EditorSceneItem *childItem = parentItem->childItems().at(childCount - 1);
+        if (childItem != nullptr)
+            m_lastInsertedIndex = createIndex(childCount - 1, 0, childItem);
+    }
+
+    return newEntity;
+}
+
+Qt3DCore::QEntity *EditorSceneItemModel::createEntity(EditorUtils::InsertableEntities type,
+                                                      const QVector3D &pos,
+                                                      const QModelIndex &parentIndex)
+{
+    EditorSceneItem *parentItem = editorSceneItemFromIndex(parentIndex);
+
     Qt3DCore::QEntity *newEntity = nullptr;
     if (type == EditorUtils::CameraEntity) {
         Qt3DRender::QCamera *newCamera = new Qt3DRender::QCamera(parentItem->entity());
@@ -305,21 +331,6 @@ Qt3DCore::QEntity *EditorSceneItemModel::insertEntity(EditorUtils::InsertableEnt
             newEntity->setObjectName(generateValidName(tr("New Empty Entity"), newEntity));
             break;
         }
-    }
-
-    m_scene->addEntity(newEntity);
-
-    endInsertRows();
-
-    connectEntity(newEntity);
-
-    // Store the index for the newly inserted item. It is the last child of parent.
-    m_lastInsertedIndex = QModelIndex();
-    int childCount = parentItem->childItems().count();
-    if (childCount) {
-        EditorSceneItem *childItem = parentItem->childItems().at(childCount - 1);
-        if (childItem != nullptr)
-            m_lastInsertedIndex = createIndex(childCount - 1, 0, childItem);
     }
 
     return newEntity;

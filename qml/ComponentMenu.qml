@@ -73,4 +73,13 @@ Menu {
             editorScene.restoreSelection(currentSelection)
         }
     }
+    MenuItem {
+        text: qsTr("Reset") + editorScene.emptyString
+        enabled: !entityTreeView.sceneRootSelected
+        iconSource: "qrc:/images/cross.png" // TODO: Needs a reset icon
+        onTriggered: {
+            var currentSelection = selectedEntity.entity()
+            editorScene.undoHandler.createResetEntityCommand(selectedEntityName)
+        }
+    }
 }

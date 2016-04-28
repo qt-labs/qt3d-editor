@@ -1067,3 +1067,35 @@ bool EditorUtils::isDescendant(EditorSceneItem *ancestor, EditorSceneItem *desce
     return descendant;
 }
 
+EditorUtils::InsertableEntities EditorUtils::insertableEntityType(Qt3DCore::QEntity *entity)
+{
+    InsertableEntities insertableType = InvalidEntity;
+
+    Qt3DRender::QLight *light = entityLight(entity);
+    Qt3DRender::QGeometryRenderer *mesh = entityMesh(entity);
+
+    if (light) {
+        insertableType = LightEntity;
+    } else if (mesh) {
+        if (qobject_cast<Qt3DRender::QMesh *>(mesh))
+            insertableType = CustomEntity;
+        else if (qobject_cast<Qt3DExtras::QCuboidMesh *>(mesh))
+            insertableType = CuboidEntity;
+        else if (qobject_cast<Qt3DExtras::QCylinderMesh *>(mesh))
+            insertableType = CylinderEntity;
+        else if (qobject_cast<Qt3DExtras::QPlaneMesh *>(mesh))
+            insertableType = PlaneEntity;
+        else if (qobject_cast<Qt3DExtras::QSphereMesh *>(mesh))
+            insertableType = SphereEntity;
+        else if (qobject_cast<Qt3DExtras::QTorusMesh *>(mesh))
+            insertableType = TorusEntity;
+    } else if (qobject_cast<Qt3DRender::QCamera *>(entity)) {
+        insertableType = CameraEntity;
+    } else if (entity->children().count() == 1
+               && qobject_cast<Qt3DCore::QTransform *>(entity->children().at(0))) {
+        insertableType = GroupEntity;
+    }
+
+    return insertableType;
+}
+
