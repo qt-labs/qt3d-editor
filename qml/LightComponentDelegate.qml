@@ -73,7 +73,6 @@ ComponentDelegate {
                     append({text: qsTr("Directional Light")})
                     append({text: qsTr("Point Light")})
                     append({text: qsTr("Spot Light")})
-                    append({text: qsTr("Basic Light")})
                 }
 
                 Component.onCompleted: {
@@ -93,8 +92,6 @@ ComponentDelegate {
                         componentData.model.setLight(EditorSceneItemLightComponentsModel.Point)
                     else if (currentIndex === EditorSceneItemLightComponentsModel.Spot - 1)
                         componentData.model.setLight(EditorSceneItemLightComponentsModel.Spot)
-                    else if (currentIndex === EditorSceneItemLightComponentsModel.Basic - 1)
-                        componentData.model.setLight(EditorSceneItemLightComponentsModel.Basic)
                 } else {
                     currentIndex = validIndex
                 }
@@ -130,8 +127,6 @@ ComponentDelegate {
 
             function lightTypetoDelegateSource(lightType) {
                 lightDelegate.currentLight = lightType
-                if (lightType == EditorSceneItemLightComponentsModel.Basic)
-                    return "BasicLightDelegate.qml";
                 if (lightType == EditorSceneItemLightComponentsModel.Directional)
                     return "DirectionalLightDelegate.qml";
                 if (lightType == EditorSceneItemLightComponentsModel.Point)

@@ -144,7 +144,7 @@ private:
           , visiblePicker(nullptr)
         {}
         LightData(Qt3DCore::QEntity *entity,
-                  Qt3DRender::QLight *component,
+                  Qt3DRender::QAbstractLight *component,
                   Qt3DCore::QTransform *transform,
                   Qt3DCore::QEntity *visEntity,
                   Qt3DCore::QTransform *visTransform,
@@ -162,7 +162,7 @@ private:
         {}
 
         Qt3DCore::QEntity *lightEntity;
-        Qt3DRender::QLight *lightComponent;
+        Qt3DRender::QAbstractLight *lightComponent;
         Qt3DCore::QTransform *lightTransform;
         Qt3DCore::QEntity *visibleEntity;
         Qt3DCore::QTransform *visibleTransform;

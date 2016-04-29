@@ -40,7 +40,7 @@ namespace Qt3DRender {
 class QGeometryRenderer;
 class QGeometry;
 class QBuffer;
-class QLight;
+class QAbstractLight;
 class QObjectPicker;
 class QCamera;
 class QCameraLens;
@@ -59,7 +59,6 @@ public:
         LightDirectional = 1,
         LightPoint,
         LightSpot,
-        LightBasic,
         // Materials
         MaterialDiffuseMap,
         MaterialDiffuseSpecularMap,
@@ -129,7 +128,7 @@ public:
                                         Qt3DRender::QCamera *camera);
 
     static Qt3DCore::QTransform *entityTransform(Qt3DCore::QEntity *entity);
-    static Qt3DRender::QLight *entityLight(Qt3DCore::QEntity *entity);
+    static Qt3DRender::QAbstractLight *entityLight(Qt3DCore::QEntity *entity);
     static Qt3DRender::QObjectPicker *entityPicker(Qt3DCore::QEntity *entity);
     static Qt3DRender::QSceneLoader *entitySceneLoader(Qt3DCore::QEntity *entity);
     static Qt3DRender::QGeometryRenderer *entityMesh(Qt3DCore::QEntity *entity);
@@ -150,7 +149,7 @@ public:
     static QQuaternion totalAncestralRotation(Qt3DCore::QEntity *entity);
     static QList<Qt3DCore::QTransform *> ancestralTransforms(
             Qt3DCore::QEntity *entity, Qt3DCore::QEntity *topAncestor = nullptr);
-    static QVector3D lightDirection(const Qt3DRender::QLight *light);
+    static QVector3D lightDirection(const Qt3DRender::QAbstractLight *light);
 
     static const QString lockPropertySuffix() { return QStringLiteral("_editorPropertyLock"); }
     static const QByteArray lockPropertySuffix8() { return QByteArrayLiteral("_editorPropertyLock"); }

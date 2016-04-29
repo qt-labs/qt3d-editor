@@ -41,8 +41,9 @@
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DRender/QMaterial>
 #include <Qt3DRender/QCameraLens>
-#include <Qt3DRender/QLight>
+#include <Qt3DRender/QAbstractLight>
 #include <Qt3DRender/QDirectionalLight>
+#include <Qt3DRender/QPointLight>
 #include <Qt3DRender/QSpotLight>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DExtras/QPhongAlphaMaterial>
@@ -95,25 +96,29 @@ void EditorSceneItemComponentsModel::initializeModel()
 
         switch (type) {
         case Light: {
-            Qt3DRender::QLight *lightComponent = qobject_cast<Qt3DRender::QLight *>(component);
+            Qt3DRender::QAbstractLight *lightComponent
+                    = qobject_cast<Qt3DRender::QAbstractLight *>(component);
             if (lightComponent && !m_lightItem)
                 m_lightItem = new LightComponentProxyItem(this, lightComponent);
             break;
         }
         case Mesh: {
-            Qt3DRender::QGeometryRenderer *meshComponent = qobject_cast<Qt3DRender::QGeometryRenderer *>(component);
+            Qt3DRender::QGeometryRenderer *meshComponent
+                    = qobject_cast<Qt3DRender::QGeometryRenderer *>(component);
             if (meshComponent && !m_meshItem)
                 m_meshItem = new MeshComponentProxyItem(this, meshComponent);
             break;
         }
         case Transform: {
-            Qt3DCore::QTransform *transformComponent = qobject_cast<Qt3DCore::QTransform *>(component);
+            Qt3DCore::QTransform *transformComponent
+                    = qobject_cast<Qt3DCore::QTransform *>(component);
             if (transformComponent && !m_transformItem)
                 m_transformItem = new TransformComponentProxyItem(this, transformComponent);
             break;
         }
         case Material: {
-            Qt3DRender::QMaterial *materialComponent = qobject_cast<Qt3DRender::QMaterial *>(component);
+            Qt3DRender::QMaterial *materialComponent
+                    = qobject_cast<Qt3DRender::QMaterial *>(component);
             if (materialComponent && !m_materialItem)
                 m_materialItem = new MaterialComponentProxyItem(this, materialComponent);
             break;
@@ -148,7 +153,7 @@ EditorSceneItemComponentsModel::typeOfComponent(QObject *component)
         if (qobject_cast<Qt3DRender::QCamera *>(component))
             return CameraEntity;
     }
-    if (qobject_cast<Qt3DRender::QLight *>(component))
+    if (qobject_cast<Qt3DRender::QAbstractLight *>(component))
         return Light;
     if (qobject_cast<Qt3DRender::QGeometryRenderer *>(component))
         return Mesh;
@@ -244,7 +249,7 @@ void EditorSceneItemComponentsModel::appendNewComponent(EditorSceneItemComponent
     switch (type) {
     case Light:
         if (!m_lightItem) {
-            Qt3DRender::QLight *lightComponent = new Qt3DRender::QLight();
+            Qt3DRender::QAbstractLight *lightComponent = new Qt3DRender::QPointLight();
             m_lightItem = new LightComponentProxyItem(this, lightComponent);
             component = lightComponent;
         }
@@ -379,7 +384,7 @@ void EditorSceneItemComponentsModel::replaceComponent(Qt3DCore::QComponent *oldC
 
     switch (type) {
     case Light: {
-        m_lightItem->beginResetComponent(static_cast<Qt3DRender::QLight *>(newComponent));
+        m_lightItem->beginResetComponent(static_cast<Qt3DRender::QPointLight *>(newComponent));
         break;
     }
     case Mesh: {

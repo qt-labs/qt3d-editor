@@ -31,7 +31,7 @@
 #include <QObject>
 
 namespace Qt3DRender {
-class QLight;
+class QAbstractLight;
 class QPhongAlphaMaterial;
 }
 
@@ -41,22 +41,22 @@ class EditorSceneItemComponentsModel;
 class LightComponentProxyItem : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(Qt3DRender::QLight* component READ component CONSTANT)
+    Q_PROPERTY(Qt3DRender::QAbstractLight* component READ component CONSTANT)
     Q_PROPERTY(EditorSceneItemLightComponentsModel* model READ model CONSTANT)
 public:
     explicit LightComponentProxyItem(EditorSceneItemComponentsModel *sceneItemModel,
-                                     Qt3DRender::QLight *component,
+                                     Qt3DRender::QAbstractLight *component,
                                      QObject *parent = 0);
     ~LightComponentProxyItem();
 
-    Qt3DRender::QLight* component() const;
+    Qt3DRender::QAbstractLight* component() const;
 
     EditorSceneItemLightComponentsModel* model() const;
 
-    void beginResetComponent(Qt3DRender::QLight *component);
+    void beginResetComponent(Qt3DRender::QAbstractLight *component);
     void endResetComponent();
 private:
-    Qt3DRender::QLight *m_component;
+    Qt3DRender::QAbstractLight *m_component;
     EditorSceneItemLightComponentsModel *m_model;
 };
 

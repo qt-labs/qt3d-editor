@@ -61,7 +61,7 @@
 #include <Qt3DRender/QTextureImage>
 
 #include <Qt3DRender/QDirectionalLight>
-#include <Qt3DRender/QLight>
+#include <Qt3DRender/QAbstractLight>
 #include <Qt3DRender/QPointLight>
 #include <Qt3DRender/QSpotLight>
 #include <Qt3DRender/QSceneLoader>
@@ -136,7 +136,6 @@ EditorSceneParser::EditorSceneParser(QObject *parent)
             << QStringLiteral("SphereMesh")
             << QStringLiteral("TorusMesh")
             << QStringLiteral("ObjectPicker")
-            << QStringLiteral("Light")
             << QStringLiteral("DirectionalLight")
             << QStringLiteral("PointLight")
             << QStringLiteral("SpotLight")
@@ -165,7 +164,6 @@ EditorSceneParser::EditorSceneParser(QObject *parent)
     cacheProperties(SphereMesh, new Qt3DExtras::QSphereMesh());
     cacheProperties(TorusMesh, new Qt3DExtras::QTorusMesh());
     cacheProperties(ObjectPicker, new Qt3DRender::QObjectPicker());
-    cacheProperties(Light, new Qt3DRender::QLight());
     cacheProperties(DirectionalLight, new Qt3DRender::QDirectionalLight());
     cacheProperties(PointLight, new Qt3DRender::QPointLight());
     cacheProperties(SpotLight, new Qt3DRender::QSpotLight());
@@ -577,10 +575,11 @@ void EditorSceneParser::cacheProperties(EditorSceneParser::EditorItemType type,
             properties.append(meta->property(i));
     }
 
-    if (type != Light && qobject_cast<Qt3DRender::QLight *>(defaultObject)) {
-        // For specialized lights, add the parent class properties
-        properties.append(m_propertyMap.value(Light));
-    }
+    // TODO: Need to dig the properties from QAbstractLight
+//    if (qobject_cast<Qt3DRender::QAbstractLight *>(defaultObject)) {
+//        // For specialized lights, add the parent class properties
+//        properties.append(m_propertyMap.value(Light));
+//    }
 
     // Store enabled property for entities
     Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>(defaultObject);
@@ -928,8 +927,6 @@ EditorSceneParser::EditorItemType EditorSceneParser::itemType(QObject *item) con
                 return PointLight;
             } else if (qobject_cast<Qt3DRender::QSpotLight *>(item)) {
                 return SpotLight;
-            } else if (qobject_cast<Qt3DRender::QLight *>(item)) {
-                return Light; // Must be checked last, as all the other lights inherit this one
             } else if (qobject_cast<Qt3DCore::QTransform *>(item)) {
                 return Transform;
             } else if (qobject_cast<Qt3DRender::QMaterial *>(item)) {
@@ -1144,8 +1141,6 @@ Qt3DCore::QComponent *EditorSceneParser::createComponent(EditorSceneParser::Edit
         return new QDummyObjectPicker();
     case DirectionalLight:
         return new Qt3DRender::QDirectionalLight();
-    case Light:
-        return new Qt3DRender::QLight();
     case PointLight:
         return new Qt3DRender::QPointLight();
     case SpotLight:

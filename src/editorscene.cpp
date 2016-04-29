@@ -41,7 +41,6 @@
 #include <Qt3DExtras/QDiffuseSpecularMapMaterial>
 #include <Qt3DExtras/QPhongAlphaMaterial>
 #include <Qt3DExtras/QPhongMaterial>
-#include <Qt3DRender/QLight>
 #include <Qt3DRender/QDirectionalLight>
 #include <Qt3DRender/QSpotLight>
 #include <Qt3DRender/QPointLight>
@@ -451,7 +450,7 @@ void EditorScene::showPlaceholderEntity(const QString &name, int type)
         data->mesh = EditorUtils::createMeshForInsertableType(insertableType);
         if (!data->mesh) {
             if (insertableType == EditorUtils::LightEntity)
-                data->mesh = EditorUtils::createLightMesh(EditorUtils::LightBasic);
+                data->mesh = EditorUtils::createLightMesh(EditorUtils::LightPoint);
             else if (insertableType == EditorUtils::CameraEntity)
                 data->mesh = EditorUtils::createVisibleCameraMesh();
         }
@@ -1139,12 +1138,12 @@ void EditorScene::handlePropertyLocking(EditorSceneItem *item, const QString &lo
 void EditorScene::handleLightTypeChanged(EditorSceneItem *item)
 {
     if (item) {
-        Qt3DRender::QLight *light = EditorUtils::entityLight(item->entity());
+        Qt3DRender::QAbstractLight *light = EditorUtils::entityLight(item->entity());
         if (light) {
             LightData *lightData = m_sceneLights.value(item->entity()->id());
             if (lightData) {
                 lightData->lightComponent = light;
-                connect(light, &Qt3DRender::QLight::colorChanged,
+                connect(light, &Qt3DRender::QAbstractLight::colorChanged,
                         lightData->visibleMaterial, &Qt3DExtras::QPhongAlphaMaterial::setAmbient);
                 delete lightData->visibleMesh;
                 Qt3DRender::QDirectionalLight *dirLight =
@@ -1164,8 +1163,6 @@ void EditorScene::handleLightTypeChanged(EditorSceneItem *item)
                             item, &EditorSceneItem::updateSelectionBoxTransform);
                 } else if (qobject_cast<Qt3DRender::QPointLight *>(light)) {
                     lightData->visibleMesh = EditorUtils::createLightMesh(EditorUtils::LightPoint);
-                } else {
-                    lightData->visibleMesh = EditorUtils::createLightMesh(EditorUtils::LightBasic);
                 }
                 lightData->visibleEntity->addComponent(lightData->visibleMesh);
             }
@@ -1342,7 +1339,7 @@ void EditorScene::setupDefaultScene()
     // Light
     Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity(m_sceneEntity);
     lightEntity->setObjectName(QStringLiteral("Light 1"));
-    Qt3DRender::QLight *light = new Qt3DRender::QLight(m_sceneEntity);
+    Qt3DRender::QAbstractLight *light = new Qt3DRender::QAbstractLight(m_sceneEntity);
     Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform();
     lightTransform->setTranslation(QVector3D(0.0f, 10.0f, -10.0f));
     lightEntity->addComponent(light);
@@ -1387,7 +1384,7 @@ void EditorScene::setupDefaultScene()
     // Light
     Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity(m_sceneEntity);
     lightEntity->setObjectName(m_lightString);
-    Qt3DRender::QLight *light = new Qt3DRender::QLight(m_sceneEntity);
+    Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight(m_sceneEntity);
     Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform();
     lightTransform->setTranslation(QVector3D(0.0f, 10.0f, -5.0f));
     lightEntity->addComponent(light);
@@ -1631,7 +1628,7 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
                 m_dragHandleScale.entity->setEnabled(false);
                 // Some lights can rotate
                 if (item->canRotate()) {
-                    Qt3DRender::QLight *light = EditorUtils::entityLight(m_selectedEntity);
+                    Qt3DRender::QAbstractLight *light = EditorUtils::entityLight(m_selectedEntity);
                     QString lockProperty =
                             qobject_cast<Qt3DRender::QDirectionalLight *>(light)
                             ? QStringLiteral("worldDirection") : QStringLiteral("localDirection");
@@ -2205,7 +2202,7 @@ void EditorScene::handleLightAdded(Qt3DCore::QEntity *lightEntity)
 
     Qt3DCore::QTransform *visibleTransform = new Qt3DCore::QTransform();
 
-    Qt3DRender::QLight *lightComponent = EditorUtils::entityLight(lightEntity);
+    Qt3DRender::QAbstractLight *lightComponent = EditorUtils::entityLight(lightEntity);
 
     Qt3DExtras::QPhongAlphaMaterial *visibleMaterial = new Qt3DExtras::QPhongAlphaMaterial();
     visibleMaterial->setDiffuse(Qt::black);

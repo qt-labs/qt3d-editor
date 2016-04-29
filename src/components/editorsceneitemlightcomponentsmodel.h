@@ -32,7 +32,7 @@
 #include <QtCore/QAbstractListModel>
 
 namespace Qt3DRender {
-class QLight;
+class QAbstractLight;
 }
 
 class EditorSceneItemComponentsModel;
@@ -46,7 +46,6 @@ public:
         Directional = 1,
         Point,
         Spot,
-        Basic,
         Unknown = 1000
     };
 
@@ -55,7 +54,7 @@ public:
         LightComponent
     };
 
-    EditorSceneItemLightComponentsModel(Qt3DRender::QLight *lightComponent,
+    EditorSceneItemLightComponentsModel(Qt3DRender::QAbstractLight *lightComponent,
                                         EditorSceneItemComponentsModel *sceneItemModel,
                                         QObject *parent = 0);
     ~EditorSceneItemLightComponentsModel();
@@ -68,12 +67,12 @@ public:
     Q_INVOKABLE void removeLight(int index);
 
     void beginReplace();
-    void endReplace(Qt3DRender::QLight *newLight);
+    void endReplace(Qt3DRender::QAbstractLight *newLight);
 
 private:
-    LightComponentTypes lightType(Qt3DRender::QLight *light) const;
+    LightComponentTypes lightType(Qt3DRender::QAbstractLight *light) const;
 
-    Qt3DRender::QLight *m_lightComponent;
+    Qt3DRender::QAbstractLight *m_lightComponent;
     EditorSceneItemComponentsModel *m_sceneComponentsModel;
     LightComponentTypes m_type;
 };

@@ -57,7 +57,7 @@
 #include <Qt3DExtras/QPhongAlphaMaterial>
 #include <Qt3DExtras/QPhongMaterial>
 
-#include <Qt3DRender/QLight>
+#include <Qt3DRender/QAbstractLight>
 #include <Qt3DRender/QDirectionalLight>
 #include <Qt3DRender/QPointLight>
 #include <Qt3DRender/QSpotLight>
@@ -132,14 +132,6 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setIntensity(source->intensity());
         newComponent->setLinearAttenuation(source->linearAttenuation());
         newComponent->setQuadraticAttenuation(source->quadraticAttenuation());
-        duplicate = newComponent;
-        break;
-    }
-    case LightBasic: {
-        Qt3DRender::QLight *source = qobject_cast<Qt3DRender::QLight *>(component);
-        Qt3DRender::QLight *newComponent = new Qt3DRender::QLight();
-        newComponent->setColor(source->color());
-        newComponent->setIntensity(source->intensity());
         duplicate = newComponent;
         break;
     }
@@ -649,12 +641,8 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createLightMesh(EditorUtils::Compone
         mesh = spotMesh;
         break;
     }
-    default: { // LightBasic
-        Qt3DExtras::QSphereMesh *basicMesh = new Qt3DExtras::QSphereMesh();
-        basicMesh->setRadius(0.5f);
-        basicMesh->setRings(10);
-        basicMesh->setSlices(10);
-        mesh = basicMesh;
+    default: {
+        qCritical("Should not get here.");
         break;
     }
     }
@@ -785,11 +773,11 @@ Qt3DCore::QTransform *EditorUtils::entityTransform(Qt3DCore::QEntity *entity)
     return nullptr;
 }
 
-Qt3DRender::QLight *EditorUtils::entityLight(Qt3DCore::QEntity *entity)
+Qt3DRender::QAbstractLight *EditorUtils::entityLight(Qt3DCore::QEntity *entity)
 {
     Qt3DCore::QComponentVector components = entity->components();
     for (int i = 0; i < components.size(); i++) {
-        Qt3DRender::QLight *light = qobject_cast<Qt3DRender::QLight *>(components.value(i));
+        Qt3DRender::QAbstractLight *light = qobject_cast<Qt3DRender::QAbstractLight *>(components.value(i));
         if (light)
             return light;
     }
@@ -892,15 +880,13 @@ EditorUtils::ComponentTypes EditorUtils::componentType(Qt3DCore::QComponent *com
 {
     ComponentTypes componentType = Unknown;
 
-    if (qobject_cast<Qt3DRender::QLight *>(component)) {
+    if (qobject_cast<Qt3DRender::QAbstractLight *>(component)) {
         if (qobject_cast<Qt3DRender::QDirectionalLight *>(component))
             componentType = LightDirectional;
         else if (qobject_cast<Qt3DRender::QPointLight *>(component))
             componentType = LightPoint;
         else if (qobject_cast<Qt3DRender::QSpotLight *>(component))
             componentType = LightSpot;
-        else
-            componentType = LightBasic;
     } else if (qobject_cast<Qt3DRender::QMaterial *>(component)) {
         if (qobject_cast<Qt3DExtras::QDiffuseMapMaterial *>(component))
             componentType = MaterialDiffuseMap;
@@ -1011,7 +997,7 @@ QList<Qt3DCore::QTransform *> EditorUtils::ancestralTransforms(Qt3DCore::QEntity
     return transforms;
 }
 
-QVector3D EditorUtils::lightDirection(const Qt3DRender::QLight *light)
+QVector3D EditorUtils::lightDirection(const Qt3DRender::QAbstractLight *light)
 {
     QVector3D direction;
     const Qt3DRender::QDirectionalLight *dirLight =
@@ -1071,7 +1057,7 @@ EditorUtils::InsertableEntities EditorUtils::insertableEntityType(Qt3DCore::QEnt
 {
     InsertableEntities insertableType = InvalidEntity;
 
-    Qt3DRender::QLight *light = entityLight(entity);
+    Qt3DRender::QAbstractLight *light = entityLight(entity);
     Qt3DRender::QGeometryRenderer *mesh = entityMesh(entity);
 
     if (light) {

@@ -71,7 +71,6 @@ class EditorSceneParser : public QObject
         SphereMesh,
         TorusMesh,
         ObjectPicker,
-        Light,
         DirectionalLight,
         PointLight,
         SpotLight,

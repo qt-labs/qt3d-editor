@@ -40,7 +40,7 @@
 #include <Qt3DExtras/QPlaneMesh>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DExtras/QTorusMesh>
-#include <Qt3DRender/QLight>
+#include <Qt3DRender/QAbstractLight>
 #include <Qt3DRender/QDirectionalLight>
 #include <Qt3DRender/QSpotLight>
 #include <Qt3DRender/QAttribute>
@@ -81,7 +81,7 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
             m_entityTransform = qobject_cast<Qt3DCore::QTransform *>(component);
         if (!entityMesh)
             entityMesh = qobject_cast<Qt3DRender::QGeometryRenderer *>(component);
-        if (qobject_cast<Qt3DRender::QLight *>(component)) {
+        if (qobject_cast<Qt3DRender::QAbstractLight *>(component)) {
             isLight = true;
             if (!qobject_cast<Qt3DRender::QDirectionalLight *>(component)
                     && !qobject_cast<Qt3DRender::QSpotLight *>(component)) {

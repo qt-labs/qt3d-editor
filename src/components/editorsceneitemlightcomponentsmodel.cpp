@@ -31,7 +31,7 @@
 #include "editorscene.h"
 #include "undohandler.h"
 #include "lightcomponentproxyitem.h"
-#include <Qt3DRender/QLight>
+#include <Qt3DRender/QAbstractLight>
 #include <Qt3DRender/QDirectionalLight>
 #include <Qt3DRender/QPointLight>
 #include <Qt3DRender/QSpotLight>
@@ -39,7 +39,7 @@
 #include <QtCore/QStack>
 
 EditorSceneItemLightComponentsModel::EditorSceneItemLightComponentsModel(
-        Qt3DRender::QLight *lightComponent,
+        Qt3DRender::QAbstractLight *lightComponent,
         EditorSceneItemComponentsModel *sceneItemModel, QObject *parent)
     : QAbstractListModel(parent)
     , m_lightComponent(lightComponent)
@@ -88,11 +88,8 @@ QHash<int, QByteArray> EditorSceneItemLightComponentsModel::roleNames() const
 void EditorSceneItemLightComponentsModel::setLight(LightComponentTypes type)
 {
     if (type != m_type) {
-        Qt3DRender::QLight *light = nullptr;
+        Qt3DRender::QAbstractLight *light = nullptr;
         switch (type) {
-        case Basic:
-            light = new Qt3DRender::QLight();
-            break;
         case Directional:
             light = new Qt3DRender::QDirectionalLight();
             // Default the direction to such that doesn't align on any helper plane,
@@ -139,7 +136,7 @@ void EditorSceneItemLightComponentsModel::beginReplace()
     endResetModel();
 }
 
-void EditorSceneItemLightComponentsModel::endReplace(Qt3DRender::QLight *newLight)
+void EditorSceneItemLightComponentsModel::endReplace(Qt3DRender::QAbstractLight *newLight)
 {
     beginResetModel();
     m_type = lightType(newLight);
@@ -148,7 +145,7 @@ void EditorSceneItemLightComponentsModel::endReplace(Qt3DRender::QLight *newLigh
 }
 
 EditorSceneItemLightComponentsModel::LightComponentTypes
-EditorSceneItemLightComponentsModel::lightType(Qt3DRender::QLight *light) const
+EditorSceneItemLightComponentsModel::lightType(Qt3DRender::QAbstractLight *light) const
 {
     if (qobject_cast<Qt3DRender::QDirectionalLight *>(light))
         return Directional;
@@ -157,5 +154,5 @@ EditorSceneItemLightComponentsModel::lightType(Qt3DRender::QLight *light) const
     else if (qobject_cast<Qt3DRender::QPointLight *>(light))
         return Point;
     else
-        return Basic;
+        return Unknown;
 }

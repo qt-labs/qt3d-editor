@@ -39,7 +39,7 @@
 #include <Qt3DExtras/QPlaneMesh>
 #include <Qt3DExtras/QSphereMesh>
 #include <Qt3DExtras/QTorusMesh>
-#include <Qt3DRender/QLight>
+#include <Qt3DRender/QPointLight>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QSceneLoader>
 
@@ -320,7 +320,7 @@ Qt3DCore::QEntity *EditorSceneItemModel::createEntity(EditorUtils::InsertableEnt
         }
         case EditorUtils::LightEntity: {
             newEntity->setObjectName(generateValidName(tr("New Light"), newEntity));
-            newEntity->addComponent(new Qt3DRender::QLight());
+            newEntity->addComponent(new Qt3DRender::QPointLight());
             break;
         }
         case EditorUtils::GroupEntity: {

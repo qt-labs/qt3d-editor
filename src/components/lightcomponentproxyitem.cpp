@@ -28,10 +28,10 @@
 #include "lightcomponentproxyitem.h"
 #include "editorsceneitemlightcomponentsmodel.h"
 
-#include <Qt3DRender/QLight>
+#include <Qt3DRender/QAbstractLight>
 
 LightComponentProxyItem::LightComponentProxyItem(EditorSceneItemComponentsModel *sceneItemModel,
-                                                 Qt3DRender::QLight *component,
+                                                 Qt3DRender::QAbstractLight *component,
                                                  QObject *parent)
     : QObject(parent)
     , m_component(component)
@@ -44,7 +44,7 @@ LightComponentProxyItem::~LightComponentProxyItem()
 
 }
 
-Qt3DRender::QLight *LightComponentProxyItem::component() const
+Qt3DRender::QAbstractLight *LightComponentProxyItem::component() const
 {
     return m_component;
 }
@@ -54,7 +54,7 @@ EditorSceneItemLightComponentsModel *LightComponentProxyItem::model() const
     return m_model;
 }
 
-void LightComponentProxyItem::beginResetComponent(Qt3DRender::QLight *component)
+void LightComponentProxyItem::beginResetComponent(Qt3DRender::QAbstractLight *component)
 {
     m_model->beginReplace();
     m_component = component;
