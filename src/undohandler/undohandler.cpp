@@ -40,6 +40,7 @@
 #include "reparententitycommand.h"
 #include "importentitycommand.h"
 #include "resetentitycommand.h"
+#include "resettransformcommand.h"
 
 #include <QtWidgets/QUndoStack>
 
@@ -214,6 +215,11 @@ void UndoHandler::createImportEntityCommand(const QUrl &url)
 void UndoHandler::createResetEntityCommand(const QString &entityName)
 {
     m_undoStack->push(new ResetEntityCommand(m_scene->sceneModel(), entityName));
+}
+
+void UndoHandler::createResetTransformCommand(const QString &entityName)
+{
+    m_undoStack->push(new ResetTransformCommand(m_scene->sceneModel(), entityName));
 }
 
 void UndoHandler::redo()

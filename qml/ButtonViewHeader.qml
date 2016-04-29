@@ -35,6 +35,7 @@ Rectangle {
     property string headerText
     property bool viewVisible: true
     property bool visibleEntityButtonShown: false
+    property bool resetButtonShown: false
     property bool showViewButtonShown: true
     property bool lockTransformButtonShown: false
     property bool lockTransformFields: lockTransformButton.locked
@@ -60,6 +61,40 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         text: headerText
         font.weight: Font.Bold
+    }
+
+    // TODO: Do we want this in context menu, or transform bar?
+    Button {
+        id: resetButton
+        anchors.right: lockTransformButton.left
+        anchors.rightMargin: 8
+        anchors.verticalCenter: parent.verticalCenter
+        visible: resetButtonShown
+        style: ButtonStyle {
+            padding.top: 0
+            padding.bottom: 0
+            padding.right: 0
+            padding.left: 0
+            background: Rectangle {
+                border.color: "transparent"
+                border.width: 0
+                color: "transparent"
+            }
+        }
+        activeFocusOnTab: false
+        height: 10
+        width: 20
+        tooltip: qsTr("Reset Transform") + editorScene.emptyString // Default tooltip
+
+        Image {
+            width: 20
+            height: 20
+            anchors.verticalCenter: parent.verticalCenter
+            source: "images/cross.png" // TODO: Replace with reset icon
+        }
+        onClicked: {
+            editorScene.undoHandler.createResetTransformCommand(selectedEntityName)
+        }
     }
 
     PropertyLockButton {

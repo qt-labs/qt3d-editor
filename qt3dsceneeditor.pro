@@ -32,6 +32,7 @@ SOURCES += src/main.cpp \
     src/undohandler/reparententitycommand.cpp \
     src/undohandler/importentitycommand.cpp \
     src/undohandler/resetentitycommand.cpp \
+    src/undohandler/resettransformcommand.cpp \
     src/materials/draghandleeffect.cpp \
     src/inputcontrols/editorcameracontroller.cpp
 
@@ -79,6 +80,7 @@ HEADERS += \
     src/undohandler/reparententitycommand.h \
     src/undohandler/importentitycommand.h \
     src/undohandler/resetentitycommand.h \
+    src/undohandler/resettransformcommand.h \
     src/materials/draghandleeffect.h \
     src/inputcontrols/editorcameracontroller.h
 

@@ -25,36 +25,43 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-#ifndef RESETENTITYCOMMAND_H
-#define RESETENTITYCOMMAND_H
+#include "resettransformcommand.h"
 
+#include "editorscene.h"
+#include "editorsceneitem.h"
+#include "editorsceneitemmodel.h"
 #include "editorutils.h"
 
-#include <QtWidgets/QUndoCommand>
+#include <Qt3DCore/QEntity>
+#include <Qt3DCore/QTransform>
+#include <QtQml/QQmlEngine>
 
-class EditorSceneItemModel;
-
-namespace Qt3DCore {
-    class QEntity;
+ResetTransformCommand::ResetTransformCommand(EditorSceneItemModel *sceneModel,
+                                             const QString &entityName) :
+    m_sceneModel(sceneModel),
+    m_entityName(entityName),
+    m_transformMatrix(QMatrix4x4())
+{
+    setText(QObject::tr("Reset transform"));
 }
 
-class ResetEntityCommand : public QUndoCommand
+ResetTransformCommand::~ResetTransformCommand()
 {
-public:
-    ResetEntityCommand(EditorSceneItemModel *sceneModel,
-                       const QString &entityName);
-    virtual ~ResetEntityCommand();
+}
 
-    virtual void undo();
-    virtual void redo();
+void ResetTransformCommand::undo()
+{
+    QModelIndex index = m_sceneModel->getModelIndexByName(m_entityName);
+    EditorSceneItem *item = m_sceneModel->editorSceneItemFromIndex(index);
+    Qt3DCore::QTransform *transform = EditorUtils::entityTransform(item->entity());
+    transform->setMatrix(m_transformMatrix);
+}
 
-private:
-    EditorSceneItemModel *m_sceneModel;
-    EditorUtils::InsertableEntities m_type;
-    int m_row;
-    QString m_entityName;
-    QString m_parentEntityName;
-    Qt3DCore::QEntity *m_removedEntity;
-};
-
-#endif // RESETENTITYCOMMAND_H
+void ResetTransformCommand::redo()
+{
+    QModelIndex index = m_sceneModel->getModelIndexByName(m_entityName);
+    EditorSceneItem *item = m_sceneModel->editorSceneItemFromIndex(index);
+    Qt3DCore::QTransform *transform = EditorUtils::entityTransform(item->entity());
+    m_transformMatrix = transform->matrix();
+    transform->setMatrix(QMatrix4x4());
+}

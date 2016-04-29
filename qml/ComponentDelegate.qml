@@ -62,6 +62,8 @@ Item {
                                      true : false
             lockTransformButtonShown: componentType == EditorSceneItemComponentsModel.Transform ?
                                           true : false
+            resetButtonShown: componentType == EditorSceneItemComponentsModel.Transform ?
+                                  true : false
 
             onShowViewTitle: {
                 if (viewVisible) {

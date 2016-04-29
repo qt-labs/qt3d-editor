@@ -35,8 +35,6 @@
 #include <Qt3DCore/QEntity>
 #include <QtQml/QQmlEngine>
 
-const QString internalPrefix = QStringLiteral("__internal");
-
 ResetEntityCommand::ResetEntityCommand(EditorSceneItemModel *sceneModel,
                                        const QString &entityName) :
     m_sceneModel(sceneModel),

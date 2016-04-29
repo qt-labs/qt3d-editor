@@ -106,6 +106,7 @@ public:
                                                  const QString &entityName);
     Q_INVOKABLE void createImportEntityCommand(const QUrl &url);
     Q_INVOKABLE void createResetEntityCommand(const QString &entityName);
+    Q_INVOKABLE void createResetTransformCommand(const QString &entityName);
 
 signals:
     void canRedoChanged();

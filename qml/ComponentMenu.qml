@@ -78,8 +78,16 @@ Menu {
         enabled: !entityTreeView.sceneRootSelected
         iconSource: "qrc:/images/cross.png" // TODO: Needs a reset icon
         onTriggered: {
-            var currentSelection = selectedEntity.entity()
             editorScene.undoHandler.createResetEntityCommand(selectedEntityName)
+        }
+    }
+    // TODO: Do we want this in context menu, or transform bar?
+    MenuItem {
+        text: qsTr("Reset Transform") + editorScene.emptyString
+        enabled: !entityTreeView.sceneRootSelected && !entityTreeView.cameraSelected
+        iconSource: "qrc:/images/cross.png" // TODO: Needs a reset icon
+        onTriggered: {
+            editorScene.undoHandler.createResetTransformCommand(selectedEntityName)
         }
     }
 }

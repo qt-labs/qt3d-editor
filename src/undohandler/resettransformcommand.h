@@ -25,36 +25,33 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-#ifndef RESETENTITYCOMMAND_H
-#define RESETENTITYCOMMAND_H
+#ifndef RESETTRANSFORMCOMMAND_H
+#define RESETTRANSFORMCOMMAND_H
 
 #include "editorutils.h"
 
 #include <QtWidgets/QUndoCommand>
+#include <QtGui/QMatrix4x4>
 
 class EditorSceneItemModel;
 
 namespace Qt3DCore {
-    class QEntity;
+class QEntity;
 }
 
-class ResetEntityCommand : public QUndoCommand
+class ResetTransformCommand : public QUndoCommand
 {
 public:
-    ResetEntityCommand(EditorSceneItemModel *sceneModel,
-                       const QString &entityName);
-    virtual ~ResetEntityCommand();
+    ResetTransformCommand(EditorSceneItemModel *sceneModel, const QString &entityName);
+    virtual ~ResetTransformCommand();
 
     virtual void undo();
     virtual void redo();
 
 private:
     EditorSceneItemModel *m_sceneModel;
-    EditorUtils::InsertableEntities m_type;
-    int m_row;
     QString m_entityName;
-    QString m_parentEntityName;
-    Qt3DCore::QEntity *m_removedEntity;
+    QMatrix4x4 m_transformMatrix;
 };
 
-#endif // RESETENTITYCOMMAND_H
+#endif // RESETTRANSFORMCOMMAND_H
