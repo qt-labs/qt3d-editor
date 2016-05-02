@@ -47,13 +47,10 @@ signals:
     void hoverEnabledChanged();
 
 protected:
-    void copy(const Qt3DCore::QNode *ref) Q_DECL_OVERRIDE;
     void sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change) Q_DECL_OVERRIDE;
 
 private:
     bool m_hoverEnabled;
-
-    QT3D_CLONEABLE(QDummyObjectPicker)
 };
 
 QT_END_NAMESPACE

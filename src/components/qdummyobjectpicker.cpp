@@ -48,11 +48,6 @@ bool QDummyObjectPicker::hoverEnabled() const
     return m_hoverEnabled;
 }
 
-void QDummyObjectPicker::copy(const Qt3DCore::QNode *ref)
-{
-    Q_UNUSED(ref)
-}
-
 void QDummyObjectPicker::sceneChangeEvent(const Qt3DCore::QSceneChangePtr &change)
 {
     Q_UNUSED(change)
