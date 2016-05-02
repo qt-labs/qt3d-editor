@@ -41,6 +41,8 @@ class EditorSceneItem;
 class EditorSceneItemModel : public QAbstractItemModel
 {
     Q_OBJECT
+    Q_PROPERTY(bool importEntityInProgress READ importEntityInProgress NOTIFY importEntityInProgressChanged)
+
 public:
     enum EditorSceneItemRoles {
         ItemRole = Qt::UserRole + 1,
@@ -84,19 +86,25 @@ public:
     void reparentEntity(const QModelIndex &newParentIndex, const QModelIndex &entityIndex);
     Q_INVOKABLE void addExpandedItem(const QModelIndex &index);
     Q_INVOKABLE void removeExpandedItem(const QModelIndex &index);
+    void removeExpandedItems(Qt3DCore::QEntity *entity);
     void clearExpandedItems() { m_expandedItems.clear(); }
-    Qt3DCore::QEntity *importEntity(const QUrl &fileUrl);
+    QString importEntity(const QUrl &fileUrl);
+    QString insertSceneLoaderEntity(const QUrl &fileUrl);
     Qt3DCore::QEntity *duplicateEntity(Qt3DCore::QEntity *entity,
                                        Qt3DCore::QEntity *newParent = nullptr,
                                        const QVector3D &duplicateOffset = QVector3D());
+    Q_INVOKABLE bool importEntityInProgress() const { return m_sceneLoaderEntity != nullptr; }
+    void abortImportEntity();
 
 signals:
     void freeViewChanged(bool enabled);
     void expandItems(const QModelIndexList &items);
     void selectIndex(const QModelIndex &selectIndex);
+    void importEntityInProgressChanged(bool importInProgress);
 
 private slots:
     void handleEntityNameChange();
+    void handleImportEntityLoaderStatusChanged();
     void handleSceneLoaderStatusChanged();
 
 private:
@@ -105,10 +113,14 @@ private:
                             const Qt3DCore::QEntity *skipEntity);
     void connectEntity(Qt3DCore::QEntity *entity);
     void disconnectEntity(Qt3DCore::QEntity *entity);
+    void fixEntityNames(Qt3DCore::QEntity *entity);
+    void ensureTransforms(Qt3DCore::QEntity *entity);
+    bool pruneNonMeshEntitites(Qt3DCore::QEntity *entity, bool justCheck);
 
     EditorScene *m_scene;
     QModelIndex m_lastInsertedIndex;
     QStringList m_expandedItems;
+    Qt3DCore::QEntity *m_sceneLoaderEntity;
 };
 
 Q_DECLARE_METATYPE(EditorSceneItemModel*)

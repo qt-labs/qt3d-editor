@@ -111,7 +111,6 @@ Item {
                         drag.target: dragEntityItem
 
                         onPressed: {
-                            console.log("pressed")
                             var globalPos = mapToItem(applicationArea, mouseX, mouseY)
                             dragPositionX = globalPos.x
                             dragPositionY = globalPos.y

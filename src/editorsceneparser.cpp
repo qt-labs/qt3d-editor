@@ -39,6 +39,9 @@
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QRenderSettings>
 #include <Qt3DRender/QObjectPicker>
+#include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DRender/QBuffer>
+#include <Qt3DRender/QAttribute>
 
 #include <Qt3DRender/QMesh>
 #include <Qt3DExtras/QCuboidMesh>
@@ -105,6 +108,13 @@ static const QString normalProperty = QStringLiteral("normal");
 static const QString sourceProperty = QStringLiteral("source");
 static const QString enumPropertyTag = QStringLiteral(" // ENUM:");
 static const QString autoSavePostfix = QStringLiteral(".autosave");
+static const QString functionStart = QStringLiteral("function ");
+static const QString newArrayStart = QStringLiteral("var a=new ");
+static const QString float32ArrayTag = QStringLiteral("Float32Array");
+static const QString uint16ArrayTag = QStringLiteral("Uint16Array");
+static const QString uint32ArrayTag = QStringLiteral("Uint32Array");
+static const QString bufferSeparator = QStringLiteral(";");
+static const QString equalSign = QStringLiteral("=");
 
 EditorSceneParser::EditorSceneParser(QObject *parent)
     : QObject(parent)
@@ -129,12 +139,17 @@ EditorSceneParser::EditorSceneParser(QObject *parent)
             << QStringLiteral("PerVertexColorMaterial")
             << QStringLiteral("PhongAlphaMaterial")
             << QStringLiteral("PhongMaterial")
+            << QStringLiteral("Material") // plain QMaterial
             << QStringLiteral("CuboidMesh")
             << QStringLiteral("Mesh") // CustomMesh
             << QStringLiteral("CylinderMesh")
             << QStringLiteral("PlaneMesh")
             << QStringLiteral("SphereMesh")
             << QStringLiteral("TorusMesh")
+            << QStringLiteral("GeometryRenderer") // plain QGeometryRenderer
+            << QStringLiteral("Attribute")
+            << QStringLiteral("Buffer")
+            << QStringLiteral("Geometry")
             << QStringLiteral("ObjectPicker")
             << QStringLiteral("DirectionalLight")
             << QStringLiteral("PointLight")
@@ -163,6 +178,10 @@ EditorSceneParser::EditorSceneParser(QObject *parent)
     cacheProperties(PlaneMesh, new Qt3DExtras::QPlaneMesh());
     cacheProperties(SphereMesh, new Qt3DExtras::QSphereMesh());
     cacheProperties(TorusMesh, new Qt3DExtras::QTorusMesh());
+    cacheProperties(GenericMesh, new Qt3DRender::QGeometryRenderer());
+    cacheProperties(Attribute, new Qt3DRender::QAttribute());
+    cacheProperties(Buffer, new Qt3DRender::QBuffer());
+    cacheProperties(Geometry, new Qt3DRender::QGeometry());
     cacheProperties(ObjectPicker, new Qt3DRender::QObjectPicker());
     cacheProperties(DirectionalLight, new Qt3DRender::QDirectionalLight());
     cacheProperties(PointLight, new Qt3DRender::QPointLight());
@@ -331,6 +350,10 @@ bool EditorSceneParser::exportQmlScene(Qt3DCore::QEntity *sceneEntity, const QUr
         return false;
     }
 
+    // TODO: If there are any exported QSceneLoaders, we need to export related resources.
+    // TODO: Currently there is no trivial way to find these out with scene loader API.
+    // TODO: It is possible by examining the subentity tree contents, though.
+
     QTextStream resStream(&qrcTempFile);
     resStream.setCodec("UTF-8");
 
@@ -472,15 +495,18 @@ Qt3DCore::QEntity *EditorSceneParser::importQmlScene(const QUrl &fileUrl,
     m_stream.reset();
     m_stream.setDevice(&qmlFile);
 
-    QList<Qt3DCore::QEntity *> entityStack;
     Qt3DCore::QEntity *currentEntity = nullptr;
-    Qt3DCore::QComponent *currentComponent = nullptr;
-    QMap<QString, Qt3DCore::QComponent *> componentMap;
+    QObject *currentObject = nullptr;
+    QObjectList objectStack;
+    QMap<QString, QObject *> objectMap;
     QMap<QString, Qt3DCore::QEntity *> entityMap;
     bool startFound = false;
     bool parsingComponentIds = false;
+    bool parsingFunction = false;
     QString cameraId;
     EditorItemType currentItemType = Unknown;
+    QVector<EditorItemType> itemTypeStack;
+    QByteArray bufferData;
 
     // TODO: properly handle errors during parsing so that malformed file won't crash the app
     // TODO: or leak memory
@@ -488,16 +514,28 @@ Qt3DCore::QEntity *EditorSceneParser::importQmlScene(const QUrl &fileUrl,
     while (!m_stream.atEnd()) {
         QString line = m_stream.readLine().trimmed();
         if (startFound) {
-            if (parsingComponentIds){
+            if (parsingComponentIds) {
                 if (line.compare(componentsEnd) == 0) {
                     parsingComponentIds = false;
                 } else {
                     if (line.endsWith(QStringLiteral(",")))
                         line.chop(1);
-                    if (currentEntity != sceneEntity)
-                        currentEntity->addComponent(componentMap.value(line));
+                    if (currentEntity != sceneEntity) {
+                        Qt3DCore::QComponent *comp =
+                                qobject_cast<Qt3DCore::QComponent *>(objectMap.value(line));
+                        if (comp)
+                            currentEntity->addComponent(comp);
+                    }
                 }
+            } else if (parsingFunction) {
+                if (line.compare(QStringLiteral("}")) == 0)
+                    parsingFunction = false;
+            } else if (line.startsWith(functionStart)) {
+                parsingFunction = true;
+                if (currentItemType == Buffer)
+                    bufferData = importBuffer();
             } else if (line.endsWith(QStringLiteral("{"))) {
+                EditorItemType oldType = currentItemType;
                 currentItemType = m_typeMap.value(line.left(line.size() - 2), Unknown);
                 Qt3DCore::QEntity *entity = createEntity(currentItemType);
                 if (entity) {
@@ -507,28 +545,43 @@ Qt3DCore::QEntity *EditorSceneParser::importQmlScene(const QUrl &fileUrl,
                     if (!sceneEntity)
                         sceneEntity = entity;
                 } else {
-                    Qt3DCore::QComponent *component = createComponent(currentItemType);
-                    if (component)
-                        currentComponent = component;
+                    if (currentObject) {
+                        objectStack.append(currentObject);
+                        itemTypeStack.append(oldType);
+                    }
+                    currentObject = createObject(currentItemType);
                 }
             } else if (line.compare(QStringLiteral("}")) == 0) {
-                if (currentComponent) {
+                if (currentObject) {
+                    if (currentItemType == Attribute && !objectStack.isEmpty()) {
+                        Qt3DRender::QGeometry *geometry = qobject_cast<Qt3DRender::QGeometry *>
+                                (objectStack.at(objectStack.size() - 1));
+                        Qt3DRender::QAttribute *attribute = qobject_cast<Qt3DRender::QAttribute *>
+                                (currentObject);
+                        if (geometry && attribute)
+                            geometry->addAttribute(attribute);
+                    }
                     if (currentEntity == sceneEntity)
-                        delete currentComponent;
-                    currentComponent = nullptr;
+                        delete currentObject;
+                    if (!objectStack.isEmpty()) {
+                        currentObject = objectStack.takeLast();
+                        currentItemType = itemTypeStack.takeLast();
+                    } else {
+                        currentObject = nullptr;
+                        currentItemType = itemType(currentEntity);
+                    }
                 } else {
                     if (currentEntity)
                         currentEntity = qobject_cast<Qt3DCore::QEntity *>(currentEntity->parent());
                 }
-                currentItemType = itemType(currentEntity);
             } else if (line.startsWith(idPropertyStr)) {
                 int separatorIndex = line.indexOf(QStringLiteral(" // "));
                 QString idString = line.mid(idPropertyStr.size() + 1,
                                             separatorIndex - idPropertyStr.size() - 1);
-                if (currentComponent) {
+                if (currentObject) {
                     // We don't want to read the autogenerated components from scene entity
                     if (sceneEntity != currentEntity)
-                        componentMap.insert(idString, currentComponent);
+                        objectMap.insert(idString, currentObject);
                 } else {
                     entityMap.insert(idString, currentEntity);
                     currentEntity->setObjectName(line.mid(separatorIndex + 4));
@@ -539,10 +592,18 @@ Qt3DCore::QEntity *EditorSceneParser::importQmlScene(const QUrl &fileUrl,
                 int separatorIndex = line.indexOf(QStringLiteral(":"));
                 QString propertyName = line.left(separatorIndex);
                 QString propertyValue = line.mid(separatorIndex + 2);
-                if (currentComponent)
-                    parseAndSetProperty(propertyName, propertyValue, currentComponent, currentItemType);
-                else
-                    parseAndSetProperty(propertyName, propertyValue, currentEntity, currentItemType);
+                if (currentObject) {
+                    if (currentItemType == Buffer && propertyName == QStringLiteral("data")) {
+                        qobject_cast<Qt3DRender::QBuffer *>(currentObject)->setData(bufferData);
+                        bufferData.clear();
+                    } else {
+                        parseAndSetProperty(propertyName, propertyValue, currentObject,
+                                            currentItemType, objectMap);
+                    }
+                } else {
+                    parseAndSetProperty(propertyName, propertyValue, currentEntity,
+                                        currentItemType, objectMap);
+                }
             }
         } else if (line.startsWith(cameraPropertyStr)) {
             cameraId = line.mid(line.indexOf(QStringLiteral(":")) + 2);
@@ -746,6 +807,9 @@ QString EditorSceneParser::outComponent(Qt3DCore::QComponent *component)
         case SceneLoader:
             outSceneLoader(component);
             break;
+        case GenericMesh:
+            outGenericMesh(component, componentId.qmlId);
+            break;
         default:
             // The rest
             outGenericProperties(type, component);
@@ -824,6 +888,116 @@ void EditorSceneParser::outTextureProperty(const QString &propertyName,
     }
 }
 
+void EditorSceneParser::outGenericMesh(Qt3DCore::QComponent *component, const QString &componentId)
+{
+    QVector<QMetaProperty> properties = m_propertyMap.value(GenericMesh);
+    QObject *defaultObject = m_defaultObjectMap.value(GenericMesh);
+    for (int i = 0; i < properties.size(); i++) {
+        QString propertyName = properties.at(i).name();
+        if (propertyName == QStringLiteral("geometry")) {
+            Qt3DRender::QGeometryRenderer *mesh =
+                    qobject_cast<Qt3DRender::QGeometryRenderer *>(component);
+            if (mesh)
+                outGeometry(mesh->geometry(), componentId);
+        } else {
+            outGenericProperty(component, properties.at(i), defaultObject);
+        }
+    }
+}
+
+void EditorSceneParser::outGeometry(Qt3DRender::QGeometry *geometry, const QString &componentId)
+{
+    // Find out different buffers
+    QMap<Qt3DRender::QBuffer *, QString> bufferMap;
+    int bufferCount = 0;
+    Q_FOREACH (Qt3DRender::QAttribute *att, geometry->attributes()) {
+        if (!bufferMap.contains(att->buffer())) {
+            m_stream << indent() << QStringLiteral("Buffer {") << endl;
+            m_indentLevel++;
+            QString bufferId = componentId + QStringLiteral("_buf_") + QString::number(++bufferCount);
+            QString buildFunc = QStringLiteral("build") + bufferId + QStringLiteral("()");
+            m_stream << indent() << idPropertyStr << QStringLiteral(" ") << bufferId << endl;
+            outGenericProperties(Buffer, att->buffer());
+            bufferMap.insert(att->buffer(), bufferId);
+            // TODO: Export build function to a separate stream/file to avoid cluttering main one
+            m_stream << indent() << functionStart << buildFunc << QStringLiteral("{")
+                     << endl;
+            m_indentLevel++;
+            switch (att->buffer()->type()) {
+            case Qt3DRender::QBuffer::VertexBuffer: {
+                const float *ptr =
+                        reinterpret_cast<const float *>(att->buffer()->data().constData());
+                outBufferData(ptr, att->buffer()->data().size(), float32ArrayTag);
+                break;
+            }
+            case Qt3DRender::QBuffer::IndexBuffer: {
+                if (att->vertexBaseType() == Qt3DRender::QAttribute::UnsignedShort) {
+                    const quint16 *ptr =
+                            reinterpret_cast<const quint16 *>(att->buffer()->data().constData());
+                    outBufferData(ptr, att->buffer()->data().size(), uint16ArrayTag);
+                } else {
+                    const quint32 *ptr =
+                            reinterpret_cast<const quint32 *>(att->buffer()->data().constData());
+                    outBufferData(ptr, att->buffer()->data().size(), uint32ArrayTag);
+                }
+            }
+            default:
+                qWarning() << "Unsupported buffer!";
+                // TODO: Do we need to support other buffer types?
+                break;
+            }
+            m_indentLevel--;
+            m_stream << indent() << QStringLiteral("}") << endl;
+            m_stream << indent() << QStringLiteral("data: ") << buildFunc << endl;
+            m_indentLevel--;
+            m_stream << indent() << QStringLiteral("}") << endl;
+        }
+    }
+
+    m_stream << indent() << QStringLiteral("Geometry {") << endl;
+    m_indentLevel++;
+
+    QString geometryId = componentId + QStringLiteral("_geometry");
+    m_stream << indent() << idPropertyStr << QStringLiteral(" ") << geometryId << endl;
+
+    QVector<QMetaProperty> properties = m_propertyMap.value(Attribute);
+    QObject *defaultObject = m_defaultObjectMap.value(Attribute);
+    Q_FOREACH (Qt3DRender::QAttribute *att, geometry->attributes()) {
+        m_stream << indent() << QStringLiteral("Attribute {") << endl;
+        m_indentLevel++;
+        for (int i = 0; i < properties.size(); i++) {
+            QString propertyName = properties.at(i).name();
+            if (propertyName == QStringLiteral("buffer")) {
+                QString bufferId = bufferMap.value(att->buffer());
+                if (!bufferId.isEmpty())
+                    m_stream << indent() << QStringLiteral("buffer: ") << bufferId << endl;
+            } else {
+                outGenericProperty(att, properties.at(i), defaultObject);
+            }
+        }
+        m_indentLevel--;
+        m_stream << indent() << QStringLiteral("}") << endl;
+    }
+    m_indentLevel--;
+    m_stream << indent() << QStringLiteral("}") << endl;
+    m_stream << indent() << QStringLiteral("geometry: ") << geometryId << endl;
+}
+
+template <typename T>
+void EditorSceneParser::outBufferData(T *dataPtr, int size, const QString arrayType)
+{
+    int count = size / sizeof(T);
+    m_stream << indent() << newArrayStart << arrayType << QStringLiteral("(")
+             << QString::number(count) << QStringLiteral(")");
+    for (int i = 0; i < count; i++) {
+        if (i % 1000 == 0)
+            m_stream << endl << indent();
+        m_stream << QStringLiteral("a[") << QString::number(i) << QStringLiteral("]=")
+                 << QString::number(dataPtr[i]) << bufferSeparator;
+    }
+    m_stream << endl << indent() << QStringLiteral("return a") << endl;
+}
+
 void EditorSceneParser::outGenericProperties(EditorSceneParser::EditorItemType type,
                                              QObject *obj)
 {
@@ -849,7 +1023,7 @@ void EditorSceneParser::outGenericProperty(QObject *obj, const QMetaProperty &pr
         // Horrible hack, but works for our limited scope
         if (scope.startsWith(QStringLiteral("Q")))
             scope = scope.mid(1);
-        valueStr = valueStr.arg(scope).arg(property.enumerator().key(objectValue.toInt()));
+        valueStr = valueStr.arg(scope).arg(property.enumerator().valueToKey(objectValue.toInt()));
         valueStr.append(enumPropertyTag).append(QString::number(objectValue.toInt()));
     } else {
         valueStr = variantToQMLString(objectValue);
@@ -915,6 +1089,8 @@ EditorSceneParser::EditorItemType EditorSceneParser::itemType(QObject *item) con
                     return SphereMesh;
                 else if (qobject_cast<Qt3DExtras::QTorusMesh *>(item))
                     return TorusMesh;
+                else
+                    return GenericMesh;
             } else if (qobject_cast<Qt3DRender::QRenderSettings *>(item)) {
                 return RenderSettings;
             } else if (qobject_cast<Qt3DInput::QInputSettings *>(item)) {
@@ -948,6 +1124,8 @@ EditorSceneParser::EditorItemType EditorSceneParser::itemType(QObject *item) con
                     return PhongAlphaMaterial;
                 else if (qobject_cast<Qt3DExtras::QPhongMaterial *>(item))
                     return PhongMaterial;
+                else
+                    return GenericMaterial;
             } else if (qobject_cast<Qt3DRender::QSceneLoader *>(item)) {
                 return SceneLoader;
             }
@@ -1098,7 +1276,7 @@ Qt3DCore::QEntity *EditorSceneParser::createEntity(EditorSceneParser::EditorItem
     return nullptr;
 }
 
-Qt3DCore::QComponent *EditorSceneParser::createComponent(EditorSceneParser::EditorItemType type)
+QObject *EditorSceneParser::createObject(EditorSceneParser::EditorItemType type)
 {
     switch (type) {
     case Transform:
@@ -1125,6 +1303,8 @@ Qt3DCore::QComponent *EditorSceneParser::createComponent(EditorSceneParser::Edit
         return new Qt3DExtras::QPhongAlphaMaterial();
     case PhongMaterial:
         return new Qt3DExtras::QPhongMaterial();
+    case GenericMaterial:
+        return new Qt3DRender::QMaterial();
     case CuboidMesh:
         return new Qt3DExtras::QCuboidMesh();
     case CustomMesh:
@@ -1137,6 +1317,14 @@ Qt3DCore::QComponent *EditorSceneParser::createComponent(EditorSceneParser::Edit
         return new Qt3DExtras::QSphereMesh();
     case TorusMesh:
         return new Qt3DExtras::QTorusMesh();
+    case GenericMesh:
+        return new Qt3DRender::QGeometryRenderer();
+    case Attribute:
+        return new Qt3DRender::QAttribute();
+    case Buffer:
+        return new Qt3DRender::QBuffer();
+    case Geometry:
+        return new Qt3DRender::QGeometry();
     case ObjectPicker:
         return new QDummyObjectPicker();
     case DirectionalLight:
@@ -1155,7 +1343,8 @@ Qt3DCore::QComponent *EditorSceneParser::createComponent(EditorSceneParser::Edit
 
 void EditorSceneParser::parseAndSetProperty(const QString &propertyName,
                                             const QString &propertyValue,
-                                            QObject *obj, EditorItemType type)
+                                            QObject *obj, EditorItemType type,
+                                            const QMap<QString, QObject *> &objectMap)
 {
     switch (type) {
     case RenderSettings:
@@ -1175,6 +1364,24 @@ void EditorSceneParser::parseAndSetProperty(const QString &propertyName,
         // from the matrix.
         if (propertyName == QStringLiteral("matrix"))
             parseAndSetGenericProperty(propertyName, propertyValue, obj);
+        break;
+    case GenericMesh:
+        if (propertyName == QStringLiteral("geometry")) {
+            Qt3DRender::QGeometry *geometry =
+                    qobject_cast<Qt3DRender::QGeometry *>(objectMap.value(propertyValue));
+            qobject_cast<Qt3DRender::QGeometryRenderer *>(obj)->setGeometry(geometry);
+        } else {
+            parseAndSetGenericProperty(propertyName, propertyValue, obj);
+        }
+        break;
+    case Attribute:
+        if (propertyName == QStringLiteral("buffer")) {
+            Qt3DRender::QBuffer *buffer =
+                    qobject_cast<Qt3DRender::QBuffer *>(objectMap.value(propertyValue));
+            qobject_cast<Qt3DRender::QAttribute *>(obj)->setBuffer(buffer);
+        } else {
+            parseAndSetGenericProperty(propertyName, propertyValue, obj);
+        }
         break;
     default:
         // The rest
@@ -1316,4 +1523,61 @@ QString EditorSceneParser::urlToResourceString(const QUrl &url)
     }
 
     return urlString;
+}
+
+QByteArray EditorSceneParser::importBuffer()
+{
+    QByteArray bufferData;
+    int bufferIndex = 0;
+    float *ptrF32 = nullptr;
+    quint32 *ptrU32 = nullptr;
+    quint16 *ptrU16 = nullptr;
+    int typeSize = 4;
+
+    while (!m_stream.atEnd()) {
+        QString line = m_stream.readLine().trimmed();
+        if (line.startsWith(newArrayStart)) {
+            int sizeStart = line.indexOf(QLatin1Char('(')) + 1;
+            int sizeEnd = line.indexOf(QLatin1Char(')'));
+            int typeStart = newArrayStart.size();
+            int size = line.mid(sizeStart, sizeEnd - sizeStart).toInt();
+            QString typeStr = line.mid(typeStart, sizeStart - typeStart - 1);
+
+            if (typeStr == uint16ArrayTag)
+                typeSize = 2;
+
+            bufferData.resize(size * typeSize);
+
+            if (typeStr == float32ArrayTag)
+                ptrF32 = reinterpret_cast<float *>(bufferData.data());
+            else if (typeStr == uint32ArrayTag)
+                ptrU32 = reinterpret_cast<quint32 *>(bufferData.data());
+            else
+                ptrU16 = reinterpret_cast<quint16 *>(bufferData.data());
+        } else if (line.startsWith(QStringLiteral("return"))) {
+            break;
+        } else {
+            int valueStartIndex = line.indexOf(equalSign) + 1;
+            int sepIndex = line.indexOf(bufferSeparator);
+            while (sepIndex > -1 && bufferIndex < bufferData.size()) {
+                QString valueStr = line.mid(valueStartIndex, sepIndex - valueStartIndex);
+                if (ptrF32) {
+                    *ptrF32 = valueStr.toFloat();
+                    ptrF32++;
+                } else if (ptrU32) {
+                    *ptrU32 = quint32(valueStr.toInt());
+                    ptrU32++;
+                } else {
+                    *ptrU16 = quint16(valueStr.toInt());
+                    ptrU16++;
+                }
+                valueStartIndex = line.indexOf(equalSign, sepIndex) + 1;
+                sepIndex = line.indexOf(bufferSeparator, sepIndex + 1);
+                bufferIndex += typeSize;
+            }
+        }
+    }
+
+
+    return bufferData;
 }

@@ -41,6 +41,7 @@ class ImportEntityCommand : public QUndoCommand
 {
 public:
     ImportEntityCommand(EditorSceneItemModel *sceneModel, const QUrl &url);
+    virtual ~ImportEntityCommand();
 
     virtual void undo();
     virtual void redo();
@@ -49,6 +50,7 @@ private:
     EditorSceneItemModel *m_sceneModel;
     QUrl m_url;
     QString m_importedEntityName;
+    Qt3DCore::QEntity *m_importedEntity;
 };
 
 #endif // IMPORTENTITYCOMMAND_H

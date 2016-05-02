@@ -128,7 +128,7 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
         connect(m_selectionBox, &Qt3DCore::QEntity::enabledChanged,
                 this, &EditorSceneItem::showSelectionBoxChanged);
 
-        // SceneLoader updated mesh extents asynchronously
+        // SceneLoader updates mesh extents asynchronously
         if (isLight || isCamera || m_itemType == EditorSceneItem::Group || isSceneLoader)
             updateSelectionBoxTransform();
         else
@@ -272,6 +272,11 @@ void EditorSceneItem::recalculateMeshExtents()
         float minorDiameter = mesh->minorRadius() * 2.0f;
         float diameter = mesh->radius() * 2.0f + minorDiameter;
         m_entityMeshExtents = QVector3D(diameter, diameter, minorDiameter);
+        break;
+    }
+    case EditorSceneItemMeshComponentsModel::Unknown: {
+        // Unknown means generic mesh
+        recalculateCustomMeshExtents(m_entityMesh, m_entityMeshExtents, m_entityMeshCenter);
         break;
     }
     default:

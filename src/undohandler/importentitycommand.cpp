@@ -27,26 +27,47 @@
 ****************************************************************************/
 #include "importentitycommand.h"
 
+#include "editorsceneitem.h"
 #include "editorsceneitemmodel.h"
 
 #include <Qt3DCore/QEntity>
+#include <QtQml/QQmlEngine>
 
 ImportEntityCommand::ImportEntityCommand(EditorSceneItemModel *sceneModel, const QUrl &url) :
     m_sceneModel(sceneModel),
-    m_url(url)
+    m_url(url),
+    m_importedEntity(nullptr)
 {
     setText(QObject::tr("Import entity"));
 }
 
+ImportEntityCommand::~ImportEntityCommand()
+{
+    delete m_importedEntity;
+}
+
 void ImportEntityCommand::undo()
 {
-    QModelIndex index = m_sceneModel->getModelIndexByName(m_importedEntityName);
-    m_sceneModel->removeEntity(index);
-    m_importedEntityName.clear();
+    if (m_sceneModel->importEntityInProgress()) {
+        m_sceneModel->abortImportEntity();
+    } else {
+        QModelIndex index = m_sceneModel->getModelIndexByName(m_importedEntityName);
+        EditorSceneItem *item = m_sceneModel->editorSceneItemFromIndex(index);
+        m_importedEntity = m_sceneModel->duplicateEntity(item->entity(), nullptr);
+        // Grab explicit ownership of the duplicated entity,
+        // otherwise QML garbage collector may clean it up.
+        QQmlEngine::setObjectOwnership(m_importedEntity, QQmlEngine::CppOwnership);
+
+        m_sceneModel->removeEntity(index);
+    }
 }
 
 void ImportEntityCommand::redo()
 {
-    Qt3DCore::QEntity *entity = m_sceneModel->importEntity(m_url);
-    m_importedEntityName = entity->objectName();
+    if (m_importedEntity) {
+        m_sceneModel->insertExistingEntity(m_importedEntity, -1, m_sceneModel->sceneEntityIndex());
+        m_importedEntity = nullptr;
+    } else {
+        m_importedEntityName = m_sceneModel->importEntity(m_url);
+    }
 }

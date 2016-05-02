@@ -42,17 +42,18 @@
 #include <Qt3DRender/QPointLight>
 #include <Qt3DExtras/QPhongMaterial>
 #include <Qt3DRender/QSceneLoader>
+#include <QtCore/QRegularExpression>
 
 EditorSceneItemModel::EditorSceneItemModel(EditorScene *scene)
     : QAbstractItemModel(scene)
     , m_scene(scene)
+    , m_sceneLoaderEntity(nullptr)
 {
 
 }
 
 EditorSceneItemModel::~EditorSceneItemModel()
 {
-
 }
 
 QModelIndex EditorSceneItemModel::index(int row, int column, const QModelIndex &parent) const
@@ -152,6 +153,55 @@ void EditorSceneItemModel::handleEntityNameChange()
     }
 }
 
+void EditorSceneItemModel::handleImportEntityLoaderStatusChanged()
+{
+    Qt3DRender::QSceneLoader *sceneLoader = qobject_cast<Qt3DRender::QSceneLoader *>(sender());
+    if (m_sceneLoaderEntity && sceneLoader) {
+        if (sceneLoader->status() == Qt3DRender::QSceneLoader::Ready
+                || sceneLoader->status() == Qt3DRender::QSceneLoader::Error) {
+            if (sceneLoader->status() == Qt3DRender::QSceneLoader::Ready) {
+                QList<Qt3DCore::QEntity *> entityChildren;
+                Q_FOREACH (QObject *child, m_sceneLoaderEntity->children()) {
+                    Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
+                    if (childEntity && pruneNonMeshEntitites(childEntity, true))
+                        entityChildren.append(childEntity);
+                }
+                Qt3DCore::QEntity *parentEntity = m_scene->sceneEntityItem()->entity();
+                if (entityChildren.size() > 1) {
+                    // Create a new group entity if imported top level has more than one entity
+                    parentEntity = new Qt3DCore::QEntity(parentEntity);
+                    parentEntity->addComponent(new Qt3DCore::QTransform());
+                    parentEntity->setObjectName(m_sceneLoaderEntity->objectName());
+                    m_scene->addEntity(parentEntity);
+                } else if (entityChildren.size() == 1) {
+                    entityChildren[0]->setObjectName(m_sceneLoaderEntity->objectName());
+                }
+                Q_FOREACH (Qt3DCore::QEntity *childEntity, entityChildren) {
+                    Qt3DCore::QEntity *duplicate = duplicateEntity(childEntity, parentEntity);
+
+                    // Workaround for crash when deleting the originally loaded entities.
+                    // TODO: Once the crash issue is fixed in Qt3D, the first pruning above can
+                    // TODO: be changed to delete and this one removed.
+                    pruneNonMeshEntitites(duplicate, false);
+
+                    ensureTransforms(duplicate);
+                    m_scene->addEntity(duplicate, -1, parentEntity);
+                    fixEntityNames(duplicate);
+                }
+                resetModel();
+                emit selectIndex(getModelIndexByName(m_sceneLoaderEntity->objectName()));
+            } else if (sceneLoader->status() == Qt3DRender::QSceneLoader::Error) {
+                m_scene->setError(tr("Failed to import an Entity"));
+            }
+            // TODO: deleteLater commented out as a workaround for entity deletion crash,
+            // TODO: obviously causes memory leak.
+            //m_sceneLoaderEntity->deleteLater();
+            m_sceneLoaderEntity = nullptr;
+            emit importEntityInProgressChanged(false);
+        }
+    }
+}
+
 void EditorSceneItemModel::handleSceneLoaderStatusChanged()
 {
     Qt3DRender::QSceneLoader *sceneLoader = qobject_cast<Qt3DRender::QSceneLoader *>(sender());
@@ -165,7 +215,7 @@ void EditorSceneItemModel::handleSceneLoaderStatusChanged()
                     item->recalculateSubMeshesExtents();
                 m_scene->createObjectPickerForEntity(importedEntity);
             } else if (sceneLoader->status() == Qt3DRender::QSceneLoader::Error) {
-                m_scene->setError(tr("Failed to import an Entity"));
+                m_scene->setError(tr("Failed to load a scene with scene loader"));
             }
         }
     }
@@ -340,6 +390,9 @@ void EditorSceneItemModel::insertExistingEntity(Qt3DCore::QEntity *entity, int r
                                                 const QModelIndex &parentIndex)
 {
     EditorSceneItem *parentItem = editorSceneItemFromIndex(parentIndex);
+    if (row < 0)
+        row = rowCount(parentIndex);
+
     beginInsertRows(parentIndex, row, row);
 
     m_scene->addEntity(entity, row, parentItem->entity());
@@ -368,7 +421,9 @@ void EditorSceneItemModel::removeEntity(const QModelIndex &index)
     if (m_scene->isRemovable(entity)) {
         beginRemoveRows(parentIndex, index.row(), index.row());
 
-        m_expandedItems.removeOne(entity->objectName());
+        // Remove entity and child entities from expanded entities list
+        removeExpandedItems(entity);
+
         m_scene->removeEntity(entity);
 
         endRemoveRows();
@@ -384,10 +439,14 @@ const QString EditorSceneItemModel::setEntityName(const QModelIndex &index, cons
         return QString();
 
     EditorSceneItem *item = editorSceneItemFromIndex(index);
-    if (item->entity()->objectName() == name)
+    QString oldName = item->entity()->objectName();
+    if (oldName == name)
         return QString();
 
     QString finalName = generateValidName(name, item->entity());
+
+    if (m_expandedItems.removeOne(oldName))
+        m_expandedItems.append(finalName);
 
     setData(index, finalName, NameRole);
 
@@ -478,8 +537,41 @@ void EditorSceneItemModel::removeExpandedItem(const QModelIndex &index)
     m_expandedItems.removeOne(item->entity()->objectName());
 }
 
-Qt3DCore::QEntity *EditorSceneItemModel::importEntity(const QUrl &fileUrl)
+void EditorSceneItemModel::removeExpandedItems(Qt3DCore::QEntity *entity)
 {
+    m_expandedItems.removeOne(entity->objectName());
+    Q_FOREACH (QObject *obj, entity->children()) {
+        Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(obj);
+        if (childEntity)
+            removeExpandedItems(childEntity);
+    }
+}
+
+QString EditorSceneItemModel::importEntity(const QUrl &fileUrl)
+{
+    m_sceneLoaderEntity = new Qt3DCore::QEntity(m_scene->rootEntity());
+    m_sceneLoaderEntity->setObjectName(generateValidName(tr("New imported entity"),
+                                                         m_sceneLoaderEntity));
+    Qt3DRender::QSceneLoader *sceneLoader = new Qt3DRender::QSceneLoader(m_sceneLoaderEntity);
+    QObject::connect(sceneLoader, &Qt3DRender::QSceneLoader::statusChanged,
+                     this, &EditorSceneItemModel::handleImportEntityLoaderStatusChanged);
+    sceneLoader->setSource(fileUrl);
+    m_sceneLoaderEntity->addComponent(sceneLoader);
+    m_sceneLoaderEntity->setEnabled(false);
+
+    emit importEntityInProgressChanged(true);
+
+    return m_sceneLoaderEntity->objectName();
+}
+
+QString EditorSceneItemModel::insertSceneLoaderEntity(const QUrl &fileUrl)
+{
+    // TODO: No way from UI to currently insert a scene loader entity.
+    // TODO: Do we want to support actual scene loader entitites in addition to importing
+    // TODO: entities as entity trees?
+    // TODO: If so, should it be similar to custom mesh object where you can change the
+    // TODO: source scene at will, or similar to importing entity where you select the scene
+    // TODO: at the time of the import and cannot change it?
     Qt3DCore::QEntity *sceneLoaderEntity =
             new Qt3DCore::QEntity(m_scene->sceneEntityItem()->entity());
     Qt3DRender::QSceneLoader *sceneLoader = new Qt3DRender::QSceneLoader(sceneLoaderEntity);
@@ -496,7 +588,7 @@ Qt3DCore::QEntity *EditorSceneItemModel::importEntity(const QUrl &fileUrl)
     int row = rowCount(parentIndex);
     insertExistingEntity(sceneLoaderEntity, row, parentIndex);
 
-    return sceneLoaderEntity;
+    return sceneLoaderEntity->objectName();
 }
 
 Qt3DCore::QEntity *EditorSceneItemModel::duplicateEntity(Qt3DCore::QEntity *entity,
@@ -511,9 +603,10 @@ Qt3DCore::QEntity *EditorSceneItemModel::duplicateEntity(Qt3DCore::QEntity *enti
 
     // Check if it's a camera
     Qt3DRender::QCamera *oldCam = qobject_cast<Qt3DRender::QCamera *>(entity);
-    if (oldCam) {
+    bool isCamera = oldCam || EditorUtils::entityCameraLens(entity);
+    if (isCamera) {
         Qt3DRender::QCamera *newCam = new Qt3DRender::QCamera(newParent);
-        EditorUtils::copyCameraProperties(newCam, oldCam);
+        EditorUtils::copyCameraProperties(newCam, entity);
         newEntity = newCam;
 
         EditorUtils::copyLockProperties(entity, newEntity);
@@ -530,7 +623,7 @@ Qt3DCore::QEntity *EditorSceneItemModel::duplicateEntity(Qt3DCore::QEntity *enti
                     newEntity, false);
 
         // Offset the position of the duplicate
-        newCam->setPosition(oldCam->position() + duplicateOffset);
+        newCam->setPosition(newCam->position() + duplicateOffset);
     } else {
         newEntity = new Qt3DCore::QEntity(newParent);
         // Duplicate non-internal components
@@ -570,6 +663,15 @@ Qt3DCore::QEntity *EditorSceneItemModel::duplicateEntity(Qt3DCore::QEntity *enti
     }
 
     return newEntity;
+}
+
+void EditorSceneItemModel::abortImportEntity()
+{
+    if (m_sceneLoaderEntity) {
+        delete m_sceneLoaderEntity;
+        m_sceneLoaderEntity = nullptr;
+        emit importEntityInProgressChanged(false);
+    }
 }
 
 QString EditorSceneItemModel::fixEntityName(const QString &desiredName)
@@ -615,4 +717,68 @@ void EditorSceneItemModel::disconnectEntity(Qt3DCore::QEntity *entity)
 
     disconnect(entity, &QObject::objectNameChanged,
                this, &EditorSceneItemModel::handleEntityNameChange);
+}
+
+void EditorSceneItemModel::fixEntityNames(Qt3DCore::QEntity *entity)
+{
+    QString desiredName = entity->objectName();
+
+    // Check that desired name matches our naming criteria
+    QRegularExpression re(QStringLiteral("^[A-Za-z_][A-Za-z0-9_ ]*$"));
+    QRegularExpressionMatch match = re.match(desiredName);
+
+    if (!match.hasMatch())
+        desiredName = tr("Unnamed Entity");
+
+    QString newName = generateValidName(desiredName, entity);
+    entity->setObjectName(newName);
+
+    // Rename possible children
+    Q_FOREACH (QObject *child, entity->children()) {
+        Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
+        if (childEntity)
+            fixEntityNames(childEntity);
+    }
+}
+
+void EditorSceneItemModel::ensureTransforms(Qt3DCore::QEntity *entity)
+{
+    // Every entity except scene entity should have a transform
+    if (m_scene->sceneEntityItem()->entity() != entity && !EditorUtils::entityTransform(entity))
+        entity->addComponent(new Qt3DCore::QTransform);
+
+    Q_FOREACH (QObject *child, entity->children()) {
+        Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
+        if (childEntity)
+            ensureTransforms(childEntity);
+    }
+}
+
+bool EditorSceneItemModel::pruneNonMeshEntitites(Qt3DCore::QEntity *entity, bool justCheck)
+{
+    // Delete all branches that do not end in meshes
+    // Delete all non-group, non-mesh entities
+
+    bool isGroup = EditorUtils::isGroupEntity(entity);
+    bool isMesh = EditorUtils::entityMesh(entity);
+
+    if (!isGroup && !isMesh) {
+        if (!justCheck)
+            delete entity;
+        return false;
+    }
+
+    // At this point, we know our ancestors are only meshes or groups.
+    bool hasMeshChild = false;
+    Q_FOREACH (QObject *child, entity->children()) {
+        Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
+        if (childEntity)
+            hasMeshChild = pruneNonMeshEntitites(childEntity, justCheck) || hasMeshChild;
+    }
+
+    // Prune empty groups
+    if (isGroup && !hasMeshChild && !justCheck)
+        delete entity;
+
+    return isMesh || hasMeshChild;
 }

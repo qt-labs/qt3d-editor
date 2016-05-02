@@ -353,9 +353,6 @@ ApplicationWindow {
         nameFilters: [qsTr("All files (*)") + editorScene.emptyString]
         onAccepted: {
             editorScene.undoHandler.createImportEntityCommand(fileUrl)
-            var newItemIndex = editorScene.sceneModel.lastInsertedIndex()
-            entityTree.view.selection.setCurrentIndex(newItemIndex,
-                                                     ItemSelectionModel.SelectCurrent)
         }
     }
 
@@ -395,6 +392,7 @@ ApplicationWindow {
     Action {
         id: entityImportAction
         text: qsTr("&Import Entity") + editorScene.emptyString
+        enabled: !editorScene.sceneModel.importEntityInProgress
         onTriggered: {
             importEntityDialog.open();
         }

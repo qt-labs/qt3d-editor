@@ -44,6 +44,8 @@ class QAbstractLight;
 class QObjectPicker;
 class QCamera;
 class QCameraLens;
+class QAttribute;
+class QRenderPass;
 class QSceneLoader;
 }
 
@@ -69,6 +71,7 @@ public:
         MaterialPerVertexColor,
         MaterialPhongAlpha,
         MaterialPhong,
+        MaterialGeneric,
         // Meshes
         MeshCuboid,
         MeshCustom,
@@ -76,6 +79,7 @@ public:
         MeshPlane,
         MeshSphere,
         MeshTorus,
+        MeshGeneric,
         // Transforms
         Transform,
         // Other
@@ -102,7 +106,7 @@ public:
 
 public:
     static bool isObjectInternal(QObject *obj);
-    static void copyCameraProperties(Qt3DRender::QCamera *target, Qt3DRender::QCamera *source);
+    static void copyCameraProperties(Qt3DRender::QCamera *target, Qt3DCore::QEntity *source);
     static Qt3DCore::QComponent *duplicateComponent(Qt3DCore::QComponent *component);
     static QString nameDuplicate(Qt3DCore::QEntity *duplicate, Qt3DCore::QEntity *original,
                                  EditorSceneItemModel *sceneModel);
@@ -132,6 +136,8 @@ public:
     static Qt3DRender::QObjectPicker *entityPicker(Qt3DCore::QEntity *entity);
     static Qt3DRender::QSceneLoader *entitySceneLoader(Qt3DCore::QEntity *entity);
     static Qt3DRender::QGeometryRenderer *entityMesh(Qt3DCore::QEntity *entity);
+    static Qt3DRender::QCameraLens *entityCameraLens(Qt3DCore::QEntity *entity);
+    static bool isGroupEntity(Qt3DCore::QEntity *entity);
     static QVector3D findIntersection(const QVector3D &rayOrigin, const QVector3D &ray,
                                       float planeOffset, const QVector3D &planeNormal,
                                       float &t);
@@ -167,6 +173,12 @@ private:
     explicit EditorUtils() {}
 
     static ComponentTypes componentType(Qt3DCore::QComponent *component);
+    static Qt3DRender::QAttribute *copyAttribute(
+            Qt3DRender::QAttribute *oldAtt,
+            QMap<Qt3DRender::QBuffer *, Qt3DRender::QBuffer *> &bufferMap);
+    template <typename T> static void copyRenderParameters(T *source, T *target);
+    template <typename T> static void copyFilterKeys(T *source, T *target);
+    static void copyRenderStates(Qt3DRender::QRenderPass *source, Qt3DRender::QRenderPass *target);
 };
 
 #endif // EDITORUTILS_H

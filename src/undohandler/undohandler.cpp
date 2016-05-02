@@ -206,7 +206,7 @@ void UndoHandler::createReparentEntityCommand(const QString &newParentName,
 
 void UndoHandler::createImportEntityCommand(const QUrl &url)
 {
-    if (url.isEmpty())
+    if (url.isEmpty() || m_scene->sceneModel()->importEntityInProgress())
         return;
 
     m_undoStack->push(new ImportEntityCommand(m_scene->sceneModel(), url));

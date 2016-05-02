@@ -35,10 +35,6 @@ Loader {
     function componentTypeToDelegateSource(componentType) {
         if (componentType == EditorSceneItemComponentsModel.CameraEntity)
             return "CameraEntityDelegate.qml"
-//        if (componentType == EditorSceneItemComponentsModel.CameraLens)
-//            return "CameraLensComponentDelegate.qml"
-//        if (componentType == EditorSceneItemComponentsModel.FrameGraph)
-//            return "FrameGraphComponentDelegate.qml"
         if (componentType == EditorSceneItemComponentsModel.KeyboardInput)
             return "KeyboardInputComponentDelegate.qml"
         if (componentType == EditorSceneItemComponentsModel.Layer)

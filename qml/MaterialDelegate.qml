@@ -29,6 +29,7 @@ import QtQuick 2.5
 import com.theqtcompany.SceneEditor3D 1.0
 
 Item {
+    id: materialDelegate
     width: parent.width
     height: columnLayout.y + columnLayout.height + 8
 
@@ -67,6 +68,7 @@ Item {
             componentType: thisDelegate.componentType
             tooltip: qsTr("Shininess of the material. The\nsmaller the value, the wider and\nless intense the specular highlight.")
                      + editorScene.emptyString
+            visible:  materialDelegate.componentType !== EditorSceneItemMaterialComponentsModel.Unknown
         }
     }
 }

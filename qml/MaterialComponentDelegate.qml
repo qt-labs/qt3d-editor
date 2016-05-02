@@ -31,7 +31,7 @@ import QtQuick.Controls 2.0 as QQC2
 import Qt3D.Extras 2.0
 
 ComponentDelegate {
-    id: materialDelegate
+    id: materialComponentDelegate
     title: qsTr("Material") + editorScene.emptyString
 
     property int currentMaterial: 0
@@ -51,7 +51,19 @@ ComponentDelegate {
         width: parent.width
         height: materialCombobox.height + 8
 
-        Component.onCompleted: materialCombobox.currentIndex = materialDelegate.currentMaterial - 1
+        Component.onCompleted: materialCombobox.currentIndex = materialComponentDelegate.currentMaterial - 1
+
+        StyledLabel {
+            id: importedLabel
+            anchors.right: parent.right
+            anchors.rightMargin: 8
+            anchors.left: parent.left
+            anchors.leftMargin: 8
+            anchors.bottomMargin: 4
+            anchors.verticalCenter: parent.verticalCenter
+            text: qsTr("Imported custom material") + editorScene.emptyString
+            visible: materialComponentDelegate.currentMaterial === EditorSceneItemMaterialComponentsModel.Unknown
+        }
 
         QQC2.ComboBox {
             id: materialCombobox
@@ -63,6 +75,7 @@ ComponentDelegate {
             anchors.verticalCenter: parent.verticalCenter
             property int validIndex: -1
             implicitHeight: qlcControlHeight
+            visible:  materialComponentDelegate.currentMaterial !== EditorSceneItemMaterialComponentsModel.Unknown
 
             model: ListModel {
                 property string language: systemLanguage
@@ -125,7 +138,7 @@ ComponentDelegate {
             width: parent.width
 
             function materialTypetoDelegateSource(materialType) {
-                materialDelegate.currentMaterial = materialType
+                materialComponentDelegate.currentMaterial = materialType
                 if (materialType == EditorSceneItemMaterialComponentsModel.DiffuseMap)
                     return "DiffuseMapMaterialDelegate.qml";
                 if (materialType == EditorSceneItemMaterialComponentsModel.DiffuseSpecularMap)
@@ -149,8 +162,8 @@ ComponentDelegate {
             }
 
             onLoaded: {
-                if (materialDelegate)
-                    materialCombobox.currentIndex = materialDelegate.currentMaterial - 1
+                if (materialComponentDelegate)
+                    materialCombobox.currentIndex = materialComponentDelegate.currentMaterial - 1
             }
 
             source: materialTypetoDelegateSource(materialType)

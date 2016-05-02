@@ -52,6 +52,18 @@ ComponentDelegate {
 
         Component.onCompleted: meshCombobox.currentIndex = meshDelegate.currentMesh - 1
 
+        StyledLabel {
+            id: importedLabel
+            anchors.right: parent.right
+            anchors.rightMargin: 8
+            anchors.left: parent.left
+            anchors.leftMargin: 8
+            anchors.bottomMargin: 4
+            anchors.verticalCenter: parent.verticalCenter
+            text: qsTr("Imported custom mesh") + editorScene.emptyString
+            visible: meshDelegate.currentMesh === EditorSceneItemMeshComponentsModel.Unknown
+        }
+
         QQC2.ComboBox {
             id: meshCombobox
             anchors.right: parent.right
@@ -62,6 +74,7 @@ ComponentDelegate {
             anchors.verticalCenter: parent.verticalCenter
             implicitHeight: qlcControlHeight
             property int validIndex: -1
+            visible: meshDelegate.currentMesh !== EditorSceneItemMeshComponentsModel.Unknown
 
             model: ListModel {
                 property string language: systemLanguage

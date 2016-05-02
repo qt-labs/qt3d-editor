@@ -41,6 +41,7 @@ namespace Qt3DCore {
 }
 namespace Qt3DRender {
     class QAbstractTexture;
+    class QGeometry;
 }
 
 class EditorSceneParser : public QObject
@@ -64,12 +65,17 @@ class EditorSceneParser : public QObject
         PerVertexColorMaterial,
         PhongAlphaMaterial,
         PhongMaterial,
+        GenericMaterial,
         CuboidMesh,
         CustomMesh,
         CylinderMesh,
         PlaneMesh,
         SphereMesh,
         TorusMesh,
+        GenericMesh,
+        Attribute,
+        Buffer,
+        Geometry,
         ObjectPicker,
         DirectionalLight,
         PointLight,
@@ -110,6 +116,9 @@ private:
     void outTexturedMaterial(EditorItemType type, Qt3DCore::QComponent *component);
     void outTextureProperty(const QString &propertyName,
                             Qt3DRender::QAbstractTexture *textureProvider);
+    void outGenericMesh(Qt3DCore::QComponent *component, const QString &componentId);
+    void outGeometry(Qt3DRender::QGeometry *geometry, const QString &componentId);
+    template <typename T> void outBufferData(T *dataPtr, int count, const QString arrayType);
     void outGenericProperties(EditorItemType type, QObject *obj);
     void outGenericProperty(QObject *obj,
                             const QMetaProperty &property, const QObject *defaultComponent);
@@ -121,9 +130,10 @@ private:
     QString variantToQMLString(const QVariant &var);
     QVariant QMLStringToVariant(QVariant::Type type, const QString &qmlStr);
     Qt3DCore::QEntity *createEntity(EditorItemType type);
-    Qt3DCore::QComponent *createComponent(EditorItemType type);
+    QObject *createObject(EditorItemType type);
     void parseAndSetProperty(const QString &propertyName, const QString &propertyValue,
-                             QObject *obj, EditorItemType type);
+                             QObject *obj, EditorItemType type,
+                             const QMap<QString, QObject *> &objectMap);
     void parseAndSetGenericProperty(const QString &propertyName, const QString &propertyValue,
                                     QObject *obj);
     void parseAndSetTextureProperty(const QString &propertyName, const QString &propertyValue,
@@ -134,6 +144,7 @@ private:
                             Qt3DRender::QAbstractTexture *&normal);
     QString getAbsoluteQmlFileName(const QFileInfo &qrcFileInfo, const QString &resourceDirName);
     QString urlToResourceString(const QUrl &url);
+    QByteArray importBuffer();
 
     int m_indentLevel;
     int m_resourceIdCounter;

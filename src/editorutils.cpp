@@ -36,8 +36,16 @@
 #include <Qt3DRender/QAbstractTexture>
 #include <Qt3DRender/QTextureImage>
 #include <Qt3DRender/QObjectPicker>
+#include <Qt3DRender/QMaterial>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QParameter>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QFilterKey>
+#include <Qt3DRender/QRenderPass>
+#include <Qt3DRender/QRenderState>
+#include <Qt3DRender/QTexture>
+#include <Qt3DRender/QAbstractTextureImage>
 #include <Qt3DRender/QSceneLoader>
-
 #include <Qt3DCore/QTransform>
 
 #include <Qt3DRender/QMesh>
@@ -63,7 +71,32 @@
 #include <Qt3DRender/QSpotLight>
 
 #include <Qt3DRender/QBuffer>
+#include <Qt3DRender/QBufferDataGenerator>
 #include <Qt3DRender/QAttribute>
+#include <Qt3DRender/QGeometryFactory>
+
+#include <Qt3DRender/QAlphaCoverage>
+#include <Qt3DRender/QAlphaTest>
+#include <Qt3DRender/QBlendEquation>
+#include <Qt3DRender/QBlendEquationArguments>
+#include <Qt3DRender/QColorMask>
+#include <Qt3DRender/QCullFace>
+#include <Qt3DRender/QMultiSampleAntiAliasing>
+#include <Qt3DRender/QNoDepthMask>
+#include <Qt3DRender/QDepthTest>
+#include <Qt3DRender/QDithering>
+#include <Qt3DRender/QFrontFace>
+#include <Qt3DRender/QPointSize>
+#include <Qt3DRender/QPolygonOffset>
+#include <Qt3DRender/QScissorTest>
+#include <Qt3DRender/QStencilTest>
+#include <Qt3DRender/QStencilTestArguments>
+#include <Qt3DRender/QStencilMask>
+#include <Qt3DRender/QStencilOperation>
+#include <Qt3DRender/QStencilOperationArguments>
+#include <Qt3DRender/QClipPlane>
+#include <Qt3DRender/QSeamlessCubemap>
+#include <Qt3DRender/private/qrenderstate_p.h>
 
 #include <QtCore/QtMath>
 
@@ -77,20 +110,42 @@ bool EditorUtils::isObjectInternal(QObject *obj)
         return false;
 }
 
-void EditorUtils::copyCameraProperties(Qt3DRender::QCamera *target, Qt3DRender::QCamera *source)
+void EditorUtils::copyCameraProperties(Qt3DRender::QCamera *target, Qt3DCore::QEntity *source)
 {
-    target->setAspectRatio(source->aspectRatio());
-    target->setBottom(source->bottom());
-    target->setFarPlane(source->farPlane());
-    target->setFieldOfView(source->fieldOfView());
-    target->setLeft(source->left());
-    target->setNearPlane(source->nearPlane());
-    target->setPosition(source->position());
-    target->setProjectionType(source->projectionType());
-    target->setRight(source->right());
-    target->setTop(source->top());
-    target->setUpVector(source->upVector());
-    target->setViewCenter(source->viewCenter());
+    Qt3DRender::QCamera *sourceCamera = qobject_cast<Qt3DRender::QCamera *>(source);
+    if (sourceCamera) {
+        target->setAspectRatio(sourceCamera->aspectRatio());
+        target->setBottom(sourceCamera->bottom());
+        target->setFarPlane(sourceCamera->farPlane());
+        target->setFieldOfView(sourceCamera->fieldOfView());
+        target->setLeft(sourceCamera->left());
+        target->setNearPlane(sourceCamera->nearPlane());
+        target->setPosition(sourceCamera->position());
+        target->setProjectionType(sourceCamera->projectionType());
+        target->setRight(sourceCamera->right());
+        target->setTop(sourceCamera->top());
+        target->setUpVector(sourceCamera->upVector());
+        target->setViewCenter(sourceCamera->viewCenter());
+    } else {
+        Qt3DRender::QCameraLens *sourceCameraLens = EditorUtils::entityCameraLens(source);
+        Qt3DCore::QTransform *sourceTransform = EditorUtils::entityTransform(source);
+        target->setAspectRatio(sourceCameraLens->aspectRatio());
+        target->setBottom(sourceCameraLens->bottom());
+        target->setFarPlane(sourceCameraLens->farPlane());
+        target->setFieldOfView(sourceCameraLens->fieldOfView());
+        target->setLeft(sourceCameraLens->left());
+        target->setNearPlane(sourceCameraLens->nearPlane());
+        target->setProjectionType(sourceCameraLens->projectionType());
+        target->setRight(sourceCameraLens->right());
+        target->setTop(sourceCameraLens->top());
+
+        QMatrix4x4 m;
+        if (sourceTransform)
+            m = sourceTransform->matrix();
+        target->setPosition(m.map(QVector3D(0.0f, 0.0f, 0.0f)));
+        target->setUpVector(QVector3D(m(0,1), m(1,1), m(2,1)));
+        target->setViewCenter(m.mapVector(QVector3D(0.0f, 0.0f, 1.0f)));
+    }
 }
 
 Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *component)
@@ -274,6 +329,45 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         duplicate = newComponent;
         break;
     }
+    case MaterialGeneric: {
+        Qt3DRender::QMaterial *source = qobject_cast<Qt3DRender::QMaterial *>(component);
+        Qt3DRender::QMaterial *newComponent = new Qt3DRender::QMaterial();
+        Qt3DRender::QEffect *newEffect = new Qt3DRender::QEffect;
+
+        copyRenderParameters(source, newComponent);
+        copyRenderParameters(source->effect(), newEffect);
+
+        Q_FOREACH (Qt3DRender::QTechnique *tech, source->effect()->techniques()) {
+            Qt3DRender::QTechnique *newTech = new Qt3DRender::QTechnique;
+            copyFilterKeys(tech, newTech);
+            copyRenderParameters(tech, newTech);
+
+            Q_FOREACH (Qt3DRender::QRenderPass *pass, tech->renderPasses()) {
+                Qt3DRender::QRenderPass *newPass = new Qt3DRender::QRenderPass;
+                copyFilterKeys(pass, newPass);
+                copyRenderParameters(pass, newPass);
+                copyRenderStates(pass, newPass);
+
+                Qt3DRender::QShaderProgram *newProgram = new Qt3DRender::QShaderProgram;
+                newProgram->setVertexShaderCode(pass->shaderProgram()->vertexShaderCode());
+                newProgram->setTessellationControlShaderCode(
+                            pass->shaderProgram()->tessellationControlShaderCode());
+                newProgram->setTessellationEvaluationShaderCode(
+                            pass->shaderProgram()->tessellationEvaluationShaderCode());
+                newProgram->setGeometryShaderCode(pass->shaderProgram()->geometryShaderCode());
+                newProgram->setFragmentShaderCode(pass->shaderProgram()->fragmentShaderCode());
+                newProgram->setComputeShaderCode(pass->shaderProgram()->computeShaderCode());
+
+                newPass->setShaderProgram(newProgram);
+                newTech->addRenderPass(newPass);
+            }
+            newEffect->addTechnique(newTech);
+        }
+        newComponent->setEffect(newEffect);
+
+        duplicate = newComponent;
+        break;
+    }
     case MeshCuboid: {
         Qt3DExtras::QCuboidMesh *source = qobject_cast<Qt3DExtras::QCuboidMesh *>(component);
         Qt3DExtras::QCuboidMesh *newComponent = new Qt3DExtras::QCuboidMesh();
@@ -329,6 +423,42 @@ Qt3DCore::QComponent *EditorUtils::duplicateComponent(Qt3DCore::QComponent *comp
         newComponent->setRadius(source->radius());
         newComponent->setRings(source->rings());
         newComponent->setSlices(source->slices());
+        duplicate = newComponent;
+        break;
+    }
+    case MeshGeneric: {
+        Qt3DRender::QGeometryRenderer *source = qobject_cast<Qt3DRender::QGeometryRenderer *>(component);
+        Qt3DRender::QGeometryRenderer *newComponent = new Qt3DRender::QGeometryRenderer();
+        newComponent->setInstanceCount(source->instanceCount());
+        newComponent->setVertexCount(source->vertexCount());
+        newComponent->setIndexOffset(source->indexOffset());
+        newComponent->setFirstInstance(source->firstInstance());
+        newComponent->setRestartIndexValue(source->restartIndexValue());
+        newComponent->setVerticesPerPatch(source->verticesPerPatch());
+        newComponent->setPrimitiveRestartEnabled(source->primitiveRestartEnabled());
+        newComponent->setPrimitiveType(source->primitiveType());
+
+        Qt3DRender::QGeometry *sourceGeometry = source->geometry();
+        Qt3DRender::QGeometry *newGeometry = new Qt3DRender::QGeometry;
+        if (!sourceGeometry) {
+            Qt3DRender::QGeometryFactoryPtr geometryFunctorPtr = source->geometryFactory();
+            if (geometryFunctorPtr.data())
+                sourceGeometry = geometryFunctorPtr.data()->operator()();
+        }
+        if (sourceGeometry) {
+            QMap<Qt3DRender::QBuffer *, Qt3DRender::QBuffer *> bufferMap;
+            Q_FOREACH (Qt3DRender::QAttribute *oldAtt, sourceGeometry->attributes()) {
+                Qt3DRender::QAttribute *newAtt = copyAttribute(oldAtt, bufferMap);
+                if (newAtt)
+                    newGeometry->addAttribute(newAtt);
+            }
+
+            newGeometry->setBoundingVolumePositionAttribute(
+                        copyAttribute(sourceGeometry->boundingVolumePositionAttribute(),
+                                      bufferMap));
+
+            newComponent->setGeometry(newGeometry);
+        }
         duplicate = newComponent;
         break;
     }
@@ -824,6 +954,25 @@ Qt3DRender::QGeometryRenderer *EditorUtils::entityMesh(Qt3DCore::QEntity *entity
     return nullptr;
 }
 
+Qt3DRender::QCameraLens *EditorUtils::entityCameraLens(Qt3DCore::QEntity *entity)
+{
+    Qt3DCore::QComponentVector components = entity->components();
+    for (int i = 0; i < components.size(); i++) {
+        Qt3DRender::QCameraLens *lens
+                = qobject_cast<Qt3DRender::QCameraLens *>(components.value(i));
+        if (lens)
+            return lens;
+    }
+
+    return nullptr;
+}
+
+bool EditorUtils::isGroupEntity(Qt3DCore::QEntity *entity)
+{
+    Qt3DCore::QComponentVector components = entity->components();
+    return (components().size() == 0 || (components.size() == 1 && entityTransform(entity)));
+}
+
 // Returns the intersection point of a plane and a ray.
 // Parameter t returns the distance in ray lengths. If t is negative, intersection
 // is behind rayOrigin.
@@ -907,6 +1056,8 @@ EditorUtils::ComponentTypes EditorUtils::componentType(Qt3DCore::QComponent *com
             componentType = MaterialPhongAlpha;
         else if (qobject_cast<Qt3DExtras::QPhongMaterial *>(component))
             componentType = MaterialPhong;
+        else
+            componentType = MaterialGeneric;
     } else if (qobject_cast<Qt3DRender::QGeometryRenderer *>(component)) {
         if (qobject_cast<Qt3DRender::QMesh *>(component))
             componentType = MeshCustom;
@@ -920,6 +1071,8 @@ EditorUtils::ComponentTypes EditorUtils::componentType(Qt3DCore::QComponent *com
             componentType = MeshSphere;
         else if (qobject_cast<Qt3DExtras::QTorusMesh *>(component))
             componentType = MeshTorus;
+        else
+            componentType = MeshGeneric;
     } else if (qobject_cast<Qt3DCore::QTransform *>(component)) {
         componentType = Transform;
     } else if (qobject_cast<QDummyObjectPicker *>(component)) {
@@ -929,6 +1082,46 @@ EditorUtils::ComponentTypes EditorUtils::componentType(Qt3DCore::QComponent *com
     }
 
     return componentType;
+}
+
+Qt3DRender::QAttribute *EditorUtils::copyAttribute(
+        Qt3DRender::QAttribute *oldAtt,
+        QMap<Qt3DRender::QBuffer *, Qt3DRender::QBuffer *> &bufferMap)
+{
+    Qt3DRender::QAttribute *newAtt = nullptr;
+    if (oldAtt) {
+        newAtt = new Qt3DRender::QAttribute;
+
+        newAtt->setName(oldAtt->name());
+        newAtt->setDataType(oldAtt->vertexBaseType());
+        newAtt->setDataSize(oldAtt->vertexSize());
+        newAtt->setCount(oldAtt->count());
+        newAtt->setByteStride(oldAtt->byteStride());
+        newAtt->setByteOffset(oldAtt->byteOffset());
+        newAtt->setDivisor(oldAtt->divisor());
+        newAtt->setAttributeType(oldAtt->attributeType());
+
+        Qt3DRender::QBuffer *oldBuf = oldAtt->buffer();
+        if (oldBuf) {
+            Qt3DRender::QBuffer *newBuf = bufferMap.value(oldBuf);
+            if (!newBuf) {
+                newBuf = new Qt3DRender::QBuffer;
+                bufferMap.insert(oldBuf, newBuf);
+
+                if (oldBuf->data().isEmpty())
+                    newBuf->setData(oldBuf->dataGenerator()->operator()());
+                else
+                    newBuf->setData(oldBuf->data());
+                newBuf->setType(oldBuf->type());
+                newBuf->setUsage(oldBuf->usage());
+                newBuf->setSyncData(oldBuf->isSyncData());
+            }
+
+            newAtt->setBuffer(newBuf);
+        }
+    }
+
+    return newAtt;
 }
 
 // Rotates vector around rotationAxis. The rotationAxis must be normalized.
@@ -1083,5 +1276,250 @@ EditorUtils::InsertableEntities EditorUtils::insertableEntityType(Qt3DCore::QEnt
     }
 
     return insertableType;
+}
+
+
+template <typename T>
+void EditorUtils::copyRenderParameters(T *source, T *target)
+{
+    Q_FOREACH (Qt3DRender::QParameter *param, source->parameters()) {
+        Qt3DRender::QParameter *newParam = new Qt3DRender::QParameter;
+        newParam->setName(param->name());
+
+        // Textures need special handling
+        Qt3DRender::QAbstractTexture *texture =
+                param->value().value<Qt3DRender::QAbstractTexture *>();
+        if (texture) {
+            Qt3DRender::QTexture2D *texture2D = qobject_cast<Qt3DRender::QTexture2D *>(texture);
+            if (texture2D) {
+                // TODO: Only support texture2D for now (as that's what qgltf supports), todo rest
+                Qt3DRender::QTexture2D *newTexture = new Qt3DRender::QTexture2D;
+
+                Q_FOREACH (Qt3DRender::QAbstractTextureImage *ti, texture->textureImages()) {
+                    Qt3DRender::QTextureImage *sourceImage =
+                            qobject_cast<Qt3DRender::QTextureImage *>(ti);
+                    if (sourceImage) {
+                        Qt3DRender::QTextureImage *newImage = new Qt3DRender::QTextureImage;
+                        newImage->setMipLevel(sourceImage->mipLevel());
+                        newImage->setLayer(sourceImage->layer());
+                        newImage->setFace(sourceImage->face());
+                        newImage->setSource(sourceImage->source());
+                        newTexture->addTextureImage(newImage);
+                    }
+                }
+
+                newTexture->setFormat(texture->format());
+                newTexture->setGenerateMipMaps(texture->generateMipMaps());
+                newTexture->setWidth(texture->width());
+                newTexture->setHeight(texture->height());
+                newTexture->setDepth(texture->depth());
+                newTexture->setMagnificationFilter(texture->magnificationFilter());
+                newTexture->setMinificationFilter(texture->minificationFilter());
+                newTexture->setMaximumAnisotropy(texture->maximumAnisotropy());
+                newTexture->setComparisonFunction(texture->comparisonFunction());
+                newTexture->setComparisonMode(texture->comparisonMode());
+                newTexture->setLayers(texture->layers());
+                newTexture->wrapMode()->setX(texture->wrapMode()->x());
+                newTexture->wrapMode()->setY(texture->wrapMode()->y());
+                newTexture->wrapMode()->setZ(texture->wrapMode()->z());
+
+                newParam->setValue(QVariant::fromValue(newTexture));
+            }
+        } else {
+            newParam->setValue(param->value());
+        }
+
+        target->addParameter(newParam);
+    }
+}
+
+template <typename T>
+void EditorUtils::copyFilterKeys(T *source, T *target) {
+    Q_FOREACH (Qt3DRender::QFilterKey *key, source->filterKeys()) {
+        Qt3DRender::QFilterKey *newKey = new Qt3DRender::QFilterKey;
+        newKey->setName(key->name());
+        newKey->setValue(key->value());
+        target->addFilterKey(newKey);
+    }
+}
+
+void EditorUtils::copyRenderStates(Qt3DRender::QRenderPass *source,
+                                   Qt3DRender::QRenderPass *target)
+{
+    Q_FOREACH (Qt3DRender::QRenderState *state, source->renderStates()) {
+        Qt3DRender::QRenderState *newState = nullptr;
+
+        Qt3DRender::QRenderStatePrivate *stateP =
+                static_cast<Qt3DRender::QRenderStatePrivate *>(
+                    Qt3DRender::QRenderStatePrivate::get(state));
+
+        switch (stateP->m_type) {
+        case Qt3DRender::QRenderStatePrivate::AlphaCoverage: {
+            newState = new Qt3DRender::QAlphaCoverage;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::AlphaTest: {
+            Qt3DRender::QAlphaTest *sourceState =
+                    qobject_cast<Qt3DRender::QAlphaTest *>(state);
+            Qt3DRender::QAlphaTest *targetState = new Qt3DRender::QAlphaTest;
+            targetState->setAlphaFunction(sourceState->alphaFunction());
+            targetState->setReferenceValue(sourceState->referenceValue());
+            newState = targetState;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::BlendEquation: {
+            Qt3DRender::QBlendEquation *sourceState =
+                    qobject_cast<Qt3DRender::QBlendEquation *>(state);
+            Qt3DRender::QBlendEquation *targetState = new Qt3DRender::QBlendEquation;
+            targetState->setBlendFunction(sourceState->blendFunction());
+            newState = targetState;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::BlendEquationArguments: {
+            Qt3DRender::QBlendEquationArguments *sourceState =
+                    qobject_cast<Qt3DRender::QBlendEquationArguments *>(state);
+            Qt3DRender::QBlendEquationArguments *targetState =
+                    new Qt3DRender::QBlendEquationArguments;
+            targetState->setSourceRgb(sourceState->sourceRgb());
+            targetState->setDestinationRgb(sourceState->destinationRgb());
+            targetState->setSourceAlpha(sourceState->sourceAlpha());
+            targetState->setDestinationAlpha(sourceState->destinationAlpha());
+            targetState->setBufferIndex(sourceState->bufferIndex());
+            newState = targetState;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::ColorMask: {
+            Qt3DRender::QColorMask *sourceState = qobject_cast<Qt3DRender::QColorMask *>(state);
+            Qt3DRender::QColorMask *targetState = new Qt3DRender::QColorMask;
+            targetState->setRedMasked(sourceState->isRedMasked());
+            targetState->setGreenMasked(sourceState->isGreenMasked());
+            targetState->setBlueMasked(sourceState->isBlueMasked());
+            targetState->setAlphaMasked(sourceState->isAlphaMasked());
+            newState = targetState;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::CullFace: {
+            Qt3DRender::QCullFace *sourceState = qobject_cast<Qt3DRender::QCullFace *>(state);
+            Qt3DRender::QCullFace *targetState = new Qt3DRender::QCullFace;
+            targetState->setMode(sourceState->mode());
+            newState = targetState;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::MSAAEnabled: {
+            newState = new Qt3DRender::QMultiSampleAntiAliasing;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::NoDepthMask: {
+            newState = new Qt3DRender::QNoDepthMask;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::DepthTest: {
+            Qt3DRender::QDepthTest *sourceState = qobject_cast<Qt3DRender::QDepthTest *>(state);
+            Qt3DRender::QDepthTest *targetState = new Qt3DRender::QDepthTest;
+            targetState->setDepthFunction(sourceState->depthFunction());
+            newState = targetState;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::Dithering: {
+            newState = new Qt3DRender::QDithering;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::FrontFace: {
+            Qt3DRender::QFrontFace *sourceState = qobject_cast<Qt3DRender::QFrontFace *>(state);
+            Qt3DRender::QFrontFace *targetState = new Qt3DRender::QFrontFace;
+            targetState->setDirection(sourceState->direction());
+            newState = targetState;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::PointSize: {
+            Qt3DRender::QPointSize *sourceState = qobject_cast<Qt3DRender::QPointSize *>(state);
+            Qt3DRender::QPointSize *targetState = new Qt3DRender::QPointSize;
+            targetState->setSizeMode(sourceState->sizeMode());
+            targetState->setValue(sourceState->value());
+            newState = targetState;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::PolygonOffset: {
+            Qt3DRender::QPolygonOffset *sourceState =
+                    qobject_cast<Qt3DRender::QPolygonOffset *>(state);
+            Qt3DRender::QPolygonOffset *targetState = new Qt3DRender::QPolygonOffset;
+            targetState->setScaleFactor(sourceState->scaleFactor());
+            targetState->setDepthSteps(sourceState->depthSteps());
+            newState = targetState;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::ScissorTest: {
+            Qt3DRender::QScissorTest *sourceState =
+                    qobject_cast<Qt3DRender::QScissorTest *>(state);
+            Qt3DRender::QScissorTest *targetState = new Qt3DRender::QScissorTest;
+            targetState->setLeft(sourceState->left());
+            targetState->setBottom(sourceState->bottom());
+            targetState->setWidth(sourceState->width());
+            targetState->setHeight(sourceState->height());
+            newState = targetState;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::StencilTest: {
+            Qt3DRender::QStencilTest *sourceState =
+                    qobject_cast<Qt3DRender::QStencilTest *>(state);
+            Qt3DRender::QStencilTest *targetState = new Qt3DRender::QStencilTest;
+            targetState->front()->setComparisonMask(sourceState->front()->comparisonMask());
+            targetState->front()->setReferenceValue(sourceState->front()->referenceValue());
+            targetState->front()->setStencilFunction(sourceState->front()->stencilFunction());
+            targetState->back()->setComparisonMask(sourceState->back()->comparisonMask());
+            targetState->back()->setReferenceValue(sourceState->back()->referenceValue());
+            targetState->back()->setStencilFunction(sourceState->back()->stencilFunction());
+            newState = targetState;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::StencilMask: {
+            Qt3DRender::QStencilMask *sourceState =
+                    qobject_cast<Qt3DRender::QStencilMask *>(state);
+            Qt3DRender::QStencilMask *targetState = new Qt3DRender::QStencilMask;
+            targetState->setFrontOutputMask(sourceState->frontOutputMask());
+            targetState->setBackOutputMask(sourceState->backOutputMask());
+            newState = targetState;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::StencilOp: {
+            Qt3DRender::QStencilOperation *sourceState =
+                    qobject_cast<Qt3DRender::QStencilOperation *>(state);
+            Qt3DRender::QStencilOperation *targetState = new Qt3DRender::QStencilOperation;
+            targetState->front()->setStencilTestFailureOperation(
+                        sourceState->front()->stencilTestFailureOperation());
+            targetState->front()->setDepthTestFailureOperation(
+                        sourceState->front()->depthTestFailureOperation());
+            targetState->front()->setAllTestsPassOperation(
+                        sourceState->front()->allTestsPassOperation());
+            targetState->back()->setStencilTestFailureOperation(
+                        sourceState->back()->stencilTestFailureOperation());
+            targetState->back()->setDepthTestFailureOperation(
+                        sourceState->back()->depthTestFailureOperation());
+            targetState->back()->setAllTestsPassOperation(
+                        sourceState->back()->allTestsPassOperation());
+            newState = targetState;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::ClipPlane: {
+            Qt3DRender::QClipPlane *sourceState = qobject_cast<Qt3DRender::QClipPlane *>(state);
+            Qt3DRender::QClipPlane *targetState = new Qt3DRender::QClipPlane;
+            targetState->setPlaneIndex(sourceState->planeIndex());
+            targetState->setNormal(sourceState->normal());
+            targetState->setDistance(sourceState->distance());
+            newState = targetState;
+            break;
+        }
+        case Qt3DRender::QRenderStatePrivate::SeamlessCubemap: {
+            newState = new Qt3DRender::QSeamlessCubemap;
+            break;
+        }
+        default:
+            qWarning() << __FUNCTION__ << QStringLiteral("Unknown render state");
+            break;
+        }
+
+        if (newState)
+            target->addRenderState(newState);
+    }
 }
 
