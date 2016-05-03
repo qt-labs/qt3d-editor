@@ -31,7 +31,7 @@
 #include "editorviewportitem.h"
 #include <Qt3DRender/QCamera>
 #include <Qt3DInput/QAxis>
-#include <Qt3DInput/QAxisInput>
+#include <Qt3DInput/QAnalogAxisInput>
 #include <Qt3DInput/QAction>
 #include <Qt3DInput/QActionInput>
 #include <Qt3DInput/QLogicalDevice>
@@ -52,8 +52,8 @@ EditorCameraController::EditorCameraController(EditorViewportItem *viewport,
     , m_leftMouseButtonInput(new Qt3DInput::QActionInput())
     , m_rightMouseButtonInput(new Qt3DInput::QActionInput())
     , m_middleMouseButtonInput(new Qt3DInput::QActionInput())
-    , m_mouseRxInput(new Qt3DInput::QAxisInput())
-    , m_mouseRyInput(new Qt3DInput::QAxisInput())
+    , m_mouseRxInput(new Qt3DInput::QAnalogAxisInput())
+    , m_mouseRyInput(new Qt3DInput::QAnalogAxisInput())
     , m_mouseDevice(new Qt3DInput::QMouseDevice())
     , m_logicalDevice(new Qt3DInput::QLogicalDevice())
     , m_frameAction(new Qt3DLogic::QFrameAction())
@@ -78,17 +78,17 @@ EditorCameraController::~EditorCameraController()
 void EditorCameraController::init()
 {
     // Left Mouse Button Action
-    m_leftMouseButtonInput->setButtons(QVariantList() << Qt3DInput::QMouseEvent::LeftButton);
+    m_leftMouseButtonInput->setButtons(QList<int>() << Qt3DInput::QMouseEvent::LeftButton);
     m_leftMouseButtonInput->setSourceDevice(m_mouseDevice);
     m_leftMouseButtonAction->addInput(m_leftMouseButtonInput);
 
     // Right Mouse Button Action
-    m_rightMouseButtonInput->setButtons(QVariantList() << Qt3DInput::QMouseEvent::RightButton);
+    m_rightMouseButtonInput->setButtons(QList<int>() << Qt3DInput::QMouseEvent::RightButton);
     m_rightMouseButtonInput->setSourceDevice(m_mouseDevice);
     m_rightMouseButtonAction->addInput(m_rightMouseButtonInput);
 
     // Middle Mouse Button Action
-    m_middleMouseButtonInput->setButtons(QVariantList() << Qt3DInput::QMouseEvent::MiddleButton);
+    m_middleMouseButtonInput->setButtons(QList<int>() << Qt3DInput::QMouseEvent::MiddleButton);
     m_middleMouseButtonInput->setSourceDevice(m_mouseDevice);
     m_middleMouseButtonAction->addInput(m_middleMouseButtonInput);
 

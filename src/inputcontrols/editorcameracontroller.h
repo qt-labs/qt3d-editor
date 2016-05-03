@@ -50,7 +50,7 @@ class QLogicalDevice;
 class QAction;
 class QActionInput;
 class QAxis;
-class QAxisInput;
+class QAnalogAxisInput;
 }
 
 class EditorViewportItem;
@@ -87,8 +87,8 @@ private:
     Qt3DInput::QActionInput *m_leftMouseButtonInput;
     Qt3DInput::QActionInput *m_rightMouseButtonInput;
     Qt3DInput::QActionInput *m_middleMouseButtonInput;
-    Qt3DInput::QAxisInput *m_mouseRxInput;
-    Qt3DInput::QAxisInput *m_mouseRyInput;
+    Qt3DInput::QAnalogAxisInput *m_mouseRxInput;
+    Qt3DInput::QAnalogAxisInput *m_mouseRyInput;
     Qt3DInput::QMouseDevice *m_mouseDevice;
     Qt3DInput::QLogicalDevice *m_logicalDevice;
     Qt3DLogic::QFrameAction *m_frameAction;
