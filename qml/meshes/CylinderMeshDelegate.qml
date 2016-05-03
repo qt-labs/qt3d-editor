@@ -38,6 +38,7 @@ MeshDelegate {
         component: meshComponentData
         componentType: thisDelegate.componentType
         minimum: 2
+        tooltip: qsTr("Ring count of the cylinder.\nMinimum is 2.") + editorScene.emptyString
     }
 
     IntPropertyInputField {
@@ -46,6 +47,7 @@ MeshDelegate {
         component: meshComponentData
         componentType: thisDelegate.componentType
         minimum: 2
+        tooltip: qsTr("Slice count of the cylinder.\nMinimum is 2.") + editorScene.emptyString
     }
 
     FloatPropertyInputField {
@@ -53,6 +55,7 @@ MeshDelegate {
         propertyName: "radius"
         component: meshComponentData
         componentType: thisDelegate.componentType
+        tooltip: qsTr("Radius of the cylinder.") + editorScene.emptyString
     }
 
     FloatPropertyInputField {
@@ -60,6 +63,7 @@ MeshDelegate {
         propertyName: "length"
         component: meshComponentData
         componentType: thisDelegate.componentType
+        tooltip: qsTr("Length of the cylinder.") + editorScene.emptyString
     }
 }
 

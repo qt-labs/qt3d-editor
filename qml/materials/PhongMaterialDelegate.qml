@@ -37,6 +37,7 @@ MaterialDelegate {
         propertyName: "ambient"
         component: materialComponentData
         componentType: thisDelegate.componentType
+        tooltip: ambientColorTooltip
     }
 
     ColorPropertyInputField {
@@ -44,6 +45,7 @@ MaterialDelegate {
         propertyName: "diffuse"
         component: materialComponentData
         componentType: thisDelegate.componentType
+        tooltip: diffuseColorTooltip
     }
 
     ColorPropertyInputField {
@@ -51,13 +53,7 @@ MaterialDelegate {
         propertyName: "specular"
         component: materialComponentData
         componentType: thisDelegate.componentType
-    }
-
-    FloatPropertyInputField {
-        label: qsTr("Shininess") + editorScene.emptyString
-        propertyName: "shininess"
-        component: materialComponentData
-        componentType: thisDelegate.componentType
+        tooltip: specularColorTooltip
     }
 }
 

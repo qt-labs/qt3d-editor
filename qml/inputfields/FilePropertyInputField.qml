@@ -39,6 +39,7 @@ PropertyInputField {
     property alias label: fileLabel.text
     property url url: " "
     property url defaultUrl: ""
+    property alias tooltip: fileLabel.tooltip
 
     onComponentValueChanged: {
         if (component !== null)

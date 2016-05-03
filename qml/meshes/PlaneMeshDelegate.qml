@@ -38,6 +38,7 @@ MeshDelegate {
         component: meshComponentData
         componentType: thisDelegate.componentType
         minimum: 0.00001
+        tooltip: qsTr("Width of the plane.") + editorScene.emptyString
     }
 
     FloatPropertyInputField {
@@ -46,6 +47,7 @@ MeshDelegate {
         component: meshComponentData
         componentType: thisDelegate.componentType
         minimum: 0.00001
+        tooltip: qsTr("Height of the plane.") + editorScene.emptyString
     }
 
     SizePropertyInputField {
@@ -56,5 +58,7 @@ MeshDelegate {
         component: meshComponentData
         componentType: thisDelegate.componentType
         minimum: 2
+        tooltip: qsTr("Resolution of the plane, i.e. how\nmany strips the mesh is divided into.")
+                 + editorScene.emptyString
     }
 }

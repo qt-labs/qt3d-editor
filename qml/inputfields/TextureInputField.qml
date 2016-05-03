@@ -37,6 +37,7 @@ ModelRoleInputField {
 
     property alias label: fileLabel.text
     property url url: " "
+    property alias tooltip: fileLabel.tooltip
 
     onCurrentValueChanged: {
         url = currentValue

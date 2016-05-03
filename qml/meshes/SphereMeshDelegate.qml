@@ -38,6 +38,7 @@ MeshDelegate {
         component: meshComponentData
         componentType: thisDelegate.componentType
         minimum: 2
+        tooltip: qsTr("Ring count of the sphere.\nMinimum is 2.") + editorScene.emptyString
     }
 
     IntPropertyInputField {
@@ -46,6 +47,7 @@ MeshDelegate {
         component: meshComponentData
         componentType: thisDelegate.componentType
         minimum: 2
+        tooltip: qsTr("Slice count of the sphere.\nMinimum is 2.") + editorScene.emptyString
     }
 
     FloatPropertyInputField {
@@ -53,6 +55,7 @@ MeshDelegate {
         propertyName: "radius"
         component: meshComponentData
         componentType: thisDelegate.componentType
+        tooltip: qsTr("Radius of the sphere.") + editorScene.emptyString
     }
 
     CheckBoxPropertyInputField {
@@ -60,6 +63,8 @@ MeshDelegate {
         propertyName: "generateTangents"
         component: meshComponentData
         componentType: thisDelegate.componentType
+        tooltip: qsTr("Check to enable automatic tangent generation\nfor the sphere. Needs to be checked\nfor textures to work properly.")
+                 + editorScene.emptyString
     }
 }
 

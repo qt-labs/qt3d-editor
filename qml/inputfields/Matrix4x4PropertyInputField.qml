@@ -37,6 +37,7 @@ PropertyInputField {
     property alias roundDigits: matrix4x4InputField.roundDigits
     property alias affine: matrix4x4InputField.affine
     property bool lockedField: false
+    property alias tooltip: matrix4x4InputField.tooltip
 
     onComponentValueChanged: {
         if (component !== null)

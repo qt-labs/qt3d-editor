@@ -118,6 +118,8 @@ ComponentDelegate {
                         id: orthoLabel
                         anchors.verticalCenter: parent.verticalCenter
                         text: qsTr("Orthographic") + editorScene.emptyString
+                        tooltip: qsTr("Use orthographic projection, i.e. camera\nwith no perspective correction.")
+                                 + editorScene.emptyString
                     }
                 }
                 QLC.RadioButton {
@@ -167,6 +169,8 @@ ComponentDelegate {
                         id: perspectiveLabel
                         anchors.verticalCenter: parent.verticalCenter
                         text: qsTr("Perspective") + editorScene.emptyString
+                        tooltip: qsTr("Use perspective projection, i.e. camera with\nperspective correction based on field-of-view.")
+                                 + editorScene.emptyString
                     }
                 }
             }
@@ -181,6 +185,8 @@ ComponentDelegate {
             step: 1 // = 0.01 (because roundDigits is 2)
             component: componentData
             componentType: thisDelegate.componentType
+            tooltip: qsTr("Near plane of the camera, i.e. objects closer\nto the camera than this will be cropped.")
+                     + editorScene.emptyString
         }
 
         FloatPropertyInputField {
@@ -191,6 +197,8 @@ ComponentDelegate {
             roundDigits: 2
             component: componentData
             componentType: thisDelegate.componentType
+            tooltip: qsTr("Far plane of the camera, i.e. objects further\naway from the camera than this will be cropped.")
+                     + editorScene.emptyString
         }
 
         FloatSliderPropertyInputField {
@@ -203,6 +211,7 @@ ComponentDelegate {
             minimum: 0
             maximum: 180
             stepSize: 1
+            tooltip: qsTr("Field of view (FOV) of the camera.") + editorScene.emptyString
         }
 
         FloatPropertyInputField {
@@ -215,6 +224,8 @@ ComponentDelegate {
             step: 10 // = 0.01 (because roundDigits is 3)
             component: componentData
             componentType: thisDelegate.componentType
+            tooltip: qsTr("Aspect ratio, i.e. width to height\nratio of the intended view.")
+                     + editorScene.emptyString
         }
 
         FloatPropertyInputField {
@@ -224,6 +235,7 @@ ComponentDelegate {
             propertyName: "left"
             component: componentData
             componentType: thisDelegate.componentType
+            tooltip: qsTr("Left limit of the view.") + editorScene.emptyString
         }
 
         FloatPropertyInputField {
@@ -233,6 +245,7 @@ ComponentDelegate {
             propertyName: "right"
             component: componentData
             componentType: thisDelegate.componentType
+            tooltip: qsTr("Right limit of the view.") + editorScene.emptyString
         }
 
         FloatPropertyInputField {
@@ -242,6 +255,7 @@ ComponentDelegate {
             propertyName: "bottom"
             component: componentData
             componentType: thisDelegate.componentType
+            tooltip: qsTr("Bottom limit of the view.") + editorScene.emptyString
         }
 
         FloatPropertyInputField {
@@ -251,6 +265,7 @@ ComponentDelegate {
             propertyName: "top"
             component: componentData
             componentType: thisDelegate.componentType
+            tooltip: qsTr("Top limit of the view.") + editorScene.emptyString
         }
 
         Vector3DPropertyInputField {
@@ -259,6 +274,8 @@ ComponentDelegate {
             propertyName: "position"
             component: componentData
             componentType: thisDelegate.componentType
+            tooltip: qsTr("Position of the camera\non the %1 axis.") // Needs arg, as it will be replaced in the vector3dinpufield
+            tooltipArgs: ["X", "Y", "Z"]
         }
 
         Vector3DPropertyInputField {
@@ -268,6 +285,7 @@ ComponentDelegate {
             component: componentData
             componentType: thisDelegate.componentType
             // TODO: Need to block (0,0,0) value for upvector somehow, it crashes the camera
+            tooltip: qsTr("Which way is up for the camera.%1") // Needs arg, as it will be replaced in the vector3dinpufield
         }
 
         Vector3DPropertyInputField {
@@ -276,6 +294,8 @@ ComponentDelegate {
             propertyName: "viewCenter"
             component: componentData
             componentType: thisDelegate.componentType
+            tooltip: qsTr("The point the camera is\nfacing on the %1 axis.") // Needs arg, as it will be replaced in the vector3dinpufield
+            tooltipArgs: ["X", "Y", "Z"]
         }
     }
 }

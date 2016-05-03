@@ -41,6 +41,7 @@ PropertyInputField {
     property int step: roundMultiplier
     property double fieldValue: component[propertyName]
     property bool blockChange: false
+    property alias tooltip: floatLabel.tooltip
 
     onComponentValueChanged: {
         blockChange = true

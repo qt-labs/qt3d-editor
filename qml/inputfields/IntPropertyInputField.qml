@@ -36,6 +36,7 @@ PropertyInputField {
     property alias label: intLabel.text
     property int minimum: 0
     property bool blockChange: false
+    property alias tooltip: intLabel.tooltip
 
     onComponentValueChanged: {
         blockChange = true

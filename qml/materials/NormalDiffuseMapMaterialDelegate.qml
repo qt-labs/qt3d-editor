@@ -42,12 +42,29 @@ MaterialDelegate {
         }
     }
 
+    ColorPropertyInputField {
+        label: qsTr("Ambient Color") + editorScene.emptyString
+        propertyName: "ambient"
+        component: materialComponentData
+        componentType: thisDelegate.componentType
+        tooltip: ambientColorTooltip
+    }
+
+    FloatPropertyInputField {
+        label: qsTr("Texture Scale") + editorScene.emptyString
+        propertyName: "textureScale"
+        component: materialComponentData
+        componentType: thisDelegate.componentType
+        tooltip: textureScaleTooltip
+    }
+
     TextureInputField {
         id: normalTextureInputField
         label: qsTr("Normal Map") + editorScene.emptyString
         componentType: thisDelegate.componentType
         modelRole: EditorSceneItemMaterialComponentsModel.MaterialNormalTextureUrl
         currentValue: materialNormalTextureUrl
+        tooltip: normalMapTooltip
     }
 
     TextureInputField {
@@ -56,27 +73,7 @@ MaterialDelegate {
         componentType: thisDelegate.componentType
         modelRole: EditorSceneItemMaterialComponentsModel.MaterialDiffuseTextureUrl
         currentValue: materialDiffuseTextureUrl
-    }
-
-    ColorPropertyInputField {
-        label: qsTr("Ambient Color") + editorScene.emptyString
-        propertyName: "ambient"
-        component: materialComponentData
-        componentType: thisDelegate.componentType
-    }
-
-    FloatPropertyInputField {
-        label: qsTr("Shininess") + editorScene.emptyString
-        propertyName: "shininess"
-        component: materialComponentData
-        componentType: thisDelegate.componentType
-    }
-
-    FloatPropertyInputField {
-        label: qsTr("Texture Scale") + editorScene.emptyString
-        propertyName: "textureScale"
-        component: materialComponentData
-        componentType: thisDelegate.componentType
+        tooltip: diffuseMapTooltip
     }
 }
 

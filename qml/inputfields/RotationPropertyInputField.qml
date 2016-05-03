@@ -42,6 +42,7 @@ PropertyInputField {
     property bool calculatingAxisAndAngle: false
     property bool blockValueChanges: false
     property bool lockedField: false
+    property alias tooltip: sliderInputfield.tooltip
 
     onCalculatingAxisAndAngleChanged: {
         if (!calculatingAxisAndAngle) {
@@ -74,6 +75,9 @@ PropertyInputField {
         }
         onLockedChanged: sliderInputfield.locked = locked
         enabled: !lockedField
+        tooltip: qsTr("The rotation factor of the\nobject on the %1 axis.")
+                 + editorScene.emptyString
+        tooltipArgs: ["X", "Y", "Z"]
     }
 
     FloatSliderInputField {

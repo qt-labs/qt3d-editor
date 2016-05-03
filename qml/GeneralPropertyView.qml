@@ -97,6 +97,8 @@ Item {
             TextInputField {
                 id: textInputField
                 label: qsTr("Entity name") + editorScene.emptyString
+                tooltip: qsTr("Name of the entity. Name may not be a duplicate to an\nalready existing one, or it will be automatically renamed.")
+                         + editorScene.emptyString
                 displayText: componentData.objectName
                 validator: RegExpValidator {
                     regExp: /^[A-Za-z_][A-Za-z0-9_ ]*$/
@@ -128,6 +130,8 @@ Item {
                     visible: propertiesLayout.visible
                     text: qsTr("Show Properties:") + editorScene.emptyString
                     Layout.alignment: Qt.AlignLeft
+                    tooltip: qsTr("Buttons to show or hide the properties of the selected entity.")
+                             + editorScene.emptyString
                 }
 
                 RowLayout {

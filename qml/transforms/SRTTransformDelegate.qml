@@ -41,6 +41,9 @@ TransformDelegate {
         componentType: thisDelegate.componentType
         lockedField: enabledField
         visible: selectedEntityType !== EditorSceneItem.Light
+        tooltip: qsTr("The scale of the object\non the %1 axis.")
+                 + editorScene.emptyString
+        tooltipArgs: ["X", "Y", "Z"]
     }
 
     RotationPropertyInputField {
@@ -52,6 +55,8 @@ TransformDelegate {
         maximum: 359
         lockedField: enabledField
         visible: selectedEntityType !== EditorSceneItem.Light
+        tooltip: qsTr("Angle of the rotation. Is applied\nto axes that have non-zero value.")
+                 + editorScene.emptyString
     }
 
     Vector3DPropertyInputField {
@@ -60,6 +65,8 @@ TransformDelegate {
         component: transformComponentData
         componentType: thisDelegate.componentType
         lockedField: enabledField
+        tooltip: qsTr("The position of the object\non the %1 axis.")
+                 + editorScene.emptyString
+        tooltipArgs: ["X", "Y", "Z"]
     }
-
 }

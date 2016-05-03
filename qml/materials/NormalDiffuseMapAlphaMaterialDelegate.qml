@@ -42,22 +42,6 @@ MaterialDelegate {
         }
     }
 
-    TextureInputField {
-        id: normalTextureInputField
-        label: qsTr("Normal Map") + editorScene.emptyString
-        componentType: thisDelegate.componentType
-        modelRole: EditorSceneItemMaterialComponentsModel.MaterialNormalTextureUrl
-        currentValue: materialNormalTextureUrl
-    }
-
-    TextureInputField {
-        id: diffuseTextureInputField
-        label: qsTr("Diffuse Map") + editorScene.emptyString
-        componentType: thisDelegate.componentType
-        modelRole: EditorSceneItemMaterialComponentsModel.MaterialDiffuseTextureUrl
-        currentValue: materialDiffuseTextureUrl
-    }
-
     // TODO: Qt3D is buggy, property change notifications are not coming for QNormalDiffuseMapAlphaMaterial
     // TODO: (See https://bugreports.qt.io/browse/QTBUG-50130)
 
@@ -66,6 +50,7 @@ MaterialDelegate {
         propertyName: "ambient"
         component: materialComponentData
         componentType: thisDelegate.componentType
+        tooltip: ambientColorTooltip
     }
 
     ColorPropertyInputField {
@@ -73,13 +58,7 @@ MaterialDelegate {
         propertyName: "specular"
         component: materialComponentData
         componentType: thisDelegate.componentType
-    }
-
-    FloatPropertyInputField {
-        label: qsTr("Shininess") + editorScene.emptyString
-        propertyName: "shininess"
-        component: materialComponentData
-        componentType: thisDelegate.componentType
+        tooltip: specularColorTooltip
     }
 
     FloatPropertyInputField {
@@ -87,6 +66,25 @@ MaterialDelegate {
         propertyName: "textureScale"
         component: materialComponentData
         componentType: thisDelegate.componentType
+        tooltip: textureScaleTooltip
+    }
+
+    TextureInputField {
+        id: normalTextureInputField
+        label: qsTr("Normal Map") + editorScene.emptyString
+        componentType: thisDelegate.componentType
+        modelRole: EditorSceneItemMaterialComponentsModel.MaterialNormalTextureUrl
+        currentValue: materialNormalTextureUrl
+        tooltip: normalMapTooltip
+    }
+
+    TextureInputField {
+        id: diffuseTextureInputField
+        label: qsTr("Diffuse Map") + editorScene.emptyString
+        componentType: thisDelegate.componentType
+        modelRole: EditorSceneItemMaterialComponentsModel.MaterialDiffuseTextureUrl
+        currentValue: materialDiffuseTextureUrl
+        tooltip: diffuseMapTooltip
     }
 }
 

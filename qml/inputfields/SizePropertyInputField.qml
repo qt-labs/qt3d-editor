@@ -38,6 +38,7 @@ PropertyInputField {
     property alias heightLabel: heightLabel.text
     property int minimum: 0
     property size newValue: Qt.size(0, 0)
+    property alias tooltip: sizeLabel.tooltip
 
     onComponentValueChanged: {
         if (component !== null)

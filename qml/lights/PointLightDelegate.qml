@@ -67,6 +67,7 @@ BasicLightDelegate {
             if (!thisItem.initialState)
                 thisItem.parent.setNewAttenuation(attenuation)
         }
+        tooltip: quadraticAttenuationTooltip
     }
 
     FloatPropertyInputField {
@@ -84,6 +85,7 @@ BasicLightDelegate {
             if (!thisItem.initialState)
                 thisItem.parent.setNewAttenuation(attenuation)
         }
+        tooltip: linearAttenuationTooltip
     }
 
     FloatPropertyInputField {
@@ -101,5 +103,6 @@ BasicLightDelegate {
             if (!thisItem.initialState)
                 thisItem.parent.setNewAttenuation(attenuation)
         }
+        tooltip: constantAttenuationTooltip
     }
 }

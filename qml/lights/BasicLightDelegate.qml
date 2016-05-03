@@ -38,6 +38,13 @@ Item {
     property bool initialState: true
     property alias inputLayout: columnLayout
 
+    property string constantAttenuationTooltip: qsTr("Constant attenuation of the light, i.e.\nthe intensity of the light will be\nunaffected by distance.")
+                                                + editorScene.emptyString
+    property string linearAttenuationTooltip: qsTr("Linear attenuation of the light, i.e.\nthe light intensity will diminish at a\nfixed rate as it travels from its source.")
+                                              + editorScene.emptyString
+    property string quadraticAttenuationTooltip: qsTr("Quadratic attenuation of the light, i.e.\nthe further the light travels from its source,\nthe more it will be diminished.")
+                                                 + editorScene.emptyString
+
     Component.onCompleted: {
         initialState = false
         if (parent.repeater.colorSet)
@@ -70,6 +77,7 @@ Item {
                 if (!thisItem.initialState)
                     thisItem.parent.setNewColor(colorValue)
             }
+            tooltip: qsTr("The color of the light.") + editorScene.emptyString
         }
 
         FloatPropertyInputField {
@@ -85,6 +93,7 @@ Item {
                 if (!thisItem.initialState)
                     thisItem.parent.setNewIntensity(fieldValue)
             }
+            tooltip: qsTr("Light intensity, i.e. the brightness.") + editorScene.emptyString
         }
     }
 }

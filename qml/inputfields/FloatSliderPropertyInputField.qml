@@ -37,6 +37,7 @@ PropertyInputField {
     property alias minimum: sliderInputfield.minimum
     property alias maximum: sliderInputfield.maximum
     property alias roundDigits: sliderInputfield.roundDigits
+    property alias tooltip: sliderInputfield.tooltip
 
     onComponentValueChanged: {
         if (component !== null)

@@ -42,6 +42,8 @@ PropertyInputField {
     property alias step: vectorInputField.step
     property vector3d fieldValue: component[propertyName]
     property bool lockedField: false
+    property alias tooltip: vectorInputField.tooltip
+    property alias tooltipArgs: vectorInputField.tooltipArgs
 
     onComponentValueChanged: {
         if (component !== null)

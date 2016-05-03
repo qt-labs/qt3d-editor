@@ -41,6 +41,7 @@ Item {
                                            0.0,0.0,0.0,0.0,
                                            0.0,0.0,0.0,0.0)
     property bool affine: true
+    property alias tooltip: matrixLabel.tooltip
 
     signal valueEdited
 

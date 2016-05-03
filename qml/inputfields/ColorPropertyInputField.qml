@@ -38,6 +38,7 @@ PropertyInputField {
     property alias label: colorLabel.text
     property color colorValue: component[propertyName]
     property color oldColor
+    property alias tooltip: colorLabel.tooltip
 
     onComponentValueChanged: {
         if (component !== null)

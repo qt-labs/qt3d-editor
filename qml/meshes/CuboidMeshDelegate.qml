@@ -38,6 +38,7 @@ MeshDelegate {
         component: meshComponentData
         componentType: thisDelegate.componentType
         minimum: 0.00001
+        tooltip: qsTr("Size of the cuboid on X axis.") + editorScene.emptyString
     }
 
     FloatPropertyInputField {
@@ -46,6 +47,7 @@ MeshDelegate {
         component: meshComponentData
         componentType: thisDelegate.componentType
         minimum: 0.00001
+        tooltip: qsTr("Size of the cuboid on Y axis.") + editorScene.emptyString
     }
 
     FloatPropertyInputField {
@@ -54,6 +56,7 @@ MeshDelegate {
         component: meshComponentData
         componentType: thisDelegate.componentType
         minimum: 0.00001
+        tooltip: qsTr("Size of the cuboid on Z axis.") + editorScene.emptyString
     }
 
     SizePropertyInputField {
@@ -64,6 +67,8 @@ MeshDelegate {
         component: meshComponentData
         componentType: thisDelegate.componentType
         minimum: 2
+        tooltip: qsTr("Resolution in the YZ direction, i.e. how\nmany strips the mesh is divided into.")
+                 + editorScene.emptyString
     }
 
     SizePropertyInputField {
@@ -74,6 +79,8 @@ MeshDelegate {
         component: meshComponentData
         componentType: thisDelegate.componentType
         minimum: 2
+        tooltip: qsTr("Resolution in the XZ direction, i.e. how\nmany strips the mesh is divided into.")
+                 + editorScene.emptyString
     }
 
     SizePropertyInputField {
@@ -84,6 +91,8 @@ MeshDelegate {
         component: meshComponentData
         componentType: thisDelegate.componentType
         minimum: 2
+        tooltip: qsTr("Resolution in the XY direction, i.e. how\nmany strips the mesh is divided into.")
+                 + editorScene.emptyString
     }
 }
 

@@ -41,5 +41,6 @@ TransformDelegate {
         component: transformComponentData
         componentType: thisDelegate.componentType
         lockedField: enabledField
+        tooltip: qsTr("Transform matrix of the entity.") + editorScene.emptyString
     }
 }

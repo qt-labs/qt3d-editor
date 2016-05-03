@@ -49,7 +49,8 @@ Item {
     property real inputCellWidth: vectorInput.width * 0.6 > mainwindow.maximumControlWidth
                                   ? mainwindow.maximumControlWidth
                                   : vectorInput.width * 0.6
-
+    property string tooltip: ""
+    property var tooltipArgs: ["", "", ""]
     property vector3d value: Qt.vector3d(0, 0, 0)
 
     signal valueEdited
@@ -88,6 +89,7 @@ Item {
             Layout.alignment: Qt.AlignLeft
             text: label + " " + qsTr("X") + editorScene.emptyString
             enabled: lockButton.buttonEnabled
+            tooltip: vectorInput.tooltip.arg(tooltipArgs[0])
         }
 
         Rectangle {
@@ -153,6 +155,7 @@ Item {
             Layout.alignment: Qt.AlignLeft
             text: label + " " + qsTr("Y") + editorScene.emptyString
             enabled: lockButton.buttonEnabled
+            tooltip: vectorInput.tooltip.arg(tooltipArgs[1])
         }
 
         Rectangle {
@@ -216,6 +219,7 @@ Item {
             Layout.alignment: Qt.AlignLeft
             text: label + " " + qsTr("Z") + editorScene.emptyString
             enabled: lockButton.buttonEnabled
+            tooltip: vectorInput.tooltip.arg(tooltipArgs[2])
         }
 
         Rectangle {

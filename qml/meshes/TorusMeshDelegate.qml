@@ -38,6 +38,7 @@ MeshDelegate {
         component: meshComponentData
         componentType: thisDelegate.componentType
         minimum: 2
+        tooltip: qsTr("Ring count of the torus.\nMinimum is 2.") + editorScene.emptyString
     }
 
     IntPropertyInputField {
@@ -46,19 +47,25 @@ MeshDelegate {
         component: meshComponentData
         componentType: thisDelegate.componentType
         minimum: 2
+        tooltip: qsTr("Slice count of the torus.\nMinimum is 2.") + editorScene.emptyString
     }
 
     FloatPropertyInputField {
-        label: qsTr("Outer Radius") + editorScene.emptyString
+        label: qsTr("Ring Radius") + editorScene.emptyString
         propertyName: "radius"
         component: meshComponentData
         componentType: thisDelegate.componentType
+        tooltip: qsTr("Ring radius, i.e. the size of the torus.")
+                 + editorScene.emptyString
     }
 
     FloatPropertyInputField {
-        label: qsTr("Inner Radius") + editorScene.emptyString
+        id: innerRadius
+        label: qsTr("Tube Radius") + editorScene.emptyString
         propertyName: "minorRadius"
         component: meshComponentData
         componentType: thisDelegate.componentType
+        tooltip: qsTr("Tube radius, i.e. the radius of the tube.")
+                 + editorScene.emptyString
     }
 }

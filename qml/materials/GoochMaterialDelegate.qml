@@ -37,6 +37,7 @@ MaterialDelegate {
         propertyName: "diffuse"
         component: materialComponentData
         componentType: thisDelegate.componentType
+        tooltip: diffuseColorTooltip
     }
 
     ColorPropertyInputField {
@@ -44,6 +45,7 @@ MaterialDelegate {
         propertyName: "specular"
         component: materialComponentData
         componentType: thisDelegate.componentType
+        tooltip: specularColorTooltip
     }
 
     ColorPropertyInputField {
@@ -51,7 +53,8 @@ MaterialDelegate {
         propertyName: "cool"
         component: materialComponentData
         componentType: thisDelegate.componentType
-
+        tooltip: qsTr("Cool color of the material, i.e. the color\nin the areas away from the light source.")
+                 + editorScene.emptyString
     }
 
     ColorPropertyInputField {
@@ -59,6 +62,8 @@ MaterialDelegate {
         propertyName: "warm"
         component: materialComponentData
         componentType: thisDelegate.componentType
+        tooltip: qsTr("Warm color of the material, i.e. the color\nin the areas facing the light source.")
+                 + editorScene.emptyString
     }
 
     FloatPropertyInputField {
@@ -66,6 +71,8 @@ MaterialDelegate {
         propertyName: "alpha"
         component: materialComponentData
         componentType: thisDelegate.componentType
+        tooltip: qsTr("Alpha of the material, i.e. the scale\nfactor that controls the combination\nof cool color and base color.")
+                 + editorScene.emptyString
     }
 
     FloatPropertyInputField {
@@ -73,13 +80,8 @@ MaterialDelegate {
         propertyName: "beta"
         component: materialComponentData
         componentType: thisDelegate.componentType
-    }
-
-    FloatPropertyInputField {
-        label: qsTr("Shininess") + editorScene.emptyString
-        propertyName: "shininess"
-        component: materialComponentData
-        componentType: thisDelegate.componentType
+        tooltip: qsTr("Beta of the material, i.e. the scale\nfactor that controls the combination\nof warm color and base color.")
+                 + editorScene.emptyString
     }
 }
 

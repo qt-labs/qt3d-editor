@@ -35,6 +35,21 @@ Item {
     default property alias _contentChildren: columnLayout.data
     property int componentType: EditorSceneItemComponentsModel.Unknown
 
+    property string ambientColorTooltip: qsTr("Ambient color of the material, i.e.\nthe color seen in the absence of light.")
+                                         + editorScene.emptyString
+    property string diffuseColorTooltip: qsTr("Diffuse color of the material, i.e.\nthe color in the area of light.")
+                                         + editorScene.emptyString
+    property string specularColorTooltip: qsTr("Specular color of the material, i.e.\nthe color in the specular highlights.")
+                                          + editorScene.emptyString
+    property string diffuseMapTooltip: qsTr("Path to the file containing\nthe diffuse texture image.")
+                                       + editorScene.emptyString
+    property string normalMapTooltip: qsTr("Path to the file containing\nthe normal texture image.")
+                                      + editorScene.emptyString
+    property string specularMapTooltip: qsTr("Path to the file containing\nthe specular texture image.")
+                                        + editorScene.emptyString
+    property string textureScaleTooltip: qsTr("Scale of the texture. Scale affects in\ninverse, i.e. setting the value to 2\nmakes the texture half the size.")
+                                         + editorScene.emptyString
+
     Column {
         id: columnLayout
         spacing: 4
@@ -44,5 +59,14 @@ Item {
         anchors.leftMargin: 8
         anchors.right: parent.right
         anchors.rightMargin: 8
+
+        FloatPropertyInputField {
+            label: qsTr("Shininess") + editorScene.emptyString
+            propertyName: "shininess"
+            component: materialComponentData
+            componentType: thisDelegate.componentType
+            tooltip: qsTr("Shininess of the material. The\nsmaller the value, the wider and\nless intense the specular highlight.")
+                     + editorScene.emptyString
+        }
     }
 }

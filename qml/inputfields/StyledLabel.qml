@@ -26,11 +26,25 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
+import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 import Qt.labs.controls 1.0 as QLC
 
 QLC.Label {
+    property alias tooltip: button.tooltip
     color: enabled ? mainwindow.textColor : mainwindow.disabledTextColor
     font.family: mainwindow.labelFontFamily
     font.weight: mainwindow.labelFontWeight
     font.pixelSize: mainwindow.labelFontPixelSize
+
+    Button {
+        id: button
+        anchors.fill: parent
+        style: ButtonStyle {
+            background: Rectangle {
+                border.width: 0
+                color: "transparent"
+            }
+        }
+    }
 }

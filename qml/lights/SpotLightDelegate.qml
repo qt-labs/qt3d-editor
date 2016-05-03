@@ -71,6 +71,9 @@ BasicLightDelegate {
             if (!thisItem.initialState)
                 thisItem.parent.setNewDirection(fieldValue)
         }
+        tooltip: qsTr("The point the light is\nfacing at on the %1 axis.")
+                 + editorScene.emptyString
+        tooltipArgs: ["X", "Y", "Z"]
     }
 
     FloatPropertyInputField {
@@ -85,6 +88,7 @@ BasicLightDelegate {
             if (!thisItem.initialState)
                 thisItem.parent.setNewCutOffAngle(fieldValue)
         }
+        tooltip: qsTr("Angle of the spotlight cone.") + editorScene.emptyString
     }
 
     FloatPropertyInputField {
@@ -102,6 +106,7 @@ BasicLightDelegate {
             if (!thisItem.initialState)
                 thisItem.parent.setNewAttenuation(attenuation)
         }
+        tooltip: quadraticAttenuationTooltip
     }
 
     FloatPropertyInputField {
@@ -119,6 +124,7 @@ BasicLightDelegate {
             if (!thisItem.initialState)
                 thisItem.parent.setNewAttenuation(attenuation)
         }
+        tooltip: linearAttenuationTooltip
     }
 
     FloatPropertyInputField {
@@ -136,6 +142,7 @@ BasicLightDelegate {
             if (!thisItem.initialState)
                 thisItem.parent.setNewAttenuation(attenuation)
         }
+        tooltip: constantAttenuationTooltip
     }
 }
 

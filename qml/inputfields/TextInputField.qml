@@ -34,6 +34,7 @@ Item {
     height: mainLayout.height
 
     property alias label: textLabel.text
+    property alias tooltip: textLabel.tooltip
 
     // text is what is shown on the field
     property string displayText: ""

@@ -50,6 +50,9 @@ BasicLightDelegate {
             if (!thisItem.initialState)
                 thisItem.parent.setNewDirection(fieldValue)
         }
+        tooltip: qsTr("The point the light is\nfacing at on the %1 axis.")
+                 + editorScene.emptyString
+        tooltipArgs: ["X", "Y", "Z"]
     }
 }
 

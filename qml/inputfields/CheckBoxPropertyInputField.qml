@@ -35,6 +35,7 @@ PropertyInputField {
 
     property string checkBoxLabel: checkBox.text
     property bool blockChanges: false
+    property alias tooltip: checkBoxLabel.tooltip
 
     onComponentValueChanged: {
         blockChanges = true

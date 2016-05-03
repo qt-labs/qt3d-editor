@@ -27,6 +27,7 @@
 ****************************************************************************/
 import QtQuick 2.5
 import QtQuick.Controls 1.4
+import QtQuick.Controls.Styles 1.4
 import QtQuick.Layouts 1.1
 import QtQml.Models 2.2
 
@@ -70,79 +71,85 @@ Item {
                 cellHeight: buttonSize + gridMargin
                 cellWidth: buttonSize + gridMargin
                 model: EntityModel { id: entityModel }
-                delegate: MouseArea {
-                    id: delegateRoot
+                delegate: Button {
+                    id: entityButton
                     width: buttonSize
                     height: buttonSize
-
-                    property int dragPositionX
-                    property int dragPositionY
-
-                    drag.target: dragEntityItem
-
-                    onPressed: {
-                        var globalPos = mapToItem(applicationArea, mouseX, mouseY)
-                        dragPositionX = globalPos.x
-                        dragPositionY = globalPos.y
-                        dragEntityItem.startDrag(delegateRoot, meshDragImage,
-                                                 "insertEntity", dragPositionX, dragPositionY,
-                                                 meshType)
-                        editorScene.showPlaceholderEntity("dragInsert", meshType)
+                    style: ButtonStyle {
+                        background: Rectangle {
+                            border.width: 0
+                            color: mainwindow.itemBackgroundColor
+                        }
                     }
-
-                    onPositionChanged: {
-                        var globalPos = mapToItem(applicationArea, mouseX, mouseY)
-                        dragPositionX = globalPos.x
-                        dragPositionY = globalPos.y
-                        dragEntityItem.setPosition(dragPositionX, dragPositionY)
-                        var scenePos = editorViewport.mapFromItem(applicationArea,
-                                                                  dragPositionX,
-                                                                  dragPositionY)
-                        editorScene.movePlaceholderEntity("dragInsert",
-                                    editorScene.getWorldPosition(scenePos.x, scenePos.y))
+                    tooltip: qsTr("You can click here or drag'n'drop to add a new <i>%1</i> to the scene.").arg(
+                                 meshString.toLowerCase()) + editorScene.emptyString
+                    Column {
+                        anchors.centerIn: parent
+                        Image {
+                            source: meshImage
+                            width: 50
+                            height: 50
+                            anchors.horizontalCenter: parent.horizontalCenter
+                        }
+                        Text {
+                            text: meshString
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            color: mainwindow.textColor
+                            font.family: mainwindow.labelFontFamily
+                            font.weight: mainwindow.labelFontWeight
+                            font.pixelSize: mainwindow.labelFontPixelSize
+                        }
                     }
+                    MouseArea {
+                        id: delegateRoot
+                        width: buttonSize
+                        height: buttonSize
 
-                    onReleased: {
-                        var dropResult = dragEntityItem.endDrag(true)
-                        editorScene.hidePlaceholderEntity("dragInsert")
-                        // If no DropArea handled the drop, create new entity
-                        if (dropResult === Qt.IgnoreAction) {
+                        property int dragPositionX
+                        property int dragPositionY
+
+                        drag.target: dragEntityItem
+
+                        onPressed: {
+                            console.log("pressed")
+                            var globalPos = mapToItem(applicationArea, mouseX, mouseY)
+                            dragPositionX = globalPos.x
+                            dragPositionY = globalPos.y
+                            dragEntityItem.startDrag(delegateRoot, meshDragImage,
+                                                     "insertEntity", dragPositionX, dragPositionY,
+                                                     meshType)
+                            editorScene.showPlaceholderEntity("dragInsert", meshType)
+                        }
+
+                        onPositionChanged: {
+                            var globalPos = mapToItem(applicationArea, mouseX, mouseY)
+                            dragPositionX = globalPos.x
+                            dragPositionY = globalPos.y
+                            dragEntityItem.setPosition(dragPositionX, dragPositionY)
                             var scenePos = editorViewport.mapFromItem(applicationArea,
                                                                       dragPositionX,
                                                                       dragPositionY)
-                            createNewEntity(meshType, scenePos.x, scenePos.y)
+                            editorScene.movePlaceholderEntity("dragInsert",
+                                                              editorScene.getWorldPosition(scenePos.x, scenePos.y))
                         }
-                    }
 
-                    onCanceled: {
-                        dragEntityItem.endDrag(false)
-                        editorScene.hidePlaceholderEntity("dragInsert")
-                    }
-
-                    Rectangle {
-                        id: entityButton
-                        width: buttonSize
-                        height: buttonSize
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        anchors.verticalCenter: parent.verticalCenter
-                        color: mainwindow.itemBackgroundColor
-                        Column {
-                            anchors.centerIn: parent
-                            Image {
-                                source: meshImage
-                                width: 50
-                                height: 50
-                                anchors.horizontalCenter: parent.horizontalCenter
-                            }
-                            Text {
-                                text: meshString
-                                anchors.horizontalCenter: parent.horizontalCenter
-                                color: mainwindow.textColor
-                                font.family: mainwindow.labelFontFamily
-                                font.weight: mainwindow.labelFontWeight
-                                font.pixelSize: mainwindow.labelFontPixelSize
+                        onReleased: {
+                            var dropResult = dragEntityItem.endDrag(true)
+                            editorScene.hidePlaceholderEntity("dragInsert")
+                            // If no DropArea handled the drop, create new entity
+                            if (dropResult === Qt.IgnoreAction) {
+                                var scenePos = editorViewport.mapFromItem(applicationArea,
+                                                                          dragPositionX,
+                                                                          dragPositionY)
+                                createNewEntity(meshType, scenePos.x, scenePos.y)
                             }
                         }
+
+                        onCanceled: {
+                            dragEntityItem.endDrag(false)
+                            editorScene.hidePlaceholderEntity("dragInsert")
+                        }
+
                     }
                 }
             }

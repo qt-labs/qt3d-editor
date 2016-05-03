@@ -39,6 +39,7 @@ MeshDelegate {
         componentType: thisDelegate.componentType
         dialog.nameFilters: [qsTr("Wavefront files (*.obj)") + editorScene.emptyString]
         defaultUrl: "qrc:/meshes/defaultmesh.obj"
+        tooltip: qsTr("The path to the object\nfile to be loaded.") + editorScene.emptyString
     }
 }
 

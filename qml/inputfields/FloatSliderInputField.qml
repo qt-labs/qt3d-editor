@@ -37,13 +37,14 @@ Item {
     property alias lockProperty: lockButton.lockProperty
     property alias lockComponent: lockButton.lockComponent
     property alias locked: lockButton.locked
-    property alias label: title.text
+    property alias label: sliderLabel.text
     property alias stepSize: slider.stepSize
     property double minimum: 0.0
     property double maximum: 100.0
     property double value: 0.0
     property int roundDigits: 1 // TODO: Determine nice default rounding
     property int roundMultiplier: Math.pow(10, roundDigits) // Calculated from roundDigits, do not set directly
+    property alias tooltip: sliderLabel.tooltip
 
     function roundNumber(number) {
         if (roundDigits >= 0)
@@ -78,7 +79,7 @@ Item {
         width: parent.width
 
         StyledLabel {
-            id: title
+            id: sliderLabel
             text: qsTr("Float Slider") + editorScene.emptyString
             enabled: lockButton.buttonEnabled
             Layout.alignment: Qt.AlignLeft
