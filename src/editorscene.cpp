@@ -621,14 +621,15 @@ void EditorScene::clearSceneCamerasAndLights()
     m_sceneCamerasModel.setStringList(QStringList());
 }
 
-Qt3DRender::QObjectPicker * EditorScene::createObjectPickerForEntity(Qt3DCore::QEntity *entity)
+Qt3DRender::QObjectPicker *EditorScene::createObjectPickerForEntity(Qt3DCore::QEntity *entity)
 {
     Qt3DRender::QObjectPicker *picker = nullptr;
     EditorSceneItem *item = m_sceneItems.value(entity->id());
     if (item && item->itemType() == EditorSceneItem::SceneLoader) {
         // Scene loaders need multiple pickers. Null picker is returned.
         createSceneLoaderChildPickers(entity, item->internalPickers());
-    } else {
+    } else if (!item || item->itemType() != EditorSceneItem::Group) {
+        // Group is not visible by itself (has no mesh), so no picker is needed
         picker = new Qt3DRender::QObjectPicker(entity);
         picker->setHoverEnabled(false);
         picker->setObjectName(QStringLiteral("__internal object picker ") + entity->objectName());
