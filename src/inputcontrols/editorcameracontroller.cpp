@@ -78,17 +78,17 @@ EditorCameraController::~EditorCameraController()
 void EditorCameraController::init()
 {
     // Left Mouse Button Action
-    m_leftMouseButtonInput->setButtons(QList<int>() << Qt3DInput::QMouseEvent::LeftButton);
+    m_leftMouseButtonInput->setButtons(QVector<int>() << Qt3DInput::QMouseEvent::LeftButton);
     m_leftMouseButtonInput->setSourceDevice(m_mouseDevice);
     m_leftMouseButtonAction->addInput(m_leftMouseButtonInput);
 
     // Right Mouse Button Action
-    m_rightMouseButtonInput->setButtons(QList<int>() << Qt3DInput::QMouseEvent::RightButton);
+    m_rightMouseButtonInput->setButtons(QVector<int>() << Qt3DInput::QMouseEvent::RightButton);
     m_rightMouseButtonInput->setSourceDevice(m_mouseDevice);
     m_rightMouseButtonAction->addInput(m_rightMouseButtonInput);
 
     // Middle Mouse Button Action
-    m_middleMouseButtonInput->setButtons(QList<int>() << Qt3DInput::QMouseEvent::MiddleButton);
+    m_middleMouseButtonInput->setButtons(QVector<int>() << Qt3DInput::QMouseEvent::MiddleButton);
     m_middleMouseButtonInput->setSourceDevice(m_mouseDevice);
     m_middleMouseButtonAction->addInput(m_middleMouseButtonInput);
 
