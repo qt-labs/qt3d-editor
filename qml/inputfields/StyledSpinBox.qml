@@ -26,9 +26,9 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
-import Qt.labs.controls 1.0 as QLC
+import QtQuick.Controls 2.0 as QQC2
 
-QLC.SpinBox {
+QQC2.SpinBox {
     id: control
     font.family: mainwindow.labelFontFamily
     font.weight: mainwindow.labelFontWeight

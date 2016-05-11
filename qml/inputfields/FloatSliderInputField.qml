@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
-import Qt.labs.controls 1.0 as QLC
+import QtQuick.Controls 2.0 as QQC2
 import QtQuick.Layouts 1.2
 
 Item {
@@ -99,7 +99,7 @@ Item {
             anchors.right: floatInput.right
         }
 
-        QLC.Slider {
+        QQC2.Slider {
             id: slider
 
             property bool blockCommit: false

@@ -28,7 +28,6 @@
 import QtQuick 2.5
 import com.theqtcompany.SceneEditor3D 1.0
 import QtQuick.Controls 1.4
-import Qt.labs.controls 1.0 as QLC
 import QtQuick.Layouts 1.1
 
 Item {

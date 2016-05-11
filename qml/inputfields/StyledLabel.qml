@@ -28,9 +28,9 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
-import Qt.labs.controls 1.0 as QLC
+import QtQuick.Controls 2.0 as QQC2
 
-QLC.Label {
+QQC2.Label {
     property alias tooltip: button.tooltip
     color: enabled ? mainwindow.textColor : mainwindow.disabledTextColor
     font.family: mainwindow.labelFontFamily

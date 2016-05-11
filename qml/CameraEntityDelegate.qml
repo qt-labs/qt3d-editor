@@ -27,7 +27,7 @@
 ****************************************************************************/
 import QtQuick 2.5
 import com.theqtcompany.SceneEditor3D 1.0
-import Qt.labs.controls 1.0 as QLC
+import QtQuick.Controls 2.0 as QQC2
 import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
@@ -72,10 +72,10 @@ ComponentDelegate {
         spacing: 4
         width: parent.width
 
-        QLC.GroupBox {
+        QQC2.GroupBox {
             title: qsTr("Projection Type") + editorScene.emptyString
             Row {
-                QLC.RadioButton {
+                QQC2.RadioButton {
                     id: orthoButton
                     checked: componentData.projectionType === CameraLens.OrthographicProjection
                     indicator: Rectangle {
@@ -122,7 +122,7 @@ ComponentDelegate {
                                  + editorScene.emptyString
                     }
                 }
-                QLC.RadioButton {
+                QQC2.RadioButton {
                     id: perspectiveButton
                     checked: componentData.projectionType === CameraLens.PerspectiveProjection
                     indicator: Rectangle {

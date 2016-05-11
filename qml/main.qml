@@ -27,7 +27,6 @@
 ****************************************************************************/
 import QtQuick 2.5
 import QtQuick.Controls 1.4
-import Qt.labs.controls 1.0 as QLC
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Layouts 1.1
 import QtQuick.Dialogs 1.2

@@ -27,7 +27,7 @@
 ****************************************************************************/
 import QtQuick 2.5
 import com.theqtcompany.SceneEditor3D 1.0
-import Qt.labs.controls 1.0 as QLC
+import QtQuick.Controls 2.0 as QQC2
 
 ComponentDelegate {
     id: transformDelegate
@@ -60,7 +60,7 @@ ComponentDelegate {
 
         Component.onCompleted: transformCombobox.currentIndex = transformDelegate.currentTransform - 1
 
-        QLC.ComboBox {
+        QQC2.ComboBox {
             id: transformCombobox
             anchors.right: parent.right
             anchors.rightMargin: 4

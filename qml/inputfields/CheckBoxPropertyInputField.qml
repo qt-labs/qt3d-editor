@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
-import Qt.labs.controls 1.0 as QLC
+import QtQuick.Controls 2.0 as QQC2
 
 PropertyInputField {
     id: checkBoxInput
@@ -35,7 +35,7 @@ PropertyInputField {
 
     property string checkBoxLabel: checkBox.text
     property bool blockChanges: false
-    property alias tooltip: checkBoxLabel.tooltip
+    property alias tooltip: checkBoxLabelItem.tooltip
 
     onComponentValueChanged: {
         blockChanges = true
@@ -45,6 +45,7 @@ PropertyInputField {
     }
 
     StyledLabel {
+        id: checkBoxLabelItem
         text: checkBoxLabel
         anchors.left: parent.left
         anchors.verticalCenter: checkBox.verticalCenter
@@ -59,7 +60,7 @@ PropertyInputField {
         anchors.right: checkBox.right
     }
 
-    QLC.CheckBox {
+    QQC2.CheckBox {
         id: checkBox
         anchors.right: parent.right
         anchors.rightMargin: 11

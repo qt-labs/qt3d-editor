@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
-import Qt.labs.controls 1.0 as QLC
+import QtQuick.Controls 2.0 as QQC2
 import QtQuick.Layouts 1.2
 import QtQuick.Dialogs 1.2
 
@@ -95,7 +95,7 @@ PropertyInputField {
             anchors.right: colorButton.right
         }
 
-        QLC.Button {
+        QQC2.Button {
             id: colorButton
             Layout.alignment: Qt.AlignRight
             anchors.right: lockButton.left
