@@ -970,7 +970,7 @@ Qt3DRender::QCameraLens *EditorUtils::entityCameraLens(Qt3DCore::QEntity *entity
 bool EditorUtils::isGroupEntity(Qt3DCore::QEntity *entity)
 {
     Qt3DCore::QComponentVector components = entity->components();
-    return (components().size() == 0 || (components.size() == 1 && entityTransform(entity)));
+    return (components.size() == 0 || (components.size() == 1 && entityTransform(entity)));
 }
 
 // Returns the intersection point of a plane and a ray.
