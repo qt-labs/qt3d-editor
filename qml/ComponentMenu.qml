@@ -76,16 +76,15 @@ Menu {
     MenuItem {
         text: qsTr("Reset") + editorScene.emptyString
         enabled: !entityTreeView.sceneRootSelected
-        iconSource: "qrc:/images/cross.png" // TODO: Needs a reset icon
+        iconSource: "qrc:/images/reset_all.png"
         onTriggered: {
             editorScene.undoHandler.createResetEntityCommand(selectedEntityName)
         }
     }
-    // TODO: Do we want this in context menu, or transform bar?
     MenuItem {
         text: qsTr("Reset Transform") + editorScene.emptyString
         enabled: !entityTreeView.sceneRootSelected && !entityTreeView.cameraSelected
-        iconSource: "qrc:/images/cross.png" // TODO: Needs a reset icon
+        iconSource: "qrc:/images/reset.png"
         onTriggered: {
             editorScene.undoHandler.createResetTransformCommand(selectedEntityName)
         }

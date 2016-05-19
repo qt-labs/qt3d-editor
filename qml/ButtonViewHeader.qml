@@ -90,7 +90,7 @@ Rectangle {
             width: 20
             height: 20
             anchors.verticalCenter: parent.verticalCenter
-            source: "images/cross.png" // TODO: Replace with reset icon
+            source: "images/reset.png"
         }
         onClicked: {
             editorScene.undoHandler.createResetTransformCommand(selectedEntityName)

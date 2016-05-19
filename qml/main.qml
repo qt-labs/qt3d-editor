@@ -498,6 +498,7 @@ ApplicationWindow {
                 anchors.verticalCenter: parent.verticalCenter
                 enabledIconSource: "/images/reset_camera_to_default.png"
                 disabledIconSource: "/images/reset_camera_to_default.png"
+                pressedIconSource: "/images/reset_camera_to_default_pressed.png"
                 hoveredBgColor: mainwindow.listHighlightColor
                 selectedBgColor: mainwindow.iconHighlightColor
                 tooltip: qsTr("Reset to Default (Ctrl + R)") + editorScene.emptyString

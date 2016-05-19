@@ -36,6 +36,7 @@ Item {
 
     property string enabledIconSource
     property string disabledIconSource
+    property string pressedIconSource
     property alias tooltip: propertyButton.tooltip
     property bool buttonEnabled
     property color defaultBgColor: "transparent"
@@ -75,7 +76,16 @@ Item {
     Button {
         id: propertyButton
         anchors.centerIn: parent.Center
-        iconSource: (buttonEnabled && enabled) ? enabledIconSource : disabledIconSource
+        iconSource: {
+            if (buttonEnabled && enabled) {
+                if (pressed && pressedIconSource !== "")
+                    pressedIconSource
+                else
+                    enabledIconSource
+            } else {
+                disabledIconSource
+            }
+        }
         style: enabledButtonStyle
         activeFocusOnTab: false
         onClicked: {
