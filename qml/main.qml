@@ -87,7 +87,8 @@ ApplicationWindow {
 
     property string systemLanguage: editorScene.language
 
-    menuBar: MenuBar {
+    menuBar: mainMenuBar
+    MenuBar {
         id: mainMenuBar
         Menu {
             title: qsTr("&File") + editorScene.emptyString
