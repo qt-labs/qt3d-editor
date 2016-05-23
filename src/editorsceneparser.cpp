@@ -636,11 +636,15 @@ void EditorSceneParser::cacheProperties(EditorSceneParser::EditorItemType type,
             properties.append(meta->property(i));
     }
 
-    // TODO: Need to dig the properties from QAbstractLight
-//    if (qobject_cast<Qt3DRender::QAbstractLight *>(defaultObject)) {
-//        // For specialized lights, add the parent class properties
-//        properties.append(m_propertyMap.value(Light));
-//    }
+    // For lights, add the parent class (QAbstractLight) properties
+    if (qobject_cast<Qt3DRender::QAbstractLight *>(defaultObject)) {
+        for (int i = 0; i < meta->propertyOffset(); ++i) {
+            if (QByteArray(meta->property(i).name()) == QByteArrayLiteral("intensity")
+                    || QByteArray(meta->property(i).name()) == QByteArrayLiteral("color")) {
+                properties.append(meta->property(i));
+            }
+        }
+    }
 
     // Store enabled property for entities
     Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>(defaultObject);
