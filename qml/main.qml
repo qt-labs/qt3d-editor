@@ -577,8 +577,17 @@ ApplicationWindow {
 
         function restoreSelection(entity) {
             var index = editorScene.sceneModel.getModelIndex(entity)
+            expandTo(index)
             entityTree.view.forceActiveFocus()
             entityTree.view.selection.setCurrentIndex(index, ItemSelectionModel.SelectCurrent)
+        }
+
+        function expandTo(index) {
+            var target = index
+            do {
+                target = target.parent
+                entityTree.view.expand(target)
+            } while (target.valid)
         }
     }
 
