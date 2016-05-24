@@ -72,9 +72,10 @@ PropertyInputField {
             Layout.preferredWidth: sizeInput.width * 0.6 > mainwindow.maximumControlWidth
                                    ? mainwindow.maximumControlWidth
                                    : sizeInput.width * 0.6
+            property real columnSpacing: widthLabel.contentWidth != 0 ? 6 : 4
             property real cellwidth: (Layout.preferredWidth
                                       - widthLabel.contentWidth
-                                      - heightLabel.contentWidth) / 2 - 6 // 6 = column spacing
+                                      - heightLabel.contentWidth) / 2 - columnSpacing
 
 
             Rectangle {
@@ -103,6 +104,7 @@ PropertyInputField {
                 anchors.right: heightLabel.left
                 anchors.rightMargin: 4
                 selectByMouse: true
+                horizontalAlignment: TextInput.AlignHCenter
 
                 onEditingFinished: {
                     newValue.height = component[propertyName].height
@@ -132,6 +134,7 @@ PropertyInputField {
                 implicitWidth: parent.cellwidth
                 enabled: lockButton.buttonEnabled
                 selectByMouse: true
+                horizontalAlignment: TextInput.AlignHCenter
 
                 onEditingFinished: {
                     newValue.width = component[propertyName].width

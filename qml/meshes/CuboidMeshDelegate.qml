@@ -27,10 +27,13 @@
 ****************************************************************************/
 import QtQuick 2.5
 import com.theqtcompany.SceneEditor3D 1.0
+import QtQuick.Layouts 1.2
 
 MeshDelegate {
     id: thisDelegate
     componentType: EditorSceneItemComponentsModel.Mesh
+
+    property string fieldSeparator: " - "
 
     FloatPropertyInputField {
         label: qsTr("X Extent") + editorScene.emptyString
@@ -59,10 +62,15 @@ MeshDelegate {
         tooltip: qsTr("Size of the cuboid on Z axis.") + editorScene.emptyString
     }
 
+    StyledLabel {
+        text: qsTr("Resolution") + editorScene.emptyString
+        Layout.alignment: Qt.AlignLeft
+    }
+
     SizePropertyInputField {
-        label: qsTr("YZ Resolution") + editorScene.emptyString
-        widthLabel: qsTr("Y") + editorScene.emptyString
-        heightLabel: qsTr("Z") + editorScene.emptyString
+        label: qsTr("Y - Z") + editorScene.emptyString
+        widthLabel: editorScene.emptyString
+        heightLabel: fieldSeparator
         propertyName: "yzMeshResolution"
         component: meshComponentData
         componentType: thisDelegate.componentType
@@ -72,9 +80,9 @@ MeshDelegate {
     }
 
     SizePropertyInputField {
-        label: qsTr("XZ Resolution") + editorScene.emptyString
-        widthLabel: qsTr("X") + editorScene.emptyString
-        heightLabel: qsTr("Z") + editorScene.emptyString
+        label: qsTr("X - Z") + editorScene.emptyString
+        widthLabel: editorScene.emptyString
+        heightLabel: fieldSeparator
         propertyName: "xzMeshResolution"
         component: meshComponentData
         componentType: thisDelegate.componentType
@@ -84,9 +92,9 @@ MeshDelegate {
     }
 
     SizePropertyInputField {
-        label: qsTr("XY Resolution") + editorScene.emptyString
-        widthLabel: qsTr("X") + editorScene.emptyString
-        heightLabel: qsTr("Y") + editorScene.emptyString
+        label: qsTr("X - Y") + editorScene.emptyString
+        widthLabel: editorScene.emptyString
+        heightLabel: fieldSeparator
         propertyName: "xyMeshResolution"
         component: meshComponentData
         componentType: thisDelegate.componentType

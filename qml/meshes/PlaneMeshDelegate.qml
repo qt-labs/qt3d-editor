@@ -27,6 +27,7 @@
 ****************************************************************************/
 import QtQuick 2.5
 import com.theqtcompany.SceneEditor3D 1.0
+import QtQuick.Layouts 1.2
 
 MeshDelegate {
     id: thisDelegate
@@ -50,10 +51,15 @@ MeshDelegate {
         tooltip: qsTr("Height of the plane.") + editorScene.emptyString
     }
 
+    StyledLabel {
+        text: qsTr("Resolution") + editorScene.emptyString
+        Layout.alignment: Qt.AlignLeft
+    }
+
     SizePropertyInputField {
-        label: qsTr("Mesh Resolution") + editorScene.emptyString
-        widthLabel: "Width"
-        heightLabel: "Height"
+        label: qsTr("W - H") + editorScene.emptyString
+        widthLabel: editorScene.emptyString
+        heightLabel: " - "
         propertyName: "meshResolution"
         component: meshComponentData
         componentType: thisDelegate.componentType
