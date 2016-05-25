@@ -50,10 +50,12 @@ public:
         NormalDiffuseMap,
         NormalDiffuseMapAlpha,
         NormalDiffuseSpecularMap,
-        PerVertexColor,
         PhongAlpha,
         Phong,
+        PerVertexColor,
         Unknown = 1000
+        // Keep PerVertexColor one last known type until it's used in materialCombobox
+        // else it upsets the index
     };
 
     enum EditorSceneItemMaterialComponentsRoles {

@@ -88,7 +88,6 @@ ComponentDelegate {
                     append({text: qsTr("Normal & Diffuse Map")})
                     append({text: qsTr("Normal & Diffuse Map Alpha")})
                     append({text: qsTr("Normal, Diffuse & Specular Map")})
-                    append({text: qsTr("Per Vertex Color")})
                     append({text: qsTr("Phong Alpha")})
                     append({text: qsTr("Phong")})
                 }
@@ -116,8 +115,6 @@ ComponentDelegate {
                         componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.NormalDiffuseMapAlpha)
                     else if (currentIndex === EditorSceneItemMaterialComponentsModel.NormalDiffuseSpecularMap - 1)
                         componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.NormalDiffuseSpecularMap)
-                    else if (currentIndex === EditorSceneItemMaterialComponentsModel.PerVertexColor - 1)
-                        componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.PerVertexColor)
                     else if (currentIndex === EditorSceneItemMaterialComponentsModel.PhongAlpha - 1)
                         componentData.model.setMaterial(EditorSceneItemMaterialComponentsModel.PhongAlpha)
                     else if (currentIndex === EditorSceneItemMaterialComponentsModel.Phong - 1)
@@ -151,8 +148,6 @@ ComponentDelegate {
                     return "NormalDiffuseMapAlphaMaterialDelegate.qml";
                 if (materialType == EditorSceneItemMaterialComponentsModel.NormalDiffuseSpecularMap)
                     return "NormalDiffuseSpecularMapMaterialDelegate.qml";
-                if (materialType == EditorSceneItemMaterialComponentsModel.PerVertexColor)
-                    return "PerVertexColorMaterialDelegate.qml";
                 if (materialType == EditorSceneItemMaterialComponentsModel.PhongAlpha)
                     return "PhongAlphaMaterialDelegate.qml";
                 if (materialType == EditorSceneItemMaterialComponentsModel.Phong)
