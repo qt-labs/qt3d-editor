@@ -84,7 +84,7 @@ MaterialDelegate {
         componentType: thisDelegate.componentType
         modelRole: EditorSceneItemMaterialComponentsModel.MaterialSpecularTextureUrl
         currentValue: materialSpecularTextureUrl
-        tooltip: spcularMapTooltip
+        tooltip: specularMapTooltip
     }
 }
 
