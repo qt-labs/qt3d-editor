@@ -25,17 +25,45 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+import QtQuick 2.5
 
-#ifndef DRAGHANDLEEFFECT_H
-#define DRAGHANDLEEFFECT_H
+Rectangle {
+    id: dragHandle
+    z: 5
+    width: 16
+    height: 16
+    visible: false
 
-#include <Qt3DRender/QEffect>
-#include <Qt3DRender/QTechnique>
+    property int handleType: EditorScene.DragNone
+    property point offset: Qt.point(width / 2, height / 2)
 
-class DragHandleEffect : public Qt3DRender::QEffect
-{
-public:
-    explicit DragHandleEffect(Qt3DCore::QNode *parent = 0);
-};
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.LeftButton
+        onPositionChanged: {
+            var scenePos = editorViewport.mapFromItem(parent, mouseX, mouseY)
+            editorScene.dragHandleMove(scenePos,
+                                       mouse.modifiers & Qt.ShiftModifier,
+                                       mouse.modifiers & Qt.ControlModifier,
+                                       mouse.modifiers & Qt.AltModifier)
+        }
+        onPressed: {
+            var scenePos = editorViewport.mapFromItem(parent, mouseX, mouseY)
+            editorScene.dragHandlePress(handleType, scenePos)
+        }
+        onReleased: {
+            editorScene.dragHandleRelease()
+        }
+    }
 
-#endif // DRAGHANDLEEFFECT_H
+    Connections {
+        target: editorScene
+        onRepositionDragHandle: {
+            if (dragMode == dragHandle.handleType) {
+                x = pos.x - offset.x
+                y = pos.y - offset.y
+                dragHandle.visible = visible
+            }
+        }
+    }
+}

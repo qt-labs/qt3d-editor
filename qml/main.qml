@@ -716,6 +716,21 @@ ApplicationWindow {
                         dragEntityItem.visible = !containsDrag
                     }
                 }
+                DragHandle {
+                    id: dragTranslateHandle
+                    handleType: EditorScene.DragTranslate
+                    color: "red"
+                }
+                DragHandle {
+                    id: dragRotateHandle
+                    handleType: EditorScene.DragRotate
+                    color: "blue"
+                }
+                DragHandle {
+                    id: dragScaleHandle
+                    handleType: EditorScene.DragScale
+                    color: "green"
+                }
             }
         }
     }

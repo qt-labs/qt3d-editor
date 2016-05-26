@@ -33,7 +33,6 @@ SOURCES += src/main.cpp \
     src/undohandler/importentitycommand.cpp \
     src/undohandler/resetentitycommand.cpp \
     src/undohandler/resettransformcommand.cpp \
-    src/materials/draghandleeffect.cpp \
     src/inputcontrols/editorcameracontroller.cpp
 
 TRANSLATIONS = qt3dsceneeditor_fi.ts \
@@ -81,7 +80,6 @@ HEADERS += \
     src/undohandler/importentitycommand.h \
     src/undohandler/resetentitycommand.h \
     src/undohandler/resettransformcommand.h \
-    src/materials/draghandleeffect.h \
     src/inputcontrols/editorcameracontroller.h
 
 lupdate_only {

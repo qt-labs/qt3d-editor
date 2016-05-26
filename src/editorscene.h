@@ -86,6 +86,15 @@ class EditorScene : public QObject
     Q_PROPERTY(QString lockTransformPropertyName READ lockTransformPropertyName CONSTANT)
     Q_PROPERTY(int gridSize READ gridSize WRITE setGridSize NOTIFY gridSizeChanged)
 
+public:
+    enum DragMode {
+        DragNone = 0,
+        DragTranslate,
+        DragScale,
+        DragRotate
+    };
+    Q_ENUM(DragMode)
+
 private:
     struct CameraFrustumData {
         CameraFrustumData() :
@@ -171,18 +180,6 @@ private:
         Qt3DRender::QObjectPicker *visiblePicker;
     };
 
-    struct DragHandleData {
-        DragHandleData() :
-            entity(nullptr)
-          , transform(nullptr)
-          , picker(nullptr)
-        {}
-
-        Qt3DCore::QEntity *entity;
-        Qt3DCore::QTransform *transform;
-        Qt3DRender::QObjectPicker *picker;
-    };
-
     struct PlaceholderEntityData {
         PlaceholderEntityData() :
             entity(nullptr)
@@ -197,14 +194,6 @@ private:
         Qt3DRender::QGeometryRenderer *mesh;
         EditorUtils::InsertableEntities type;
     };
-
-    enum DragMode {
-        DragNone = 0,
-        DragTranslate,
-        DragScale,
-        DragRotate
-    };
-
 
 public:
     explicit EditorScene(QObject *parent = 0);
@@ -233,6 +222,9 @@ public:
     Q_INVOKABLE void movePlaceholderEntity(const QString &name, const QVector3D &worldPos);
     Q_INVOKABLE void hidePlaceholderEntity(const QString &name);
     Q_INVOKABLE void destroyPlaceholderEntity(const QString &name);
+    Q_INVOKABLE void dragHandlePress(DragMode dragMode, const QPoint &pos);
+    Q_INVOKABLE void dragHandleMove(const QPoint &pos, bool shiftDown, bool ctrlDown, bool altDown);
+    Q_INVOKABLE void dragHandleRelease();
 
     QString duplicateEntity(Qt3DCore::QEntity *entity);
     void decrementDuplicateCount() { m_duplicateCount--; }
@@ -300,6 +292,7 @@ signals:
     void translationChanged(const QString &translation);
     void gridSizeChanged(int gridSize);
     void mouseRightButtonReleasedWithoutDragging();
+    void repositionDragHandle(DragMode dragMode, const QPoint &pos, bool visible);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
@@ -344,8 +337,6 @@ private:
     bool handleMouseMove(QMouseEvent *event);
     QVector3D helperPlaneNormal() const;
     QVector3D projectVectorOnCameraPlane(const QVector3D &vector) const;
-    void updateDragHandlePickers();
-    void updateDragHandlePicker(DragHandleData &handleData);
     void resizeCameraViewCenterEntity();
     bool isPropertyLocked(const QString &propertyName, QObject *obj);
     void cancelDrag();
@@ -404,13 +395,12 @@ private:
     QString m_cubeString;
     QString m_lightString;
 
-    DragHandleData m_dragHandles;
-    DragHandleData m_dragHandleScale;
-    DragHandleData m_dragHandleRotate;
-    DragHandleData m_dragHandleTranslate;
+    Qt3DCore::QTransform *m_dragHandlesTransform;
+    Qt3DCore::QTransform *m_dragHandleScaleTransform;
+    Qt3DCore::QTransform *m_dragHandleRotateTransform;
+    Qt3DCore::QTransform *m_dragHandleTranslateTransform;
     DragMode m_dragMode;
     QPoint m_previousMousePosition;
-    QPoint m_mousePressPosition;
     QVector3D m_dragHandleScaleCornerTranslation;
     QVector3D m_dragInitialTranslationValue;
     QVector3D m_dragInitialScaleValue;

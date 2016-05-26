@@ -114,9 +114,6 @@ public:
     static Qt3DRender::QGeometryRenderer *createWireframeBoxMesh(float extent = 1.0f);
     static Qt3DRender::QGeometryRenderer *createWireframePlaneMesh(int lineCount);
     static Qt3DRender::QGeometryRenderer *createDefaultCustomMesh();
-    static Qt3DRender::QGeometryRenderer *createRotateHandleMesh(float size);
-    static Qt3DRender::QGeometryRenderer *createScaleHandleMesh(float size);
-    static Qt3DRender::QGeometryRenderer *createTranslateHandleMesh(float size);
     static Qt3DRender::QGeometryRenderer *createVisibleCameraMesh();
     static Qt3DRender::QGeometryRenderer *createCameraViewVectorMesh();
     static Qt3DRender::QGeometryRenderer *createCameraViewCenterMesh(float size);
@@ -144,6 +141,8 @@ public:
     static QVector3D unprojectRay(const QMatrix4x4 &modelView,
                                   const QMatrix4x4 &projectionMatrix,
                                   int viewPortWidth, int viewPortHeight, const QPoint &pos);
+    static QPoint projectRay(const QMatrix4x4 &viewMatrix, const QMatrix4x4 &projectionMatrix,
+                             int viewPortWidth, int viewPortHeight, const QVector3D &worldPos);
     static QVector3D absVector3D(const QVector3D &vector);
     static QVector3D maxVector3D(const QVector3D &vector, float minValue);
 

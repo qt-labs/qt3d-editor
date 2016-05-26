@@ -622,30 +622,6 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createDefaultCustomMesh()
     return customMesh;
 }
 
-Qt3DRender::QGeometryRenderer *EditorUtils::createRotateHandleMesh(float size)
-{
-    // TODO: proper mesh
-    Qt3DExtras::QSphereMesh *mesh = new Qt3DExtras::QSphereMesh;
-    mesh->setRadius(size / 2.0f);
-    return mesh;
-}
-
-Qt3DRender::QGeometryRenderer *EditorUtils::createScaleHandleMesh(float size)
-{
-    // TODO: proper mesh
-    Qt3DExtras::QCuboidMesh *mesh = new Qt3DExtras::QCuboidMesh;
-    mesh->setXExtent(size);
-    mesh->setYExtent(size);
-    mesh->setZExtent(size);
-    return mesh;
-}
-
-Qt3DRender::QGeometryRenderer *EditorUtils::createTranslateHandleMesh(float size)
-{
-    // TODO: proper mesh
-    return createWireframeBoxMesh(size);
-}
-
 Qt3DRender::QGeometryRenderer *EditorUtils::createVisibleCameraMesh()
 {
     // Creates a camera 'mesh' that is is made up of GL_LINES
@@ -1009,6 +985,18 @@ QVector3D EditorUtils::unprojectRay(const QMatrix4x4 &viewMatrix,
     ray.setW(0.0f);
     ray = viewMatrix.inverted() * ray;
     return ray.toVector3D().normalized();
+}
+
+// Returns a viewport pixel for a ray from camera origin to world position
+QPoint EditorUtils::projectRay(const QMatrix4x4 &viewMatrix,
+                               const QMatrix4x4 &projectionMatrix,
+                               int viewPortWidth, int viewPortHeight,
+                               const QVector3D &worldPos)
+{
+    QVector3D localPos = projectionMatrix * viewMatrix * worldPos;
+    localPos *= QVector3D(0.5f, -0.5f, 0.0f);
+    localPos += QVector3D(0.5f, 0.5f, 0.0f);
+    return QPoint(viewPortWidth * localPos.x(), viewPortHeight * localPos.y());
 }
 
 QVector3D EditorUtils::absVector3D(const QVector3D &vector)
