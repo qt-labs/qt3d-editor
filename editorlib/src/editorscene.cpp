@@ -615,7 +615,7 @@ void EditorScene::setLanguage(const QString &language)
         QCoreApplication::installTranslator(m_qtTranslator);
     }
 
-    if (m_appTranslator->load(":/qt3dsceneeditor_" + language)) {
+    if (m_appTranslator->load(":/qt3deditorlib/editorlib_" + language)) {
         QCoreApplication::installTranslator(m_appTranslator);
         m_language = language;
     } else {
@@ -1414,13 +1414,13 @@ void EditorScene::setupDefaultScene()
             = new Qt3DRender::QNormalDiffuseSpecularMapMaterial();
     Qt3DRender::QTextureImage *diffuseTextureImage = new Qt3DRender::QTextureImage();
     diffuseMat->diffuse()->addTextureImage(diffuseTextureImage);
-    diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo.png")));
+    diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/images/qtlogo.png")));
     Qt3DRender::QTextureImage *normalTextureImage = new Qt3DRender::QTextureImage();
     diffuseMat->normal()->addTextureImage(normalTextureImage);
-    normalTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo_normal.png")));
+    normalTextureImage->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/images/qtlogo_normal.png")));
     Qt3DRender::QTextureImage *specularTextureImage = new Qt3DRender::QTextureImage();
     diffuseMat->specular()->addTextureImage(specularTextureImage);
-    specularTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo_specular.png")));
+    specularTextureImage->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/images/qtlogo_specular.png")));
     //diffuseMat->setSpecular(Qt::white);
     diffuseMat->setAmbient(Qt::black);
     diffuseMat->setShininess(150.0f);
@@ -1464,10 +1464,10 @@ void EditorScene::setupDefaultScene()
             = new Qt3DExtras::QDiffuseSpecularMapMaterial();
     Qt3DRender::QTextureImage *diffuseTextureImage = new Qt3DRender::QTextureImage();
     cubeMaterial->diffuse()->addTextureImage(diffuseTextureImage);
-    diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo.png")));
+    diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/images/qtlogo.png")));
     Qt3DRender::QTextureImage *specularTextureImage = new Qt3DRender::QTextureImage();
     cubeMaterial->specular()->addTextureImage(specularTextureImage);
-    specularTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo_specular.png")));
+    specularTextureImage->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/images/qtlogo_specular.png")));
     cubeMaterial->setAmbient(Qt::black);
     cubeMaterial->setShininess(150.0f);
     cubeEntity->addComponent(cubeMesh);

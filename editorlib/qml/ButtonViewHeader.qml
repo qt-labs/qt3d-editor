@@ -115,8 +115,8 @@ Rectangle {
         width: 20
         component: editorScene.sceneModel.editorSceneItemFromIndex(entityTree.view.selection.currentIndex).entity()
         propertyName: "enabled"
-        visibleOnImage: "/images/visible_on.png"
-        visibleOffImage: "/images/visible_off.png"
+        visibleOnImage: "images/visible_on.png"
+        visibleOffImage: "images/visible_off.png"
         // The component is not shown for root item
         visible: (visibleEntityButtonShown && entityTree.view.selection.currentIndex !== editorScene.sceneModel.sceneEntityIndex())
                  ? true : false

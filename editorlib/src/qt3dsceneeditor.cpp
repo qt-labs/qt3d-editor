@@ -25,11 +25,7 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-#include <QApplication>
-#include <QQmlApplicationEngine>
-
-#include <QtQuick>
-
+#include "qt3dsceneeditor.h"
 #include "undohandler.h"
 #include "editorscene.h"
 #include "editorviewportitem.h"
@@ -41,10 +37,8 @@
 #include "editorsceneitemmeshcomponentsmodel.h"
 #include "editorsceneitemlightcomponentsmodel.h"
 
-int main(int argc, char *argv[])
+QT3D_SCENE_EDITOR_EXPORT void register3DSceneEditorQML()
 {
-    QApplication app(argc, argv);
-
     qmlRegisterType<EditorScene>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorScene");
     qmlRegisterType<EditorViewportItem>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorViewport");
     qmlRegisterUncreatableType<EditorSceneItemModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemModel", "Created by EditorScene");
@@ -56,9 +50,4 @@ int main(int argc, char *argv[])
     qmlRegisterUncreatableType<EditorSceneItemLightComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemLightComponentsModel", "Created by EditorSceneItemComponentsModel");
     qmlRegisterUncreatableType<UndoHandler>("com.theqtcompany.SceneEditor3D", 1, 0, "UndoHandler", "Created by EditorScene");
     qmlRegisterUncreatableType<EditorUtils>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorUtils", "Created by EditorScene");
-
-    QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
-
-    return app.exec();
 }

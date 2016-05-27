@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/qt3deditorlib/">
         <file>meshes/cameracone.obj</file>
         <file>meshes/defaultmesh.obj</file>
         <file>meshes/spotlight.obj</file>
@@ -77,9 +77,7 @@
         <file alias="StyledSpinBox.qml">qml/inputfields/StyledSpinBox.qml</file>
         <file alias="StyledTextField.qml">qml/inputfields/StyledTextField.qml</file>
         <file alias="StyledButton.qml">qml/inputfields/StyledButton.qml</file>
-        <file>shaders/draghandle.frag</file>
-        <file>shaders/draghandle.vert</file>
-        <file>qt3dsceneeditor_en.qm</file>
-        <file>qt3dsceneeditor_fi.qm</file>
+        <file>editorlib_en.qm</file>
+        <file>editorlib_fi.qm</file>
     </qresource>
 </RCC>

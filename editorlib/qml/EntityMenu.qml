@@ -42,7 +42,7 @@ Menu {
 
     MenuItem {
         text: qsTr("Mesh") + editorScene.emptyString
-        iconSource: "qrc:/images/mesh.png"
+        iconSource: "images/mesh.png"
         enabled: !entityTreeView.cameraSelected
         onTriggered: {
             entityTree.addNewEntity(EditorUtils.CuboidEntity)
@@ -50,7 +50,7 @@ Menu {
     }
     MenuItem {
         text: qsTr("Camera") + editorScene.emptyString
-        iconSource: "qrc:/images/camera.png"
+        iconSource: "images/camera.png"
         enabled: !entityTreeView.cameraSelected
         onTriggered: {
             entityTree.addNewEntity(EditorUtils.CameraEntity)
@@ -58,7 +58,7 @@ Menu {
     }
     MenuItem {
         text: qsTr("Light") + editorScene.emptyString
-        iconSource: "qrc:/images/light.png"
+        iconSource: "images/light.png"
         enabled: !entityTreeView.cameraSelected
         onTriggered: {
             entityTree.addNewEntity(EditorUtils.LightEntity)
@@ -66,7 +66,7 @@ Menu {
     }
     MenuItem {
         text: qsTr("Group") + editorScene.emptyString
-        iconSource: "qrc:/images/cross.png"
+        iconSource: "images/cross.png"
         enabled: entityTreeView.groupSelected || entityTreeView.sceneRootSelected
         onTriggered: {
             entityTree.addNewEntity(EditorUtils.GroupEntity)

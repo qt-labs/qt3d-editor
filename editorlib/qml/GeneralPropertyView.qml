@@ -141,8 +141,8 @@ Item {
                         id: lightButton
                         width: 24
                         height: 24
-                        enabledIconSource: "/images/property_light_shown.png"
-                        disabledIconSource: "/images/property_light_hidden.png"
+                        enabledIconSource: "images/property_light_shown.png"
+                        disabledIconSource: "images/property_light_hidden.png"
                         tooltip: qsTr("Show/Hide Light Properties") + editorScene.emptyString
                         buttonEnabled: lightViewVisible
                         onEnabledButtonClicked: {
@@ -154,8 +154,8 @@ Item {
                         id: meshButton
                         width: 24
                         height: 24
-                        enabledIconSource: "/images/property_mesh_shown.png"
-                        disabledIconSource: "/images/property_mesh_hidden.png"
+                        enabledIconSource: "images/property_mesh_shown.png"
+                        disabledIconSource: "images/property_mesh_hidden.png"
                         tooltip: qsTr("Show/Hide Mesh Properties") + editorScene.emptyString
                         buttonEnabled: meshViewVisible
                         onEnabledButtonClicked: {
@@ -167,8 +167,8 @@ Item {
                         id: transformButton
                         width: 24
                         height: 24
-                        enabledIconSource: "/images/property_transform_shown.png"
-                        disabledIconSource: "/images/property_transform_hidden.png"
+                        enabledIconSource: "images/property_transform_shown.png"
+                        disabledIconSource: "images/property_transform_hidden.png"
                         tooltip: qsTr("Show/Hide Transform Properties") + editorScene.emptyString
                         buttonEnabled: transformViewVisible
                         onEnabledButtonClicked: {
@@ -182,8 +182,8 @@ Item {
                         id: materialButton
                         width: 24
                         height: 24
-                        enabledIconSource: "/images/property_material_shown.png"
-                        disabledIconSource: "/images/property_material_hidden.png"
+                        enabledIconSource: "images/property_material_shown.png"
+                        disabledIconSource: "images/property_material_hidden.png"
                         tooltip: qsTr("Show/Hide Material Properties") + editorScene.emptyString
                         buttonEnabled: materialViewVisible
                         onEnabledButtonClicked: {
@@ -195,8 +195,8 @@ Item {
                         id: cameraButton
                         width: 24
                         height: 24
-                        enabledIconSource: "/images/property_camera_shown.png"
-                        disabledIconSource: "/images/property_camera_hidden.png"
+                        enabledIconSource: "images/property_camera_shown.png"
+                        disabledIconSource: "images/property_camera_hidden.png"
                         tooltip: qsTr("Show/Hide Camera Properties") + editorScene.emptyString
                         buttonEnabled: cameraViewVisible
                         onEnabledButtonClicked: {

@@ -25,29 +25,18 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.5
+#include <QGuiApplication>
+#include <QQmlApplicationEngine>
+#include "../editorlib/src/qt3dsceneeditor.h"
 
-EnableButton {
-    property string lockProperty: editorScene.lockPropertySuffix
-    property string label: "" // Dummy label, needs to be set by using component
-    property var lockComponent: null
-    property bool locked: false
+int main(int argc, char *argv[])
+{
+    QGuiApplication app(argc, argv);
 
-    enabledIconSource: "/images/lock_open.png"
-    disabledIconSource: "/images/lock_locked.png"
-    tooltip: qsTr("Lock '%1' Properties").arg(label) + editorScene.emptyString
-    buttonEnabled: !locked
+    register3DSceneEditorQML();
 
-    Component.onCompleted: {
-        if (selectedEntity) {
-            var propertyLocked = selectedEntity.customProperty(lockComponent, lockProperty)
-            if (propertyLocked != undefined)
-                locked = propertyLocked
-        }
-    }
+    QQmlApplicationEngine engine;
+    engine.load(QUrl(QStringLiteral("qrc:/qt3deditorlib/main.qml")));
 
-    onEnabledButtonClicked: {
-        locked = !locked
-        selectedEntity.setCustomProperty(lockComponent, lockProperty, locked)
-    }
+    return app.exec();
 }

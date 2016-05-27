@@ -25,43 +25,18 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.5
-import QtQuick.Controls 2.0 as QQC2
 
-QQC2.SpinBox {
-    id: control
-    font.family: mainwindow.labelFontFamily
-    font.weight: mainwindow.labelFontWeight
-    font.pixelSize: mainwindow.labelFontPixelSize
+#ifndef QT3DSCENEEDITOR_H
+#define QT3DSCENEEDITOR_H
 
-    background: Rectangle {
-        border.color: mainwindow.listHighlightColor
-        color: mainwindow.paneBackgroundColor
-    }
+#include <QtCore/qglobal.h>
 
-    down.indicator: Rectangle {
-        x: control.mirrored ? parent.width - width : 0
-        height: parent.height
-        implicitWidth: 40
-        implicitHeight: 40
-        border.color: mainwindow.listHighlightColor
-        color: mainwindow.listHighlightColor
-        Image {
-            anchors.centerIn: parent
-            source: "/images/spinbox_down.png"
-        }
-    }
+#if defined(QT3D_SCENE_EDITOR_LIBRARY)
+#  define QT3D_SCENE_EDITOR_EXPORT Q_DECL_EXPORT
+#else
+#  define QT3D_SCENE_EDITOR_EXPORT Q_DECL_IMPORT
+#endif
 
-    up.indicator: Rectangle {
-        x: control.mirrored ? 0 : parent.width - width
-        height: parent.height
-        implicitWidth: 40
-        implicitHeight: 40
-        border.color: mainwindow.listHighlightColor
-        color: mainwindow.listHighlightColor
-        Image {
-            anchors.centerIn: parent
-            source: "/images/spinbox_up.png"
-        }
-    }
-}
+QT3D_SCENE_EDITOR_EXPORT void register3DSceneEditorQML();
+
+#endif // QT3DSCENEEDITOR_H

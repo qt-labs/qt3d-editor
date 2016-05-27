@@ -135,7 +135,7 @@ ApplicationWindow {
                 text: qsTr("E&xit") + editorScene.emptyString
                 onTriggered: {
                     if (checkUnsavedChanges())
-                        Qt.quit()
+                        mainwindow.close()
                 }
             }
         }
@@ -440,8 +440,8 @@ ApplicationWindow {
                 height: 32
                 width: 32
                 anchors.verticalCenter: parent.verticalCenter
-                enabledIconSource: "/images/helperplane_x_deselected.png"
-                disabledIconSource: "/images/helperplane_x_selected.png"
+                enabledIconSource: "images/helperplane_x_deselected.png"
+                disabledIconSource: "images/helperplane_x_selected.png"
                 hoveredBgColor: mainwindow.listHighlightColor
                 selectedBgColor: mainwindow.iconHighlightColor
                 tooltip: qsTr("Normal X (Ctrl + 1)") + editorScene.emptyString
@@ -452,8 +452,8 @@ ApplicationWindow {
                 height: 32
                 width: 32
                 anchors.verticalCenter: parent.verticalCenter
-                enabledIconSource: "/images/helperplane_y_deselected.png"
-                disabledIconSource: "/images/helperplane_y_selected.png"
+                enabledIconSource: "images/helperplane_y_deselected.png"
+                disabledIconSource: "images/helperplane_y_selected.png"
                 hoveredBgColor: mainwindow.listHighlightColor
                 selectedBgColor: mainwindow.iconHighlightColor
                 tooltip: qsTr("Normal Y (Ctrl + 2)") + editorScene.emptyString
@@ -464,8 +464,8 @@ ApplicationWindow {
                 height: 32
                 width: 32
                 anchors.verticalCenter: parent.verticalCenter
-                enabledIconSource: "/images/helperplane_z_deselected.png"
-                disabledIconSource: "/images/helperplane_z_selected.png"
+                enabledIconSource: "images/helperplane_z_deselected.png"
+                disabledIconSource: "images/helperplane_z_selected.png"
                 hoveredBgColor: mainwindow.listHighlightColor
                 selectedBgColor: mainwindow.iconHighlightColor
                 tooltip: qsTr("Normal Z (Ctrl + 3)") + editorScene.emptyString
@@ -476,8 +476,8 @@ ApplicationWindow {
                 height: 32
                 width: 32
                 anchors.verticalCenter: parent.verticalCenter
-                enabledIconSource: "/images/helperplane_none_deselected.png"
-                disabledIconSource: "/images/helperplane_none_selected.png"
+                enabledIconSource: "images/helperplane_none_deselected.png"
+                disabledIconSource: "images/helperplane_none_selected.png"
                 hoveredBgColor: mainwindow.listHighlightColor
                 selectedBgColor: mainwindow.iconHighlightColor
                 tooltip: qsTr("Hide helper plane (Ctrl + 4)") + editorScene.emptyString
@@ -497,9 +497,9 @@ ApplicationWindow {
                 height: 32
                 width: 32
                 anchors.verticalCenter: parent.verticalCenter
-                enabledIconSource: "/images/reset_camera_to_default.png"
-                disabledIconSource: "/images/reset_camera_to_default.png"
-                pressedIconSource: "/images/reset_camera_to_default_pressed.png"
+                enabledIconSource: "images/reset_camera_to_default.png"
+                disabledIconSource: "images/reset_camera_to_default.png"
+                pressedIconSource: "images/reset_camera_to_default_pressed.png"
                 hoveredBgColor: mainwindow.listHighlightColor
                 selectedBgColor: mainwindow.iconHighlightColor
                 tooltip: qsTr("Reset to Default (Ctrl + R)") + editorScene.emptyString

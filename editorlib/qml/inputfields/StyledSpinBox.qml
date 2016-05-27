@@ -26,20 +26,42 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
-import com.theqtcompany.SceneEditor3D 1.0
+import QtQuick.Controls 2.0 as QQC2
 
-MeshDelegate {
-    id: thisDelegate
-    componentType: EditorSceneItemComponentsModel.Mesh
+QQC2.SpinBox {
+    id: control
+    font.family: mainwindow.labelFontFamily
+    font.weight: mainwindow.labelFontWeight
+    font.pixelSize: mainwindow.labelFontPixelSize
 
-    FilePropertyInputField {
-        label: qsTr("Source") + editorScene.emptyString
-        propertyName: "source"
-        component: meshComponentData
-        componentType: thisDelegate.componentType
-        dialog.nameFilters: [qsTr("Wavefront files (*.obj)") + editorScene.emptyString]
-        defaultUrl: "qrc:/meshes/defaultmesh.obj"
-        tooltip: qsTr("The path to the object\nfile to be loaded.") + editorScene.emptyString
+    background: Rectangle {
+        border.color: mainwindow.listHighlightColor
+        color: mainwindow.paneBackgroundColor
+    }
+
+    down.indicator: Rectangle {
+        x: control.mirrored ? parent.width - width : 0
+        height: parent.height
+        implicitWidth: 40
+        implicitHeight: 40
+        border.color: mainwindow.listHighlightColor
+        color: mainwindow.listHighlightColor
+        Image {
+            anchors.centerIn: parent
+            source: "images/spinbox_down.png"
+        }
+    }
+
+    up.indicator: Rectangle {
+        x: control.mirrored ? 0 : parent.width - width
+        height: parent.height
+        implicitWidth: 40
+        implicitHeight: 40
+        border.color: mainwindow.listHighlightColor
+        color: mainwindow.listHighlightColor
+        Image {
+            anchors.centerIn: parent
+            source: "images/spinbox_up.png"
+        }
     }
 }
-

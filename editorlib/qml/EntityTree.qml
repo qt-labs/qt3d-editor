@@ -364,8 +364,8 @@ Item {
                 id: visibleProperty
                 component: editorScene.sceneModel.editorSceneItemFromIndex(styleData.index).entity()
                 propertyName: "enabled"
-                visibleOnImage: "/images/visible_on.png"
-                visibleOffImage: "/images/visible_off.png"
+                visibleOnImage: "images/visible_on.png"
+                visibleOffImage: "images/visible_off.png"
                 // The component is not shown for root item
                 visible: (styleData.index !== editorScene.sceneModel.sceneEntityIndex()) ? true
                                                                                          : false

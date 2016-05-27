@@ -618,7 +618,7 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createWireframePlaneMesh(int lineCou
 Qt3DRender::QGeometryRenderer *EditorUtils::createDefaultCustomMesh()
 {
     Qt3DRender::QMesh *customMesh = new Qt3DRender::QMesh();
-    customMesh->setSource(QUrl(QStringLiteral("qrc:/meshes/defaultmesh.obj")));
+    customMesh->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/meshes/defaultmesh.obj")));
     return customMesh;
 }
 
@@ -729,7 +729,7 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createLightMesh(EditorUtils::Compone
     switch (type) {
     case LightDirectional: {
         Qt3DRender::QMesh *directionalMesh = new Qt3DRender::QMesh();
-        directionalMesh->setSource(QUrl(QStringLiteral("qrc:/meshes/directionallight.obj")));
+        directionalMesh->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/meshes/directionallight.obj")));
         mesh = directionalMesh;
         break;
     }
@@ -743,7 +743,7 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createLightMesh(EditorUtils::Compone
     }
     case LightSpot: {
         Qt3DRender::QMesh *spotMesh = new Qt3DRender::QMesh();
-        spotMesh->setSource(QUrl(QStringLiteral("qrc:/meshes/spotlight.obj")));
+        spotMesh->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/meshes/spotlight.obj")));
         mesh = spotMesh;
         break;
     }

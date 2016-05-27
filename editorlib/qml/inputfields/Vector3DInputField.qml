@@ -144,8 +144,8 @@ Item {
             Layout.alignment: Qt.AlignHCenter
             Layout.maximumWidth: 16
             source: (lockButton.locked || !lockButton.enabled)
-                    ? "/images/property_grouping_line_locked.png"
-                    : "/images/property_grouping_line_open.png"
+                    ? "images/property_grouping_line_locked.png"
+                    : "images/property_grouping_line_open.png"
             anchors.right: parent.right
             anchors.rightMargin: 3
         }
@@ -276,8 +276,8 @@ Item {
             anchors.right: parent.right
             anchors.rightMargin: 3
             source: (lockButton.locked || !lockButton.enabled)
-                    ? "/images/property_grouping_line_locked.png"
-                    : "/images/property_grouping_line_open.png"
+                    ? "images/property_grouping_line_locked.png"
+                    : "images/property_grouping_line_open.png"
         }
     }
 }

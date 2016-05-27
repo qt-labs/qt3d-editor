@@ -40,7 +40,7 @@ Menu {
 
     MenuItem {
         text: qsTr("Object Picker") + editorScene.emptyString
-        iconSource: "qrc:/images/picker.png"
+        iconSource: "images/picker.png"
         onTriggered: {
             componentPropertiesView.model.appendNewComponent(sceneModel.ObjectPicker)
         }
@@ -49,13 +49,13 @@ Menu {
     MenuSeparator {}
 
     EntityMenu {
-        iconSource: "qrc:/images/plus.png"
+        iconSource: "images/plus.png"
         enabled: !entityTreeView.cameraSelected
     }
     MenuItem {
         text: qsTr("Remove") + editorScene.emptyString
         enabled: !entityTreeView.sceneRootSelected
-        iconSource: "qrc:/images/minus.png"
+        iconSource: "images/minus.png"
         onTriggered: {
             entityTreeView.editing = false
             // Doublecheck that we don't try to remove the scene root
@@ -66,7 +66,7 @@ Menu {
     MenuItem {
         text: qsTr("Duplicate") + editorScene.emptyString
         enabled: !entityTreeView.sceneRootSelected
-        iconSource: "qrc:/images/duplicate.png"
+        iconSource: "images/duplicate.png"
         onTriggered: {
             var currentSelection = selectedEntity.entity()
             editorScene.undoHandler.createDuplicateEntityCommand(selectedEntityName)
@@ -76,7 +76,7 @@ Menu {
     MenuItem {
         text: qsTr("Reset") + editorScene.emptyString
         enabled: !entityTreeView.sceneRootSelected
-        iconSource: "qrc:/images/reset_all.png"
+        iconSource: "images/reset_all.png"
         onTriggered: {
             editorScene.undoHandler.createResetEntityCommand(selectedEntityName)
         }
@@ -84,7 +84,7 @@ Menu {
     MenuItem {
         text: qsTr("Reset Transform") + editorScene.emptyString
         enabled: !entityTreeView.sceneRootSelected && !entityTreeView.cameraSelected
-        iconSource: "qrc:/images/reset.png"
+        iconSource: "images/reset.png"
         onTriggered: {
             editorScene.undoHandler.createResetTransformCommand(selectedEntityName)
         }

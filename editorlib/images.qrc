@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/qt3deditorlib/">
         <file>images/addroot.png</file>
         <file>images/camera.png</file>
         <file>images/cross.png</file>

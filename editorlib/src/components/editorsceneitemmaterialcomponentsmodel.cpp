@@ -182,7 +182,7 @@ void EditorSceneItemMaterialComponentsModel::setMaterial(
         case DiffuseMap: {
             Qt3DExtras::QDiffuseMapMaterial *newMat = new Qt3DExtras::QDiffuseMapMaterial();
             Qt3DRender::QTextureImage *diffuseTextureImage = new Qt3DRender::QTextureImage();
-            diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo.png")));
+            diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/images/qtlogo.png")));
             newMat->diffuse()->addTextureImage(diffuseTextureImage);
             material = newMat;
             break;
@@ -191,8 +191,8 @@ void EditorSceneItemMaterialComponentsModel::setMaterial(
                     new Qt3DExtras::QDiffuseSpecularMapMaterial();
             Qt3DRender::QTextureImage *diffuseTextureImage = new Qt3DRender::QTextureImage();
             Qt3DRender::QTextureImage *specularTextureImage = new Qt3DRender::QTextureImage();
-            diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo.png")));
-            specularTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo_specular.png")));
+            diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/images/qtlogo.png")));
+            specularTextureImage->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/images/qtlogo_specular.png")));
             newMat->diffuse()->addTextureImage(diffuseTextureImage);
             newMat->specular()->addTextureImage(specularTextureImage);
             material = newMat;
@@ -206,8 +206,8 @@ void EditorSceneItemMaterialComponentsModel::setMaterial(
                     new Qt3DExtras::QNormalDiffuseMapMaterial();
             Qt3DRender::QTextureImage *diffuseTextureImage = new Qt3DRender::QTextureImage();
             Qt3DRender::QTextureImage *normalTextureImage = new Qt3DRender::QTextureImage();
-            diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo.png")));
-            normalTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo_normal.png")));
+            diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/images/qtlogo.png")));
+            normalTextureImage->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/images/qtlogo_normal.png")));
             newMat->diffuse()->addTextureImage(diffuseTextureImage);
             newMat->normal()->addTextureImage(normalTextureImage);
             material = newMat;
@@ -218,8 +218,8 @@ void EditorSceneItemMaterialComponentsModel::setMaterial(
                     new Qt3DExtras::QNormalDiffuseMapAlphaMaterial();
             Qt3DRender::QTextureImage *diffuseTextureImage = new Qt3DRender::QTextureImage();
             Qt3DRender::QTextureImage *normalTextureImage = new Qt3DRender::QTextureImage();
-            diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo.png")));
-            normalTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo_normal.png")));
+            diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/images/qtlogo.png")));
+            normalTextureImage->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/images/qtlogo_normal.png")));
             newMat->diffuse()->addTextureImage(diffuseTextureImage);
             newMat->normal()->addTextureImage(normalTextureImage);
             material = newMat;
@@ -231,9 +231,9 @@ void EditorSceneItemMaterialComponentsModel::setMaterial(
             Qt3DRender::QTextureImage *diffuseTextureImage = new Qt3DRender::QTextureImage();
             Qt3DRender::QTextureImage *specularTextureImage = new Qt3DRender::QTextureImage();
             Qt3DRender::QTextureImage *normalTextureImage = new Qt3DRender::QTextureImage();
-            diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo.png")));
-            specularTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo_specular.png")));
-            normalTextureImage->setSource(QUrl(QStringLiteral("qrc:/images/qtlogo_normal.png")));
+            diffuseTextureImage->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/images/qtlogo.png")));
+            specularTextureImage->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/images/qtlogo_specular.png")));
+            normalTextureImage->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/images/qtlogo_normal.png")));
             newMat->diffuse()->addTextureImage(diffuseTextureImage);
             newMat->specular()->addTextureImage(specularTextureImage);
             newMat->normal()->addTextureImage(normalTextureImage);
