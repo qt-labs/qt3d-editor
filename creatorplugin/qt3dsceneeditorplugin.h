@@ -27,22 +27,22 @@
 ****************************************************************************/
 #pragma once
 
-#include "qt3dsceneeditorplugin_global.h"
+#include "qt3dsceneeditor_global.h"
 
 #include <extensionsystem/iplugin.h>
 #include <QtQml/QQmlApplicationEngine>
 
-namespace Qt3DSceneEditorPlugin {
+namespace Qt3DSceneEditor {
 namespace Internal {
 
-class Qt3DSceneEditorPluginPlugin : public ExtensionSystem::IPlugin
+class Qt3DSceneEditorPlugin : public ExtensionSystem::IPlugin
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin" FILE "Qt3DSceneEditorPlugin.json")
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QtCreatorPlugin" FILE "Qt3DSceneEditor.json")
 
 public:
-    Qt3DSceneEditorPluginPlugin();
-    ~Qt3DSceneEditorPluginPlugin();
+    Qt3DSceneEditorPlugin();
+    ~Qt3DSceneEditorPlugin();
 
     bool initialize(const QStringList &arguments, QString *errorString);
     void extensionsInitialized();
@@ -56,4 +56,4 @@ private:
 };
 
 } // namespace Internal
-} // namespace Qt3DSceneEditorPlugin
+} // namespace Qt3DSceneEditor

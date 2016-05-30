@@ -1,17 +1,19 @@
-DEFINES += QT3DSCENEEDITORPLUGIN_LIBRARY
+DEFINES += QT3DSCENEEDITOR_LIBRARY
 
 QT += qml quick
 
 DEPENDPATH += ../editorlib
 INCLUDEPATH += ../editorlib
 
-# Qt3DSceneEditorPlugin files
+# Qt3DSceneEditor files
 
 SOURCES += qt3dsceneeditorplugin.cpp
 
 HEADERS += qt3dsceneeditorplugin.h \
-        qt3dsceneeditorplugin_global.h \
-        qt3dsceneeditorpluginconstants.h
+        qt3dsceneeditor_global.h \
+        qt3dsceneeditorconstants.h
+
+RESOURCES += creatorplugin.qrc
 
 # Qt Creator linking
 
@@ -37,7 +39,7 @@ isEmpty(IDE_BUILD_TREE): IDE_BUILD_TREE = "/dev/qt/build-qtcreator"
 ###### <dirname>_dependencies.pri, where <dirname> is the name of the directory containing the
 ###### plugin's sources.
 
-QTC_PLUGIN_NAME = Qt3DSceneEditorPlugin
+QTC_PLUGIN_NAME = Qt3DSceneEditor
 QTC_LIB_DEPENDS += \
     # nothing here at this time
 
@@ -51,7 +53,7 @@ QTC_PLUGIN_RECOMMENDS += \
 
 include($$IDE_SOURCE_TREE/src/qtcreatorplugin.pri)
 
-# Copy editorlib under creator
+# Figure out the scene editor library name and path
 win32 {
     EDITORLIBNAME = qt3dsceneeditor.dll
     CONFIG (release, debug|release): EDITORLIBDIR = $$OUT_PWD/../editorlib/release
@@ -63,5 +65,18 @@ win32 {
 
 LIBS += -L$$EDITORLIBDIR -lqt3dsceneeditor
 
-QMAKE_POST_LINK += $$QMAKE_COPY $$shell_path($$EDITORLIBDIR$${QMAKE_DIR_SEP}$${EDITORLIBNAME} \
-                   $${IDE_BIN_PATH}$${QMAKE_DIR_SEP}$${EDITORLIBNAME})
+# Install necessary files under creator
+editordll.path = $$IDE_BIN_PATH
+editordll.files = $$EDITORLIBDIR/$$EDITORLIBNAME
+
+wizardfiles.path = $$IDE_DATA_PATH/templates/wizards/files/qt3dsceneeditor
+wizardfiles.files = \
+    tocreator/qt3dsceneeditor/wizard.json \
+    tocreator/qt3dsceneeditor/GeneratedScene.qt3d.qrc
+
+wizardresfiles.path = $$IDE_DATA_PATH/templates/wizards/files/qt3dsceneeditor/GeneratedScene_scene_res
+wizardresfiles.files = \
+    tocreator/qt3dsceneeditor/GeneratedScene_scene_res/GeneratedScene.qml \
+    tocreator/qt3dsceneeditor/GeneratedScene_scene_res/r0_qtlogo.png
+
+INSTALLS += wizardfiles wizardresfiles editordll

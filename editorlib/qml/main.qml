@@ -325,7 +325,7 @@ ApplicationWindow {
         selectMultiple: false
         selectExisting: true
         title: qsTr("Load Scene") + editorScene.emptyString
-        nameFilters: [qsTr("Qt3D Scenes (*.qrc)") + editorScene.emptyString]
+        nameFilters: [qsTr("Qt3D Scenes (*.qt3d.qrc)") + editorScene.emptyString]
         onAccepted: {
             if (editorScene.loadScene(fileUrl)) {
                 entityTree.selectSceneRoot()
@@ -340,7 +340,7 @@ ApplicationWindow {
         selectExisting: false
         property bool exiting: false
         title: qsTr("Save Scene") + editorScene.emptyString
-        nameFilters: [qsTr("Qt3D Scenes (*.qrc)") + editorScene.emptyString]
+        nameFilters: [qsTr("Qt3D Scenes (*.qt3d.qrc)") + editorScene.emptyString]
         onAccepted: {
             editorScene.saveScene(fileUrl)
             saveFileUrl = fileUrl

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/qt3deditorplugin">
+        <file>mimetypes.xml</file>
+    </qresource>
+</RCC>

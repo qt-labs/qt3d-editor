@@ -26,7 +26,7 @@
 **
 ****************************************************************************/
 #include "qt3dsceneeditorplugin.h"
-#include "qt3dsceneeditorpluginconstants.h"
+#include "qt3dsceneeditorconstants.h"
 #include "../editorlib/src/qt3dsceneeditor.h"
 
 #include <coreplugin/icore.h>
@@ -36,27 +36,30 @@
 #include <coreplugin/actionmanager/actioncontainer.h>
 #include <coreplugin/coreconstants.h>
 
+#include <utils/mimetypes/mimedatabase.h>
+
 #include <QAction>
 #include <QMessageBox>
 #include <QMainWindow>
 #include <QMenu>
 
-namespace Qt3DSceneEditorPlugin {
+namespace Qt3DSceneEditor {
 namespace Internal {
 
-Qt3DSceneEditorPluginPlugin::Qt3DSceneEditorPluginPlugin() :
+Qt3DSceneEditorPlugin::Qt3DSceneEditorPlugin() :
     m_qmlEngine(nullptr)
 {
     // Create your members
 }
 
-Qt3DSceneEditorPluginPlugin::~Qt3DSceneEditorPluginPlugin()
+Qt3DSceneEditorPlugin::~Qt3DSceneEditorPlugin()
 {
     // Unregister objects from the plugin manager's object pool
     // Delete members
+    delete m_qmlEngine;
 }
 
-bool Qt3DSceneEditorPluginPlugin::initialize(const QStringList &arguments, QString *errorString)
+bool Qt3DSceneEditorPlugin::initialize(const QStringList &arguments, QString *errorString)
 {
     // Register objects in the plugin manager's object pool
     // Load settings
@@ -67,6 +70,8 @@ bool Qt3DSceneEditorPluginPlugin::initialize(const QStringList &arguments, QStri
 
     Q_UNUSED(arguments)
     Q_UNUSED(errorString)
+
+    Utils::MimeDatabase::addMimeTypes(QLatin1String(":/qt3deditorplugin/mimetypes.xml"));
 
     QAction *action = new QAction(tr("Launch External Qt3D Scene Editor..."), this);
     Core::Command *cmd = Core::ActionManager::registerAction(action, Constants::ACTION_ID,
@@ -81,14 +86,14 @@ bool Qt3DSceneEditorPluginPlugin::initialize(const QStringList &arguments, QStri
     return true;
 }
 
-void Qt3DSceneEditorPluginPlugin::extensionsInitialized()
+void Qt3DSceneEditorPlugin::extensionsInitialized()
 {
     // Retrieve objects from the plugin manager's object pool
     // In the extensionsInitialized function, a plugin can be sure that all
     // plugins that depend on it are completely initialized.
 }
 
-ExtensionSystem::IPlugin::ShutdownFlag Qt3DSceneEditorPluginPlugin::aboutToShutdown()
+ExtensionSystem::IPlugin::ShutdownFlag Qt3DSceneEditorPlugin::aboutToShutdown()
 {
     // Save settings
     // Disconnect from signals that are not needed during shutdown
@@ -96,7 +101,7 @@ ExtensionSystem::IPlugin::ShutdownFlag Qt3DSceneEditorPluginPlugin::aboutToShutd
     return SynchronousShutdown;
 }
 
-void Qt3DSceneEditorPluginPlugin::triggerAction()
+void Qt3DSceneEditorPlugin::triggerAction()
 {
     // TODO: How to handle application lifecycle? Currently closing the window doesn't destroy scene
     if (!m_qmlEngine) {
@@ -107,4 +112,4 @@ void Qt3DSceneEditorPluginPlugin::triggerAction()
 }
 
 } // namespace Internal
-} // namespace Qt3DSceneEditorPlugin
+} // namespace Qt3DSceneEditor

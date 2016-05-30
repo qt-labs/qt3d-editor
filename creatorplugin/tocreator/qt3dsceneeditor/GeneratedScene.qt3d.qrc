@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="%{ItemName}.qml">%{SceneItemName}_scene_res/%{ItemName}.qml</file>
+        <file>%{SceneItemName}_scene_res/r0_qtlogo.png</file>
+    </qresource>
+</RCC>

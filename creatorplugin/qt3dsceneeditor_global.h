@@ -1,0 +1,9 @@
+#pragma once
+
+#include <QtGlobal>
+
+#if defined(QT3DSCENEEDITOR_LIBRARY)
+#  define QT3DSCENEEDITORSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define QT3DSCENEEDITORSHARED_EXPORT Q_DECL_IMPORT
+#endif

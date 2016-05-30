@@ -1,0 +1,77 @@
+{
+    "version": 1,
+    "supportedProjectTypes": [ ],
+    "id": "Qt3DSceneEditor.Resource",
+    "category": "R.Qt",
+    "trDescription": "Creates Qt3D Scene Editor files.",
+    "trDisplayName": "Qt3D Scene Editor Files",
+    "trDisplayCategory": "Qt",
+    "icon": "../../global/genericfilewizard.png",
+    "platformIndependent": true,
+    "enabled": "%{JS: [ %{Plugins} ].indexOf('Qt3DSceneEditor') >= 0}",
+
+    "options":
+    [
+        { "key": "TargetPath", "value": "%{Path}" },
+        { "key": "ItemName", "value": "%{JS: ('%{SceneItemName}'.charAt(0).toUpperCase() + '%{SceneItemName}'.slice(1))}" }
+    ],
+
+    "pages" :
+    [
+        {
+            "trDisplayName": "Define Scene Item",
+            "trShortTitle": "Details",
+            "typeId": "Fields",
+            "data" :
+            [
+                {
+                    "name": "SceneItemName",
+                    "trDisplayName": "Scene item name:",
+                    "mandatory": true,
+                    "type": "LineEdit",
+                    "data": { "validator": "^[a-zA-Z][a-zA-Z_0-9]*$" }
+                },
+                {
+                    "name": "Path",
+                    "type": "PathChooser",
+                    "trDisplayName": "Path:",
+                    "mandatory": true,
+                    "data":
+                    {
+                        "kind": "existingDirectory",
+                        "basePath": "%{InitialPath}",
+                        "path": "%{InitialPath}"
+                    }
+                }
+            ]
+        },
+        {
+            "trDisplayName": "Project Management",
+            "trShortTitle": "Summary",
+            "typeId": "Summary"
+        }
+    ],
+    "generators" :
+    [
+        {
+            "typeId": "File",
+            "data":
+            [
+                {
+                    "source": "GeneratedScene.qt3d.qrc",
+                    "target": "%{JS: Cpp.fileName('%{TargetPath}/%{SceneItemName}', '%{JS: Util.preferredSuffix('application/qt3dsceneeditor')}')}",
+                    "openInEditor": true
+                },
+                {
+                    "source": "GeneratedScene_scene_res/GeneratedScene.qml",
+                    "target": "%{TargetPath}/%{SceneItemName}_scene_res/%{ItemName}.qml"
+                },
+                {
+                    "source": "GeneratedScene_scene_res/r0_qtlogo.png",
+                    "target": "%{TargetPath}/%{SceneItemName}_scene_res/r0_qtlogo.png",
+                    "isBinary": true
+                }
+            ]
+        }
+    ]
+}

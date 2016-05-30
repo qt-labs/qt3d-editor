@@ -1,5 +1,5 @@
 {
-    \"Name\" : \"Qt3DSceneEditorPlugin\",
+    \"Name\" : \"Qt3DSceneEditor\",
     \"Version\" : \"0.0.1\",
     \"CompatVersion\" : \"0.0.1\",
     \"Vendor\" : \"The Qt Company Ltd\",
