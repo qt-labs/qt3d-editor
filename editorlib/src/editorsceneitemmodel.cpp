@@ -450,6 +450,12 @@ const QString EditorSceneItemModel::setEntityName(const QModelIndex &index, cons
 
     setData(index, finalName, NameRole);
 
+    QStringList multiSelection = m_scene->multiSelection();
+    if (multiSelection.removeOne(oldName)) {
+        multiSelection.append(finalName);
+        m_scene->setMultiSelection(multiSelection);
+    }
+
     return finalName;
 }
 

@@ -85,6 +85,8 @@ ApplicationWindow {
 
     property real qlcControlHeight: 28
 
+    property var selectionList
+
     property string systemLanguage: editorScene.language
 
     menuBar: mainMenuBar
@@ -562,7 +564,27 @@ ApplicationWindow {
         freeView: true
 
         onSelectionChanged: {
+            if (multiSelection.length >= 1)
+                entityTree.multiSelect = true
+            else
+                entityTree.multiSelect = false
             restoreSelection(selection)
+        }
+
+        onMultiSelectionChanged: {
+            selectionList = multiSelection
+            entityTree.multiSelectedCamera = false
+            // Deselect old ones
+            entityTree.view.selection.clear()
+            // Dig indexes of all selected entities and pass the selections to entitytree
+            for (var i = 0; i < multiSelection.length; ++i) {
+                var index = editorScene.sceneModel.getModelIndexByName(multiSelection[i])
+                entityTree.view.selection.select(index, ItemSelectionModel.Select)
+                if (editorScene.sceneModel.editorSceneItemFromIndex(index).itemType()
+                        === EditorSceneItem.Camera) {
+                    entityTree.multiSelectedCamera = true
+                }
+            }
         }
 
         onErrorChanged: {
@@ -572,14 +594,20 @@ ApplicationWindow {
         }
 
         onMouseRightButtonReleasedWithoutDragging: {
+            entityTree.multiSelect = multiSelect
             entityTree.menu.popup()
         }
 
         function restoreSelection(entity) {
             var index = editorScene.sceneModel.getModelIndex(entity)
+            selectIndex(index)
+         }
+
+        function selectIndex(index) {
             expandTo(index)
             entityTree.view.forceActiveFocus()
-            entityTree.view.selection.setCurrentIndex(index, ItemSelectionModel.SelectCurrent)
+            if (!entityTree.multiSelect)
+                entityTree.view.selection.setCurrentIndex(index, ItemSelectionModel.ClearAndSelect)
         }
 
         function expandTo(index) {

@@ -38,9 +38,9 @@
 #include <QtGui/QVector3D>
 #include <QtGui/QQuaternion>
 #include <Qt3DCore/QNodeId>
+#include <Qt3DCore/QEntity>
 
 namespace Qt3DCore {
-    class QEntity;
     class QTransform;
     class QComponent;
 }
@@ -72,6 +72,7 @@ class EditorScene : public QObject
     Q_OBJECT
     Q_PROPERTY(EditorSceneItemModel *sceneModel READ sceneModel CONSTANT)
     Q_PROPERTY(Qt3DCore::QEntity *selection READ selection WRITE setSelection NOTIFY selectionChanged)
+    Q_PROPERTY(QStringList multiSelection READ multiSelection WRITE setMultiSelection NOTIFY multiSelectionChanged)
     Q_PROPERTY(QString error READ error NOTIFY errorChanged)
     Q_PROPERTY(int activeSceneCameraIndex READ activeSceneCameraIndex WRITE setActiveSceneCameraIndex NOTIFY activeSceneCameraIndexChanged)
     Q_PROPERTY(EditorViewportItem *viewport READ viewport WRITE setViewport NOTIFY viewportChanged)
@@ -225,6 +226,7 @@ public:
     Q_INVOKABLE void dragHandlePress(DragMode dragMode, const QPoint &pos);
     Q_INVOKABLE void dragHandleMove(const QPoint &pos, bool shiftDown, bool ctrlDown, bool altDown);
     Q_INVOKABLE void dragHandleRelease();
+    Q_INVOKABLE QString sceneRootName() { return m_sceneEntity->objectName(); }
 
     QString duplicateEntity(Qt3DCore::QEntity *entity);
     void decrementDuplicateCount() { m_duplicateCount--; }
@@ -235,6 +237,10 @@ public:
 
     void setSelection(Qt3DCore::QEntity *entity);
     Qt3DCore::QEntity *selection() const { return m_selectedEntity; }
+
+    void setMultiSelection(const QStringList &multiSelection);
+    QStringList multiSelection();
+
     const QString &error() const { return m_errorString; }
 
     void setActiveSceneCameraIndex(int index);
@@ -283,6 +289,7 @@ public slots:
 
 signals:
     void selectionChanged(Qt3DCore::QEntity *selection);
+    void multiSelectionChanged(QStringList multiSelection);
     void errorChanged(const QString &error);
     void freeViewChanged(bool enabled);
     void activeSceneCameraIndexChanged(int index);
@@ -291,7 +298,7 @@ signals:
     void languageChanged(const QString &language);
     void translationChanged(const QString &translation);
     void gridSizeChanged(int gridSize);
-    void mouseRightButtonReleasedWithoutDragging();
+    void mouseRightButtonReleasedWithoutDragging(bool multiSelect);
     void repositionDragHandle(DragMode dragMode, const QPoint &pos, bool visible);
 
 protected:
@@ -418,6 +425,9 @@ private:
     int m_gridSize;
     int m_duplicateCount;
     Qt3DCore::QEntity *m_previousDuplicate;
+    bool m_multiSelect;
+    QStringList m_selectedEntityNameList;
+    Qt::MouseButton m_mouseButton;
 
     QMap<QString, PlaceholderEntityData *> m_placeholderEntityMap;
 };

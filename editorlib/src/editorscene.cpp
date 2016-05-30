@@ -33,7 +33,6 @@
 #include "editorviewportitem.h"
 #include "undohandler.h"
 
-#include <Qt3DCore/QEntity>
 #include <Qt3DCore/QTransform>
 #include <Qt3DRender/QMesh>
 #include <Qt3DExtras/QCuboidMesh>
@@ -116,6 +115,7 @@ EditorScene::EditorScene(QObject *parent)
     , m_gridSize(3)
     , m_duplicateCount(0)
     , m_previousDuplicate(nullptr)
+    , m_multiSelect(false)
 {
     retranslateUi();
     createRootEntity();
@@ -192,6 +192,10 @@ void EditorScene::addEntity(Qt3DCore::QEntity *entity, int index, Qt3DCore::QEnt
                 addEntity(childEntity);
         }
     }
+
+    // Clear multiselection list, otherwise treeview gets messed up
+    m_selectedEntityNameList.clear();
+    emit multiSelectionChanged(m_selectedEntityNameList);
 }
 
 // Removed entity is deleted
@@ -1720,6 +1724,21 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
     }
 }
 
+void EditorScene::setMultiSelection(const QStringList &multiSelection)
+{
+    if (m_selectedEntityNameList != multiSelection) {
+        m_selectedEntityNameList = multiSelection;
+        // TODO: Update selection box
+        // TODO: Do something else?
+        emit multiSelectionChanged(m_selectedEntityNameList);
+    }
+}
+
+QStringList EditorScene::multiSelection()
+{
+    return m_selectedEntityNameList;
+}
+
 void EditorScene::setActiveSceneCameraIndex(int index)
 {
     int previousIndex = m_activeSceneCameraIndex;
@@ -1804,7 +1823,35 @@ void EditorScene::clearSelectionBoxes()
 void EditorScene::endSelectionHandling()
 {
     if (m_dragMode == DragNone && m_pickedEntity) {
-        setSelection(m_pickedEntity);
+        // Multiselection handling
+        QStringList oldList = m_selectedEntityNameList;
+        // TODO: Why does selection box disappear when selecting more than one entity?
+        if (m_multiSelect) {
+            // Add previously selected one, if different than new one and other than scene root.
+            if (m_selectedEntityNameList.isEmpty() && m_pickedEntity != m_selectedEntity
+                    && m_selectedEntity != m_sceneEntity) {
+                m_selectedEntityNameList.append(m_selectedEntity->objectName());
+            }
+            // If the new one is already in, remove it. Otherwise add it.
+            if (m_pickedEntity) {
+                if (!m_selectedEntityNameList.contains(m_pickedEntity->objectName()))
+                    m_selectedEntityNameList.append(m_pickedEntity->objectName());
+                else
+                    m_selectedEntityNameList.removeOne(m_pickedEntity->objectName());
+            }
+        } else {
+            m_selectedEntityNameList.clear();
+        }
+
+        if (oldList != m_selectedEntityNameList) {
+            // Emit multiselection list
+            emit multiSelectionChanged(m_selectedEntityNameList);
+        }
+
+        if (m_multiSelect && m_selectedEntityNameList.isEmpty())
+            setSelection(m_sceneEntity);
+        else
+            setSelection(m_pickedEntity);
 
         // Selecting an object also starts drag, if translate handle is enabled
         Qt3DRender::QCamera *cameraEntity = qobject_cast<Qt3DRender::QCamera *>(m_pickedEntity);
@@ -1975,7 +2022,7 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
                         }
                     }
                 }
-                if (select && !m_pickedEntity)
+                if (select && !m_pickedEntity && m_mouseButton == Qt::LeftButton)
                     QMetaObject::invokeMethod(this, "endSelectionHandling", Qt::QueuedConnection);
                 m_pickedEntity = pressedEntity;
                 // Get the position of the picked entity, and copy it to m_snapToGridIntersection
@@ -1990,18 +2037,25 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
 
 bool EditorScene::handleMousePress(QMouseEvent *event)
 {
-    Q_UNUSED(event)
     m_previousMousePosition = event->pos();
+    m_mouseButton = event->button();
+    if (m_mouseButton == Qt::LeftButton) {
+        m_multiSelect = event->modifiers() & Qt::ControlModifier;
+        // Clear multiselection list if m_multiSelect is false
+        if (!m_multiSelect)
+            m_selectedEntityNameList.clear();
+    }
     cancelDrag();
     return false; // Never consume press event
 }
 
 bool EditorScene::handleMouseRelease(QMouseEvent *event)
 {
-    Q_UNUSED(event)
     if (event->button() == Qt::RightButton) {
-        if (m_dragMode == DragNone || m_ignoringInitialDrag)
-            emit mouseRightButtonReleasedWithoutDragging();
+        if (m_dragMode == DragNone || m_ignoringInitialDrag) {
+                emit mouseRightButtonReleasedWithoutDragging(m_multiSelect
+                                                             && m_selectedEntityNameList.count() > 1);
+        }
     }
     cancelDrag();
     return false; // Never consume release event

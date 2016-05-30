@@ -39,6 +39,8 @@ Item {
 
     property alias view: entityTreeView
     property alias menu: addComponentMenu
+    property bool multiSelect: false
+    property bool multiSelectedCamera: false
 
     Keys.onDeletePressed: {
         // Doublecheck that we don't try to remove the scene root
@@ -105,6 +107,7 @@ Item {
         width: parent.width
         visible: treeViewHeader.viewVisible
         model: editorScene.sceneModel
+        selectionMode: SelectionMode.ExtendedSelection
         selection: ItemSelectionModel {
             model: editorScene.sceneModel
         }
@@ -389,10 +392,11 @@ Item {
             onCurrentIndexChanged: {
                 entityTreeView.editing = false
                 // If there is no current item selected for some reason, fall back to scene root
-                if (entityTreeView.selection.currentIndex.row === -1) {
+                // TODO: Causes unwanted behavior with multiselection. Find out why before taking back into use.
+                /*if (entityTreeView.selection.currentIndex.row === -1) {
                     selectedEntityName = ""
                     selectSceneRoot()
-                } else {
+                } else*/ {
                     entityTreeView.sceneRootSelected =
                             (editorScene.sceneModel.sceneEntityIndex() === entityTreeView.selection.currentIndex)
                     selectedEntity = editorScene.sceneModel.editorSceneItemFromIndex(entityTreeView.selection.currentIndex)
