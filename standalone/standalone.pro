@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-QT += qml quick
+QT += qml quick widgets
 
 DEPENDPATH += ../editorlib
 INCLUDEPATH += ../editorlib

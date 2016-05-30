@@ -25,13 +25,13 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-#include <QGuiApplication>
+#include <QtWidgets/QApplication>
 #include <QQmlApplicationEngine>
 #include "../editorlib/src/qt3dsceneeditor.h"
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
 
     register3DSceneEditorQML();
 
