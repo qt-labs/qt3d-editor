@@ -226,7 +226,9 @@ public:
     Q_INVOKABLE void dragHandlePress(DragMode dragMode, const QPoint &pos);
     Q_INVOKABLE void dragHandleMove(const QPoint &pos, bool shiftDown, bool ctrlDown, bool altDown);
     Q_INVOKABLE void dragHandleRelease();
-    Q_INVOKABLE QString sceneRootName() { return m_sceneEntity->objectName(); }
+    Q_INVOKABLE QString sceneRootName() const { return m_sceneEntity->objectName(); }
+    Q_INVOKABLE QString previousSelectedEntityName() const;
+    Q_INVOKABLE void addToMultiSelection(const QString &name);
 
     QString duplicateEntity(Qt3DCore::QEntity *entity);
     void decrementDuplicateCount() { m_duplicateCount--; }
@@ -428,6 +430,7 @@ private:
     bool m_multiSelect;
     QStringList m_selectedEntityNameList;
     Qt::MouseButton m_mouseButton;
+    Qt3DCore::QEntity *m_previousSelectedEntity;
 
     QMap<QString, PlaceholderEntityData *> m_placeholderEntityMap;
 };

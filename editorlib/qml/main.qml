@@ -85,11 +85,10 @@ ApplicationWindow {
 
     property real qlcControlHeight: 28
 
-    property var selectionList
+    property var selectionList: []
 
     property string systemLanguage: editorScene.language
 
-    menuBar: mainMenuBar
     MenuBar {
         id: mainMenuBar
         Menu {
@@ -318,6 +317,8 @@ ApplicationWindow {
             }
         }
     }
+
+    menuBar: mainMenuBar
 
     FileDialog {
         id: loadFileDialog
@@ -577,6 +578,8 @@ ApplicationWindow {
             // Deselect old ones
             entityTree.view.selection.clear()
             // Dig indexes of all selected entities and pass the selections to entitytree
+            // Note: We don't call setCurrentIndex, so no selection box will be shown during
+            // multiselect
             for (var i = 0; i < multiSelection.length; ++i) {
                 var index = editorScene.sceneModel.getModelIndexByName(multiSelection[i])
                 entityTree.view.selection.select(index, ItemSelectionModel.Select)

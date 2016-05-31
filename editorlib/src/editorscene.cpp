@@ -116,6 +116,7 @@ EditorScene::EditorScene(QObject *parent)
     , m_duplicateCount(0)
     , m_previousDuplicate(nullptr)
     , m_multiSelect(false)
+    , m_previousSelectedEntity(nullptr)
 {
     retranslateUi();
     createRootEntity();
@@ -1667,6 +1668,11 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
                 m_selectedEntityTransform = EditorUtils::entityTransform(m_selectedEntity);
             }
 
+            if (!m_multiSelect && m_selectedEntity != m_rootEntity)
+                m_previousSelectedEntity = m_selectedEntity;
+            else
+                m_previousSelectedEntity = nullptr;
+
             // Emit signal to highlight the entity from the list
             emit selectionChanged(m_selectedEntity);
         }
@@ -1676,7 +1682,7 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
             // Disable scale handles for cameras
             m_dragHandleScaleTransform->setEnabled(false);
             m_dragHandleRotateTransform->setEnabled(!isPropertyLocked(QStringLiteral("upVector"),
-                                                                    m_selectedEntity));
+                                                                      m_selectedEntity));
             m_dragHandleTranslateTransform->setEnabled(
                         !isPropertyLocked(QStringLiteral("position"), m_selectedEntity));
             m_viewCenterLocked = isPropertyLocked(QStringLiteral("viewCenter"), m_selectedEntity);
@@ -1710,9 +1716,9 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
                     m_dragHandleRotateTransform->setEnabled(false);
                 } else {
                     m_dragHandleScaleTransform->setEnabled(!isPropertyLocked(QStringLiteral("scale3D"),
-                                                                           transform));
+                                                                             transform));
                     m_dragHandleRotateTransform->setEnabled(!isPropertyLocked(QStringLiteral("rotation"),
-                                                                            transform));
+                                                                              transform));
                 }
             }
         }
@@ -1724,19 +1730,42 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
     }
 }
 
+QString EditorScene::previousSelectedEntityName() const {
+    if (m_previousSelectedEntity)
+        return m_previousSelectedEntity->objectName();
+    else
+        return QString();
+}
+
 void EditorScene::setMultiSelection(const QStringList &multiSelection)
 {
-    if (m_selectedEntityNameList != multiSelection) {
+    if (m_selectedEntityNameList != multiSelection)
         m_selectedEntityNameList = multiSelection;
-        // TODO: Update selection box
-        // TODO: Do something else?
-        emit multiSelectionChanged(m_selectedEntityNameList);
-    }
 }
 
 QStringList EditorScene::multiSelection()
 {
     return m_selectedEntityNameList;
+}
+
+void EditorScene::addToMultiSelection(const QString &name)
+{
+    QStringList oldList = m_selectedEntityNameList;
+    // TODO: Highlight selected entities somehow?
+    // Add previously selected one, if different than new one and other than scene root.
+    if (m_selectedEntityNameList.isEmpty() && m_pickedEntity != m_selectedEntity
+            && m_selectedEntity != m_sceneEntity) {
+        m_selectedEntityNameList.append(previousSelectedEntityName());
+    }
+    // If the new one is already in, remove it. Otherwise add it.
+    if (!m_selectedEntityNameList.contains(name))
+        m_selectedEntityNameList.append(name);
+    else
+        m_selectedEntityNameList.removeOne(name);
+
+    // Emit multiselection list if it changed
+    if (oldList != m_selectedEntityNameList)
+        emit multiSelectionChanged(m_selectedEntityNameList);
 }
 
 void EditorScene::setActiveSceneCameraIndex(int index)
@@ -1824,30 +1853,12 @@ void EditorScene::endSelectionHandling()
 {
     if (m_dragMode == DragNone && m_pickedEntity) {
         // Multiselection handling
-        QStringList oldList = m_selectedEntityNameList;
-        // TODO: Why does selection box disappear when selecting more than one entity?
-        if (m_multiSelect) {
-            // Add previously selected one, if different than new one and other than scene root.
-            if (m_selectedEntityNameList.isEmpty() && m_pickedEntity != m_selectedEntity
-                    && m_selectedEntity != m_sceneEntity) {
-                m_selectedEntityNameList.append(m_selectedEntity->objectName());
-            }
-            // If the new one is already in, remove it. Otherwise add it.
-            if (m_pickedEntity) {
-                if (!m_selectedEntityNameList.contains(m_pickedEntity->objectName()))
-                    m_selectedEntityNameList.append(m_pickedEntity->objectName());
-                else
-                    m_selectedEntityNameList.removeOne(m_pickedEntity->objectName());
-            }
-        } else {
+        if (m_multiSelect)
+            addToMultiSelection(m_pickedEntity->objectName());
+        else
             m_selectedEntityNameList.clear();
-        }
 
-        if (oldList != m_selectedEntityNameList) {
-            // Emit multiselection list
-            emit multiSelectionChanged(m_selectedEntityNameList);
-        }
-
+        // Selection handling
         if (m_multiSelect && m_selectedEntityNameList.isEmpty())
             setSelection(m_sceneEntity);
         else
@@ -2053,8 +2064,8 @@ bool EditorScene::handleMouseRelease(QMouseEvent *event)
 {
     if (event->button() == Qt::RightButton) {
         if (m_dragMode == DragNone || m_ignoringInitialDrag) {
-                emit mouseRightButtonReleasedWithoutDragging(m_multiSelect
-                                                             && m_selectedEntityNameList.count() > 1);
+            emit mouseRightButtonReleasedWithoutDragging(m_multiSelect
+                                                         && m_selectedEntityNameList.count() > 1);
         }
     }
     cancelDrag();

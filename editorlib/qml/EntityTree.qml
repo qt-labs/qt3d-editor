@@ -191,8 +191,34 @@ Item {
                 }
 
                 onPressed: {
-                    entityTreeView.selection.setCurrentIndex(styleData.index,
-                                ItemSelectionModel.SelectCurrent)
+                    if (mouse.modifiers & Qt.ControlModifier) {
+                        // Handle multiselection
+                        editorScene.addToMultiSelection(editorScene.sceneModel.entityName(
+                                                            styleData.index))
+                        // If empty list, select scene root
+                        if (selectionList.length === 0) {
+                            selectedEntityName = ""
+                            selectSceneRoot()
+                        }
+                    } else {
+                        // Clear selectionList
+                        selectionList.length = 0
+                        editorScene.multiSelection = selectionList
+                        // Deselect if clicked is already selected
+                        if (editorScene.previousSelectedEntityName()
+                                === editorScene.sceneModel.entityName(styleData.index)) {
+                            entityTreeView.selection.select(styleData.index,
+                                                            ItemSelectionModel.Toggle)
+                            // Handle deselection
+                            if (!entityTreeView.selection.selectedIndexes.length) {
+                                selectedEntityName = ""
+                                selectSceneRoot()
+                            }
+                        } else {
+                            entityTreeView.selection.setCurrentIndex(styleData.index,
+                                                                     ItemSelectionModel.SelectCurrent)
+                        }
+                    }
                     entityTreeView.expand(styleData.index)
                 }
 
@@ -345,7 +371,8 @@ Item {
                             editorScene.undoHandler.createRenameEntityCommand(selectedEntityName,
                                                                               text)
                         }
-                        selectedEntityName = editorScene.sceneModel.entityName(entityTreeView.selection.currentIndex)
+                        selectedEntityName = editorScene.sceneModel.entityName(
+                                    entityTreeView.selection.currentIndex)
                     }
                 }
             }
