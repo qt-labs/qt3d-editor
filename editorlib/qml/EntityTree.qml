@@ -174,14 +174,14 @@ Item {
                         meshDragImage = "images/cross.png"
                     } else if (itemType === EditorSceneItem.Light) {
                         meshType = EditorUtils.LightEntity
-                        meshDragImage = "images/light-large.png"
+                        meshDragImage = "images/mesh_light_large.png"
                     } else if (itemType === EditorSceneItem.Group) {
                         meshType = EditorUtils.GroupEntity
-                        meshDragImage = "images/group-large.png"
+                        meshDragImage = "images/mesh_group_large.png"
                     } else {
                         // Use cuboid type to indicate mesh
                         meshType = EditorUtils.CuboidEntity
-                        meshDragImage = "images/mesh-large.png"
+                        meshDragImage = "images/mesh_large.png"
                     }
 
                     dragEntityItem.startDrag(treeItemMouseArea, meshDragImage,

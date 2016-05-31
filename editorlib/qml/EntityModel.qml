@@ -53,47 +53,47 @@ ListModel {
 
     ListElement {
         meshType: EditorUtils.CuboidEntity
-        meshImage: "images/mesh_cuboid-large.png"
-        meshDragImage: "images/mesh_cuboid-large.png"
+        meshImage: "images/mesh_cuboid_large.png"
+        meshDragImage: "images/mesh_cuboid_large.png"
     }
     ListElement {
         meshType: EditorUtils.CylinderEntity
-        meshImage: "images/mesh_cylinder-large.png"
-        meshDragImage: "images/mesh_cylinder-large.png"
+        meshImage: "images/mesh_cylinder_large.png"
+        meshDragImage: "images/mesh_cylinder_large.png"
     }
     ListElement {
         meshType: EditorUtils.PlaneEntity
-        meshImage: "images/mesh_plane-large.png"
-        meshDragImage: "images/mesh_plane-large.png"
+        meshImage: "images/mesh_plane_large.png"
+        meshDragImage: "images/mesh_plane_large.png"
     }
     ListElement {
         meshType: EditorUtils.SphereEntity
-        meshImage: "images/mesh_sphere-large.png"
-        meshDragImage: "images/mesh_sphere-large.png"
+        meshImage: "images/mesh_sphere_large.png"
+        meshDragImage: "images/mesh_sphere_large.png"
     }
     ListElement {
         meshType: EditorUtils.TorusEntity
-        meshImage: "images/mesh_torus-large.png"
-        meshDragImage: "images/mesh_torus-large.png"
+        meshImage: "images/mesh_torus_large.png"
+        meshDragImage: "images/mesh_torus_large.png"
     }
     ListElement {
         meshType: EditorUtils.CustomEntity
-        meshImage: "images/mesh_custom-large.png"
-        meshDragImage: "images/mesh_custom-large.png"
+        meshImage: "images/mesh_custom_large.png"
+        meshDragImage: "images/mesh_custom_large.png"
     }
     ListElement {
         meshType: EditorUtils.CameraEntity
-        meshImage: "images/camera-large.png"
-        meshDragImage: "images/camera-large.png"
+        meshImage: "images/mesh_camera_large.png"
+        meshDragImage: "images/mesh_camera_large.png"
     }
     ListElement {
         meshType: EditorUtils.LightEntity
-        meshImage: "images/light-large.png"
-        meshDragImage: "images/light-large.png"
+        meshImage: "images/mesh_light_large.png"
+        meshDragImage: "images/mesh_light_large.png"
     }
     ListElement {
         meshType: EditorUtils.GroupEntity
-        meshImage: "images/group-large.png"
-        meshDragImage: "images/group-large.png"
+        meshImage: "images/mesh_group_large.png"
+        meshDragImage: "images/mesh_group_large.png"
     }
 }

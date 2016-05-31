@@ -29,22 +29,13 @@
         <file>images/transform_srt.png</file>
         <file>images/up.png</file>
         <file>images/arrow.png</file>
-        <file>images/light-large.png</file>
-        <file>images/camera-large.png</file>
         <file>images/layer-large.png</file>
-        <file>images/mesh_cuboid-large.png</file>
-        <file>images/mesh_cylinder-large.png</file>
-        <file>images/mesh_plane-large.png</file>
-        <file>images/mesh_sphere-large.png</file>
-        <file>images/mesh_torus-large.png</file>
-        <file>images/mesh_custom-large.png</file>
         <file>images/light_basic-large.png</file>
         <file>images/light_point-large.png</file>
         <file>images/light_spot-large.png</file>
         <file>images/light_directional-large.png</file>
         <file>images/visible_off.png</file>
         <file>images/visible_on.png</file>
-        <file>images/mesh-large.png</file>
         <file>images/keyboard_input.png</file>
         <file>images/logic.png</file>
         <file>images/lock_locked.png</file>
@@ -70,12 +61,21 @@
         <file>images/helperplane_z_deselected.png</file>
         <file>images/helperplane_z_selected.png</file>
         <file>images/reset_camera_to_default.png</file>
-        <file>images/group-large.png</file>
         <file>images/duplicate.png</file>
         <file>images/spinbox_down.png</file>
         <file>images/spinbox_up.png</file>
         <file>images/reset.png</file>
         <file>images/reset_camera_to_default_pressed.png</file>
         <file>images/reset_all.png</file>
+        <file>images/mesh_camera_large.png</file>
+        <file>images/mesh_cuboid_large.png</file>
+        <file>images/mesh_custom_large.png</file>
+        <file>images/mesh_cylinder_large.png</file>
+        <file>images/mesh_group_large.png</file>
+        <file>images/mesh_large.png</file>
+        <file>images/mesh_light_large.png</file>
+        <file>images/mesh_plane_large.png</file>
+        <file>images/mesh_sphere_large.png</file>
+        <file>images/mesh_torus_large.png</file>
     </qresource>
 </RCC>
