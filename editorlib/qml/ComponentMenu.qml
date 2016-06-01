@@ -111,7 +111,7 @@ Menu {
     MenuItem {
         text: qsTr("Group Selected") + editorScene.emptyString
         enabled: multiSelect && !multiSelectedCamera
-        iconSource: "images/mesh_group_large.png" // TODO: add a new icon, or a small version of group icon
+        iconSource: "images/group_large.png" // TODO: add a new icon, or a small version of group icon
         onTriggered: {
             editorScene.undoHandler.beginMacro(text)
             var reparentList = selectionList // Copy list, as the original is emptied on insertEntity

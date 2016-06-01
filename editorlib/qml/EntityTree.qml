@@ -174,10 +174,10 @@ Item {
                         meshDragImage = "images/cross.png"
                     } else if (itemType === EditorSceneItem.Light) {
                         meshType = EditorUtils.LightEntity
-                        meshDragImage = "images/mesh_light_large.png"
+                        meshDragImage = "images/light_large.png"
                     } else if (itemType === EditorSceneItem.Group) {
                         meshType = EditorUtils.GroupEntity
-                        meshDragImage = "images/mesh_group_large.png"
+                        meshDragImage = "images/group_large.png"
                     } else {
                         // Use cuboid type to indicate mesh
                         meshType = EditorUtils.CuboidEntity

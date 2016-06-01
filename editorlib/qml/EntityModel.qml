@@ -83,17 +83,17 @@ ListModel {
     }
     ListElement {
         meshType: EditorUtils.CameraEntity
-        meshImage: "images/mesh_camera_large.png"
-        meshDragImage: "images/mesh_camera_large.png"
+        meshImage: "images/camera_large.png"
+        meshDragImage: "images/camera_large.png"
     }
     ListElement {
         meshType: EditorUtils.LightEntity
-        meshImage: "images/mesh_light_large.png"
-        meshDragImage: "images/mesh_light_large.png"
+        meshImage: "images/light_large.png"
+        meshDragImage: "images/light_large.png"
     }
     ListElement {
         meshType: EditorUtils.GroupEntity
-        meshImage: "images/mesh_group_large.png"
-        meshDragImage: "images/mesh_group_large.png"
+        meshImage: "images/group_large.png"
+        meshDragImage: "images/group_large.png"
     }
 }
