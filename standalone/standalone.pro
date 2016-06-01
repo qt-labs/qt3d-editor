@@ -1,5 +1,7 @@
 TEMPLATE = app
 
+TARGET = qt3dsceneeditor
+
 QT += qml quick widgets
 
 DEPENDPATH += ../editorlib
