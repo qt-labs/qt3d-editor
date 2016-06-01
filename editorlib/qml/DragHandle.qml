@@ -27,15 +27,25 @@
 ****************************************************************************/
 import QtQuick 2.5
 
-Rectangle {
+Item {
     id: dragHandle
     z: 5
     width: 16
     height: 16
     visible: false
 
+    // handleRect is the visible part by default, but dragging can be initiated by clicking
+    // on the invisible margins, too.
+    Rectangle {
+        id: handleRect
+        anchors.fill: parent
+        anchors.margins: 4
+        color: "#f4be04"
+    }
     property int handleType: EditorScene.DragNone
     property point offset: Qt.point(width / 2, height / 2)
+    property int handleIndex: 0
+    property alias color: handleRect.color
 
     MouseArea {
         anchors.fill: parent
@@ -49,7 +59,7 @@ Rectangle {
         }
         onPressed: {
             var scenePos = editorViewport.mapFromItem(parent, mouseX, mouseY)
-            editorScene.dragHandlePress(handleType, scenePos)
+            editorScene.dragHandlePress(handleType, scenePos, handleIndex)
         }
         onReleased: {
             editorScene.dragHandleRelease()
@@ -59,7 +69,7 @@ Rectangle {
     Connections {
         target: editorScene
         onRepositionDragHandle: {
-            if (dragMode == dragHandle.handleType) {
+            if (dragMode == dragHandle.handleType && handleIndex == dragHandle.handleIndex) {
                 x = pos.x - offset.x
                 y = pos.y - offset.y
                 dragHandle.visible = visible

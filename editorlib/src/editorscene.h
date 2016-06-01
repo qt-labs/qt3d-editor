@@ -223,7 +223,7 @@ public:
     Q_INVOKABLE void movePlaceholderEntity(const QString &name, const QVector3D &worldPos);
     Q_INVOKABLE void hidePlaceholderEntity(const QString &name);
     Q_INVOKABLE void destroyPlaceholderEntity(const QString &name);
-    Q_INVOKABLE void dragHandlePress(DragMode dragMode, const QPoint &pos);
+    Q_INVOKABLE void dragHandlePress(DragMode dragMode, const QPoint &pos, int handleIndex = 0);
     Q_INVOKABLE void dragHandleMove(const QPoint &pos, bool shiftDown, bool ctrlDown, bool altDown);
     Q_INVOKABLE void dragHandleRelease();
     Q_INVOKABLE QString sceneRootName() const { return m_sceneEntity->objectName(); }
@@ -301,7 +301,7 @@ signals:
     void translationChanged(const QString &translation);
     void gridSizeChanged(int gridSize);
     void mouseRightButtonReleasedWithoutDragging(bool multiSelect);
-    void repositionDragHandle(DragMode dragMode, const QPoint &pos, bool visible);
+    void repositionDragHandle(DragMode dragMode, const QPoint &pos, bool visible, int handleIndex);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
@@ -406,12 +406,14 @@ private:
     QString m_lightString;
 
     Qt3DCore::QTransform *m_dragHandlesTransform;
-    Qt3DCore::QTransform *m_dragHandleScaleTransform;
     Qt3DCore::QTransform *m_dragHandleRotateTransform;
     Qt3DCore::QTransform *m_dragHandleTranslateTransform;
+    QVector<Qt3DCore::QTransform *> m_dragHandleScaleTransforms;
+    QVector<QVector3D> m_dragHandleCornerAdjustments;
+    QVector3D m_dragHandleRotationAdjustment;
+    int m_dragHandleIndex;
     DragMode m_dragMode;
     QPoint m_previousMousePosition;
-    QVector3D m_dragHandleScaleCornerTranslation;
     QVector3D m_dragInitialTranslationValue;
     QVector3D m_dragInitialScaleValue;
     QQuaternion m_dragInitialRotationValue;

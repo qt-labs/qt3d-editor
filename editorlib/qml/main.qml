@@ -748,19 +748,50 @@ ApplicationWindow {
                     }
                 }
                 DragHandle {
-                    id: dragTranslateHandle
                     handleType: EditorScene.DragTranslate
                     color: "red"
                 }
                 DragHandle {
-                    id: dragRotateHandle
                     handleType: EditorScene.DragRotate
-                    color: "blue"
+                    z: 10 // Make sure rotate handle is on top of scale handles
+                    Image {
+                        anchors.fill: parent
+                        source: "images/rotate_handle.png"
+                    }
+                    color: "transparent"
+                }
+                // Each corner will have a separate drag handle
+                DragHandle {
+                    handleType: EditorScene.DragScale
+                    handleIndex: 0
                 }
                 DragHandle {
-                    id: dragScaleHandle
                     handleType: EditorScene.DragScale
-                    color: "green"
+                    handleIndex: 1
+                }
+                DragHandle {
+                    handleType: EditorScene.DragScale
+                    handleIndex: 2
+                }
+                DragHandle {
+                    handleType: EditorScene.DragScale
+                    handleIndex: 3
+                }
+                DragHandle {
+                    handleType: EditorScene.DragScale
+                    handleIndex: 4
+                }
+                DragHandle {
+                    handleType: EditorScene.DragScale
+                    handleIndex: 5
+                }
+                DragHandle {
+                    handleType: EditorScene.DragScale
+                    handleIndex: 6
+                }
+                DragHandle {
+                    handleType: EditorScene.DragScale
+                    handleIndex: 7
                 }
             }
         }

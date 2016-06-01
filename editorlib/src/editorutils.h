@@ -141,8 +141,8 @@ public:
     static QVector3D unprojectRay(const QMatrix4x4 &modelView,
                                   const QMatrix4x4 &projectionMatrix,
                                   int viewPortWidth, int viewPortHeight, const QPoint &pos);
-    static QPoint projectRay(const QMatrix4x4 &viewMatrix, const QMatrix4x4 &projectionMatrix,
-                             int viewPortWidth, int viewPortHeight, const QVector3D &worldPos);
+    static QVector2D projectRay(const QMatrix4x4 &viewMatrix, const QMatrix4x4 &projectionMatrix,
+                                int viewPortWidth, int viewPortHeight, const QVector3D &worldPos);
     static QVector3D absVector3D(const QVector3D &vector);
     static QVector3D maxVector3D(const QVector3D &vector, float minValue);
 
