@@ -1676,7 +1676,7 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
             // Emit signal to highlight the entity from the list
             emit selectionChanged(m_selectedEntity);
         }
-        m_dragHandlesTransform->setEnabled(item->isSelectionBoxShowing());
+        m_dragHandlesTransform->setEnabled(item->isSelectionBoxShowing() && !m_multiSelect);
 
         if (item->itemType() == EditorSceneItem::Camera) {
             // Disable scale handles for cameras
@@ -1739,8 +1739,10 @@ QString EditorScene::previousSelectedEntityName() const {
 
 void EditorScene::setMultiSelection(const QStringList &multiSelection)
 {
-    if (m_selectedEntityNameList != multiSelection)
+    if (m_selectedEntityNameList != multiSelection) {
+        checkMultiSelectionHighlights(m_selectedEntityNameList, multiSelection);
         m_selectedEntityNameList = multiSelection;
+    }
 }
 
 QStringList EditorScene::multiSelection()
@@ -1751,7 +1753,6 @@ QStringList EditorScene::multiSelection()
 void EditorScene::addToMultiSelection(const QString &name)
 {
     QStringList oldList = m_selectedEntityNameList;
-    // TODO: Highlight selected entities somehow?
     // Add previously selected one, if different than new one and other than scene root.
     if (m_selectedEntityNameList.isEmpty() && m_pickedEntity != m_selectedEntity
             && m_selectedEntity != m_sceneEntity) {
@@ -1764,8 +1765,10 @@ void EditorScene::addToMultiSelection(const QString &name)
         m_selectedEntityNameList.removeOne(name);
 
     // Emit multiselection list if it changed
-    if (oldList != m_selectedEntityNameList)
+    if (oldList != m_selectedEntityNameList) {
+        checkMultiSelectionHighlights(oldList, m_selectedEntityNameList);
         emit multiSelectionChanged(m_selectedEntityNameList);
+    }
 }
 
 void EditorScene::setActiveSceneCameraIndex(int index)
@@ -2348,4 +2351,25 @@ bool EditorScene::eventFilter(QObject *obj, QEvent *event)
     }
 
     return false;
+}
+
+void EditorScene::checkMultiSelectionHighlights(const QStringList &oldlist,
+                                                const QStringList &newlist)
+{
+    // Find deselected entities
+    for (int i = 0; i < oldlist.length(); ++i) {
+        if (!newlist.contains(oldlist.at(i))) {
+            // Remove highlight
+            m_sceneModel->editorSceneItemFromIndex(m_sceneModel->getModelIndexByName(
+                                                       oldlist.at(i)))->setShowSelectionBox(false);
+        }
+    }
+    // Find selected entities
+    for (int i = 0; i < newlist.length(); ++i) {
+        if (!oldlist.contains(newlist.at(i))) {
+            // Add highlight
+            m_sceneModel->editorSceneItemFromIndex(m_sceneModel->getModelIndexByName(
+                                                       newlist.at(i)))->setShowSelectionBox(true);
+        }
+    }
 }

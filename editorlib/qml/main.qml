@@ -565,10 +565,12 @@ ApplicationWindow {
         freeView: true
 
         onSelectionChanged: {
-            if (multiSelection.length >= 1)
+            if (multiSelection.length >= 1) {
                 entityTree.multiSelect = true
-            else
+            } else {
+                selectionList.length = 0
                 entityTree.multiSelect = false
+            }
             restoreSelection(selection)
         }
 
@@ -578,8 +580,6 @@ ApplicationWindow {
             // Deselect old ones
             entityTree.view.selection.clear()
             // Dig indexes of all selected entities and pass the selections to entitytree
-            // Note: We don't call setCurrentIndex, so no selection box will be shown during
-            // multiselect
             for (var i = 0; i < multiSelection.length; ++i) {
                 var index = editorScene.sceneModel.getModelIndexByName(multiSelection[i])
                 entityTree.view.selection.select(index, ItemSelectionModel.Select)

@@ -352,6 +352,7 @@ private:
     void setSceneEntity(Qt3DCore::QEntity *newSceneEntity = nullptr);
     void createSceneLoaderChildPickers(Qt3DCore::QEntity *entity,
                                        QList<Qt3DRender::QObjectPicker *> *pickers);
+    void checkMultiSelectionHighlights(const QStringList &oldlist, const QStringList &newlist);
 
 private:
     Qt3DCore::QEntity *m_rootEntity;

@@ -435,8 +435,11 @@ Item {
                                 selectedEntity.itemType() === EditorSceneItem.Group
                         selectedEntityName = editorScene.sceneModel.entityName(
                                     entityTreeView.selection.currentIndex)
-                        editorScene.clearSelectionBoxes()
-                        selectedEntity.showSelectionBox = true
+                        // Don't clear selection boxes if there are items in multiselection list
+                        if (!selectionList.length) {
+                            editorScene.clearSelectionBoxes()
+                            selectedEntity.showSelectionBox = true
+                        }
                     } else {
                         // Should never get here
                         selectedEntityName = ""
