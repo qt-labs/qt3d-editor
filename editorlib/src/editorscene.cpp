@@ -1962,6 +1962,8 @@ void EditorScene::handleSelectionTransformChange()
 
         // Try to position rotate handle to the upper right corner of the selection box, as
         // drawn on the screen. However, we don't change the corner during drag-rotation.
+        QVector2D rotateHandlePos;
+        const float handleDistance = 12.0f;
         if (m_dragMode != DragRotate) {
             float maxDelta = 0.0f;
             int rotateHandleIndex = 0;
@@ -1974,29 +1976,36 @@ void EditorScene::handleSelectionTransformChange()
                 }
             }
             m_dragHandleRotationAdjustment = m_dragHandleCornerAdjustments.at(rotateHandleIndex);
+            rotateHandlePos = cornerHandlePositions[rotateHandleIndex]
+                    + QVector2D(handleDistance, -handleDistance);
         }
 
         m_dragHandleRotateTransform->setTranslation(translation * m_dragHandleRotationAdjustment);
 
-        QVector2D rotateHandlePos = EditorUtils::projectRay(
-                    camera->viewMatrix(), camera->projectionMatrix(),
-                    m_viewport->width(), m_viewport->height(),
-                    m_dragHandlesTransform->matrix() * m_dragHandleRotateTransform->matrix()
-                    * QVector3D());
+        if (m_dragMode == DragRotate) {
+            // When drag-rotating, we can't rely on drag handle being on top right, so we need
+            // to calculate the correct screen position so that it is always away from the
+            // object center.
+            rotateHandlePos = EditorUtils::projectRay(
+                        camera->viewMatrix(), camera->projectionMatrix(),
+                        m_viewport->width(), m_viewport->height(),
+                        m_dragHandlesTransform->matrix() * m_dragHandleRotateTransform->matrix()
+                        * QVector3D());
 
-        // Get another point to help adjust rotation handle position
-        QMatrix4x4 rotateHelperMatrix;
-        rotateHelperMatrix.translate(translation * m_dragHandleRotationAdjustment * 1.1f);
-        QVector2D rotateHelperPos = EditorUtils::projectRay(
-                    camera->viewMatrix(), camera->projectionMatrix(),
-                    m_viewport->width(), m_viewport->height(),
-                    m_dragHandlesTransform->matrix() * rotateHelperMatrix * QVector3D());
+            // Get another point to help adjust rotation handle position
+            QMatrix4x4 rotateHelperMatrix;
+            rotateHelperMatrix.translate(translation * m_dragHandleRotationAdjustment * 1.1f);
+            QVector2D rotateHelperPos = EditorUtils::projectRay(
+                        camera->viewMatrix(), camera->projectionMatrix(),
+                        m_viewport->width(), m_viewport->height(),
+                        m_dragHandlesTransform->matrix() * rotateHelperMatrix * QVector3D());
 
-        // Adjust rotate handle position number of pixels towards the helper point
-        QVector2D adjustVector = rotateHelperPos - rotateHandlePos;
-        adjustVector.normalize();
-        adjustVector *= 16.0f;
-        rotateHandlePos += adjustVector;
+            // Adjust rotate handle position number of pixels towards the helper point
+            QVector2D adjustVector = rotateHelperPos - rotateHandlePos;
+            adjustVector.normalize();
+            adjustVector *= handleDistance * float(qSqrt(2.0));
+            rotateHandlePos += adjustVector;
+        }
 
         // Signal UI to reposition drag handles
         emit repositionDragHandle(DragTranslate,
@@ -2008,7 +2017,8 @@ void EditorScene::handleSelectionTransformChange()
                                   ? m_dragHandleRotateTransform->isEnabled() : false, 0);
         for (int i = 0; i < dragCornerHandleCount; i++) {
             emit repositionDragHandle(DragScale,
-                                      QPoint(cornerHandlePositions[i].x(), cornerHandlePositions[i].y()),
+                                      QPoint(cornerHandlePositions[i].x(),
+                                             cornerHandlePositions[i].y()),
                                       m_dragHandlesTransform->isEnabled()
                                       ? m_dragHandleScaleTransforms.at(0)->isEnabled() : false, i);
         }
