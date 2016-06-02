@@ -194,9 +194,11 @@ void EditorScene::addEntity(Qt3DCore::QEntity *entity, int index, Qt3DCore::QEnt
         }
     }
 
-    // Clear multiselection list, otherwise treeview gets messed up
-    m_selectedEntityNameList.clear();
-    emit multiSelectionChanged(m_selectedEntityNameList);
+    if (!m_selectedEntityNameList.isEmpty()) {
+        // Clear multiselection list, otherwise treeview gets messed up
+        m_selectedEntityNameList.clear();
+        emit multiSelectionChanged(m_selectedEntityNameList);
+    }
 }
 
 // Removed entity is deleted
