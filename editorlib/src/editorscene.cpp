@@ -542,18 +542,23 @@ void EditorScene::dragHandlePress(EditorScene::DragMode dragMode, const QPoint &
             m_dragInitialRotationValue = selectedItem->entityTransform()->rotation();
             m_dragInitialHandleTranslation = m_dragHandlesTransform->rotation()
                     * m_dragHandleRotateTransform->translation();
+            m_dragInitialCenterTranslation = m_dragHandlesTransform->translation();
         } else if (dragMode == DragScale
                    && m_dragHandleScaleTransforms.at(0)->isEnabled()) {
             m_dragMode = DragScale;
             m_dragEntity = m_selectedEntity;
-            m_dragInitialScaleValue = selectedItem->entityTransform()->scale3D();
+            Qt3DCore::QTransform *itemTransform = selectedItem->entityTransform();
+            m_dragInitialScaleValue = itemTransform->scale3D();
+            m_dragInitialTranslationValue = itemTransform->translation();
+            m_dragInitialCenterTranslation = m_dragHandlesTransform->translation();
             m_dragInitialHandleTranslation = m_dragHandlesTransform->rotation()
                     * m_dragHandleScaleTransforms.at(m_dragHandleIndex)->translation();
-            QVector3D dragHandleScaleCornerTranslation = selectedItem->entityMeshExtents()
+            m_dragHandleCornerTranslation = selectedItem->entityMeshExtents()
                     * m_dragHandleCornerAdjustments.at(m_dragHandleIndex) / 2.0f;
             m_dragInitialHandleCornerTranslation =
-                    EditorUtils::totalAncestralScale(m_selectedEntity) *
-                    m_dragInitialScaleValue * dragHandleScaleCornerTranslation;
+                    EditorUtils::totalAncestralScale(m_selectedEntity)
+                    * m_dragInitialScaleValue * m_dragHandleCornerTranslation;
+            m_dragInitialHandleMatrix = m_dragHandlesTransform->matrix();
         }
     }
 }
@@ -885,17 +890,19 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
 void EditorScene::dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, bool ctrlDown,
                                           bool altDown)
 {
-    // By default, scale each dimension individually
+    // By default, scale each dimension individually.
+    // Only the dragged corner moves freely when scaling, the opposite corner is anchored.
     // When shift is pressed, scale uniformly
     // When ctrl is pressed, scale in integers
     // When alt is pressed, scale along helper plane normal (lock to one axis)
 
     QVector3D posOffset = dragHandlePositionOffset(newPos);
     if (!posOffset.isNull()) {
+        QVector3D rotatedPosOffset = m_dragHandlesTransform->rotation().inverted() * posOffset;
         QVector3D moveFactors =
                 EditorUtils::absVector3D(
-                    QVector3D(m_dragInitialHandleCornerTranslation
-                              + (m_dragHandlesTransform->rotation().inverted() * posOffset)));
+                    QVector3D((2.0f * m_dragInitialHandleCornerTranslation)
+                              + rotatedPosOffset)) / 2.0f;
 
         // Divide by zero may cause an INFINITY. Fix it.
         if (m_dragInitialHandleCornerTranslation.x() != 0.0f)
@@ -918,7 +925,6 @@ void EditorScene::dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, 
 
         QVector3D newScale = m_dragInitialScaleValue * EditorUtils::maxVector3D(moveFactors,
                                                                                 0.0001f);
-
         if (ctrlDown) {
             newScale.setX(qMax(qRound(newScale.x()), 1));
             newScale.setY(qMax(qRound(newScale.y()), 1));
@@ -936,10 +942,20 @@ void EditorScene::dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, 
             m_lockToAxisScale = newScale;
         }
 
+        // Calculate the translate needed to keep opposite corner anchored
+        QMatrix4x4 ancestralTransform = EditorUtils::totalAncestralTransform(m_selectedEntity);
+        QVector3D newHandleCornerTranslation =
+                EditorUtils::totalAncestralScale(m_selectedEntity)
+                * m_lockToAxisScale * m_dragHandleCornerTranslation;
+        QVector3D newTranslation = ancestralTransform.inverted() * m_dragInitialHandleMatrix
+                * (newHandleCornerTranslation - m_dragInitialHandleCornerTranslation);
+
         m_undoHandler->createChangePropertyCommand(m_selectedEntity->objectName(),
                                                    EditorSceneItemComponentsModel::Transform,
                                                    QStringLiteral("scale3D"), m_lockToAxisScale,
-                                                   m_selectedEntityTransform->scale3D(), true);
+                                                   m_selectedEntityTransform->scale3D(),
+                                                   QStringLiteral("translation"), newTranslation,
+                                                   m_selectedEntityTransform->translation(), true);
     }
 }
 
@@ -1120,7 +1136,7 @@ QVector3D EditorScene::dragHandlePositionOffset(const QPoint &newPos)
         QVector3D planeNormal = camera->position() - camera->viewCenter();
         planeNormal.normalize();
 
-        QVector3D planeOrigin = m_dragHandlesTransform->translation();
+        QVector3D planeOrigin = m_dragInitialCenterTranslation;
 
         float cosAngle = QVector3D::dotProduct(planeOrigin.normalized(), planeNormal);
         float planeOffset = planeOrigin.length() * cosAngle;
@@ -1135,7 +1151,7 @@ QVector3D EditorScene::dragHandlePositionOffset(const QPoint &newPos)
                                                                planeOffset, planeNormal, t);
 
         if (t > 0.0f) {
-            posOffset = intersection - (m_dragHandlesTransform->translation()
+            posOffset = intersection - (m_dragInitialCenterTranslation
                                         + m_dragInitialHandleTranslation);
         }
     }

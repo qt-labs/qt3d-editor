@@ -134,6 +134,26 @@ void UndoHandler::createChangePropertyCommand(const QString &entityName,
     }
 }
 
+void UndoHandler::createChangePropertyCommand(const QString &entityName, int componentType,
+                                              const QString &propertyName,
+                                              const QVariant &newValue, const QVariant &oldValue,
+                                              const QString &propertyName2,
+                                              const QVariant &newValue2, const QVariant &oldValue2,
+                                              bool pushToStack, const QString &text)
+{
+    PropertyChangeCommand *command = new PropertyChangeCommand(
+                text, m_scene->sceneModel(), entityName,
+                EditorSceneItemComponentsModel::EditorSceneItemComponentTypes(componentType),
+                propertyName, newValue, oldValue, propertyName2, newValue2, oldValue2);
+    if (pushToStack) {
+        m_undoStack->push(command);
+    } else {
+        // Temporary command, just call redo on it and delete it
+        command->redo();
+        delete command;
+    }
+}
+
 void UndoHandler::createChangeModelRoleCommand(const QString &entityName,
                                                int componentType, int roleIndex,
                                                const QVariant &newValue, const QVariant &oldValue,

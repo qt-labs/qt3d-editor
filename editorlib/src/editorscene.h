@@ -420,6 +420,9 @@ private:
     QVector3D m_dragInitialRotateCustomVector;
     QVector3D m_dragInitialHandleTranslation;
     QVector3D m_dragInitialHandleCornerTranslation;
+    QVector3D m_dragInitialCenterTranslation;
+    QVector3D m_dragHandleCornerTranslation;
+    QMatrix4x4 m_dragInitialHandleMatrix;
     Qt3DCore::QEntity *m_dragEntity;
     bool m_ignoringInitialDrag;
     bool m_viewCenterLocked;

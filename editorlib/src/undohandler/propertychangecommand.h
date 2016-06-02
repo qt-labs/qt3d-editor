@@ -43,6 +43,13 @@ public:
                           const QString &propertyName,
                           const QVariant &newValue,
                           const QVariant &oldValue);
+    PropertyChangeCommand(const QString &text, EditorSceneItemModel *sceneModel,
+                          const QString &entityName,
+                          EditorSceneItemComponentsModel::EditorSceneItemComponentTypes componentType,
+                          const QString &propertyName,
+                          const QVariant &newValue, const QVariant &oldValue,
+                          const QString &propertyName2,
+                          const QVariant &newValue2, const QVariant &oldValue2);
 
     virtual void undo();
     virtual void redo();
@@ -54,6 +61,7 @@ public:
 
 private:
     QObject *getTargetObject();
+    void setProperty(QObject *obj, const QByteArray &propertyName, const QVariant &value);
 
     EditorSceneItemModel *m_sceneModel;
     QString m_entityName;
@@ -61,6 +69,9 @@ private:
     QByteArray m_propertyName;
     QVariant m_newValue;
     QVariant m_oldValue;
+    QByteArray m_propertyName2;
+    QVariant m_newValue2;
+    QVariant m_oldValue2;
 };
 
 #endif // PROPERTYCHANGECOMMAND_H

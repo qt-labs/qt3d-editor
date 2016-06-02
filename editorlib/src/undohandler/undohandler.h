@@ -81,6 +81,16 @@ public:
                                                  const QVariant &oldValue,
                                                  bool pushToStack,
                                                  const QString &text = QString());
+    Q_INVOKABLE void createChangePropertyCommand(const QString &entityName,
+                                                 int componentType,
+                                                 const QString &propertyName,
+                                                 const QVariant &newValue,
+                                                 const QVariant &oldValue,
+                                                 const QString &propertyName2,
+                                                 const QVariant &newValue2,
+                                                 const QVariant &oldValue2,
+                                                 bool pushToStack,
+                                                 const QString &text = QString());
     Q_INVOKABLE void createChangeModelRoleCommand(const QString &entityName,
                                                   int componentType,
                                                   int roleIndex,
