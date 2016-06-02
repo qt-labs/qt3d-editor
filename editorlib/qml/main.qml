@@ -503,7 +503,8 @@ ApplicationWindow {
                 }
                 DragHandle {
                     handleType: EditorScene.DragTranslate
-                    color: "red"
+                    color: "#c22555"
+                    radius: height / 2
                 }
                 DragHandle {
                     handleType: EditorScene.DragRotate

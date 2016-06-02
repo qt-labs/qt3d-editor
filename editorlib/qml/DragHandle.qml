@@ -48,6 +48,7 @@ Item {
     property point offset: Qt.point(width / 2, height / 2)
     property int handleIndex: 0
     property alias color: handleRect.color
+    property alias radius: handleRect.radius
     property bool dragging: false
 
     MouseArea {
