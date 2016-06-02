@@ -2008,6 +2008,7 @@ void EditorScene::handleSelectionTransformChange()
         }
 
         // Signal UI to reposition drag handles
+        emit beginDragHandlesRepositioning();
         emit repositionDragHandle(DragTranslate,
                                   QPoint(translateHandlePos.x(), translateHandlePos.y()),
                                   m_dragHandlesTransform->isEnabled()
@@ -2022,6 +2023,7 @@ void EditorScene::handleSelectionTransformChange()
                                       m_dragHandlesTransform->isEnabled()
                                       ? m_dragHandleScaleTransforms.at(0)->isEnabled() : false, i);
         }
+        emit endDragHandlesRepositioning();
     }
 }
 

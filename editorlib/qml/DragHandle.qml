@@ -33,6 +33,7 @@ Item {
     width: 16
     height: 16
     visible: false
+    opacity: dragHandleMouseArea.containsMouse || dragging ? 1.0 : 0.4
 
     // handleRect is the visible part by default, but dragging can be initiated by clicking
     // on the invisible margins, too.
@@ -42,14 +43,18 @@ Item {
         anchors.margins: 4
         color: "#f4be04"
     }
+
     property int handleType: EditorScene.DragNone
     property point offset: Qt.point(width / 2, height / 2)
     property int handleIndex: 0
     property alias color: handleRect.color
+    property bool dragging: false
 
     MouseArea {
+        id: dragHandleMouseArea
         anchors.fill: parent
         acceptedButtons: Qt.LeftButton
+        hoverEnabled: true
         onPositionChanged: {
             var scenePos = editorViewport.mapFromItem(parent, mouseX, mouseY)
             editorScene.dragHandleMove(scenePos,
@@ -60,9 +65,15 @@ Item {
         onPressed: {
             var scenePos = editorViewport.mapFromItem(parent, mouseX, mouseY)
             editorScene.dragHandlePress(handleType, scenePos, handleIndex)
+            dragHandle.dragging = true
         }
         onReleased: {
             editorScene.dragHandleRelease()
+            dragHandle.dragging = false
+        }
+        onCanceled: {
+            editorScene.dragHandleRelease()
+            dragHandle.dragging = false
         }
     }
 
@@ -74,6 +85,15 @@ Item {
                 y = pos.y - offset.y
                 dragHandle.visible = visible
             }
+        }
+        onBeginDragHandlesRepositioning: {
+            // Repositioning multiple handles can cause two or more handles to overlap and get
+            // "containsMouse" state simultaneously, if they have hover enabled, so disable it
+            // for the duration of the handle repositioning.
+            dragHandleMouseArea.hoverEnabled = false
+        }
+        onEndDragHandlesRepositioning: {
+            dragHandleMouseArea.hoverEnabled = true
         }
     }
 }

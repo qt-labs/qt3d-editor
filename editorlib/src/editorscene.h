@@ -302,6 +302,8 @@ signals:
     void gridSizeChanged(int gridSize);
     void mouseRightButtonReleasedWithoutDragging(bool multiSelect);
     void repositionDragHandle(DragMode dragMode, const QPoint &pos, bool visible, int handleIndex);
+    void beginDragHandlesRepositioning();
+    void endDragHandlesRepositioning();
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
