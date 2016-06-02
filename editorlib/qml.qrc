@@ -27,6 +27,9 @@
         <file alias="ButtonViewHeader.qml">qml/ButtonViewHeader.qml</file>
         <file alias="DragEntity.qml">qml/DragEntity.qml</file>
         <file alias="DragHandle.qml">qml/DragHandle.qml</file>
+        <file alias="EditorToolbar.qml">qml/EditorToolbar.qml</file>
+        <file alias="ToolbarButton.qml">qml/ToolbarButton.qml</file>
+        <file alias="ToolbarSeparator.qml">qml/ToolbarSeparator.qml</file>
         <file alias="ColorPropertyInputField.qml">qml/inputfields/ColorPropertyInputField.qml</file>
         <file alias="FilePropertyInputField.qml">qml/inputfields/FilePropertyInputField.qml</file>
         <file alias="FloatPropertyInputField.qml">qml/inputfields/FloatPropertyInputField.qml</file>
@@ -77,6 +80,7 @@
         <file alias="StyledSpinBox.qml">qml/inputfields/StyledSpinBox.qml</file>
         <file alias="StyledTextField.qml">qml/inputfields/StyledTextField.qml</file>
         <file alias="StyledButton.qml">qml/inputfields/StyledButton.qml</file>
+        <file alias="StyledCheckBox.qml">qml/inputfields/StyledCheckBox.qml</file>
         <file>editorlib_en.qm</file>
         <file>editorlib_fi.qm</file>
     </qresource>

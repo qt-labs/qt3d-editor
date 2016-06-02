@@ -27,46 +27,11 @@
 ****************************************************************************/
 import QtQuick 2.5
 
-PropertyInputField {
-    id: checkBoxInput
-    width: parent.width
-    height: checkBox.height
-
-    property string checkBoxLabel: checkBox.text
-    property bool blockChanges: false
-    property alias tooltip: checkBoxLabelItem.tooltip
-
-    onComponentValueChanged: {
-        blockChanges = true
-        if (component !== null)
-            checkBox.checked = component[propertyName]
-        blockChanges = false
-    }
-
-    StyledLabel {
-        id: checkBoxLabelItem
-        text: checkBoxLabel
-        anchors.left: parent.left
-        anchors.verticalCenter: checkBox.verticalCenter
-        horizontalAlignment: Text.AlignLeft
-        verticalAlignment: Text.AlignVCenter
-    }
-
-    Rectangle {
-        color: mainwindow.paneBackgroundColor
-        height: checkBoxInput.height
-        width: checkBox.width + mainwindow.controlMargin
-        anchors.right: checkBox.right
-    }
-
-    StyledCheckBox {
-        id: checkBox
-        anchors.right: parent.right
-        anchors.rightMargin: 11
-        onCheckedChanged: {
-            if (!blockChanges)
-                handleEditingFinished(checked)
-        }
-    }
+EnableButton {
+    height: 32
+    width: 32
+    anchors.verticalCenter: parent.verticalCenter
+    hoveredBgColor: mainwindow.listHighlightColor
+    selectedBgColor: buttonEnabled === true ? mainwindow.iconHighlightColor : "transparent"
+    buttonEnabled: true
 }
-

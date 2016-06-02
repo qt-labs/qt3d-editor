@@ -27,8 +27,7 @@
 ****************************************************************************/
 import QtQuick 2.5
 import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
-import QtQuick.Layouts 1.1
+import QtQuick.Layouts 1.2
 import QtQuick.Dialogs 1.2
 import QtQml.Models 2.2
 import Qt3D.Core 2.0
@@ -69,6 +68,7 @@ ApplicationWindow {
     property color paneColor: "#373839"
     property color viewBorderColor: "#000000"
     property color itemBackgroundColor: "#46484a"
+    property color itemColor: "#cccccc"
     property color menutItemColor: "#a0a1a2"
     property color iconHighlightColor: "#26282a"
     property string labelFontFamily: "Open Sans"
@@ -91,64 +91,7 @@ ApplicationWindow {
 
     MenuBar {
         id: mainMenuBar
-        Menu {
-            title: qsTr("&File") + editorScene.emptyString
-            MenuItem {
-                text: qsTr("&New") + editorScene.emptyString
-                onTriggered: {
-                    editorScene.resetScene()
-                    planeOrientationY.checked = true
-                    saveFileUrl = ""
-                    autoSave.checked = false
-                }
-            }
-            MenuItem {
-                action: fileLoadAction
-            }
-            MenuItem {
-                action: fileSaveAsAction
-            }
-            MenuItem {
-                action: fileSaveAction
-            }
-            MenuItem {
-                id: autoSave
-                text: qsTr("Enable autosave") + editorScene.emptyString
-                checkable: true
-                checked: false
-                onTriggered: {
-                    if (checked) {
-                        if (saveFileUrl == "")
-                            saveFileDialog.open()
-                        autoSaveTimer.start()
-                    } else {
-                        autoSaveTimer.stop()
-                    }
-                }
-            }
-            MenuItem {
-                action: entityImportAction
-            }
 
-            MenuSeparator {
-            }
-            MenuItem {
-                text: qsTr("E&xit") + editorScene.emptyString
-                onTriggered: {
-                    if (checkUnsavedChanges())
-                        mainwindow.close()
-                }
-            }
-        }
-        Menu {
-            title: qsTr("&Edit") + editorScene.emptyString
-            MenuItem {
-                action: undoAction
-            }
-            MenuItem {
-                action: redoAction
-            }
-        }
         Menu {
             id: viewMenu
             title: qsTr("&View") + editorScene.emptyString
@@ -190,12 +133,6 @@ ApplicationWindow {
                     }
                 }
                 MenuItem {
-                    text: qsTr("Reset") + editorScene.emptyString
-                    onTriggered: {
-                        resetCameraToDefault()
-                    }
-                }
-                MenuItem {
                     enabled: freeViewCamera.checked
                     text: qsTr("Add scene camera here") + editorScene.emptyString
                     onTriggered: {
@@ -228,59 +165,12 @@ ApplicationWindow {
             Menu {
                 id: helperPlaneMenu
                 title: qsTr("&Helper Plane") + editorScene.emptyString
-                ExclusiveGroup {
-                    id: helperPlaneOrientationGroup
-                }
-                MenuItem {
-                    id: planeOrientationX
-                    text: qsTr("Normal &X") + editorScene.emptyString
-                    checkable: true
-                    checked: currentHelperPlane === 0 ? true : false
-                    exclusiveGroup: helperPlaneOrientationGroup
-                    onCheckedChanged: {
-                        if (checked)
-                            mainwindow.showNormalXPlane()
-                    }
-                }
-                MenuItem {
-                    id: planeOrientationY
-                    text: qsTr("Normal &Y") + editorScene.emptyString
-                    checkable: true
-                    checked: currentHelperPlane === 1 ? true : false
-                    exclusiveGroup: helperPlaneOrientationGroup
-                    onCheckedChanged: {
-                        if (checked)
-                            mainwindow.showNormalYPlane()
-                    }
-                }
-                MenuItem {
-                    id: planeOrientationZ
-                    text: qsTr("Normal &Z") + editorScene.emptyString
-                    checkable: true
-                    checked: currentHelperPlane === 2 ? true : false
-                    exclusiveGroup: helperPlaneOrientationGroup
-                    onCheckedChanged: {
-                        if (checked)
-                            mainwindow.showNormalZPlane()
-                    }
-                }
                 MenuItem {
                     id: gridSize
                     text: qsTr("Change Grid Size") + editorScene.emptyString
                     onTriggered: {
                         gridSizeSpinBox.value = editorScene.gridSize
                         gridSizeDialog.open()
-                    }
-                }
-                MenuItem {
-                    id: planeDisabled
-                    text: qsTr("&Hide") + editorScene.emptyString
-                    checkable: true
-                    checked: currentHelperPlane === 3 ? true : false
-                    exclusiveGroup: helperPlaneOrientationGroup
-                    onCheckedChanged: {
-                        if (checked)
-                            mainwindow.hideHelperPlane()
                     }
                 }
             }
@@ -319,6 +209,8 @@ ApplicationWindow {
     }
 
     menuBar: mainMenuBar
+
+    toolBar: EditorToolbar {}
 
     FileDialog {
         id: loadFileDialog
@@ -360,203 +252,65 @@ ApplicationWindow {
         }
     }
 
-    Action {
-        id: fileLoadAction
-        text: qsTr("L&oad") + editorScene.emptyString
-        shortcut: StandardKey.Open
-        onTriggered: loadFileDialog.open()
+    function fileLoad() {
+        loadFileDialog.open()
     }
 
-    Action {
-        id: fileSaveAction
-        text: qsTr("&Save") + editorScene.emptyString
-        shortcut: StandardKey.Save
-        onTriggered: {
-            if (saveFileUrl == "") {
-                saveFileDialog.open()
-                // No previous autosave file, no need to delete anything
-            } else {
-                editorScene.saveScene(saveFileUrl)
-                editorScene.deleteScene(saveFileUrl, true)
-            }
-        }
-    }
-
-    Action {
-        id: fileSaveAsAction
-        text: qsTr("Save As") + editorScene.emptyString
-        shortcut: StandardKey.SaveAs
-        onTriggered: {
-            if (saveFileUrl != "")
-                editorScene.deleteScene(saveFileUrl, true)
+    function fileSave() {
+        if (saveFileUrl == "") {
             saveFileDialog.open()
+            // No previous autosave file, no need to delete anything
+        } else {
+            editorScene.saveScene(saveFileUrl)
+            editorScene.deleteScene(saveFileUrl, true)
         }
     }
 
-    Action {
-        id: entityImportAction
-        text: qsTr("&Import Entity") + editorScene.emptyString
-        enabled: !editorScene.sceneModel.importEntityInProgress
-        onTriggered: {
-            importEntityDialog.open();
-        }
+    function fileSaveAs() {
+        if (saveFileUrl != "")
+            editorScene.deleteScene(saveFileUrl, true)
+        saveFileDialog.open()
     }
 
-    Action {
-        id: undoAction
-        text: editorScene.undoHandler.undoText === ""
-              ? qsTr ("Undo") + editorScene.emptyString
-              : qsTr ("Undo '%1'").arg(editorScene.undoHandler.undoText) + editorScene.emptyString
-        enabled: editorScene.undoHandler.canUndo
-        shortcut: StandardKey.Undo
-        onTriggered: editorScene.undoHandler.undo()
+    function undo() {
+        editorScene.undoHandler.undo()
     }
 
-    Action {
-        id: redoAction
-        text: editorScene.undoHandler.redoText === ""
-              ? qsTr ("Redo") + editorScene.emptyString
-              : qsTr ("Redo '%1'").arg(editorScene.undoHandler.redoText) + editorScene.emptyString
-        enabled: editorScene.undoHandler.canRedo
-        shortcut: StandardKey.Redo
-        onTriggered: editorScene.undoHandler.redo()
+    function redo() {
+        editorScene.undoHandler.redo()
     }
 
-    toolBar: ToolBar {
-        id: mainToolBar
-        height: normalXButton.height
-        style: ToolBarStyle {
-            padding.top: 0
-            padding.bottom: 0
-            padding.right: 0
-            padding.left: 0
-            background: Rectangle {
-                implicitHeight: normalXButton.height
-                color: mainwindow.itemBackgroundColor
-            }
-        }
-
-        RowLayout {
-            spacing: 0
-            EnableButton {
-                id: normalXButton
-                height: 32
-                width: 32
-                anchors.verticalCenter: parent.verticalCenter
-                enabledIconSource: "images/helperplane_x_deselected.png"
-                disabledIconSource: "images/helperplane_x_selected.png"
-                hoveredBgColor: mainwindow.listHighlightColor
-                selectedBgColor: mainwindow.iconHighlightColor
-                tooltip: qsTr("Normal X (Ctrl + 1)") + editorScene.emptyString
-                buttonEnabled: currentHelperPlane === 0 ? false : true
-                onEnabledButtonClicked: mainwindow.showNormalXPlane()
-            }
-            EnableButton {
-                height: 32
-                width: 32
-                anchors.verticalCenter: parent.verticalCenter
-                enabledIconSource: "images/helperplane_y_deselected.png"
-                disabledIconSource: "images/helperplane_y_selected.png"
-                hoveredBgColor: mainwindow.listHighlightColor
-                selectedBgColor: mainwindow.iconHighlightColor
-                tooltip: qsTr("Normal Y (Ctrl + 2)") + editorScene.emptyString
-                buttonEnabled: currentHelperPlane === 1 ? false : true
-                onEnabledButtonClicked: mainwindow.showNormalYPlane()
-            }
-            EnableButton {
-                height: 32
-                width: 32
-                anchors.verticalCenter: parent.verticalCenter
-                enabledIconSource: "images/helperplane_z_deselected.png"
-                disabledIconSource: "images/helperplane_z_selected.png"
-                hoveredBgColor: mainwindow.listHighlightColor
-                selectedBgColor: mainwindow.iconHighlightColor
-                tooltip: qsTr("Normal Z (Ctrl + 3)") + editorScene.emptyString
-                buttonEnabled: currentHelperPlane === 2 ? false : true
-                onEnabledButtonClicked: mainwindow.showNormalZPlane()
-            }
-            EnableButton {
-                height: 32
-                width: 32
-                anchors.verticalCenter: parent.verticalCenter
-                enabledIconSource: "images/helperplane_none_deselected.png"
-                disabledIconSource: "images/helperplane_none_selected.png"
-                hoveredBgColor: mainwindow.listHighlightColor
-                selectedBgColor: mainwindow.iconHighlightColor
-                tooltip: qsTr("Hide helper plane (Ctrl + 4)") + editorScene.emptyString
-                buttonEnabled: currentHelperPlane === 3 ? false : true
-                onEnabledButtonClicked: mainwindow.hideHelperPlane()
-            }
-            Rectangle {
-                // menu item separator
-                height: 24
-                width: 3
-                color: mainwindow.listHighlightColor
-                border.color: mainwindow.itemBackgroundColor
-                border.width: 1
-            }
-
-            EnableButton {
-                height: 32
-                width: 32
-                anchors.verticalCenter: parent.verticalCenter
-                enabledIconSource: "images/reset_camera_to_default.png"
-                disabledIconSource: "images/reset_camera_to_default.png"
-                pressedIconSource: "images/reset_camera_to_default_pressed.png"
-                hoveredBgColor: mainwindow.listHighlightColor
-                selectedBgColor: mainwindow.iconHighlightColor
-                tooltip: qsTr("Reset to Default (Ctrl + R)") + editorScene.emptyString
-                buttonEnabled: true
-                onEnabledButtonClicked: resetCameraToDefault()
-            }
-        }
+    function fileNew() {
+        editorScene.resetScene()
+        planeOrientationY.checked = true
+        saveFileUrl = ""
+        autoSave.checked = false
     }
-    Shortcut {
-        id: normalXShortcut
-        sequence: "Ctrl+1"
-        onActivated: mainwindow.showNormalXPlane()
-    }
+
     function showNormalXPlane() {
         editorScene.helperPlane.enabled = true
         editorScene.helperPlaneTransform.rotation =
                 editorScene.helperPlaneTransform.fromAxisAndAngle(0, 1, 0, 90)
         currentHelperPlane = 0
     }
-    Shortcut {
-        id: normalYShortcut
-        sequence: "Ctrl+2"
-        onActivated: mainwindow.showNormalYPlane()
-    }
+
     function showNormalYPlane() {
         editorScene.helperPlane.enabled = true
         editorScene.helperPlaneTransform.rotation =
                 editorScene.helperPlaneTransform.fromAxisAndAngle(1, 0, 0, 90)
         currentHelperPlane = 1
     }
-    Shortcut {
-        id: normalZShortcut
-        sequence: "Ctrl+3"
-        onActivated: mainwindow.showNormalZPlane()
-    }
+
     function showNormalZPlane() {
         editorScene.helperPlane.enabled = true
         editorScene.helperPlaneTransform.rotation =
                 editorScene.helperPlaneTransform.fromAxisAndAngle(0, 0, 1, 90)
         currentHelperPlane = 2
     }
-    Shortcut {
-        id: hideHelperPlaneShortcut
-        sequence: "Ctrl+4"
-        onActivated: mainwindow.hideHelperPlane()
-    }
+
     function hideHelperPlane() {
         editorScene.helperPlane.enabled = false
         currentHelperPlane = 3
-    }
-    Shortcut {
-        id: resetCameraShortcut
-        sequence: "Ctrl+R"
-        onActivated: resetCameraToDefault()
     }
 
     EditorScene {

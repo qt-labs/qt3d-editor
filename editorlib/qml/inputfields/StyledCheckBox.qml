@@ -26,47 +26,26 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
+import QtQuick.Controls 2.0 as QQC2
 
-PropertyInputField {
-    id: checkBoxInput
-    width: parent.width
-    height: checkBox.height
+QQC2.CheckBox {
+    id: autoSaveCheckBox
+    property alias indicatorWidth: indicatorRect.implicitWidth
+    property alias indicatorHeight: indicatorRect.implicitHeight
 
-    property string checkBoxLabel: checkBox.text
-    property bool blockChanges: false
-    property alias tooltip: checkBoxLabelItem.tooltip
+    indicator: Rectangle {
+        id: indicatorRect
+        implicitWidth: 16
+        implicitHeight: 16
+        x: autoSaveCheckBox.leftPadding + (autoSaveCheckBox.availableWidth - width) / 2
+        y: autoSaveCheckBox.topPadding + (autoSaveCheckBox.availableHeight - height) / 2
+        color: mainwindow.itemColor
 
-    onComponentValueChanged: {
-        blockChanges = true
-        if (component !== null)
-            checkBox.checked = component[propertyName]
-        blockChanges = false
-    }
-
-    StyledLabel {
-        id: checkBoxLabelItem
-        text: checkBoxLabel
-        anchors.left: parent.left
-        anchors.verticalCenter: checkBox.verticalCenter
-        horizontalAlignment: Text.AlignLeft
-        verticalAlignment: Text.AlignVCenter
-    }
-
-    Rectangle {
-        color: mainwindow.paneBackgroundColor
-        height: checkBoxInput.height
-        width: checkBox.width + mainwindow.controlMargin
-        anchors.right: checkBox.right
-    }
-
-    StyledCheckBox {
-        id: checkBox
-        anchors.right: parent.right
-        anchors.rightMargin: 11
-        onCheckedChanged: {
-            if (!blockChanges)
-                handleEditingFinished(checked)
+        Image {
+            x: (parent.width - width) / 2
+            y: (parent.height - height) / 2
+            source: "images/check.png"
+            visible: autoSaveCheckBox.checkState === Qt.Checked
         }
     }
 }
-
