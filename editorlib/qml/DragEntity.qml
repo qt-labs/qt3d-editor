@@ -66,9 +66,9 @@ Image {
 
         x = 0
         y = 0
-        visible = false
         Drag.active = false
         dragKey = ""
+        visible = false
 
         return dropResult
     }

@@ -99,7 +99,6 @@
 #include <Qt3DRender/private/qrenderstate_p.h>
 
 #include <QtCore/QtMath>
-#include <QtGui/QVector2D>
 
 static const QString internalPrefix = QStringLiteral("__internal");
 
@@ -988,16 +987,17 @@ QVector3D EditorUtils::unprojectRay(const QMatrix4x4 &viewMatrix,
     return ray.toVector3D().normalized();
 }
 
-// Returns a viewport pixel for a ray from camera origin to world position
-QVector2D EditorUtils::projectRay(const QMatrix4x4 &viewMatrix,
+// Returns a viewport position for a ray from camera origin to world position
+// If returned z-value is negative, the position is behind camera
+QVector3D EditorUtils::projectRay(const QMatrix4x4 &viewMatrix,
                                   const QMatrix4x4 &projectionMatrix,
                                   int viewPortWidth, int viewPortHeight,
                                   const QVector3D &worldPos)
 {
     QVector3D localPos = projectionMatrix * viewMatrix * worldPos;
-    localPos *= QVector3D(0.5f, -0.5f, 0.0f);
-    localPos += QVector3D(0.5f, 0.5f, 0.0f);
-    return QVector2D(viewPortWidth * localPos.x(), viewPortHeight * localPos.y());
+    localPos *= QVector3D(0.5f, -0.5f, -0.5f);
+    localPos += QVector3D(0.5f, 0.5f, 0.5f);
+    return QVector3D(viewPortWidth * localPos.x(), viewPortHeight * localPos.y(), localPos.z());
 }
 
 QVector3D EditorUtils::absVector3D(const QVector3D &vector)

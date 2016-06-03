@@ -29,7 +29,7 @@ import QtQuick 2.5
 
 Item {
     id: dragHandle
-    z: 5
+    z: 2
     width: 16
     height: 16
     visible: false

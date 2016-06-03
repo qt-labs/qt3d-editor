@@ -469,6 +469,7 @@ ApplicationWindow {
         // Entity library
         EntityLibrary {
             id: entityLibrary
+            z: 4
             Layout.minimumWidth: 100
             Layout.maximumWidth: mainwindow.width - 10
             onCreateNewEntity: {
@@ -508,7 +509,7 @@ ApplicationWindow {
                 }
                 DragHandle {
                     handleType: EditorScene.DragRotate
-                    z: 10 // Make sure rotate handle is on top of scale handles
+                    z: 3 // Make sure rotate handle is on top of scale handles
                     Image {
                         anchors.fill: parent
                         source: "images/rotate_handle.png"
