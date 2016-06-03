@@ -1681,6 +1681,8 @@ void EditorScene::setFrameGraphCamera(Qt3DCore::QEntity *cameraEntity)
             connect(currentCamera, &Qt3DRender::QCamera::viewMatrixChanged,
                     this, &EditorScene::handleSelectionTransformChange);
         }
+        // This will update drag handle positions if needed
+        handleSelectionTransformChange();
     }
 }
 
@@ -1930,7 +1932,9 @@ void EditorScene::endSelectionHandling()
 
 void EditorScene::handleSelectionTransformChange()
 {
-    EditorSceneItem *item = m_sceneItems.value(m_selectedEntity->id(), nullptr);
+    EditorSceneItem *item = nullptr;
+    if (m_selectedEntity)
+        item = m_sceneItems.value(m_selectedEntity->id(), nullptr);
     if (item) {
         Qt3DRender::QCamera *camera = frameGraphCamera();
         resizeCameraViewCenterEntity();
