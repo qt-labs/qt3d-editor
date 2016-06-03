@@ -89,5 +89,7 @@
         <file>images/undo_disabled.png</file>
         <file>images/redo_disabled.png</file>
         <file>images/check.png</file>
+        <file>images/snap_to.png</file>
+        <file>images/snap_to_disabled.png</file>
     </qresource>
 </RCC>

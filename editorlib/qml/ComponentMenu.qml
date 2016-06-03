@@ -27,6 +27,7 @@
 ****************************************************************************/
 import QtQuick 2.5
 import QtQuick.Controls 1.4
+import com.theqtcompany.SceneEditor3D 1.0
 
 Menu {
     title: qsTr("Add Component") + editorScene.emptyString
@@ -34,6 +35,31 @@ Menu {
     MenuItem {
         text: selectedEntityName
         enabled: false
+    }
+
+    MenuSeparator {}
+
+    MenuItem {
+        enabled: editorScene.freeView
+        text: qsTr("Add scene camera here") + editorScene.emptyString
+        onTriggered: {
+            entityTree.selectSceneRoot()
+            editorScene.undoHandler.beginMacro(text)
+            entityTree.addNewEntity(EditorUtils.CameraEntity)
+            // When a new camera is added, it is automatically selected
+            editorScene.undoHandler.createCopyCameraPropertiesCommand(
+                        selectedEntityName);
+            editorScene.undoHandler.endMacro()
+        }
+    }
+    MenuItem {
+        enabled: editorScene.freeView
+        text: qsTr("Move active camera here") + editorScene.emptyString
+        onTriggered: {
+            editorScene.undoHandler.createCopyCameraPropertiesCommand(
+                        editorScene.cameraName(editorScene.activeSceneCameraIndex),
+                        "", text);
+        }
     }
 
     MenuSeparator {}

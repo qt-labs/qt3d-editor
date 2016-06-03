@@ -29,6 +29,7 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Layouts 1.2
+import QtQuick.Controls 2.0 as QQC2
 
 Item {
     height: newButton.height
@@ -164,8 +165,61 @@ Item {
                 enabledIconSource: "images/reset_camera_to_default.png"
                 disabledIconSource: "images/reset_camera_to_default.png"
                 pressedIconSource: "images/reset_camera_to_default_pressed.png"
-                tooltip: qsTr("Reset to Default (Ctrl + R)") + editorScene.emptyString
+                tooltip: qsTr("Reset to default position (Ctrl + 0)") + editorScene.emptyString
                 onEnabledButtonClicked: mainwindow.resetCameraToDefault()
+            }
+
+            ToolbarSeparator {}
+
+            ToolbarButton {
+                enabledIconSource: "images/snap_to.png"
+                disabledIconSource: "images/snap_to_disabled.png"
+                tooltip: qsTr("Snap to active camera position (Ctrl + 5)") + editorScene.emptyString
+                buttonEnabled: freeViewCheckBox.checked
+                onEnabledButtonClicked: editorScene.snapFreeViewCameraToActiveSceneCamera()
+            }
+            StyledCheckBox {
+                id: freeViewCheckBox
+                rightPadding: 2
+                indicatorWidth: 10
+                indicatorHeight: 10
+                checked: true
+                onCheckedChanged: {
+                    editorScene.freeView = checked
+                }
+            }
+            StyledLabel {
+                text: qsTr("Free view") + editorScene.emptyString
+                rightPadding: 8
+                leftPadding: 0
+            }
+
+            Item {
+                id: cameraComboboxItem
+                width: 200
+                height: cameraCombobox.height
+
+                QQC2.ComboBox {
+                    id: cameraCombobox
+                    anchors.right: parent.right
+                    anchors.rightMargin: 4
+                    anchors.left: parent.left
+                    anchors.leftMargin: 8
+                    anchors.bottomMargin: 4
+                    anchors.verticalCenter: parent.verticalCenter
+                    implicitHeight: qlcControlHeight
+                    currentIndex: editorScene.activeSceneCameraIndex
+
+                    model: editorScene.sceneCamerasModel
+                    textRole: "display"
+
+                    onCurrentIndexChanged: {
+                        editorScene.undoHandler.createChangeGenericPropertyCommand(
+                                    editorScene, "activeSceneCameraIndex",
+                                    currentIndex, editorScene.activeSceneCameraIndex,
+                                    qsTr("Change active camera"))
+                    }
+                }
             }
 
             ToolbarSeparator {}
@@ -205,6 +259,11 @@ Item {
     }
 
     Shortcut {
+        id: resetCameraShortcut
+        sequence: "Ctrl+0"
+        onActivated: mainwindow.resetCameraToDefault()
+    }
+    Shortcut {
         id: normalXShortcut
         sequence: "Ctrl+1"
         onActivated: mainwindow.showNormalXPlane()
@@ -225,8 +284,8 @@ Item {
         onActivated: mainwindow.hideHelperPlane()
     }
     Shortcut {
-        id: resetCameraShortcut
-        sequence: "Ctrl+R"
-        onActivated: mainwindow.resetCameraToDefault()
+        id: snapToActiveCameraShortcut
+        sequence: "Ctrl+5"
+        onActivated: editorScene.snapFreeViewCameraToActiveSceneCamera()
     }
 }
