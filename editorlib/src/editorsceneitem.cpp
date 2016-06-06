@@ -64,6 +64,7 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
     , m_entityTransform(nullptr)
     , m_entityMesh(nullptr)
     , m_entityMeshType(EditorSceneItemMeshComponentsModel::Unknown)
+    , m_useGeometryFunctor(false)
     , m_entityMeshExtents(1.0f, 1.0f, 1.0f)
     , m_canRotate(true)
     , m_internalPickers(nullptr)
@@ -293,12 +294,15 @@ void EditorSceneItem::recalculateCustomMeshExtents(Qt3DRender::QGeometryRenderer
 {
     // For custom meshes we need to calculate the extents from geometry
     Qt3DRender::QGeometry *meshGeometry = mesh->geometry();
-    if (!meshGeometry) {
+    if (!meshGeometry || m_useGeometryFunctor) {
         Qt3DRender::QGeometryFactoryPtr geometryFunctorPtr = mesh->geometryFactory();
         if (geometryFunctorPtr.data()) {
             // Execute the geometry functor to get the geometry, since its not normally available
             // on the application side.
             meshGeometry = geometryFunctorPtr.data()->operator()();
+            // Use geometry functor also in future for this item go get the geometry, if the mesh
+            // needs to be recalculated. Otherwise we are likely to get obsolete geometry.
+            m_useGeometryFunctor = true;
         }
     }
 

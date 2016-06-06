@@ -944,9 +944,12 @@ void EditorScene::dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, 
 
         // Calculate the translate needed to keep opposite corner anchored
         QMatrix4x4 ancestralTransform = EditorUtils::totalAncestralTransform(m_selectedEntity);
-        QVector3D newHandleCornerTranslation =
-                EditorUtils::totalAncestralScale(m_selectedEntity)
-                * m_lockToAxisScale * m_dragHandleCornerTranslation;
+        QVector3D ancestralScale =
+                EditorUtils::totalAncestralScale(m_selectedEntity) * m_lockToAxisScale;
+        QVector3D newHandleCornerTranslation = ancestralScale * m_dragHandleCornerTranslation;
+        EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(), nullptr);
+        if (selectedItem)
+            newHandleCornerTranslation -= ancestralScale * selectedItem->entityMeshCenter();
         QVector3D newTranslation = ancestralTransform.inverted() * m_dragInitialHandleMatrix
                 * (newHandleCornerTranslation - m_dragInitialHandleCornerTranslation);
 

@@ -98,6 +98,7 @@ public:
     QVector3D selectionBoxExtents() const { return m_selectionBoxExtents; }
     QVector3D entityMeshExtents() const { return m_entityMeshExtents; }
     QVector3D selectionBoxCenter() const { return m_selectionBoxCenter; }
+    QVector3D entityMeshCenter() const { return m_entityMeshCenter; }
 
     bool canRotate() const { return m_canRotate; }
     void setCanRotate(bool canRotate) { m_canRotate = canRotate; }
@@ -138,6 +139,7 @@ private:
     Qt3DCore::QTransform *m_entityTransform; // Not owned
     Qt3DRender::QGeometryRenderer *m_entityMesh; // Not owned
     EditorSceneItemMeshComponentsModel::MeshComponentTypes m_entityMeshType;
+    bool m_useGeometryFunctor;
     ItemType m_itemType;
 
     QVector3D m_entityMeshExtents;
