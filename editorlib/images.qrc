@@ -91,5 +91,6 @@
         <file>images/check.png</file>
         <file>images/snap_to.png</file>
         <file>images/snap_to_disabled.png</file>
+        <file>images/settings.png</file>
     </qresource>
 </RCC>

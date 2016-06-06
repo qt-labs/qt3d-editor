@@ -81,6 +81,8 @@
         <file alias="StyledTextField.qml">qml/inputfields/StyledTextField.qml</file>
         <file alias="StyledButton.qml">qml/inputfields/StyledButton.qml</file>
         <file alias="StyledCheckBox.qml">qml/inputfields/StyledCheckBox.qml</file>
+        <file alias="StyledRadioButton.qml">qml/inputfields/StyledRadioButton.qml</file>
+        <file alias="SettingsDialog.qml">qml/SettingsDialog.qml</file>
         <file>editorlib_en.qm</file>
         <file>editorlib_fi.qm</file>
     </qresource>

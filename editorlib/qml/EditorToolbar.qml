@@ -81,25 +81,6 @@ Item {
                 tooltip: qsTr("Save As") + editorScene.emptyString
                 onEnabledButtonClicked: mainwindow.fileSaveAs()
             }
-            StyledCheckBox {
-                rightPadding: 2
-                indicatorWidth: 10
-                indicatorHeight: 10
-                onCheckedChanged: {
-                    if (checked) {
-                        if (saveFileUrl == "")
-                            saveFileDialog.open()
-                        autoSaveTimer.start()
-                    } else {
-                        autoSaveTimer.stop()
-                    }
-                }
-            }
-            StyledLabel {
-                text: qsTr("Auto save") + editorScene.emptyString
-                rightPadding: 8
-                leftPadding: 0
-            }
 
             ToolbarSeparator {}
 
@@ -162,21 +143,18 @@ Item {
             ToolbarSeparator {}
 
             ToolbarButton {
-                enabledIconSource: "images/reset_camera_to_default.png"
-                disabledIconSource: "images/reset_camera_to_default.png"
-                pressedIconSource: "images/reset_camera_to_default_pressed.png"
-                tooltip: qsTr("Reset to default position (Ctrl + 0)") + editorScene.emptyString
-                onEnabledButtonClicked: mainwindow.resetCameraToDefault()
-            }
-
-            ToolbarSeparator {}
-
-            ToolbarButton {
                 enabledIconSource: "images/snap_to.png"
                 disabledIconSource: "images/snap_to_disabled.png"
                 tooltip: qsTr("Snap to active camera position (Ctrl + 5)") + editorScene.emptyString
                 buttonEnabled: freeViewCheckBox.checked
                 onEnabledButtonClicked: editorScene.snapFreeViewCameraToActiveSceneCamera()
+            }
+            ToolbarButton {
+                enabledIconSource: "images/reset_camera_to_default.png"
+                disabledIconSource: "images/reset_camera_to_default.png"
+                pressedIconSource: "images/reset_camera_to_default_pressed.png"
+                tooltip: qsTr("Reset to default position (Ctrl + 0)") + editorScene.emptyString
+                onEnabledButtonClicked: mainwindow.resetCameraToDefault()
             }
             StyledCheckBox {
                 id: freeViewCheckBox
@@ -223,6 +201,12 @@ Item {
             }
 
             ToolbarSeparator {}
+
+            ToolbarButton {
+                enabledIconSource: "images/settings.png"
+                tooltip: qsTr("Settings") + editorScene.emptyString
+                onEnabledButtonClicked: settingsDialog.show()
+            }
         }
     }
 

@@ -75,36 +75,9 @@ ComponentDelegate {
         QQC2.GroupBox {
             title: qsTr("Projection Type") + editorScene.emptyString
             Row {
-                QQC2.RadioButton {
+                StyledRadioButton {
                     id: orthoButton
                     checked: componentData.projectionType === CameraLens.OrthographicProjection
-                    indicator: Rectangle {
-                        implicitWidth: 20
-                        implicitHeight: 20
-                        x: orthoButton.text ?
-                               (orthoButton.mirrored ? orthoButton.width - width
-                                                       - orthoButton.rightPadding :
-                                                       orthoButton.leftPadding) :
-                               orthoButton.leftPadding + (orthoButton.availableWidth - width) / 2
-                        y: orthoButton.topPadding + (orthoButton.availableHeight - height) / 2
-
-                        radius: width / 2
-                        border.width: 1
-                        border.color: orthoButton.pressed ? mainwindow.listHighlightColor
-                                                          : "#353637"
-                        color: orthoButton.pressed ? mainwindow.paneBackgroundColor : "#f6f6f6"
-
-                        Rectangle {
-                            x: (parent.width - width) / 2
-                            y: (parent.height - height) / 2
-                            width: 14
-                            height: 14
-                            radius: width / 2
-                            color: orthoButton.pressed ? mainwindow.textColor
-                                                       : mainwindow.selectionColor
-                            visible: orthoButton.checked
-                        }
-                    }
                     onCheckedChanged: {
                         if (checked)
                             changeProjectionType(CameraLens.OrthographicProjection)
@@ -122,40 +95,9 @@ ComponentDelegate {
                                  + editorScene.emptyString
                     }
                 }
-                QQC2.RadioButton {
+                StyledRadioButton {
                     id: perspectiveButton
                     checked: componentData.projectionType === CameraLens.PerspectiveProjection
-                    indicator: Rectangle {
-                        implicitWidth: 20
-                        implicitHeight: 20
-                        x: perspectiveButton.text ?
-                               (perspectiveButton.mirrored ? perspectiveButton.width - width
-                                                             - perspectiveButton.rightPadding :
-                                                             perspectiveButton.leftPadding) :
-                               perspectiveButton.leftPadding + (perspectiveButton.availableWidth
-                                                                - width) / 2
-                        y: perspectiveButton.topPadding + (perspectiveButton.availableHeight
-                                                           - height) / 2
-
-                        radius: width / 2
-                        border.width: 1
-                        border.color: perspectiveButton.pressed ? mainwindow.listHighlightColor
-                                                                : "#353637"
-                        color: perspectiveButton.pressed ? mainwindow.paneBackgroundColor
-                                                         : "#f6f6f6"
-
-                        Rectangle {
-                            x: (parent.width - width) / 2
-                            y: (parent.height - height) / 2
-                            width: 14
-                            height: 14
-                            radius: width / 2
-                            color: perspectiveButton.pressed ? mainwindow.textColor
-                                                             : mainwindow.selectionColor
-                            visible: perspectiveButton.checked
-                        }
-                    }
-
                     onCheckedChanged: {
                         if (checked)
                             changeProjectionType(CameraLens.PerspectiveProjection)

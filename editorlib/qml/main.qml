@@ -89,60 +89,6 @@ ApplicationWindow {
 
     property string systemLanguage: editorScene.language
 
-    MenuBar {
-        id: mainMenuBar
-
-        Menu {
-            id: viewMenu
-            title: qsTr("&View") + editorScene.emptyString
-            Menu {
-                id: helperPlaneMenu
-                title: qsTr("&Helper Plane") + editorScene.emptyString
-                MenuItem {
-                    id: gridSize
-                    text: qsTr("Change Grid Size") + editorScene.emptyString
-                    onTriggered: {
-                        gridSizeSpinBox.value = editorScene.gridSize
-                        gridSizeDialog.open()
-                    }
-                }
-            }
-            Menu {
-                id: languageMenu
-                title: qsTr("&Language") + editorScene.emptyString
-                ExclusiveGroup {
-                    id: languageGroup
-                }
-                MenuItem {
-                    id: languageEnglish
-                    text: qsTr("English") + editorScene.emptyString
-                    checkable: true
-                    checked: (systemLanguage == "en")
-                    exclusiveGroup: languageGroup
-                    onCheckedChanged: {
-                        if (checked) {
-                            editorScene.language = "en"
-                        }
-                    }
-                }
-                MenuItem {
-                    id: languageFinnish
-                    text: qsTr("Finnish") + editorScene.emptyString
-                    checkable: true
-                    checked: (systemLanguage == "fi")
-                    exclusiveGroup: languageGroup
-                    onCheckedChanged: {
-                        if (checked) {
-                            editorScene.language = "fi"
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    menuBar: mainMenuBar
-
     toolBar: EditorToolbar {}
 
     FileDialog {
@@ -314,54 +260,8 @@ ApplicationWindow {
         icon: StandardIcon.Warning
     }
 
-    Dialog {
-        id: gridSizeDialog
-        property int previousSize: editorScene.gridSize
-        title: qsTr("Grid Size") + editorScene.emptyString
-        width: buttonRow.width
-
-        contentItem: Rectangle {
-            color: mainwindow.paneBackgroundColor
-            StyledSpinBox {
-                id: gridSizeSpinBox
-                anchors.centerIn: parent
-                implicitWidth: 140
-                to: 20
-                stepSize: 1
-                from: 1
-                contentItem: StyledTextInput {
-                    inputMethodHints: Qt.ImhFormattedNumbersOnly
-                }
-            }
-
-            RowLayout {
-                id: buttonRow
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 4
-                spacing: 4
-
-                StyledButton {
-                    text: qsTr("Apply")
-                    onButtonClicked: {
-                        editorScene.gridSize = gridSizeSpinBox.value
-                    }
-                }
-                StyledButton {
-                    text: qsTr("Cancel")
-                    onButtonClicked: {
-                        editorScene.gridSize = gridSizeDialog.previousSize
-                        gridSizeDialog.close()
-                    }
-                }
-                StyledButton {
-                    text: qsTr("Ok")
-                    onButtonClicked: {
-                        editorScene.gridSize = gridSizeSpinBox.value
-                        gridSizeDialog.close()
-                    }
-                }
-            }
-        }
+    SettingsDialog {
+        id: settingsDialog
     }
 
     MessageDialog {
