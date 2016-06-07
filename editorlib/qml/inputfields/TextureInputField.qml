@@ -91,6 +91,10 @@ ModelRoleInputField {
                 anchors.margins: 1
                 fillMode: Image.Stretch
             }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: fileDialog.open()
+            }
         }
     }
 }
