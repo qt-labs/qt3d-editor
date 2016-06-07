@@ -37,7 +37,7 @@ Window {
     modality: Qt.WindowModal
     width: 400
     height: 320
-    color: mainwindow.paneBackgroundColor
+    color: editorContent.paneBackgroundColor
     minimumHeight: settingsLayout.Layout.minimumHeight + buttonRow.Layout.minimumHeight
     minimumWidth: buttonRow.Layout.minimumWidth
     property bool previousAutoSaveEnabled
@@ -166,7 +166,7 @@ Window {
             }
             StyledButton {
                 implicitWidth: parent.width
-                implicitHeight: qlcControlHeight
+                implicitHeight: editorContent.qlcControlHeight
                 text: folderPath
                 onButtonClicked: fileDialog.open()
             }
@@ -175,7 +175,7 @@ Window {
 
     FileDialog {
         id: fileDialog
-        folder: mainwindow.defaultFolder
+        folder: editorContent.defaultFolder
         title: defaultFolderLabel.text
         selectFolder: true
         onAccepted: {
@@ -188,7 +188,7 @@ Window {
         id: separator
         width: parent.width
         height: 1
-        color: mainwindow.listHighlightColor
+        color: editorContent.listHighlightColor
         anchors.bottom: buttonRow.top
         anchors.bottomMargin: 8
         anchors.topMargin: 8
@@ -235,7 +235,7 @@ Window {
                 }
                 if (previousFolder.length > 0
                         && currentFolder !== previousFolder) {
-                    mainwindow.defaultFolder = previousFolder
+                    editorContent.defaultFolder = previousFolder
                     currentFolder = previousFolder
                     parseFolderString(currentFolder)
                 }
@@ -266,7 +266,7 @@ Window {
         autoSaveEnabled = saveCheckBox.checked
         if (autoSaveEnabled !== previousAutoSaveEnabled) {
             if (autoSaveEnabled) {
-                if (saveFileUrl == "")
+                if (editorContent.saveFileUrl == "")
                     saveFileDialog.open()
                 autoSaveTimer.start()
             } else {
@@ -284,11 +284,11 @@ Window {
 
     function setFolder() {
         if (previousFolder !== currentFolder) {
-            mainwindow.defaultFolder = currentFolder
+            editorContent.defaultFolder = currentFolder
             // When default folder is changed, reset all saved folders
-            mainwindow.importFolder = currentFolder
-            mainwindow.saveFolder = currentFolder
-            mainwindow.textureFolder = currentFolder
+            editorContent.importFolder = currentFolder
+            editorContent.saveFolder = currentFolder
+            editorContent.textureFolder = currentFolder
         }
     }
 
@@ -303,7 +303,7 @@ Window {
         currentGridSize = editorScene.gridSize
         previousGridSize = currentGridSize
         gridSizeSpinBox.value = currentGridSize
-        currentFolder = mainwindow.defaultFolder
+        currentFolder = editorContent.defaultFolder
         previousFolder = currentFolder
         parseFolderString(currentFolder)
         previousAutoSaveEnabled = autoSaveTimer.running

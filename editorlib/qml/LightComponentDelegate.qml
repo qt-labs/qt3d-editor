@@ -35,14 +35,14 @@ ComponentDelegate {
 
     property int currentLight: 0
 
-    viewTitleVisible: lightViewVisible
+    viewTitleVisible: editorContent.lightViewVisible
 
     onChangeViewVisibity: {
-        lightViewVisible = viewVisibility
+        editorContent.lightViewVisible = viewVisibility
     }
 
     Component.onCompleted: {
-        if (!lightViewVisible)
+        if (!editorContent.lightViewVisible)
             height = minimumComponentHeight
     }
 
@@ -61,11 +61,11 @@ ComponentDelegate {
             anchors.leftMargin: 8
             anchors.bottomMargin: 4
             anchors.verticalCenter: parent.verticalCenter
-            implicitHeight: qlcControlHeight
+            implicitHeight: editorContent.qlcControlHeight
             property int validIndex: -1
 
             model: ListModel {
-                property string language: systemLanguage
+                property string language: editorContent.systemLanguage
 
                 function retranslateUi() {
                     // Repopulate list to change the current text as well

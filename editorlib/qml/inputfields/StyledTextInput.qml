@@ -30,9 +30,9 @@ import QtQuick 2.5
 TextInput {
     text: parent.textFromValue(parent.value, parent.locale)
     font: parent.font
-    color: mainwindow.textColor
-    selectionColor: mainwindow.selectionColor
-    selectedTextColor: mainwindow.textColor
+    color: editorContent.textColor
+    selectionColor: editorContent.selectionColor
+    selectedTextColor: editorContent.textColor
 
     horizontalAlignment: Qt.AlignHCenter
     verticalAlignment: Qt.AlignVCenter

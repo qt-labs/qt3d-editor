@@ -30,10 +30,10 @@ import QtQuick.Controls 2.0 as QQC2
 
 QQC2.TextField {
     background: TextFieldBackgroundStyle {}
-    color: mainwindow.textColor
-    selectionColor: mainwindow.selectionColor
-    selectedTextColor: mainwindow.textColor
-    font.family: mainwindow.labelFontFamily
-    font.weight: mainwindow.labelFontWeight
-    font.pixelSize: mainwindow.labelFontPixelSize
+    color: editorContent.textColor
+    selectionColor: editorContent.selectionColor
+    selectedTextColor: editorContent.textColor
+    font.family: editorContent.labelFontFamily
+    font.weight: editorContent.labelFontWeight
+    font.pixelSize: editorContent.labelFontPixelSize
 }

@@ -44,10 +44,10 @@ QQC2.RadioButton {
 
         radius: width / 2
         border.width: 1
-        border.color: radioButton.pressed ? mainwindow.listHighlightColor
+        border.color: radioButton.pressed ? editorContent.listHighlightColor
                                           : "#353637"
-        color: radioButton.pressed ? mainwindow.paneBackgroundColor
-                                   : mainwindow.itemColor
+        color: radioButton.pressed ? editorContent.paneBackgroundColor
+                                   : editorContent.itemColor
 
         Rectangle {
             x: (parent.width - width) / 2
@@ -55,8 +55,8 @@ QQC2.RadioButton {
             width: 14
             height: 14
             radius: width / 2
-            color: radioButton.pressed ? mainwindow.textColor
-                                       : mainwindow.selectionColor
+            color: radioButton.pressed ? editorContent.textColor
+                                       : editorContent.selectionColor
             visible: radioButton.checked
         }
     }

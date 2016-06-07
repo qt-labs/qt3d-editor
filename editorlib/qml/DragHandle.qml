@@ -40,7 +40,7 @@ Item {
         id: handleRect
         anchors.fill: parent
         anchors.margins: 4
-        color: mainwindow.selectionColor
+        color: editorContent.selectionColor
     }
 
     property int handleType: EditorScene.DragNone

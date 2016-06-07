@@ -1,17 +1,23 @@
 DEFINES += QT3DSCENEEDITOR_LIBRARY
 
-QT += qml quick
+QT += qml quick quickwidgets
 
 DEPENDPATH += ../editorlib
 INCLUDEPATH += ../editorlib
 
 # Qt3DSceneEditor files
 
-SOURCES += qt3dsceneeditorplugin.cpp
+SOURCES += qt3dsceneeditorplugin.cpp \
+        qt3dsceneeditorfactory.cpp \
+        qt3dsceneeditorw.cpp \
+        qt3dsceneeditordocument.cpp
 
 HEADERS += qt3dsceneeditorplugin.h \
+        qt3dsceneeditorfactory.h \
+        qt3dsceneeditorw.h \
         qt3dsceneeditor_global.h \
-        qt3dsceneeditorconstants.h
+        qt3dsceneeditorconstants.h \
+        qt3dsceneeditordocument.h
 
 RESOURCES += creatorplugin.qrc
 
@@ -68,6 +74,7 @@ LIBS += -L$$EDITORLIBDIR -lqt3dsceneeditor
 # Install necessary files under creator
 editordll.path = $$IDE_BIN_PATH
 editordll.files = $$EDITORLIBDIR/$$EDITORLIBNAME
+editordll.CONFIG = no_check_exist
 
 wizardfiles.path = $$IDE_DATA_PATH/templates/wizards/files/qt3dsceneeditor
 wizardfiles.files = \

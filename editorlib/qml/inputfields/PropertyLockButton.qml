@@ -39,8 +39,8 @@ EnableButton {
     buttonEnabled: !locked
 
     Component.onCompleted: {
-        if (selectedEntity) {
-            var propertyLocked = selectedEntity.customProperty(lockComponent, lockProperty)
+        if (editorContent.selectedEntity) {
+            var propertyLocked = editorContent.selectedEntity.customProperty(lockComponent, lockProperty)
             if (propertyLocked != undefined)
                 locked = propertyLocked
         }
@@ -48,6 +48,6 @@ EnableButton {
 
     onEnabledButtonClicked: {
         locked = !locked
-        selectedEntity.setCustomProperty(lockComponent, lockProperty, locked)
+        editorContent.selectedEntity.setCustomProperty(lockComponent, lockProperty, locked)
     }
 }

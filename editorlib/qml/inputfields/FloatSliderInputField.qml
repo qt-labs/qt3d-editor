@@ -91,10 +91,10 @@ Item {
         }
 
         Rectangle {
-            color: mainwindow.paneBackgroundColor
+            color: editorContent.paneBackgroundColor
             height: floatSliderInputField.height
-            width: floatSliderInputField.width * 0.6 > mainwindow.maximumControlWidth
-                   ? mainwindow.maximumControlWidth + mainwindow.controlMargin
+            width: floatSliderInputField.width * 0.6 > editorContent.maximumControlWidth
+                   ? editorContent.maximumControlWidth + editorContent.controlMargin
                    : floatSliderInputField.width * 0.62
             anchors.right: floatInput.right
         }
@@ -107,8 +107,8 @@ Item {
 
             from: minimum
             to: maximum
-            implicitWidth: floatSliderInputField.width * 0.6 > mainwindow.maximumControlWidth
-                           ? mainwindow.maximumControlWidth * 0.65
+            implicitWidth: floatSliderInputField.width * 0.6 > editorContent.maximumControlWidth
+                           ? editorContent.maximumControlWidth * 0.65
                            : floatSliderInputField.width * 0.4 - 4
             enabled: lockButton.buttonEnabled
             anchors.right: floatInput.left
@@ -123,11 +123,11 @@ Item {
                 implicitWidth: 20
                 implicitHeight: 20
                 radius: width / 2
-                border.color: enabled ? mainwindow.listHighlightColor
-                                      : mainwindow.itemBackgroundColor
-                color: enabled ? (slider.pressed ? mainwindow.selectionColor
-                                                 : mainwindow.listHighlightColor)
-                               : mainwindow.itemBackgroundColor
+                border.color: enabled ? editorContent.listHighlightColor
+                                      : editorContent.itemBackgroundColor
+                color: enabled ? (slider.pressed ? editorContent.selectionColor
+                                                 : editorContent.listHighlightColor)
+                               : editorContent.itemBackgroundColor
 
                 readonly property bool horizontal: slider.orientation === Qt.Horizontal
             }
@@ -139,9 +139,9 @@ Item {
                 width: horizontal ? slider.availableWidth : implicitWidth
                 height: horizontal ? implicitHeight : slider.availableHeight
                 radius: 3
-                border.color: enabled ? mainwindow.listHighlightColor
-                                      : mainwindow.itemBackgroundColor
-                color: enabled ? mainwindow.listHighlightColor : mainwindow.itemBackgroundColor
+                border.color: enabled ? editorContent.listHighlightColor
+                                      : editorContent.itemBackgroundColor
+                color: enabled ? editorContent.listHighlightColor : editorContent.itemBackgroundColor
                 scale: horizontal && slider.mirrored ? -1 : 1
 
                 readonly property bool horizontal: slider.orientation === Qt.Horizontal
@@ -182,8 +182,8 @@ Item {
 
         StyledTextField {
             id: floatInput
-            implicitWidth: floatSliderInputField.width * 0.6 > mainwindow.maximumControlWidth
-                           ? mainwindow.maximumControlWidth * 0.34
+            implicitWidth: floatSliderInputField.width * 0.6 > editorContent.maximumControlWidth
+                           ? editorContent.maximumControlWidth * 0.34
                            : floatSliderInputField.width * 0.2
             anchors.right: lockButton.left
             anchors.rightMargin: 4

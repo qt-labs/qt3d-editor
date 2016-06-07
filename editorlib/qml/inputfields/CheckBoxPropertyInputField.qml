@@ -53,9 +53,9 @@ PropertyInputField {
     }
 
     Rectangle {
-        color: mainwindow.paneBackgroundColor
+        color: editorContent.paneBackgroundColor
         height: checkBoxInput.height
-        width: checkBox.width + mainwindow.controlMargin
+        width: checkBox.width + editorContent.controlMargin
         anchors.right: checkBox.right
     }
 

@@ -36,14 +36,14 @@ ComponentDelegate {
     componentType: EditorSceneItemComponentsModel.CameraEntity
     title: qsTr("Camera") + editorScene.emptyString
 
-    viewTitleVisible: cameraViewVisible
+    viewTitleVisible: editorContent.cameraViewVisible
 
     onChangeViewVisibity: {
-        cameraViewVisible = viewVisibility
+        editorContent.cameraViewVisible = viewVisibility
     }
 
     Component.onCompleted: {
-        if (!cameraViewVisible)
+        if (!editorContent.cameraViewVisible)
             height = minimumComponentHeight
     }
 
@@ -63,7 +63,7 @@ ComponentDelegate {
         var oldValue = componentData.projectionType;
         if (oldValue !== newValue) {
             editorScene.undoHandler.createChangePropertyCommand(
-                        selectedEntityName, componentType,
+                        editorContent.selectedEntityName, componentType,
                         "projectionType", newValue, oldValue, true);
         }
     }
@@ -79,10 +79,10 @@ ComponentDelegate {
             label: Text {
                 width: groupBoxControl.availableWidth
                 text: groupBoxControl.title
-                color: enabled ? mainwindow.textColor : mainwindow.disabledTextColor
-                font.family: mainwindow.labelFontFamily
-                font.weight: mainwindow.labelFontWeight
-                font.pixelSize: mainwindow.labelFontPixelSize
+                color: enabled ? editorContent.textColor : editorContent.disabledTextColor
+                font.family: editorContent.labelFontFamily
+                font.weight: editorContent.labelFontWeight
+                font.pixelSize: editorContent.labelFontPixelSize
                 elide: Text.ElideRight
                 horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignVCenter

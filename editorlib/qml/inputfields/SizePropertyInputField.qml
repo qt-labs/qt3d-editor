@@ -69,8 +69,8 @@ PropertyInputField {
             id: row
             anchors.right: parent.right
             Layout.alignment: Qt.AlignRight
-            Layout.preferredWidth: sizeInput.width * 0.6 > mainwindow.maximumControlWidth
-                                   ? mainwindow.maximumControlWidth
+            Layout.preferredWidth: sizeInput.width * 0.6 > editorContent.maximumControlWidth
+                                   ? editorContent.maximumControlWidth
                                    : sizeInput.width * 0.6
             property real columnSpacing: widthLabel.contentWidth != 0 ? 6 : 4
             property real cellwidth: (Layout.preferredWidth
@@ -79,10 +79,10 @@ PropertyInputField {
 
 
             Rectangle {
-                color: mainwindow.paneBackgroundColor
+                color: editorContent.paneBackgroundColor
                 height: sizeInput.height
-                width: sizeInput.width * 0.6 > mainwindow.maximumControlWidth
-                       ? mainwindow.maximumControlWidth + mainwindow.controlMargin
+                width: sizeInput.width * 0.6 > editorContent.maximumControlWidth
+                       ? editorContent.maximumControlWidth + editorContent.controlMargin
                        : sizeInput.width * 0.62
                 anchors.right: heightInput.right
             }

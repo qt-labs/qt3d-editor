@@ -30,7 +30,7 @@ import com.theqtcompany.SceneEditor3D 1.0
 
 Item {
     property string propertyName: ""
-    property string entityName: selectedEntityName
+    property string entityName: editorContent.selectedEntityName
     property var component: null
     property int componentType: EditorSceneItemComponentsModel.Unknown
     property var componentValue: (component === null) ? "" : component[propertyName]

@@ -48,7 +48,7 @@ Rectangle {
 
     height: minimumHeaderHeight
     width: parent.width
-    color: mainwindow.paneColor
+    color: editorContent.paneColor
 
     onViewVisibleChanged: {
         showViewTitle(viewVisible)
@@ -93,7 +93,7 @@ Rectangle {
             source: "images/reset.png"
         }
         onClicked: {
-            editorScene.undoHandler.createResetTransformCommand(selectedEntityName)
+            editorScene.undoHandler.createResetTransformCommand(editorContent.selectedEntityName)
         }
     }
 
@@ -123,7 +123,7 @@ Rectangle {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                selectedEntityName = editorScene.sceneModel.entityName(entityTree.view.selection.currentIndex)
+                editorContent.selectedEntityName = editorScene.sceneModel.entityName(entityTree.view.selection.currentIndex)
                 visibleEntityButton.entityEnabled = !visibleEntityButton.entityEnabled
                 visibleEntityButton.visibleImageClicked()
             }

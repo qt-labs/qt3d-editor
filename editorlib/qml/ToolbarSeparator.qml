@@ -31,7 +31,7 @@ Rectangle {
     id: menuSeparator
     height: 24
     width: 1
-    color: mainwindow.listHighlightColor
-    border.color: mainwindow.itemBackgroundColor
+    color: editorContent.listHighlightColor
+    border.color: editorContent.itemBackgroundColor
     border.width: 1
 }

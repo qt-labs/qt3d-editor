@@ -35,14 +35,14 @@ ComponentDelegate {
 
     property int currentMesh: 0
 
-    viewTitleVisible: meshViewVisible
+    viewTitleVisible: editorContent.meshViewVisible
 
     onChangeViewVisibity: {
-        meshViewVisible = viewVisibility
+        editorContent.meshViewVisible = viewVisibility
     }
 
     Component.onCompleted: {
-        if (!meshViewVisible)
+        if (!editorContent.meshViewVisible)
             height = minimumComponentHeight
     }
 
@@ -72,12 +72,12 @@ ComponentDelegate {
             anchors.leftMargin: 8
             anchors.bottomMargin: 4
             anchors.verticalCenter: parent.verticalCenter
-            implicitHeight: qlcControlHeight
+            implicitHeight: editorContent.qlcControlHeight
             property int validIndex: -1
             visible: meshDelegate.currentMesh !== EditorSceneItemMeshComponentsModel.Unknown
 
             model: ListModel {
-                property string language: systemLanguage
+                property string language: editorContent.systemLanguage
 
                 function retranslateUi() {
                     clear()

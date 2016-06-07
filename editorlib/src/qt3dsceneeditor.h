@@ -37,6 +37,10 @@
 #  define QT3D_SCENE_EDITOR_EXPORT Q_DECL_IMPORT
 #endif
 
+namespace Qt3DSceneEditorLib {
+
 QT3D_SCENE_EDITOR_EXPORT void register3DSceneEditorQML();
+
+}
 
 #endif // QT3DSCENEEDITOR_H

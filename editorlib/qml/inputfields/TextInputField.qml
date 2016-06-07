@@ -61,9 +61,9 @@ Item {
         }
 
         Rectangle {
-            color: mainwindow.paneBackgroundColor
+            color: editorContent.paneBackgroundColor
             height: textLabel.height
-            implicitWidth: textInputCtrl.width + mainwindow.controlMargin
+            implicitWidth: textInputCtrl.width + editorContent.controlMargin
             anchors.right: textInputCtrl.right
         }
 

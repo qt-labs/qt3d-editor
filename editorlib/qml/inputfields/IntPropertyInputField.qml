@@ -64,10 +64,10 @@ PropertyInputField {
         }
 
         Rectangle {
-            color: mainwindow.paneBackgroundColor
+            color: editorContent.paneBackgroundColor
             height: intInput.height
-            width: intInput.width * 0.6 > mainwindow.maximumControlWidth
-                   ? mainwindow.maximumControlWidth + mainwindow.controlMargin
+            width: intInput.width * 0.6 > editorContent.maximumControlWidth
+                   ? editorContent.maximumControlWidth + editorContent.controlMargin
                    : intInput.width * 0.62
             anchors.right: valueInput.right
         }
@@ -77,10 +77,10 @@ PropertyInputField {
             anchors.right: lockButton.left
             anchors.rightMargin: 4
             Layout.alignment: Qt.AlignRight
-            implicitWidth: intInput.width * 0.6 > mainwindow.maximumControlWidth
-                           ? mainwindow.maximumControlWidth
+            implicitWidth: intInput.width * 0.6 > editorContent.maximumControlWidth
+                           ? editorContent.maximumControlWidth
                            : intInput.width * 0.6
-            implicitHeight: qlcControlHeight
+            implicitHeight: editorContent.qlcControlHeight
             to: 100
             stepSize: 1
             from: minimum

@@ -59,8 +59,8 @@ Item {
         anchors.top: entityViewHeader.bottom
         height: entityLibrary.height - entityViewHeader.height
         width: parent.width
-        color: mainwindow.paneBackgroundColor
-        border.color: mainwindow.viewBorderColor
+        color: editorContent.paneBackgroundColor
+        border.color: editorContent.viewBorderColor
         visible: entityViewHeader.viewVisible
         ScrollView {
             anchors.fill: parent
@@ -79,7 +79,7 @@ Item {
                     style: ButtonStyle {
                         background: Rectangle {
                             border.width: 0
-                            color: mainwindow.itemBackgroundColor
+                            color: editorContent.itemBackgroundColor
                         }
                     }
                     tooltip: qsTr("You can click here or drag'n'drop to add a new <i>%1</i> to the scene.").arg(
@@ -95,10 +95,10 @@ Item {
                         Text {
                             text: meshString
                             anchors.horizontalCenter: parent.horizontalCenter
-                            color: mainwindow.textColor
-                            font.family: mainwindow.labelFontFamily
-                            font.weight: mainwindow.labelFontWeight
-                            font.pixelSize: mainwindow.labelFontPixelSize
+                            color: editorContent.textColor
+                            font.family: editorContent.labelFontFamily
+                            font.weight: editorContent.labelFontWeight
+                            font.pixelSize: editorContent.labelFontPixelSize
                         }
                     }
                     MouseArea {

@@ -29,7 +29,7 @@ import QtQuick 2.5
 import com.theqtcompany.SceneEditor3D 1.0
 
 ListModel {
-    property string language: systemLanguage
+    property string language: editorContent.systemLanguage
 
     function retranslateUi() {
         setProperty(0, "meshString", qsTr("Cube"))

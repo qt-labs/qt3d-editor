@@ -43,7 +43,7 @@ Item {
             padding.left: 0
             background: Rectangle {
                 implicitHeight: newButton.height
-                color: mainwindow.itemBackgroundColor
+                color: editorContent.itemBackgroundColor
             }
         }
 
@@ -54,12 +54,12 @@ Item {
                 id: newButton
                 enabledIconSource: "images/new.png"
                 tooltip: qsTr("New") + editorScene.emptyString
-                onEnabledButtonClicked: mainwindow.fileNew()
+                onEnabledButtonClicked: editorContent.fileNew()
             }
             ToolbarButton {
                 enabledIconSource: "images/load.png"
                 tooltip: qsTr("Load (Ctrl + O)") + editorScene.emptyString
-                onEnabledButtonClicked: mainwindow.fileLoad()
+                onEnabledButtonClicked: editorContent.fileLoad()
             }
             ToolbarButton {
                 enabledIconSource: "images/import.png"
@@ -67,7 +67,7 @@ Item {
                 tooltip: qsTr("Import Entity") + editorScene.emptyString
                 buttonEnabled: !editorScene.sceneModel.importEntityInProgress
                 onEnabledButtonClicked: {
-                    importEntityDialog.folder = mainwindow.importFolder
+                    importEntityDialog.folder = editorContent.importFolder
                     importEntityDialog.open()
                 }
             }
@@ -77,12 +77,12 @@ Item {
             ToolbarButton {
                 enabledIconSource: "images/save.png"
                 tooltip: qsTr("Save") + editorScene.emptyString
-                onEnabledButtonClicked: mainwindow.fileSave()
+                onEnabledButtonClicked: editorContent.fileSave()
             }
             ToolbarButton {
                 enabledIconSource: "images/save_as.png"
                 tooltip: qsTr("Save As") + editorScene.emptyString
-                onEnabledButtonClicked: mainwindow.fileSaveAs()
+                onEnabledButtonClicked: editorContent.fileSaveAs()
             }
 
             ToolbarSeparator {}
@@ -95,7 +95,7 @@ Item {
                          : qsTr ("Undo '%1'").arg(editorScene.undoHandler.undoText)
                            + editorScene.emptyString
                 buttonEnabled: editorScene.undoHandler.canUndo
-                onEnabledButtonClicked: mainwindow.undo()
+                onEnabledButtonClicked: editorContent.undo()
             }
             ToolbarButton {
                 enabledIconSource: "images/redo.png"
@@ -105,7 +105,7 @@ Item {
                          : qsTr ("Redo '%1'").arg(editorScene.undoHandler.redoText)
                            + editorScene.emptyString
                 buttonEnabled: editorScene.undoHandler.canRedo
-                onEnabledButtonClicked: mainwindow.redo()
+                onEnabledButtonClicked: editorContent.redo()
             }
 
             ToolbarSeparator {}
@@ -113,34 +113,34 @@ Item {
             ToolbarButton {
                 enabledIconSource: "images/helperplane_x_deselected.png"
                 disabledIconSource: "images/helperplane_x_selected.png"
-                selectedBgColor: mainwindow.iconHighlightColor
+                selectedBgColor: editorContent.iconHighlightColor
                 tooltip: qsTr("Normal X (Ctrl + 1)") + editorScene.emptyString
-                buttonEnabled: currentHelperPlane === 0 ? false : true
-                onEnabledButtonClicked: mainwindow.showNormalXPlane()
+                buttonEnabled: editorContent.currentHelperPlane === 0 ? false : true
+                onEnabledButtonClicked: editorContent.showNormalXPlane()
             }
             ToolbarButton {
                 enabledIconSource: "images/helperplane_y_deselected.png"
                 disabledIconSource: "images/helperplane_y_selected.png"
-                selectedBgColor: mainwindow.iconHighlightColor
+                selectedBgColor: editorContent.iconHighlightColor
                 tooltip: qsTr("Normal Y (Ctrl + 2)") + editorScene.emptyString
-                buttonEnabled: currentHelperPlane === 1 ? false : true
-                onEnabledButtonClicked: mainwindow.showNormalYPlane()
+                buttonEnabled: editorContent.currentHelperPlane === 1 ? false : true
+                onEnabledButtonClicked: editorContent.showNormalYPlane()
             }
             ToolbarButton {
                 enabledIconSource: "images/helperplane_z_deselected.png"
                 disabledIconSource: "images/helperplane_z_selected.png"
-                selectedBgColor: mainwindow.iconHighlightColor
+                selectedBgColor: editorContent.iconHighlightColor
                 tooltip: qsTr("Normal Z (Ctrl + 3)") + editorScene.emptyString
-                buttonEnabled: currentHelperPlane === 2 ? false : true
-                onEnabledButtonClicked: mainwindow.showNormalZPlane()
+                buttonEnabled: editorContent.currentHelperPlane === 2 ? false : true
+                onEnabledButtonClicked: editorContent.showNormalZPlane()
             }
             ToolbarButton {
                 enabledIconSource: "images/helperplane_none_deselected.png"
                 disabledIconSource: "images/helperplane_none_selected.png"
-                selectedBgColor: mainwindow.iconHighlightColor
+                selectedBgColor: editorContent.iconHighlightColor
                 tooltip: qsTr("Hide helper plane (Ctrl + 4)") + editorScene.emptyString
-                buttonEnabled: currentHelperPlane === 3 ? false : true
-                onEnabledButtonClicked: mainwindow.hideHelperPlane()
+                buttonEnabled: editorContent.currentHelperPlane === 3 ? false : true
+                onEnabledButtonClicked: editorContent.hideHelperPlane()
             }
 
             ToolbarSeparator {}
@@ -157,7 +157,7 @@ Item {
                 disabledIconSource: "images/reset_camera_to_default.png"
                 pressedIconSource: "images/reset_camera_to_default_pressed.png"
                 tooltip: qsTr("Reset to default position (Ctrl + 0)") + editorScene.emptyString
-                onEnabledButtonClicked: mainwindow.resetCameraToDefault()
+                onEnabledButtonClicked: editorContent.resetCameraToDefault()
             }
             StyledCheckBox {
                 id: freeViewCheckBox
@@ -188,7 +188,7 @@ Item {
                     anchors.leftMargin: 8
                     anchors.bottomMargin: 4
                     anchors.verticalCenter: parent.verticalCenter
-                    implicitHeight: qlcControlHeight
+                    implicitHeight: editorContent.qlcControlHeight
                     currentIndex: editorScene.activeSceneCameraIndex
 
                     model: editorScene.sceneCamerasModel
@@ -216,59 +216,59 @@ Item {
     Shortcut {
         id: fileNewShortcut
         sequence: StandardKey.New
-        onActivated: mainwindow.fileNew()
+        onActivated: editorContent.fileNew()
     }
     Shortcut {
         id: fileLoadShortcut
         sequence: StandardKey.Open
-        onActivated: mainwindow.fileLoad()
+        onActivated: editorContent.fileLoad()
     }
     Shortcut {
         id: fileSaveShortcut
         sequence: StandardKey.Save
-        onActivated: mainwindow.fileSave()
+        onActivated: editorContent.fileSave()
     }
     Shortcut {
         id: fileSaveAsShortcut
         sequence: StandardKey.SaveAs
-        onActivated: mainwindow.fileSaveAs()
+        onActivated: editorContent.fileSaveAs()
     }
 
     Shortcut {
         id: undoShortcut
         sequence: StandardKey.Undo
-        onActivated: mainwindow.undo()
+        onActivated: editorContent.undo()
     }
     Shortcut {
         id: redoShortcut
         sequence: StandardKey.Redo
-        onActivated: mainwindow.redo()
+        onActivated: editorContent.redo()
     }
 
     Shortcut {
         id: resetCameraShortcut
         sequence: "Ctrl+0"
-        onActivated: mainwindow.resetCameraToDefault()
+        onActivated: editorContent.resetCameraToDefault()
     }
     Shortcut {
         id: normalXShortcut
         sequence: "Ctrl+1"
-        onActivated: mainwindow.showNormalXPlane()
+        onActivated: editorContent.showNormalXPlane()
     }
     Shortcut {
         id: normalYShortcut
         sequence: "Ctrl+2"
-        onActivated: mainwindow.showNormalYPlane()
+        onActivated: editorContent.showNormalYPlane()
     }
     Shortcut {
         id: normalZShortcut
         sequence: "Ctrl+3"
-        onActivated: mainwindow.showNormalZPlane()
+        onActivated: editorContent.showNormalZPlane()
     }
     Shortcut {
         id: hideHelperPlaneShortcut
         sequence: "Ctrl+4"
-        onActivated: mainwindow.hideHelperPlane()
+        onActivated: editorContent.hideHelperPlane()
     }
     Shortcut {
         id: snapToActiveCameraShortcut

@@ -107,9 +107,9 @@ Item {
 
                 onDesiredTextChanged: {
                     if (desiredText !== "") {
-                        editorScene.undoHandler.createRenameEntityCommand(selectedEntityName,
+                        editorScene.undoHandler.createRenameEntityCommand(editorContent.selectedEntityName,
                                                                           desiredText)
-                        selectedEntityName = editorScene.sceneModel.entityName(entityTree.view.selection.currentIndex)
+                        editorContent.selectedEntityName = editorScene.sceneModel.entityName(entityTree.view.selection.currentIndex)
                     }
                 }
 
@@ -146,9 +146,9 @@ Item {
                         enabledIconSource: "images/property_light_shown.png"
                         disabledIconSource: "images/property_light_hidden.png"
                         tooltip: qsTr("Show/Hide Light Properties") + editorScene.emptyString
-                        buttonEnabled: lightViewVisible
+                        buttonEnabled: editorContent.lightViewVisible
                         onEnabledButtonClicked: {
-                            lightViewVisible = !lightViewVisible
+                            editorContent.lightViewVisible = !editorContent.lightViewVisible
                         }
                         visible: (entityType === EditorSceneItem.Light) ? true : false
                     }
@@ -159,9 +159,9 @@ Item {
                         enabledIconSource: "images/property_mesh_shown.png"
                         disabledIconSource: "images/property_mesh_hidden.png"
                         tooltip: qsTr("Show/Hide Mesh Properties") + editorScene.emptyString
-                        buttonEnabled: meshViewVisible
+                        buttonEnabled: editorContent.meshViewVisible
                         onEnabledButtonClicked: {
-                            meshViewVisible = !meshViewVisible
+                            editorContent.meshViewVisible = !editorContent.meshViewVisible
                         }
                         visible: (entityType === EditorSceneItem.Mesh) ? true : false
                     }
@@ -172,9 +172,9 @@ Item {
                         enabledIconSource: "images/property_transform_shown.png"
                         disabledIconSource: "images/property_transform_hidden.png"
                         tooltip: qsTr("Show/Hide Transform Properties") + editorScene.emptyString
-                        buttonEnabled: transformViewVisible
+                        buttonEnabled: editorContent.transformViewVisible
                         onEnabledButtonClicked: {
-                            transformViewVisible = !transformViewVisible
+                            editorContent.transformViewVisible = !editorContent.transformViewVisible
                         }
                         visible: (entityType === EditorSceneItem.Mesh
                                   || entityType === EditorSceneItem.Light
@@ -187,9 +187,9 @@ Item {
                         enabledIconSource: "images/property_material_shown.png"
                         disabledIconSource: "images/property_material_hidden.png"
                         tooltip: qsTr("Show/Hide Material Properties") + editorScene.emptyString
-                        buttonEnabled: materialViewVisible
+                        buttonEnabled: editorContent.materialViewVisible
                         onEnabledButtonClicked: {
-                            materialViewVisible = !materialViewVisible
+                            editorContent.materialViewVisible = !editorContent.materialViewVisible
                         }
                         visible: (entityType === EditorSceneItem.Mesh) ? true : false
                     }
@@ -200,9 +200,9 @@ Item {
                         enabledIconSource: "images/property_camera_shown.png"
                         disabledIconSource: "images/property_camera_hidden.png"
                         tooltip: qsTr("Show/Hide Camera Properties") + editorScene.emptyString
-                        buttonEnabled: cameraViewVisible
+                        buttonEnabled: editorContent.cameraViewVisible
                         onEnabledButtonClicked: {
-                            cameraViewVisible = !cameraViewVisible
+                            editorContent.cameraViewVisible = !editorContent.cameraViewVisible
                         }
                         visible: (entityType === EditorSceneItem.Camera) ? true : false
                     }

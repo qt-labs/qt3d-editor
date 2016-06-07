@@ -30,13 +30,13 @@ import QtQuick.Controls 2.0 as QQC2
 
 QQC2.SpinBox {
     id: control
-    font.family: mainwindow.labelFontFamily
-    font.weight: mainwindow.labelFontWeight
-    font.pixelSize: mainwindow.labelFontPixelSize
+    font.family: editorContent.labelFontFamily
+    font.weight: editorContent.labelFontWeight
+    font.pixelSize: editorContent.labelFontPixelSize
 
     background: Rectangle {
-        border.color: mainwindow.listHighlightColor
-        color: mainwindow.paneBackgroundColor
+        border.color: editorContent.listHighlightColor
+        color: editorContent.paneBackgroundColor
     }
 
     down.indicator: Rectangle {
@@ -44,8 +44,8 @@ QQC2.SpinBox {
         height: parent.height
         implicitWidth: 40
         implicitHeight: 40
-        border.color: mainwindow.listHighlightColor
-        color: mainwindow.listHighlightColor
+        border.color: editorContent.listHighlightColor
+        color: editorContent.listHighlightColor
         Image {
             anchors.centerIn: parent
             source: "images/spinbox_down.png"
@@ -57,8 +57,8 @@ QQC2.SpinBox {
         height: parent.height
         implicitWidth: 40
         implicitHeight: 40
-        border.color: mainwindow.listHighlightColor
-        color: mainwindow.listHighlightColor
+        border.color: editorContent.listHighlightColor
+        color: editorContent.listHighlightColor
         Image {
             anchors.centerIn: parent
             source: "images/spinbox_up.png"

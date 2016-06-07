@@ -25,9 +25,31 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.5
 
-Rectangle {
-    color: parent.enabled ? editorContent.paneBackgroundColor : "transparent"
-    border.color: parent.enabled ? editorContent.listHighlightColor : "white"
-}
+#pragma once
+
+#include <coreplugin/editormanager/ieditorfactory.h>
+#include <coreplugin/icontext.h>
+
+#include <QStringList>
+
+namespace Qt3DSceneEditor {
+namespace Internal {
+
+class Qt3DSceneEditorPlugin;
+
+class Qt3DSceneEditorFactory : public Core::IEditorFactory
+{
+    Q_OBJECT
+
+public:
+    explicit Qt3DSceneEditorFactory(Qt3DSceneEditorPlugin *plugin);
+
+    Core::IEditor *createEditor();
+
+private:
+    Qt3DSceneEditorPlugin *m_plugin;
+};
+
+} // namespace Internal
+} // namespace Qt3DSceneEditor

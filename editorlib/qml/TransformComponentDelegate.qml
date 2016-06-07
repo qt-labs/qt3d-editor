@@ -36,21 +36,21 @@ ComponentDelegate {
     property int currentTransform: 0
     property bool fieldsDisabled: transformFieldsDisabled
 
-    viewTitleVisible: transformViewVisible
+    viewTitleVisible: editorContent.transformViewVisible
     componentType: EditorSceneItemComponentsModel.Transform
 
     onChangeViewVisibity: {
-        transformViewVisible = viewVisibility
+        editorContent.transformViewVisible = viewVisibility
     }
 
     onFieldsDisabledChanged: {
-        selectedEntity.setCustomProperty(editorScene.sceneModel.editorSceneItemFromIndex(entityTree.view.selection.currentIndex).entity(),
+        editorContent.selectedEntity.setCustomProperty(editorScene.sceneModel.editorSceneItemFromIndex(entityTree.view.selection.currentIndex).entity(),
                                          editorScene.lockTransformPropertyName,
                                          fieldsDisabled)
     }
 
     Component.onCompleted: {
-        if (!transformViewVisible)
+        if (!editorContent.transformViewVisible)
             height = minimumComponentHeight
     }
 
@@ -68,12 +68,12 @@ ComponentDelegate {
             anchors.leftMargin: 8
             anchors.bottomMargin: 4
             anchors.verticalCenter: parent.verticalCenter
-            implicitHeight: qlcControlHeight
+            implicitHeight: editorContent.qlcControlHeight
             enabled: !fieldsDisabled
             property int validIndex: -1
 
             model: ListModel {
-                property string language: systemLanguage
+                property string language: editorContent.systemLanguage
 
                 function retranslateUi() {
                     clear()

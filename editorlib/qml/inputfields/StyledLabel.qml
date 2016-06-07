@@ -32,10 +32,10 @@ import QtQuick.Controls 2.0 as QQC2
 
 QQC2.Label {
     property alias tooltip: button.tooltip
-    color: enabled ? mainwindow.textColor : mainwindow.disabledTextColor
-    font.family: mainwindow.labelFontFamily
-    font.weight: mainwindow.labelFontWeight
-    font.pixelSize: mainwindow.labelFontPixelSize
+    color: enabled ? editorContent.textColor : editorContent.disabledTextColor
+    font.family: editorContent.labelFontFamily
+    font.weight: editorContent.labelFontWeight
+    font.pixelSize: editorContent.labelFontPixelSize
 
     Button {
         id: button

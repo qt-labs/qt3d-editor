@@ -25,6 +25,7 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
+
 #pragma once
 
 #include "qt3dsceneeditor_global.h"
@@ -47,9 +48,6 @@ public:
     bool initialize(const QStringList &arguments, QString *errorString);
     void extensionsInitialized();
     ShutdownFlag aboutToShutdown();
-
-private slots:
-    void triggerAction();
 
 private:
     QQmlApplicationEngine *m_qmlEngine;

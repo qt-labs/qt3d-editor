@@ -52,7 +52,7 @@ Item {
         } else {
             // Doublecheck that we don't try to remove the scene root
             if (entityTreeView.selection.currentIndex !== editorScene.sceneModel.sceneEntityIndex())
-                editorScene.undoHandler.createRemoveEntityCommand(selectedEntityName)
+                editorScene.undoHandler.createRemoveEntityCommand(editorContent.selectedEntityName)
         }
     }
 
@@ -78,7 +78,7 @@ Item {
         // Never allow inserting to root
         if (entityTreeView.selection.currentIndex.row === -1)
             selectSceneRoot()
-        editorScene.undoHandler.createInsertEntityCommand(entityType, selectedEntityName,
+        editorScene.undoHandler.createInsertEntityCommand(entityType, editorContent.selectedEntityName,
                                                           editorScene.getWorldPosition(x, y))
         var newItemIndex = editorScene.sceneModel.lastInsertedIndex()
 
@@ -125,10 +125,10 @@ Item {
         alternatingRowColors: false
         backgroundVisible: false
         style: TreeViewStyle {
-            textColor: mainwindow.textColor
-            highlightedTextColor: mainwindow.textColor
-            backgroundColor: mainwindow.paneBackgroundColor
-            alternateBackgroundColor: mainwindow.paneBackgroundColor
+            textColor: editorContent.textColor
+            highlightedTextColor: editorContent.textColor
+            backgroundColor: editorContent.paneBackgroundColor
+            alternateBackgroundColor: editorContent.paneBackgroundColor
             branchDelegate: Item {
                 width: 10
                 height: 10
@@ -153,13 +153,13 @@ Item {
                         implicitWidth: 14
                         anchors.bottom: parent.bottom
                         anchors.top: parent.top
-                        color: mainwindow.selectionColor
+                        color: editorContent.selectionColor
                     }
             }
             scrollBarBackground: Rectangle {
                 implicitWidth: 20
                 implicitHeight: 30
-                color: mainwindow.paneBackgroundColor
+                color: editorContent.paneBackgroundColor
             }
             decrementControl: Image {
                 width: 20
@@ -357,7 +357,7 @@ Item {
                 Rectangle {
                     id: dragHighlight
                     anchors.fill: parent
-                    color: mainwindow.selectionColor
+                    color: editorContent.selectionColor
                     visible: false
                 }
             }
@@ -365,7 +365,7 @@ Item {
             Text {
                 id: valueField
                 anchors.verticalCenter: parent.verticalCenter
-                color: mainwindow.textColor
+                color: editorContent.textColor
                 elide: styleData.elideMode
                 text: styleData.value
                 visible: true
@@ -375,8 +375,8 @@ Item {
             Rectangle {
                 id: renameField
                 anchors.fill: parent
-                color: mainwindow.paneBackgroundColor
-                border.color: mainwindow.listHighlightColor
+                color: editorContent.paneBackgroundColor
+                border.color: editorContent.listHighlightColor
                 visible: !valueField.visible
                 TextInput {
                     id: renameTextiInput
@@ -385,12 +385,12 @@ Item {
                     visible: !valueField.visible
                     selectByMouse: true
                     focus: visible
-                    color: mainwindow.textColor
-                    selectionColor: mainwindow.selectionColor
-                    selectedTextColor: mainwindow.textColor
-                    font.family: mainwindow.labelFontFamily
-                    font.weight: mainwindow.labelFontWeight
-                    font.pixelSize: mainwindow.labelFontPixelSize
+                    color: editorContent.textColor
+                    selectionColor: editorContent.selectionColor
+                    selectedTextColor: editorContent.textColor
+                    font.family: editorContent.labelFontFamily
+                    font.weight: editorContent.labelFontWeight
+                    font.pixelSize: editorContent.labelFontPixelSize
                     validator: RegExpValidator {
                         regExp: /^[A-Za-z_][A-Za-z0-9_ ]*$/
                     }
@@ -407,10 +407,10 @@ Item {
                     Keys.onReturnPressed: {
                         valueField.visible = true
                         if (text !== model.name) {
-                            editorScene.undoHandler.createRenameEntityCommand(selectedEntityName,
+                            editorScene.undoHandler.createRenameEntityCommand(editorContent.selectedEntityName,
                                                                               text)
                         }
-                        selectedEntityName = editorScene.sceneModel.entityName(
+                        editorContent.selectedEntityName = editorScene.sceneModel.entityName(
                                     entityTreeView.selection.currentIndex)
                     }
                     Connections {
@@ -468,28 +468,28 @@ Item {
                 // If there is no current item selected for some reason, fall back to scene root,
                 // except when dealing with multiselection, during which currentIndex can become -1 temporarily.
                 if (entityTreeView.selection.currentIndex.row === -1) {
-                    selectedEntityName = ""
+                    editorContent.selectedEntityName = ""
                     if (!editorScene.multiSelection)
                         selectSceneRoot()
                 } else {
                     entityTreeView.sceneRootSelected =
                             (editorScene.sceneModel.sceneEntityIndex() === entityTreeView.selection.currentIndex)
-                    selectedEntity = editorScene.sceneModel.editorSceneItemFromIndex(entityTreeView.selection.currentIndex)
-                    if (selectedEntity) {
-                        componentPropertiesView.model = selectedEntity.componentsModel
+                    editorContent.selectedEntity = editorScene.sceneModel.editorSceneItemFromIndex(entityTreeView.selection.currentIndex)
+                    if (editorContent.selectedEntity) {
+                        componentPropertiesView.model = editorContent.selectedEntity.componentsModel
                         entityTreeView.cameraSelected =
-                                selectedEntity.itemType() === EditorSceneItem.Camera
+                                editorContent.selectedEntity.itemType() === EditorSceneItem.Camera
                         entityTreeView.groupSelected =
-                                selectedEntity.itemType() === EditorSceneItem.Group
-                        selectedEntityName = editorScene.sceneModel.entityName(
+                                editorContent.selectedEntity.itemType() === EditorSceneItem.Group
+                        editorContent.selectedEntityName = editorScene.sceneModel.entityName(
                                     entityTreeView.selection.currentIndex)
                     } else {
                         // Should never get here
-                        selectedEntityName = ""
+                        editorContent.selectedEntityName = ""
                         selectSceneRoot()
                     }
                     if (!editorScene.multiSelection)
-                        editorScene.selection = selectedEntity.entity()
+                        editorScene.selection = editorContent.selectedEntity.entity()
                 }
             }
         }

@@ -37,7 +37,7 @@ Item {
     function handleEditingFinished(newValue) {
         if (currentValue !== newValue) {
             editorScene.undoHandler.createChangeModelRoleCommand(
-                        selectedEntityName, componentType,
+                        editorContent.selectedEntityName, componentType,
                         modelRole, newValue, currentValue, undoText);
         }
     }

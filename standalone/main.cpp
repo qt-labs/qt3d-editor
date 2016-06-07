@@ -37,10 +37,10 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("qt.io");
     app.setApplicationName("Qt 3D Scene Editor");
 
-    register3DSceneEditorQML();
+    Qt3DSceneEditorLib::register3DSceneEditorQML();
 
     QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral("qrc:/qt3deditorlib/main.qml")));
+    engine.load(QUrl(QStringLiteral("qrc:/qt3deditorlib/StandaloneMain.qml")));
 
     return app.exec();
 }

@@ -39,7 +39,7 @@ QQC2.CheckBox {
         implicitHeight: 16
         x: autoSaveCheckBox.leftPadding + (autoSaveCheckBox.availableWidth - width) / 2
         y: autoSaveCheckBox.topPadding + (autoSaveCheckBox.availableHeight - height) / 2
-        color: mainwindow.itemColor
+        color: editorContent.itemColor
 
         Image {
             x: (parent.width - width) / 2

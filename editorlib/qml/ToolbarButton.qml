@@ -31,7 +31,7 @@ EnableButton {
     height: 32
     width: 32
     anchors.verticalCenter: parent.verticalCenter
-    hoveredBgColor: mainwindow.listHighlightColor
-    selectedBgColor: buttonEnabled === true ? mainwindow.iconHighlightColor : "transparent"
+    hoveredBgColor: editorContent.listHighlightColor
+    selectedBgColor: buttonEnabled === true ? editorContent.iconHighlightColor : "transparent"
     buttonEnabled: true
 }

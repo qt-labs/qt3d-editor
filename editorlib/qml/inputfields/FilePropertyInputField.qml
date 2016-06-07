@@ -53,7 +53,7 @@ PropertyInputField {
         title: fileLabel.text
         onAccepted: {
             handleEditingFinished(fileUrl)
-            mainwindow.importFolder = folder
+            editorContent.importFolder = folder
         }
         onRejected: {
             if (fileButton.text === "")
@@ -74,9 +74,9 @@ PropertyInputField {
         }
 
         Rectangle {
-            color: mainwindow.paneBackgroundColor
+            color: editorContent.paneBackgroundColor
             height: fileLabel.height
-            width: mainwindow.controlMargin
+            width: editorContent.controlMargin
             anchors.right: fileButton.left
         }
 
@@ -84,10 +84,10 @@ PropertyInputField {
             id: fileButton
             Layout.alignment: Qt.AlignRight
             implicitWidth: fileInput.width * 0.6 + 20 // Lockbutton width
-            implicitHeight: qlcControlHeight
+            implicitHeight: editorContent.qlcControlHeight
             text: url
             onClicked: {
-                fileDialog.folder = mainwindow.importFolder
+                fileDialog.folder = editorContent.importFolder
                 fileDialog.open()
             }
         }

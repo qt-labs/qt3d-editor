@@ -37,17 +37,25 @@
 #include "editorsceneitemmeshcomponentsmodel.h"
 #include "editorsceneitemlightcomponentsmodel.h"
 
+namespace Qt3DSceneEditorLib {
+
 QT3D_SCENE_EDITOR_EXPORT void register3DSceneEditorQML()
 {
-    qmlRegisterType<EditorScene>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorScene");
-    qmlRegisterType<EditorViewportItem>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorViewport");
-    qmlRegisterUncreatableType<EditorSceneItemModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemModel", "Created by EditorScene");
-    qmlRegisterUncreatableType<EditorSceneItem>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItem", "Created by EditorScene");
-    qmlRegisterUncreatableType<EditorSceneItemComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemComponentsModel", "Created by EditorSceneItem");
-    qmlRegisterUncreatableType<EditorSceneItemTransformComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemTransformComponentsModel", "Created by EditorSceneItemComponentsModel");
-    qmlRegisterUncreatableType<EditorSceneItemMaterialComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemMaterialComponentsModel", "Created by EditorSceneItemComponentsModel");
-    qmlRegisterUncreatableType<EditorSceneItemMeshComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemMeshComponentsModel", "Created by EditorSceneItemComponentsModel");
-    qmlRegisterUncreatableType<EditorSceneItemLightComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemLightComponentsModel", "Created by EditorSceneItemComponentsModel");
-    qmlRegisterUncreatableType<UndoHandler>("com.theqtcompany.SceneEditor3D", 1, 0, "UndoHandler", "Created by EditorScene");
-    qmlRegisterUncreatableType<EditorUtils>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorUtils", "Created by EditorScene");
+    static bool registered = false;
+    if (!registered) {
+        qmlRegisterType<EditorScene>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorScene");
+        qmlRegisterType<EditorViewportItem>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorViewport");
+        qmlRegisterUncreatableType<EditorSceneItemModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemModel", "Created by EditorScene");
+        qmlRegisterUncreatableType<EditorSceneItem>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItem", "Created by EditorScene");
+        qmlRegisterUncreatableType<EditorSceneItemComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemComponentsModel", "Created by EditorSceneItem");
+        qmlRegisterUncreatableType<EditorSceneItemTransformComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemTransformComponentsModel", "Created by EditorSceneItemComponentsModel");
+        qmlRegisterUncreatableType<EditorSceneItemMaterialComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemMaterialComponentsModel", "Created by EditorSceneItemComponentsModel");
+        qmlRegisterUncreatableType<EditorSceneItemMeshComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemMeshComponentsModel", "Created by EditorSceneItemComponentsModel");
+        qmlRegisterUncreatableType<EditorSceneItemLightComponentsModel>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorSceneItemLightComponentsModel", "Created by EditorSceneItemComponentsModel");
+        qmlRegisterUncreatableType<UndoHandler>("com.theqtcompany.SceneEditor3D", 1, 0, "UndoHandler", "Created by EditorScene");
+        qmlRegisterUncreatableType<EditorUtils>("com.theqtcompany.SceneEditor3D", 1, 0, "EditorUtils", "Created by EditorScene");
+        registered = true;
+    }
+}
+
 }

@@ -40,9 +40,9 @@ Item {
         anchors.margins: 4
         color: {
             if (mouseArea.containsPress)
-                mainwindow.iconHighlightColor
+                editorContent.iconHighlightColor
             else if (mouseArea.containsMouse) // hover
-                mainwindow.listHighlightColor
+                editorContent.listHighlightColor
             else
                 "transparent"
         }
@@ -52,10 +52,10 @@ Item {
         Text {
             id: buttonText
             anchors.centerIn: parent
-            color: mainwindow.textColor
-            font.family: mainwindow.labelFontFamily
-            font.weight: mainwindow.labelFontWeight
-            font.pixelSize: mainwindow.labelFontPixelSize
+            color: editorContent.textColor
+            font.family: editorContent.labelFontFamily
+            font.weight: editorContent.labelFontWeight
+            font.pixelSize: editorContent.labelFontPixelSize
         }
 
         MouseArea {

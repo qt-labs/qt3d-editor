@@ -25,9 +25,51 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.5
 
-Rectangle {
-    color: parent.enabled ? editorContent.paneBackgroundColor : "transparent"
-    border.color: parent.enabled ? editorContent.listHighlightColor : "white"
+#include "qt3dsceneeditorw.h"
+#include "qt3dsceneeditorplugin.h"
+#include "qt3dsceneeditordocument.h"
+#include "qt3dsceneeditorconstants.h"
+#include "../editorlib/src/qt3dsceneeditor.h"
+
+#include <QQuickWidget>
+
+using namespace Utils;
+
+namespace Qt3DSceneEditor {
+namespace Internal {
+
+enum { debugQt3DSceneEditorW = 0 };
+
+Qt3DSceneEditorW::Qt3DSceneEditorW(const Core::Context &context,
+                                   Qt3DSceneEditorPlugin *plugin,
+                                   QWidget *parent)
+    : m_document(new Qt3DSceneEditorDocument(this)),
+      m_plugin(plugin),
+      m_sceneEditor(nullptr)
+{
+    Qt3DSceneEditorLib::register3DSceneEditorQML();
+    m_sceneEditor = new QQuickWidget(parent);
+    m_sceneEditor->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    m_sceneEditor->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/PluginMain.qml")));
+
+    setContext(context);
+    setWidget(m_sceneEditor);
+
+    if (debugQt3DSceneEditorW)
+        qDebug() <<  __FUNCTION__;
 }
+
+Qt3DSceneEditorW::~Qt3DSceneEditorW()
+{
+    if (m_sceneEditor)
+        m_sceneEditor->deleteLater();
+}
+
+QWidget *Qt3DSceneEditorW::toolBar()
+{
+    return nullptr;
+}
+
+} // namespace Internal
+} // namespace Qt3DSceneEditor

@@ -26,8 +26,45 @@
 **
 ****************************************************************************/
 import QtQuick 2.5
+import QtQuick.Controls 2.0 as QQC2
+import Qt.labs.settings 1.0
+import com.theqtcompany.SceneEditor3D 1.0
 
-Rectangle {
-    color: parent.enabled ? editorContent.paneBackgroundColor : "transparent"
-    border.color: parent.enabled ? editorContent.listHighlightColor : "white"
+QQC2.ApplicationWindow {
+    id: standaloneWindow
+    title: qsTr("Qt 3D Scene Editor") + editorContent.editorScene.emptyString + editorContent.saveFileTitleAddition
+    width: 1280
+    height: 800
+    visible: false
+    color: editorContent.paneBackgroundColor
+    minimumHeight: 400
+    minimumWidth: 640
+
+    EditorContent {
+        id: editorContent
+        visible: false
+    }
+
+    onClosing: {
+        close.accepted = editorContent.checkUnsavedChanges()
+    }
+
+    Component.onCompleted: {
+        Qt.application.organization = "The Qt Company"
+        Qt.application.domain = "qt.io"
+        Qt.application.name = "Qt 3D Scene Editor"
+        // Redraw everything to get rid of artifacts
+        showMaximized()
+        show()
+        editorContent.visible = true
+    }
+
+    Settings {
+        // Save window placement, size
+        category: "Qt 3D SceneEditor Window"
+        property alias x: standaloneWindow.x
+        property alias y: standaloneWindow.y
+        property alias width: standaloneWindow.width
+        property alias height: standaloneWindow.height
+    }
 }

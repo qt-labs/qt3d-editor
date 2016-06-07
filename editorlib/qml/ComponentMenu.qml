@@ -33,7 +33,7 @@ Menu {
     title: qsTr("Add Component") + editorScene.emptyString
 
     MenuItem {
-        text: selectedEntityName
+        text: editorContent.selectedEntityName
         enabled: false
     }
 
@@ -48,7 +48,7 @@ Menu {
             entityTree.addNewEntity(EditorUtils.CameraEntity)
             // When a new camera is added, it is automatically selected
             editorScene.undoHandler.createCopyCameraPropertiesCommand(
-                        selectedEntityName);
+                        editorContent.selectedEntityName);
             editorScene.undoHandler.endMacro()
         }
     }
@@ -69,7 +69,7 @@ Menu {
         iconSource: "images/picker.png"
         enabled: !editorScene.multiSelection
         onTriggered: {
-            componentPropertiesView.model.appendNewComponent(sceneModel.ObjectPicker)
+            componentPropertiesView.model.appendNewComponent(EditorSceneItemComponentsModel.ObjectPicker)
         }
     }
 
@@ -95,7 +95,7 @@ Menu {
             } else {
                 // Doublecheck that we don't try to remove the scene root
                 if (entityTreeView.selection.currentIndex !== editorScene.sceneModel.sceneEntityIndex())
-                    editorScene.undoHandler.createRemoveEntityCommand(selectedEntityName)
+                    editorScene.undoHandler.createRemoveEntityCommand(editorContent.selectedEntityName)
             }
         }
     }
@@ -113,8 +113,8 @@ Menu {
                 editorScene.undoHandler.endMacro()
                 editorScene.restoreMultiSelection(editorScene.multiSelectionList)
             } else {
-                var currentSelection = selectedEntity.entity()
-                editorScene.undoHandler.createDuplicateEntityCommand(selectedEntityName)
+                var currentSelection = editorContent.selectedEntity.entity()
+                editorScene.undoHandler.createDuplicateEntityCommand(editorContent.selectedEntityName)
                 editorScene.restoreSelection(currentSelection)
             }
         }
@@ -124,7 +124,7 @@ Menu {
         enabled: !editorScene.multiSelection && !entityTreeView.sceneRootSelected
         iconSource: "images/copy.png"
         onTriggered: {
-            mainwindow.copyEntity(selectedEntityName)
+            editorContent.copyEntity(editorContent.selectedEntityName)
         }
     }
     MenuItem {
@@ -132,23 +132,23 @@ Menu {
         enabled: !editorScene.multiSelection && !entityTreeView.sceneRootSelected
         iconSource: "images/cut.png"
         onTriggered: {
-            mainwindow.cutEntity(selectedEntityName, selectedEntity)
+            editorContent.cutEntity(editorContent.selectedEntityName, editorContent.selectedEntity)
         }
     }
     MenuItem {
         text: qsTr("Paste (Ctrl + v)") + editorScene.emptyString
-        enabled: trackMousePosition && !editorScene.multiSelection
+        enabled: editorContent.trackMousePosition && !editorScene.multiSelection
                  && (!entityTree.treeviewPasting || (entityTree.treeviewPasting
                                                      && editorScene.sceneModel.canReparent(
                          editorScene.sceneModel.editorSceneItemFromIndex(
                              editorScene.sceneModel.getModelIndexByName(
-                                 selectedEntityName)),
+                                 editorContent.selectedEntityName)),
                          editorScene.sceneModel.editorSceneItemFromIndex(
                              editorScene.sceneModel.getModelIndexByName(
                                  editorScene.clipboardContent)), true)))
         iconSource: "images/paste.png"
         onTriggered: {
-            mainwindow.pasteEntity()
+            editorContent.pasteEntity()
         }
     }
     MenuItem {
@@ -156,7 +156,7 @@ Menu {
         iconSource: "images/reset_all.png"
         enabled: !editorScene.multiSelection && !entityTreeView.sceneRootSelected
         onTriggered: {
-            editorScene.undoHandler.createResetEntityCommand(selectedEntityName)
+            editorScene.undoHandler.createResetEntityCommand(editorContent.selectedEntityName)
         }
     }
     MenuItem {
@@ -165,7 +165,7 @@ Menu {
         enabled: !editorScene.multiSelection && !entityTreeView.sceneRootSelected
                  && !entityTreeView.cameraSelected
         onTriggered: {
-            editorScene.undoHandler.createResetTransformCommand(selectedEntityName)
+            editorScene.undoHandler.createResetTransformCommand(editorContent.selectedEntityName)
         }
     }
     MenuItem {
@@ -181,8 +181,8 @@ Menu {
                 reparentList = editorScene.sceneModel.parentList(editorScene.multiSelectionList)
                 groupCenter = editorScene.getMultiSelectionCenter()
             } else {
-                reparentList[0] = selectedEntityName
-                groupCenter = selectedEntity.selectionBoxCenter()
+                reparentList[0] = editorContent.selectedEntityName
+                groupCenter = editorContent.selectedEntity.selectionBoxCenter()
             }
 
             // TODO: Allow creating groups under other entities?

@@ -49,7 +49,7 @@ ModelRoleInputField {
         onAccepted: {
             fileInput.undoText = qsTr("Change texture")
             handleEditingFinished(fileUrl)
-            mainwindow.textureFolder = folder
+            editorContent.textureFolder = folder
         }
     }
 
@@ -78,13 +78,13 @@ ModelRoleInputField {
                 contentItem: Text {
                         text: fileButton.text
                         font: fileButton.font
-                        color: mainwindow.itemBackgroundColor
+                        color: editorContent.itemBackgroundColor
                         horizontalAlignment: Text.AlignLeft
                         verticalAlignment: Text.AlignVCenter
                         elide: Text.ElideRight
                     }
                 onClicked: {
-                    fileDialog.folder = mainwindow.textureFolder
+                    fileDialog.folder = editorContent.textureFolder
                     fileDialog.open()
                 }
             }
@@ -95,7 +95,7 @@ ModelRoleInputField {
             Layout.preferredHeight: fileInput.height
             Layout.preferredWidth: Layout.preferredHeight
             Layout.alignment: Qt.AlignRight
-            border.color: listHighlightColor
+            border.color: editorContent.listHighlightColor
             border.width: 1
             Image {
                 source: url
@@ -106,7 +106,7 @@ ModelRoleInputField {
             MouseArea {
                 anchors.fill: parent
                 onClicked: {
-                    fileDialog.folder = mainwindow.textureFolder
+                    fileDialog.folder = editorContent.textureFolder
                     fileDialog.open()
                 }
             }

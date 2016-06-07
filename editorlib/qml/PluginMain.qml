@@ -28,6 +28,9 @@
 import QtQuick 2.5
 
 Rectangle {
-    color: parent.enabled ? editorContent.paneBackgroundColor : "transparent"
-    border.color: parent.enabled ? editorContent.listHighlightColor : "white"
+    color: editorContent.paneBackgroundColor
+
+    EditorContent {
+        id: editorContent
+    }
 }

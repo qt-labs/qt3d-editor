@@ -46,8 +46,8 @@ Item {
     property real minimum: -999999999 / roundMultiplier // TODO: Do we need more sensible default minimum?
     property real maximum: 999999999 / roundMultiplier // TODO: Do we need more sensible default maximum?
     property int step: roundMultiplier
-    property real inputCellWidth: vectorInput.width * 0.6 > mainwindow.maximumControlWidth
-                                  ? mainwindow.maximumControlWidth
+    property real inputCellWidth: vectorInput.width * 0.6 > editorContent.maximumControlWidth
+                                  ? editorContent.maximumControlWidth
                                   : vectorInput.width * 0.6
     property string tooltip: ""
     property var tooltipArgs: ["", "", ""]
@@ -93,9 +93,9 @@ Item {
         }
 
         Rectangle {
-            color: mainwindow.paneBackgroundColor
+            color: editorContent.paneBackgroundColor
             implicitHeight: xInput.height
-            implicitWidth: inputCellWidth + mainwindow.controlMargin
+            implicitWidth: inputCellWidth + editorContent.controlMargin
             anchors.right: xInput.right
         }
 
@@ -105,7 +105,7 @@ Item {
             anchors.rightMargin: 4
             Layout.alignment: Qt.AlignRight
             implicitWidth: inputCellWidth
-            implicitHeight: qlcControlHeight
+            implicitHeight: editorContent.qlcControlHeight
             to: maximum * roundMultiplier
             stepSize: step
             from: minimum * roundMultiplier
@@ -159,9 +159,9 @@ Item {
         }
 
         Rectangle {
-            color: mainwindow.paneBackgroundColor
+            color: editorContent.paneBackgroundColor
             implicitHeight: yInput.height
-            implicitWidth: inputCellWidth + mainwindow.controlMargin
+            implicitWidth: inputCellWidth + editorContent.controlMargin
             anchors.right: yInput.right
         }
 
@@ -171,7 +171,7 @@ Item {
             anchors.rightMargin: 4
             Layout.alignment: Qt.AlignRight
             implicitWidth: inputCellWidth
-            implicitHeight: qlcControlHeight
+            implicitHeight: editorContent.qlcControlHeight
             to: maximum * roundMultiplier
             stepSize: step
             from: minimum * roundMultiplier
@@ -223,9 +223,9 @@ Item {
         }
 
         Rectangle {
-            color: mainwindow.paneBackgroundColor
+            color: editorContent.paneBackgroundColor
             implicitHeight: zInput.height
-            implicitWidth: inputCellWidth + mainwindow.controlMargin
+            implicitWidth: inputCellWidth + editorContent.controlMargin
             anchors.right: zInput.right
         }
 
@@ -235,7 +235,7 @@ Item {
             anchors.rightMargin: 4
             Layout.alignment: Qt.AlignRight
             implicitWidth: inputCellWidth
-            implicitHeight: qlcControlHeight
+            implicitHeight: editorContent.qlcControlHeight
             to: maximum * roundMultiplier
             stepSize: step
             from: minimum * roundMultiplier

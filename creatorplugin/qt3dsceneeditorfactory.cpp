@@ -25,9 +25,34 @@
 ** $QT_END_LICENSE$
 **
 ****************************************************************************/
-import QtQuick 2.5
 
-Rectangle {
-    color: parent.enabled ? editorContent.paneBackgroundColor : "transparent"
-    border.color: parent.enabled ? editorContent.listHighlightColor : "white"
+#include "qt3dsceneeditorfactory.h"
+#include "qt3dsceneeditorw.h"
+#include "qt3dsceneeditorplugin.h"
+#include "qt3dsceneeditorconstants.h"
+
+#include <coreplugin/fileiconprovider.h>
+#include <coreplugin/editormanager/editormanager.h>
+#include <projectexplorer/projectexplorerconstants.h>
+
+using namespace Qt3DSceneEditor::Internal;
+using namespace Qt3DSceneEditor::Constants;
+
+Qt3DSceneEditorFactory::Qt3DSceneEditorFactory(Qt3DSceneEditorPlugin *plugin) :
+    Core::IEditorFactory(plugin),
+    m_plugin(plugin)
+{
+    setId(QT3DSCENEEDITOR_ID);
+    setMimeTypes(QStringList(QLatin1String(C_QT3DSCENEEDITOR_MIMETYPE)));
+    setDisplayName(qApp->translate("OpenWith::Editors", C_QT3DSCENEEDITOR_DISPLAY_NAME));
+
+    // TODO: Do we need special icon for qt3d.qrc files?
+//    Core::FileIconProvider::registerIconOverlayForSuffix(
+//                ProjectExplorer::Constants::FILEOVERLAY_QRC, "qt3d.qrc");
+}
+
+Core::IEditor *Qt3DSceneEditorFactory::createEditor()
+{
+    Core::Context context(C_QT3DSCENEEDITOR);
+    return new Qt3DSceneEditorW(context, m_plugin);
 }

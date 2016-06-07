@@ -36,14 +36,14 @@ ComponentDelegate {
 
     property int currentMaterial: 0
 
-    viewTitleVisible: materialViewVisible
+    viewTitleVisible: editorContent.materialViewVisible
 
     onChangeViewVisibity: {
-        materialViewVisible = viewVisibility
+        editorContent.materialViewVisible = viewVisibility
     }
 
     Component.onCompleted: {
-        if (!materialViewVisible)
+        if (!editorContent.materialViewVisible)
             height = minimumComponentHeight
     }
 
@@ -74,11 +74,11 @@ ComponentDelegate {
             anchors.bottomMargin: 4
             anchors.verticalCenter: parent.verticalCenter
             property int validIndex: -1
-            implicitHeight: qlcControlHeight
+            implicitHeight: editorContent.qlcControlHeight
             visible:  materialComponentDelegate.currentMaterial !== EditorSceneItemMaterialComponentsModel.Unknown
 
             model: ListModel {
-                property string language: systemLanguage
+                property string language: editorContent.systemLanguage
 
                 function retranslateUi() {
                     clear()

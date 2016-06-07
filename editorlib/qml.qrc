@@ -4,7 +4,9 @@
         <file>meshes/defaultmesh.obj</file>
         <file>meshes/spotlight.obj</file>
         <file>meshes/directionallight.obj</file>
-        <file alias="main.qml">qml/main.qml</file>
+        <file alias="EditorContent.qml">qml/EditorContent.qml</file>
+        <file alias="PluginMain.qml">qml/PluginMain.qml</file>
+        <file alias="StandaloneMain.qml">qml/StandaloneMain.qml</file>
         <file alias="CameraEntityDelegate.qml">qml/CameraEntityDelegate.qml</file>
         <file alias="ComponentDelegate.qml">qml/ComponentDelegate.qml</file>
         <file alias="ComponentMenu.qml">qml/ComponentMenu.qml</file>

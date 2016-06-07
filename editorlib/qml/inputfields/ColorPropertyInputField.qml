@@ -89,9 +89,9 @@ PropertyInputField {
         }
 
         Rectangle {
-            color: mainwindow.paneBackgroundColor
+            color: editorContent.paneBackgroundColor
             implicitHeight: colorInput.height
-            implicitWidth: colorButton.width + mainwindow.controlMargin
+            implicitWidth: colorButton.width + editorContent.controlMargin
             anchors.right: colorButton.right
         }
 
@@ -100,15 +100,15 @@ PropertyInputField {
             Layout.alignment: Qt.AlignRight
             anchors.right: lockButton.left
             anchors.rightMargin: 4
-            implicitWidth: colorInput.width * 0.6 > mainwindow.maximumControlWidth
-                           ? mainwindow.maximumControlWidth
+            implicitWidth: colorInput.width * 0.6 > editorContent.maximumControlWidth
+                           ? editorContent.maximumControlWidth
                            : colorInput.width * 0.6
-            implicitHeight: qlcControlHeight
+            implicitHeight: editorContent.qlcControlHeight
             enabled: lockButton.buttonEnabled
             background: Rectangle {
                 border.width: colorButton.activeFocus ? 2 : 1
-                border.color: enabled ? mainwindow.listHighlightColor
-                                      : mainwindow.itemBackgroundColor
+                border.color: enabled ? editorContent.listHighlightColor
+                                      : editorContent.itemBackgroundColor
                 color: enabled ? colorValue : Qt.rgba(colorValue.r, colorValue.g, colorValue.b,
                                                       0.5)
             }
