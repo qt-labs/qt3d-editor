@@ -121,6 +121,7 @@ EditorScene::EditorScene(QObject *parent)
     , m_previousSelectedEntity(nullptr)
     , m_clipboardOperation(ClipboardNone)
 {
+    setLanguage(language());
     retranslateUi();
     createRootEntity();
     setupDefaultScene();

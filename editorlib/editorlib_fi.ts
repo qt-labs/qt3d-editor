@@ -4,10 +4,6 @@
 <context>
     <name>BasicLightDelegate</name>
     <message>
-        <source>Basic Light</source>
-        <translation type="vanished">Perusvalo</translation>
-    </message>
-    <message>
         <location filename="qml/lights/BasicLightDelegate.qml" line="41"/>
         <source>Constant attenuation of the light, i.e.
 the intensity of the light will be
@@ -80,148 +76,141 @@ the more it will be diminished.</source>
         <translation>Projektiotyyppi</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="120"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="93"/>
         <source>Orthographic</source>
         <translation>Ortograafinen</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="121"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="94"/>
         <source>Use orthographic projection, i.e. camera
 with no perspective correction.</source>
         <translation>&lt;p&gt;Käytä ortograafista projektiota, eli kameralla ei ole perspektiivikorjausta.</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="171"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="113"/>
         <source>Perspective</source>
         <translation>Perspektiivi</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="172"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="114"/>
         <source>Use perspective projection, i.e. camera with
 perspective correction based on field-of-view.</source>
         <translation>&lt;p&gt;Käytä perspektiiviprojektiota, eli kameralla on näkökenttään perustuva perspektiivikorjaus.</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="181"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="123"/>
         <source>Near Plane</source>
         <translation>Lähitaso</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="188"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="130"/>
         <source>Near plane of the camera, i.e. objects closer
 to the camera than this will be cropped.</source>
         <translation>&lt;p&gt;Kameran lähitaso, eli objektit tätä lähempänä leikkautuvat pois.</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="194"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="136"/>
         <source>Far Plane</source>
         <translation>Etätaso</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="200"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="142"/>
         <source>Far plane of the camera, i.e. objects further
 away from the camera than this will be cropped.</source>
         <translation>&lt;p&gt;Kameran etätaso, eli objektit tätä kauemapana leikkautuvat pois.</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="207"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="149"/>
         <source>Field of View</source>
         <translation>Näkökenttä</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="214"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="156"/>
         <source>Field of view (FOV) of the camera.</source>
         <translation>&lt;p&gt;Kameran näkökenttä (FOV).</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="220"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="162"/>
         <source>Aspect Ratio</source>
         <translation>Kuvasuhde</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="227"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="169"/>
         <source>Aspect ratio, i.e. width to height
 ratio of the intended view.</source>
         <translation>&lt;p&gt;Kuvasuhde, eli näkymän leveyden suhde korkeuteen.</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="233"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="175"/>
         <source>Left</source>
         <translation>Vasen</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="238"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="180"/>
         <source>Left limit of the view.</source>
         <translation>Näkymän vasen laita.</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="243"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="185"/>
         <source>Right</source>
         <translation>Oikea</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="248"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="190"/>
         <source>Right limit of the view.</source>
         <translation>Näkymän oikea laita.</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="253"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="195"/>
         <source>Bottom</source>
         <translation>Ala</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="258"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="200"/>
         <source>Bottom limit of the view.</source>
         <translation>Näkymän alalaita.</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="263"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="205"/>
         <source>Top</source>
         <translation>Ylä</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="268"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="210"/>
         <source>Top limit of the view.</source>
         <translation>Näkymän ylälaita.</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="273"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="215"/>
         <source>Position</source>
         <translation>Sijainti</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="277"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="219"/>
         <source>Position of the camera
 on the %1 axis.</source>
         <translation>&lt;p&gt;Kameran sijainti &lt;i&gt;%1&lt;/i&gt;-akselilla.</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="283"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="225"/>
         <source>Up</source>
         <translation>Ylös</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="288"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="230"/>
         <source>Which way is up for the camera.%1</source>
         <translation>&lt;p&gt;Kameran &lt;i&gt;ylös&lt;/i&gt;.%1</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="293"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="235"/>
         <source>View Center</source>
         <translation>Kohde</translation>
     </message>
     <message>
-        <location filename="qml/CameraEntityDelegate.qml" line="297"/>
+        <location filename="qml/CameraEntityDelegate.qml" line="239"/>
         <source>The point the camera is
 facing on the %1 axis.</source>
         <translation>&lt;p&gt;Piste johon kamera osoittaa &lt;i&gt;%1&lt;/i&gt;-akselilla.</translation>
-    </message>
-</context>
-<context>
-    <name>CameraLensComponentDelegate</name>
-    <message>
-        <source>Camera Lens</source>
-        <translation type="vanished">Kameran Linssi</translation>
     </message>
 </context>
 <context>
@@ -230,10 +219,6 @@ facing on the %1 axis.</source>
         <location filename="qml/inputfields/ColorPropertyInputField.qml" line="86"/>
         <source>Color</source>
         <translation>Väri</translation>
-    </message>
-    <message>
-        <source>Lock &apos;%1&apos; Properties</source>
-        <translation type="vanished">Lukitse Ominaisuus &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -247,58 +232,68 @@ facing on the %1 axis.</source>
 <context>
     <name>ComponentMenu</name>
     <message>
-        <location filename="qml/ComponentMenu.qml" line="32"/>
+        <location filename="qml/ComponentMenu.qml" line="33"/>
         <source>Add Component</source>
         <translation>Lisää Komponentti</translation>
     </message>
     <message>
-        <source>Keyboard Input</source>
-        <translation type="vanished">Näppäimistösyöte</translation>
+        <location filename="qml/ComponentMenu.qml" line="44"/>
+        <source>Add scene camera here</source>
+        <translation>Lisää Kamera</translation>
     </message>
     <message>
-        <source>Layer</source>
-        <translation type="vanished">Kerros</translation>
+        <location filename="qml/ComponentMenu.qml" line="57"/>
+        <source>Move active camera here</source>
+        <translation>Sijoita Aktiivinen Kamera</translation>
     </message>
     <message>
-        <source>Logic</source>
-        <translation type="vanished">Logiikka</translation>
-    </message>
-    <message>
-        <source>Mouse Input</source>
-        <translation type="vanished">Hiirisyöte</translation>
-    </message>
-    <message>
-        <location filename="qml/ComponentMenu.qml" line="42"/>
+        <location filename="qml/ComponentMenu.qml" line="68"/>
         <source>Object Picker</source>
         <translation>Poimin</translation>
     </message>
     <message>
-        <location filename="qml/ComponentMenu.qml" line="56"/>
+        <location filename="qml/ComponentMenu.qml" line="83"/>
         <source>Remove</source>
         <translation>Poista</translation>
     </message>
     <message>
-        <location filename="qml/ComponentMenu.qml" line="67"/>
+        <location filename="qml/ComponentMenu.qml" line="102"/>
         <source>Duplicate</source>
         <translation>Monista</translation>
     </message>
     <message>
-        <location filename="qml/ComponentMenu.qml" line="77"/>
+        <location filename="qml/ComponentMenu.qml" line="121"/>
+        <source>Copy (Ctrl + c)</source>
+        <translation>Kopioi (Ctrl+C)</translation>
+    </message>
+    <message>
+        <location filename="qml/ComponentMenu.qml" line="129"/>
+        <source>Cut (Ctrl + x)</source>
+        <translation>Leikkaa (Ctrl+X)</translation>
+    </message>
+    <message>
+        <location filename="qml/ComponentMenu.qml" line="137"/>
+        <source>Paste (Ctrl + v)</source>
+        <translation>Liitä (Ctrl+V)</translation>
+    </message>
+    <message>
+        <location filename="qml/ComponentMenu.qml" line="145"/>
         <source>Reset</source>
         <translation>Palauta Kaikki</translation>
     </message>
     <message>
-        <location filename="qml/ComponentMenu.qml" line="85"/>
+        <location filename="qml/ComponentMenu.qml" line="153"/>
         <source>Reset Transform</source>
         <translation>Palauta Oletusmuunnos</translation>
+    </message>
+    <message>
+        <location filename="qml/ComponentMenu.qml" line="162"/>
+        <source>Group Selected</source>
+        <translation>Luo Ryhmä</translation>
     </message>
 </context>
 <context>
     <name>CuboidMeshDelegate</name>
-    <message>
-        <source>Cuboid</source>
-        <translation type="vanished">Kuutio</translation>
-    </message>
     <message>
         <location filename="qml/meshes/CuboidMeshDelegate.qml" line="39"/>
         <source>X Extent</source>
@@ -350,40 +345,16 @@ facing on the %1 axis.</source>
         <translation>X - Y</translation>
     </message>
     <message>
-        <source>YZ Resolution</source>
-        <translation type="vanished">YZ Resoluutio</translation>
-    </message>
-    <message>
-        <source>Y</source>
-        <translation type="vanished">Y</translation>
-    </message>
-    <message>
-        <source>Z</source>
-        <translation type="vanished">Z</translation>
-    </message>
-    <message>
         <location filename="qml/meshes/CuboidMeshDelegate.qml" line="78"/>
         <source>Resolution in the YZ direction, i.e. how
 many strips the mesh is divided into.</source>
         <translation>&lt;p&gt;Resoluutio &lt;i&gt;YZ&lt;/i&gt;-suunnassa, eli kuinka moneen kaistaleeseen kuutio on jaettu.</translation>
     </message>
     <message>
-        <source>XZ Resolution</source>
-        <translation type="vanished">XZ Resoluutio</translation>
-    </message>
-    <message>
-        <source>X</source>
-        <translation type="vanished">X</translation>
-    </message>
-    <message>
         <location filename="qml/meshes/CuboidMeshDelegate.qml" line="90"/>
         <source>Resolution in the XZ direction, i.e. how
 many strips the mesh is divided into.</source>
         <translation>&lt;p&gt;Resoluutio &lt;i&gt;XZ&lt;/i&gt;-suunnassa, eli kuinka moneen kaistaleeseen kuutio on jaettu.</translation>
-    </message>
-    <message>
-        <source>XY Resolution</source>
-        <translation type="vanished">XY Resoluutio</translation>
     </message>
     <message>
         <location filename="qml/meshes/CuboidMeshDelegate.qml" line="102"/>
@@ -394,10 +365,6 @@ many strips the mesh is divided into.</source>
 </context>
 <context>
     <name>CustomMeshDelegate</name>
-    <message>
-        <source>Custom Mesh</source>
-        <translation type="vanished">Oma Malli</translation>
-    </message>
     <message>
         <location filename="qml/meshes/CustomMeshDelegate.qml" line="36"/>
         <source>Source</source>
@@ -417,10 +384,6 @@ file to be loaded.</source>
 </context>
 <context>
     <name>CylinderMeshDelegate</name>
-    <message>
-        <source>Cylinder</source>
-        <translation type="vanished">Sylinteri</translation>
-    </message>
     <message>
         <location filename="qml/meshes/CylinderMeshDelegate.qml" line="36"/>
         <source>Rings</source>
@@ -482,10 +445,6 @@ Minimum is 2.</source>
         <translation>Spekulaarinen Väri</translation>
     </message>
     <message>
-        <source>Shininess</source>
-        <translation type="vanished">Kiiltävyys</translation>
-    </message>
-    <message>
         <location filename="qml/materials/DiffuseMapMaterialDelegate.qml" line="60"/>
         <source>Texture Scale</source>
         <translation>Tekstuurin Mittakaava</translation>
@@ -493,10 +452,6 @@ Minimum is 2.</source>
 </context>
 <context>
     <name>DiffuseSpecularMapMaterialDelegate</name>
-    <message>
-        <source>Diffuse &amp; Specular Map</source>
-        <translation type="vanished">Tavallinen ja Spekulaarinen Tekstuuri</translation>
-    </message>
     <message>
         <location filename="qml/materials/DiffuseSpecularMapMaterialDelegate.qml" line="63"/>
         <source>Diffuse Map</source>
@@ -513,10 +468,6 @@ Minimum is 2.</source>
         <translation>Ympäristön Väri</translation>
     </message>
     <message>
-        <source>Shininess</source>
-        <translation type="vanished">Kiiltävyys</translation>
-    </message>
-    <message>
         <location filename="qml/materials/DiffuseSpecularMapMaterialDelegate.qml" line="54"/>
         <source>Texture Scale</source>
         <translation>Tekstuurin Mittakaava</translation>
@@ -524,18 +475,6 @@ Minimum is 2.</source>
 </context>
 <context>
     <name>DirectionalLightDelegate</name>
-    <message>
-        <source>Directional Light</source>
-        <translation type="vanished">Suunnattu Valo</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="vanished">Väri</translation>
-    </message>
-    <message>
-        <source>Intensity</source>
-        <translation type="vanished">Voimakkuus</translation>
-    </message>
     <message>
         <location filename="qml/lights/DirectionalLightDelegate.qml" line="45"/>
         <source>Direction</source>
@@ -551,36 +490,32 @@ facing at on the %1 axis.</source>
 <context>
     <name>EditorScene</name>
     <message>
-        <location filename="src/editorscene.cpp" line="538"/>
+        <location filename="src/editorscene.cpp" line="658"/>
         <source>Failed to save the scene</source>
         <translation>Maiseman tallennus epäonnistui</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="539"/>
+        <location filename="src/editorscene.cpp" line="659"/>
         <source>Failed to load a new scene</source>
         <translation>Maiseman lataus epäonnistui</translation>
     </message>
     <message>
-        <source>Failed to import an Entity</source>
-        <translation type="vanished">Entiteetin lataus epäonnistui</translation>
-    </message>
-    <message>
-        <location filename="src/editorscene.cpp" line="540"/>
+        <location filename="src/editorscene.cpp" line="660"/>
         <source>Camera</source>
         <translation>Kamera</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="541"/>
+        <location filename="src/editorscene.cpp" line="661"/>
         <source>Cube</source>
         <translation>Kuutio</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="542"/>
+        <location filename="src/editorscene.cpp" line="662"/>
         <source>Light</source>
         <translation>Valo</translation>
     </message>
     <message>
-        <location filename="src/editorscene.cpp" line="537"/>
+        <location filename="src/editorscene.cpp" line="657"/>
         <source>Scene root</source>
         <translation>Maiseman Päätaso</translation>
     </message>
@@ -618,19 +553,19 @@ facing at on the %1 axis.</source>
         <translation>Uusi Oma</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="553"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="562"/>
         <source>New imported entity</source>
-        <translation type="unfinished"></translation>
+        <translation>Uusi tuotu entiteetti</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="582"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="591"/>
         <source>New Scene Loader</source>
         <translation>Uusi Scene Loader</translation>
     </message>
     <message>
-        <location filename="src/editorsceneitemmodel.cpp" line="731"/>
+        <location filename="src/editorsceneitemmodel.cpp" line="759"/>
         <source>Unnamed Entity</source>
-        <translation type="unfinished"></translation>
+        <translation>Nimetön Entiteetti</translation>
     </message>
     <message>
         <location filename="src/editorsceneitemmodel.cpp" line="324"/>
@@ -645,7 +580,7 @@ facing at on the %1 axis.</source>
     <message>
         <location filename="src/editorsceneitemmodel.cpp" line="218"/>
         <source>Failed to load a scene with scene loader</source>
-        <translation type="unfinished"></translation>
+        <translation>Näkymän Lataaminen Epäonnistui</translation>
     </message>
     <message>
         <location filename="src/editorsceneitemmodel.cpp" line="372"/>
@@ -664,10 +599,96 @@ facing at on the %1 axis.</source>
     </message>
 </context>
 <context>
-    <name>EditorUtils</name>
+    <name>EditorToolbar</name>
     <message>
-        <source>_Copy</source>
-        <translation type="vanished">_Kopio</translation>
+        <location filename="qml/EditorToolbar.qml" line="56"/>
+        <source>New</source>
+        <translation>Uusi maisema (Ctrl+N)</translation>
+    </message>
+    <message>
+        <location filename="qml/EditorToolbar.qml" line="61"/>
+        <source>Load (Ctrl + O)</source>
+        <translation>Lataa maisema (Ctrl+O)</translation>
+    </message>
+    <message>
+        <location filename="qml/EditorToolbar.qml" line="67"/>
+        <source>Import Entity</source>
+        <translation>Tuo Entiteetti</translation>
+    </message>
+    <message>
+        <location filename="qml/EditorToolbar.qml" line="76"/>
+        <source>Save</source>
+        <translation>Tallenna (Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="qml/EditorToolbar.qml" line="81"/>
+        <source>Save As</source>
+        <translation>Tallenna Nimellä (Shift+Ctrl+S)</translation>
+    </message>
+    <message>
+        <location filename="qml/EditorToolbar.qml" line="91"/>
+        <source>Undo</source>
+        <translation>Peru (Ctrl+Z)</translation>
+    </message>
+    <message>
+        <location filename="qml/EditorToolbar.qml" line="92"/>
+        <source>Undo &apos;%1&apos;</source>
+        <translation>Peru &apos;%1&apos; (Ctrl+Z)</translation>
+    </message>
+    <message>
+        <location filename="qml/EditorToolbar.qml" line="101"/>
+        <source>Redo</source>
+        <translation>Toista (Ctrl+Y)</translation>
+    </message>
+    <message>
+        <location filename="qml/EditorToolbar.qml" line="102"/>
+        <source>Redo &apos;%1&apos;</source>
+        <translation>Toista &apos;%1&apos; (Ctrl+Y)</translation>
+    </message>
+    <message>
+        <location filename="qml/EditorToolbar.qml" line="114"/>
+        <source>Normal X (Ctrl + 1)</source>
+        <translation>Näytä aputaso X-akselilla (Ctrl+1)</translation>
+    </message>
+    <message>
+        <location filename="qml/EditorToolbar.qml" line="122"/>
+        <source>Normal Y (Ctrl + 2)</source>
+        <translation>Näytä aputaso Y-akselilla (Ctrl+2)</translation>
+    </message>
+    <message>
+        <location filename="qml/EditorToolbar.qml" line="130"/>
+        <source>Normal Z (Ctrl + 3)</source>
+        <translation>Näytä aputaso Z-akselilla (Ctrl+3)</translation>
+    </message>
+    <message>
+        <location filename="qml/EditorToolbar.qml" line="138"/>
+        <source>Hide helper plane (Ctrl + 4)</source>
+        <translation>Piilota aputaso (Ctrl+4)</translation>
+    </message>
+    <message>
+        <location filename="qml/EditorToolbar.qml" line="148"/>
+        <source>Snap to active camera position (Ctrl + 5)</source>
+        <translation>Siirry aktiiviseen kameraan (Ctrl+5)</translation>
+    </message>
+    <message>
+        <location filename="qml/EditorToolbar.qml" line="156"/>
+        <source>Reset to default position (Ctrl + 0)</source>
+        <translation>Palauta oletussijainti (Ctrl+0)</translation>
+    </message>
+    <message>
+        <location filename="qml/EditorToolbar.qml" line="170"/>
+        <source>Free view</source>
+        <translation>Vapaa katselu</translation>
+    </message>
+    <message>
+        <location filename="qml/EditorToolbar.qml" line="198"/>
+        <source>Change active camera</source>
+        <translation>Vaihda Aktiivista Kameraa</translation>
+    </message>
+    <message>
+        <location filename="qml/EditorToolbar.qml" line="207"/>
+        <source>Settings</source>
+        <translation>Asetukset</translation>
     </message>
 </context>
 <context>
@@ -725,10 +746,6 @@ facing at on the %1 axis.</source>
         <source>Group</source>
         <translation>Ryhmä</translation>
     </message>
-    <message>
-        <source>Empty</source>
-        <translation type="vanished">Tyhjä</translation>
-    </message>
 </context>
 <context>
     <name>EntityModel</name>
@@ -781,22 +798,22 @@ facing at on the %1 axis.</source>
 <context>
     <name>EntityTree</name>
     <message>
-        <location filename="qml/EntityTree.qml" line="355"/>
+        <location filename="qml/EntityTree.qml" line="385"/>
         <source>Entities</source>
         <translation>Entiteetit</translation>
     </message>
     <message>
-        <location filename="qml/EntityTree.qml" line="89"/>
+        <location filename="qml/EntityTree.qml" line="91"/>
         <source>Scene</source>
         <translation>Maisema</translation>
     </message>
     <message>
-        <location filename="qml/EntityTree.qml" line="90"/>
+        <location filename="qml/EntityTree.qml" line="92"/>
         <source>Show/Hide Scene View</source>
         <translation>Näytä/Piilota Maisemanäkymä</translation>
     </message>
     <message>
-        <location filename="qml/EntityTree.qml" line="360"/>
+        <location filename="qml/EntityTree.qml" line="390"/>
         <source>Visibility</source>
         <translation>Näkyvyys</translation>
     </message>
@@ -816,10 +833,6 @@ facing at on the %1 axis.</source>
         <source>Float Value</source>
         <translation>Liukuluku</translation>
     </message>
-    <message>
-        <source>Lock &apos;%1&apos; Properties</source>
-        <translation type="vanished">Lukitse Ominaisuus &apos;%1&apos;</translation>
-    </message>
 </context>
 <context>
     <name>FloatSliderInputField</name>
@@ -828,87 +841,68 @@ facing at on the %1 axis.</source>
         <source>Float Slider</source>
         <translation>Liukusäädin (Liukuluku)</translation>
     </message>
-    <message>
-        <source>Lock &apos;%1&apos; Properties</source>
-        <translation type="vanished">Lukitse Ominaisuus &apos;%1&apos;</translation>
-    </message>
-</context>
-<context>
-    <name>GeneralEntityDelegate</name>
-    <message>
-        <source>Properties</source>
-        <translation type="vanished">Ominaisuudet</translation>
-    </message>
-    <message>
-        <source>Entity name</source>
-        <translation type="vanished">Entiteetin Nimi</translation>
-    </message>
 </context>
 <context>
     <name>GeneralPropertyView</name>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="64"/>
+        <location filename="qml/GeneralPropertyView.qml" line="66"/>
         <source>Properties</source>
         <translation>Ominaisuudet</translation>
     </message>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="65"/>
+        <location filename="qml/GeneralPropertyView.qml" line="67"/>
         <source>Show/Hide Properties View</source>
         <translation>&lt;p&gt;Näytä/Piilota Ominaisuusnäkymä</translation>
     </message>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="98"/>
+        <location filename="qml/GeneralPropertyView.qml" line="100"/>
         <source>Entity name</source>
         <translation>Entiteetin Nimi</translation>
     </message>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="99"/>
+        <location filename="qml/GeneralPropertyView.qml" line="101"/>
         <source>Name of the entity. Name may not be a duplicate to an
 already existing one, or it will be automatically renamed.</source>
         <translation>&lt;p&gt;Entiteetin nimi. Nimi ei saa olla sama kuin jo olemassaoleva, tai se uudelleennimetään automaattisesti.</translation>
     </message>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="130"/>
+        <location filename="qml/GeneralPropertyView.qml" line="132"/>
         <source>Show Properties:</source>
         <translation>Näytä Ominaisuudet:</translation>
     </message>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="132"/>
+        <location filename="qml/GeneralPropertyView.qml" line="134"/>
         <source>Buttons to show or hide the properties of the selected entity.</source>
         <translation>&lt;p&gt;Napit valitun entiteetin ominaisuuksien näyttämiseksi tai piilottamiseksi.</translation>
     </message>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="146"/>
+        <location filename="qml/GeneralPropertyView.qml" line="148"/>
         <source>Show/Hide Light Properties</source>
         <translation>&lt;p&gt;Näytä/Piilota Valo-ominaisuudet</translation>
     </message>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="172"/>
+        <location filename="qml/GeneralPropertyView.qml" line="174"/>
         <source>Show/Hide Transform Properties</source>
         <translation>&lt;p&gt;Näytä/Piilota Muunnosominaisuudet</translation>
     </message>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="200"/>
+        <location filename="qml/GeneralPropertyView.qml" line="202"/>
         <source>Show/Hide Camera Properties</source>
         <translation>&lt;p&gt;Näytä/Piilota Kameraominaisuudet</translation>
     </message>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="159"/>
+        <location filename="qml/GeneralPropertyView.qml" line="161"/>
         <source>Show/Hide Mesh Properties</source>
         <translation>&lt;p&gt;Näytä/Piilota Malliominaisuudet</translation>
     </message>
     <message>
-        <location filename="qml/GeneralPropertyView.qml" line="187"/>
+        <location filename="qml/GeneralPropertyView.qml" line="189"/>
         <source>Show/Hide Material Properties</source>
         <translation>&lt;p&gt;Näytä/Piilota Materiaaliominaisuudet</translation>
     </message>
 </context>
 <context>
     <name>GoochMaterialDelegate</name>
-    <message>
-        <source>Gooch</source>
-        <translation type="vanished">Gooch</translation>
-    </message>
     <message>
         <location filename="qml/materials/GoochMaterialDelegate.qml" line="36"/>
         <source>Diffuse Color</source>
@@ -965,10 +959,6 @@ factor that controls the combination
 of warm color and base color.</source>
         <translation>&lt;p&gt;Materiaalin beta, eli kerroin jonka perusteella lämmin väri ja perusväri sekoitetaan.</translation>
     </message>
-    <message>
-        <source>Shininess</source>
-        <translation type="vanished">Kiiltävyys</translation>
-    </message>
 </context>
 <context>
     <name>IntPropertyInputField</name>
@@ -976,28 +966,6 @@ of warm color and base color.</source>
         <location filename="qml/inputfields/IntPropertyInputField.qml" line="61"/>
         <source>Integer Value</source>
         <translation>Kokonaisluku</translation>
-    </message>
-    <message>
-        <source>Lock &apos;%1&apos; Properties</source>
-        <translation type="vanished">Lukitse Ominaisuus &apos;%1&apos;</translation>
-    </message>
-</context>
-<context>
-    <name>KeyboardInputComponentDelegate</name>
-    <message>
-        <source>Keyboard Input</source>
-        <translation type="vanished">Näppäimistösyöte</translation>
-    </message>
-</context>
-<context>
-    <name>LayerComponentDelegate</name>
-    <message>
-        <source>Layer</source>
-        <translation type="vanished">Kerros</translation>
-    </message>
-    <message>
-        <source>Names</source>
-        <translation type="vanished">Nimet</translation>
     </message>
 </context>
 <context>
@@ -1022,41 +990,6 @@ of warm color and base color.</source>
         <source>Spot Light</source>
         <translation>Spottivalo</translation>
     </message>
-    <message>
-        <source>Basic Light</source>
-        <translation type="vanished">Perusvalo</translation>
-    </message>
-    <message>
-        <source>Select Light</source>
-        <translation type="vanished">Valitse Valo</translation>
-    </message>
-    <message>
-        <source>Basic</source>
-        <translation type="vanished">Perus</translation>
-    </message>
-    <message>
-        <source>Directional</source>
-        <translation type="vanished">Suunnattu</translation>
-    </message>
-    <message>
-        <source>Point</source>
-        <translation type="vanished">Piste</translation>
-    </message>
-    <message>
-        <source>Spot</source>
-        <translation type="vanished">Spotti</translation>
-    </message>
-    <message>
-        <source>Change Light</source>
-        <translation type="vanished">Vaihda Valoa</translation>
-    </message>
-</context>
-<context>
-    <name>LogicComponentDelegate</name>
-    <message>
-        <source>Logic</source>
-        <translation type="vanished">Logiikka</translation>
-    </message>
 </context>
 <context>
     <name>MaterialComponentDelegate</name>
@@ -1068,7 +1001,7 @@ of warm color and base color.</source>
     <message>
         <location filename="qml/MaterialComponentDelegate.qml" line="64"/>
         <source>Imported custom material</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuotu oma materiaali</translation>
     </message>
     <message>
         <location filename="qml/MaterialComponentDelegate.qml" line="85"/>
@@ -1107,18 +1040,12 @@ of warm color and base color.</source>
     </message>
     <message>
         <location filename="qml/MaterialComponentDelegate.qml" line="91"/>
-        <source>Per Vertex Color</source>
-        <oldsource>PerVertexColor</oldsource>
-        <translation>Verteksikohtainen Väri</translation>
-    </message>
-    <message>
-        <location filename="qml/MaterialComponentDelegate.qml" line="92"/>
         <source>Phong Alpha</source>
         <oldsource>PhongAlpha</oldsource>
         <translation>Phong Läpinäkyvyydellä</translation>
     </message>
     <message>
-        <location filename="qml/MaterialComponentDelegate.qml" line="93"/>
+        <location filename="qml/MaterialComponentDelegate.qml" line="92"/>
         <source>Phong</source>
         <translation>Phong</translation>
     </message>
@@ -1192,10 +1119,6 @@ less intense the specular highlight.</source>
 <context>
     <name>MatrixTransformDelegate</name>
     <message>
-        <source>Matrix</source>
-        <translation type="vanished">Matriisi</translation>
-    </message>
-    <message>
         <location filename="qml/transforms/MatrixTransformDelegate.qml" line="39"/>
         <source>Transform Matrix</source>
         <translation>Muunnosmatriisi</translation>
@@ -1214,13 +1137,9 @@ less intense the specular highlight.</source>
         <translation>Malli</translation>
     </message>
     <message>
-        <source>Static mesh</source>
-        <translation type="vanished">Staattinen Malli</translation>
-    </message>
-    <message>
         <location filename="qml/MeshComponentDelegate.qml" line="63"/>
         <source>Imported custom mesh</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuotu oma malli</translation>
     </message>
     <message>
         <location filename="qml/MeshComponentDelegate.qml" line="84"/>
@@ -1254,18 +1173,7 @@ less intense the specular highlight.</source>
     </message>
 </context>
 <context>
-    <name>MouseInputComponentDelegate</name>
-    <message>
-        <source>Mouse Input</source>
-        <translation type="vanished">Hiirisyöte</translation>
-    </message>
-</context>
-<context>
     <name>NormalDiffuseMapAlphaMaterialDelegate</name>
-    <message>
-        <source>Normal &amp; Diffuse Map Alpha</source>
-        <translation type="vanished">Tavallinen ja Normaalitekstuuri Alfalla</translation>
-    </message>
     <message>
         <location filename="qml/materials/NormalDiffuseMapAlphaMaterialDelegate.qml" line="74"/>
         <source>Normal Map</source>
@@ -1287,10 +1195,6 @@ less intense the specular highlight.</source>
         <translation>Spekulaarinen Väri</translation>
     </message>
     <message>
-        <source>Shininess</source>
-        <translation type="vanished">Kiiltävyys</translation>
-    </message>
-    <message>
         <location filename="qml/materials/NormalDiffuseMapAlphaMaterialDelegate.qml" line="65"/>
         <source>Texture Scale</source>
         <translation>Tekstuurin Mittakaava</translation>
@@ -1298,10 +1202,6 @@ less intense the specular highlight.</source>
 </context>
 <context>
     <name>NormalDiffuseMapMaterialDelegate</name>
-    <message>
-        <source>Normal &amp; Diffuse Map</source>
-        <translation type="vanished">Tavallinen ja Normaalitekstuuri</translation>
-    </message>
     <message>
         <location filename="qml/materials/NormalDiffuseMapMaterialDelegate.qml" line="63"/>
         <source>Normal Map</source>
@@ -1318,10 +1218,6 @@ less intense the specular highlight.</source>
         <translation>Ympäristön Väri</translation>
     </message>
     <message>
-        <source>Shininess</source>
-        <translation type="vanished">Kiiltävyys</translation>
-    </message>
-    <message>
         <location filename="qml/materials/NormalDiffuseMapMaterialDelegate.qml" line="54"/>
         <source>Texture Scale</source>
         <translation>Tekstuurin Mittakaava</translation>
@@ -1329,10 +1225,6 @@ less intense the specular highlight.</source>
 </context>
 <context>
     <name>NormalDiffuseSpecularMapMaterialDelegate</name>
-    <message>
-        <source>Normal, Diffuse &amp; Specular Map</source>
-        <translation type="vanished">Tavallinen, Spekulaarinen ja Normaalitekstuuri</translation>
-    </message>
     <message>
         <location filename="qml/materials/NormalDiffuseSpecularMapMaterialDelegate.qml" line="65"/>
         <source>Normal Map</source>
@@ -1354,10 +1246,6 @@ less intense the specular highlight.</source>
         <translation>Ympäristön Väri</translation>
     </message>
     <message>
-        <source>Shininess</source>
-        <translation type="vanished">Kiiltävyys</translation>
-    </message>
-    <message>
         <location filename="qml/materials/NormalDiffuseSpecularMapMaterialDelegate.qml" line="56"/>
         <source>Texture Scale</source>
         <translation>Tekstuurin Mittakaava</translation>
@@ -1377,18 +1265,7 @@ less intense the specular highlight.</source>
     </message>
 </context>
 <context>
-    <name>PerVertexColorMaterialDelegate</name>
-    <message>
-        <source>Per Vertex Color</source>
-        <translation type="vanished">Vertekstikohtainen Väri</translation>
-    </message>
-</context>
-<context>
     <name>PhongAlphaMaterialDelegate</name>
-    <message>
-        <source>Phong Alpha</source>
-        <translation type="vanished">Phong Läpinäkyvyydellä</translation>
-    </message>
     <message>
         <location filename="qml/materials/PhongAlphaMaterialDelegate.qml" line="36"/>
         <source>Ambient Color</source>
@@ -1412,10 +1289,6 @@ opaque.</source>
         <translation>&lt;p&gt;Materiaalin läpinäkyvyys. &lt;i&gt;0&lt;/i&gt; on täysin läpinäkyvä, ja &lt;i&gt;1&lt;/i&gt; on täysin läpinäkymätön.</translation>
     </message>
     <message>
-        <source>Shininess</source>
-        <translation type="vanished">Kiiltävyys</translation>
-    </message>
-    <message>
         <location filename="qml/materials/PhongAlphaMaterialDelegate.qml" line="60"/>
         <source>Alpha</source>
         <translation>Läpinäkyvyys</translation>
@@ -1423,10 +1296,6 @@ opaque.</source>
 </context>
 <context>
     <name>PhongMaterialDelegate</name>
-    <message>
-        <source>Phong</source>
-        <translation type="vanished">Phong</translation>
-    </message>
     <message>
         <location filename="qml/materials/PhongMaterialDelegate.qml" line="36"/>
         <source>Ambient Color</source>
@@ -1442,17 +1311,9 @@ opaque.</source>
         <source>Specular Color</source>
         <translation>Spekulaarinen Väri</translation>
     </message>
-    <message>
-        <source>Shininess</source>
-        <translation type="vanished">Kiiltävyys</translation>
-    </message>
 </context>
 <context>
     <name>PlaneMeshDelegate</name>
-    <message>
-        <source>Plane</source>
-        <translation type="vanished">Levy</translation>
-    </message>
     <message>
         <location filename="qml/meshes/PlaneMeshDelegate.qml" line="37"/>
         <source>Width</source>
@@ -1485,10 +1346,6 @@ opaque.</source>
         <translation>L - K</translation>
     </message>
     <message>
-        <source>Mesh Resolution</source>
-        <translation type="vanished">Levyn Resoluutio</translation>
-    </message>
-    <message>
         <location filename="qml/meshes/PlaneMeshDelegate.qml" line="67"/>
         <source>Resolution of the plane, i.e. how
 many strips the mesh is divided into.</source>
@@ -1497,22 +1354,6 @@ many strips the mesh is divided into.</source>
 </context>
 <context>
     <name>PointLightDelegate</name>
-    <message>
-        <source>Point Light</source>
-        <translation type="vanished">Pistevalo</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="vanished">Väri</translation>
-    </message>
-    <message>
-        <source>Intensity</source>
-        <translation type="vanished">Voimakkuus</translation>
-    </message>
-    <message>
-        <source>Attenuation</source>
-        <translation type="vanished">Vaimennus</translation>
-    </message>
     <message>
         <location filename="qml/lights/PointLightDelegate.qml" line="58"/>
         <source>Quadratic Attenuation</source>
@@ -1546,21 +1387,6 @@ many strips the mesh is divided into.</source>
     </message>
 </context>
 <context>
-    <name>RotateTransformDelegate</name>
-    <message>
-        <source>Rotate</source>
-        <translation type="vanished">Pyöritys</translation>
-    </message>
-    <message>
-        <source>Angle Degrees</source>
-        <translation type="vanished">Kulma</translation>
-    </message>
-    <message>
-        <source>Axis</source>
-        <translation type="vanished">Akselit</translation>
-    </message>
-</context>
-<context>
     <name>RotationPropertyInputField</name>
     <message>
         <location filename="qml/inputfields/RotationPropertyInputField.qml" line="71"/>
@@ -1581,10 +1407,6 @@ object on the %1 axis.</source>
 </context>
 <context>
     <name>SRTTransformDelegate</name>
-    <message>
-        <source>Scale, Rotate &amp; Translate</source>
-        <translation type="vanished">Skaalaa, Pyöritä ja Siirrä</translation>
-    </message>
     <message>
         <location filename="qml/transforms/SRTTransformDelegate.qml" line="38"/>
         <source>Scale</source>
@@ -1615,14 +1437,56 @@ on the %1 axis.</source>
     </message>
 </context>
 <context>
-    <name>ScaleTransformDelegate</name>
+    <name>SettingsDialog</name>
     <message>
-        <source>Scale</source>
-        <translation type="vanished">Skaala</translation>
+        <location filename="qml/SettingsDialog.qml" line="34"/>
+        <source>Settings</source>
+        <translation>Asetukset</translation>
     </message>
     <message>
-        <source>Scale3D</source>
-        <translation type="vanished">Skaala 3D</translation>
+        <location filename="qml/SettingsDialog.qml" line="60"/>
+        <source>Automatic Saving</source>
+        <translation>Automaattinen tallennus</translation>
+    </message>
+    <message>
+        <location filename="qml/SettingsDialog.qml" line="68"/>
+        <source>Save work every 10 minutes</source>
+        <translation>Tallenna 10 minuutin välein</translation>
+    </message>
+    <message>
+        <location filename="qml/SettingsDialog.qml" line="79"/>
+        <source>Language</source>
+        <translation>Kieli</translation>
+    </message>
+    <message>
+        <location filename="qml/SettingsDialog.qml" line="90"/>
+        <source>English</source>
+        <translation>Englanti</translation>
+    </message>
+    <message>
+        <location filename="qml/SettingsDialog.qml" line="99"/>
+        <source>Finnish</source>
+        <translation>Suomi</translation>
+    </message>
+    <message>
+        <location filename="qml/SettingsDialog.qml" line="111"/>
+        <source>Grid Spacing</source>
+        <translation>Ruudukon koko</translation>
+    </message>
+    <message>
+        <location filename="qml/SettingsDialog.qml" line="151"/>
+        <source>Apply</source>
+        <translation>Käytä</translation>
+    </message>
+    <message>
+        <location filename="qml/SettingsDialog.qml" line="161"/>
+        <source>Cancel</source>
+        <translation>Peru</translation>
+    </message>
+    <message>
+        <location filename="qml/SettingsDialog.qml" line="178"/>
+        <source>Ok</source>
+        <translation>Ok</translation>
     </message>
 </context>
 <context>
@@ -1642,17 +1506,9 @@ on the %1 axis.</source>
         <source>Y</source>
         <translation>Y</translation>
     </message>
-    <message>
-        <source>Lock &apos;%1&apos; Properties</source>
-        <translation type="vanished">Lukitse Ominaisuus &apos;%1&apos;</translation>
-    </message>
 </context>
 <context>
     <name>SphereMeshDelegate</name>
-    <message>
-        <source>Sphere</source>
-        <translation type="vanished">Pallo</translation>
-    </message>
     <message>
         <location filename="qml/meshes/SphereMeshDelegate.qml" line="36"/>
         <source>Rings</source>
@@ -1700,18 +1556,6 @@ for textures to work properly.</source>
 </context>
 <context>
     <name>SpotLightDelegate</name>
-    <message>
-        <source>Spot Light</source>
-        <translation type="vanished">Spottivalo</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="vanished">Väri</translation>
-    </message>
-    <message>
-        <source>Intensity</source>
-        <translation type="vanished">Voimakkuus</translation>
-    </message>
     <message>
         <location filename="qml/lights/SpotLightDelegate.qml" line="66"/>
         <source>Direction</source>
@@ -1773,10 +1617,6 @@ facing at on the %1 axis.</source>
 <context>
     <name>TorusMeshDelegate</name>
     <message>
-        <source>Torus</source>
-        <translation type="vanished">Torus</translation>
-    </message>
-    <message>
         <location filename="qml/meshes/TorusMeshDelegate.qml" line="36"/>
         <source>Rings</source>
         <translation>Renkaita</translation>
@@ -1818,14 +1658,6 @@ Minimum is 2.</source>
         <source>Tube radius, i.e. the radius of the tube.</source>
         <translation>&lt;p&gt;Toruksen paksuus, eli putken säde.</translation>
     </message>
-    <message>
-        <source>Outer Radius</source>
-        <translation type="vanished">Ulkosäde</translation>
-    </message>
-    <message>
-        <source>Inner Radius</source>
-        <translation type="vanished">Sisäsäde</translation>
-    </message>
 </context>
 <context>
     <name>TransformComponentDelegate</name>
@@ -1843,17 +1675,6 @@ Minimum is 2.</source>
         <location filename="qml/TransformComponentDelegate.qml" line="81"/>
         <source>Matrix</source>
         <translation>Matriisi</translation>
-    </message>
-</context>
-<context>
-    <name>TranslateTransformDelegate</name>
-    <message>
-        <source>Translate</source>
-        <translation type="vanished">Siirrä</translation>
-    </message>
-    <message>
-        <source>Translation</source>
-        <translation type="vanished">Siirros</translation>
     </message>
 </context>
 <context>
@@ -1893,27 +1714,6 @@ Minimum is 2.</source>
     </message>
 </context>
 <context>
-    <name>UnknownMaterialDelegate</name>
-    <message>
-        <source>No Material</source>
-        <translation type="vanished">Ei Materiaalia</translation>
-    </message>
-</context>
-<context>
-    <name>UnknownMeshDelegate</name>
-    <message>
-        <source>Unknown Mesh</source>
-        <translation type="vanished">Tuntematon Malli</translation>
-    </message>
-</context>
-<context>
-    <name>UnknownTransformDelegate</name>
-    <message>
-        <source>Unknown Transform</source>
-        <translation type="vanished">Tuntematon Muunnos</translation>
-    </message>
-</context>
-<context>
     <name>Vector3DInputField</name>
     <message>
         <location filename="qml/inputfields/Vector3DInputField.qml" line="39"/>
@@ -1931,10 +1731,6 @@ Minimum is 2.</source>
         <translation>Y</translation>
     </message>
     <message>
-        <source>Lock &apos;%1&apos; Properties</source>
-        <translation type="vanished">Lukitse Ominaisuus &apos;%1&apos;</translation>
-    </message>
-    <message>
         <location filename="qml/inputfields/Vector3DInputField.qml" line="220"/>
         <source>Z</source>
         <translation>Z</translation>
@@ -1943,270 +1739,51 @@ Minimum is 2.</source>
 <context>
     <name>main</name>
     <message>
-        <location filename="qml/main.qml" line="39"/>
+        <location filename="qml/main.qml" line="38"/>
         <source>Qt 3D Scene Editor</source>
         <oldsource>Qt 3D Editor</oldsource>
         <translation>Qt 3D Maisemaeditori</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="94"/>
-        <source>&amp;File</source>
-        <translation>&amp;Tiedosto</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="96"/>
-        <source>&amp;New</source>
-        <translation>&amp;Uusi</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="115"/>
-        <source>Enable autosave</source>
-        <translation>Salli Automaattitallennus</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="135"/>
-        <source>E&amp;xit</source>
-        <translation>&amp;Poistu</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="143"/>
-        <source>&amp;Edit</source>
-        <translation>&amp;Muokkaa</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="153"/>
-        <source>&amp;View</source>
-        <translation>&amp;Näytä</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="156"/>
-        <source>&amp;Camera</source>
-        <translation>&amp;Kamera</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="172"/>
-        <source>Change active camera</source>
-        <translation>Vaihda Aktiivista Kameraa</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="184"/>
-        <source>Free viewing mode</source>
-        <translation>Katsele Vapaasti</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="192"/>
-        <source>Reset</source>
-        <translation>Palaa Alkuperäiseen Sijaintiin</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="199"/>
-        <source>Add scene camera here</source>
-        <translation>Lisää Kamera Tämänhetkiseen Sijaintiin</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="212"/>
-        <source>Move active camera here</source>
-        <translation>Siirrä Aktiivinen Kamera Tämänhetkiseen Sijaintiin</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="221"/>
-        <source>Snap to active camera</source>
-        <translation>Siirry Aktiivisen Kameran Sijaintiin</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="229"/>
-        <source>&amp;Helper Plane</source>
-        <translation>&amp;Aputaso</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="235"/>
-        <source>Normal &amp;X</source>
-        <translation>&amp;X Normaali</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="246"/>
-        <source>Normal &amp;Y</source>
-        <translation>&amp;Y Normaali</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="257"/>
-        <source>Normal &amp;Z</source>
-        <translation>&amp;Z Normaali</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="268"/>
-        <source>Change Grid Size</source>
-        <translation>Muuta Aputason Väliä</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="276"/>
-        <source>&amp;Hide</source>
-        <translation>&amp;Piilota</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="288"/>
-        <source>&amp;Language</source>
-        <translation>Kieli</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="294"/>
-        <source>English</source>
-        <translation>Englanti</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="306"/>
-        <source>Finnish</source>
-        <translation>Suomi</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="324"/>
+        <location filename="qml/main.qml" line="102"/>
         <source>Load Scene</source>
         <translation>Lataa Maisema</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="325"/>
-        <location filename="qml/main.qml" line="340"/>
-        <source>Qt3D Scenes (*.qrc)</source>
-        <translation>Qt 3D Maisemat (*.qrc)</translation>
+        <location filename="qml/main.qml" line="103"/>
+        <location filename="qml/main.qml" line="118"/>
+        <source>Qt3D Scenes (*.qt3d.qrc)</source>
+        <translation>Q3D Maisemat (*.qt3d.qrc)</translation>
     </message>
     <message>
-        <source>Qt3D Scenes (*.qml)</source>
-        <translation type="vanished">Qt 3D Maisemat (*.qml)</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="339"/>
+        <location filename="qml/main.qml" line="117"/>
         <source>Save Scene</source>
         <translation>Tallenna Maisema</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="353"/>
+        <location filename="qml/main.qml" line="131"/>
         <source>Import Entity</source>
         <translation>Tuo Entiteetti</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="354"/>
+        <location filename="qml/main.qml" line="132"/>
         <source>All files (*)</source>
         <translation>Kaikki Tiedostot (*)</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="362"/>
-        <source>L&amp;oad</source>
-        <translation>&amp;Lataa</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="369"/>
-        <source>&amp;Save</source>
-        <translation>&amp;Tallenna</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="384"/>
-        <source>Save As</source>
-        <translation>Tallenna Nimellä</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="395"/>
-        <source>&amp;Import Entity</source>
-        <translation>&amp;Tuo Entiteetti</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="405"/>
-        <source>Undo</source>
-        <translation>Peru</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="406"/>
-        <source>Undo &apos;%1&apos;</source>
-        <translation>Peru &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="415"/>
-        <source>Redo</source>
-        <translation>Toista</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="416"/>
-        <source>Redo &apos;%1&apos;</source>
-        <translation>Toista &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="447"/>
-        <source>Normal X (Ctrl + 1)</source>
-        <translation>Aputaso X-akselia Vasten (Ctrl + 1)</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="459"/>
-        <source>Normal Y (Ctrl + 2)</source>
-        <translation>Aputaso Y-akselia Vasten (Ctrl + 2)</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="471"/>
-        <source>Normal Z (Ctrl + 3)</source>
-        <translation>Aputaso Z-akselia Vasten (Ctrl + 3)</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="483"/>
-        <source>Hide helper plane (Ctrl + 4)</source>
-        <translation>Piilota Aputaso (Ctrl + 4)</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="505"/>
-        <source>Reset to Default (Ctrl + R)</source>
-        <translation>Palaa Alkuperäiseen Sijantiin (Ctrl + R)</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="602"/>
-        <source>Grid Size</source>
-        <translation>Aputason Väli</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="626"/>
-        <source>Apply</source>
-        <translation>Käytä</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="632"/>
-        <source>Cancel</source>
-        <translation>Peru</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="639"/>
-        <source>Ok</source>
-        <translation>Ok</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="653"/>
+        <location filename="qml/main.qml" line="342"/>
         <source>Exit Qt 3D Scene Editor</source>
         <translation>Poistu Qt 3D Maisemaeditorista</translation>
     </message>
     <message>
-        <location filename="qml/main.qml" line="654"/>
+        <location filename="qml/main.qml" line="343"/>
         <source>There are unsaved changes.
 Quit anyway?</source>
         <translation>Sinulla on tallentamattomia muutoksia.
 Poistu siitä huolimatta?</translation>
     </message>
     <message>
-        <source>Normal X</source>
-        <translation type="vanished">X Normaali</translation>
-    </message>
-    <message>
-        <source>Normal Y</source>
-        <translation type="vanished">Y Normaali</translation>
-    </message>
-    <message>
-        <source>Normal Z</source>
-        <translation type="vanished">Z Normaali</translation>
-    </message>
-    <message>
-        <source>Hide Helper Plane</source>
-        <translation type="vanished">Piilota Aputaso</translation>
-    </message>
-    <message>
-        <source>Reset to Default</source>
-        <translation type="vanished">Palauta Oletussijainti</translation>
-    </message>
-    <message>
-        <location filename="qml/main.qml" line="569"/>
+        <location filename="qml/main.qml" line="293"/>
         <source>Error</source>
         <translation>Virhe</translation>
     </message>
