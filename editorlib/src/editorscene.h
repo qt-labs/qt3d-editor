@@ -86,6 +86,8 @@ class EditorScene : public QObject
     Q_PROPERTY(QString lockPropertySuffix READ lockPropertySuffix CONSTANT)
     Q_PROPERTY(QString lockTransformPropertyName READ lockTransformPropertyName CONSTANT)
     Q_PROPERTY(int gridSize READ gridSize WRITE setGridSize NOTIFY gridSizeChanged)
+    Q_PROPERTY(ClipboardOperation clipboardOperation READ clipboardOperation WRITE setClipboardOperation NOTIFY clipboardOperationChanged)
+    Q_PROPERTY(QString clipboardContent READ clipboardContent WRITE setClipboardContent NOTIFY clipboardContentChanged)
 
 public:
     enum DragMode {
@@ -95,6 +97,13 @@ public:
         DragRotate
     };
     Q_ENUM(DragMode)
+
+    enum ClipboardOperation {
+        ClipboardNone = 0,
+        ClipboardCopy,
+        ClipboardCut
+    };
+    Q_ENUM(ClipboardOperation)
 
 private:
     struct CameraFrustumData {
@@ -230,6 +239,12 @@ public:
     Q_INVOKABLE QString previousSelectedEntityName() const;
     Q_INVOKABLE void addToMultiSelection(const QString &name);
 
+    ClipboardOperation clipboardOperation() { return m_clipboardOperation; }
+    void setClipboardOperation(ClipboardOperation operation);
+
+    QString clipboardContent() const { return m_clipboardEntityName; }
+    void setClipboardContent(const QString &entityName);
+
     QString duplicateEntity(Qt3DCore::QEntity *entity);
     void decrementDuplicateCount() { m_duplicateCount--; }
     Qt3DRender::QCamera *freeViewCamera() const { return m_freeViewCameraEntity; }
@@ -304,6 +319,8 @@ signals:
     void repositionDragHandle(DragMode dragMode, const QPoint &pos, bool visible, int handleIndex);
     void beginDragHandlesRepositioning();
     void endDragHandlesRepositioning();
+    void clipboardOperationChanged(ClipboardOperation clipboardOperation);
+    void clipboardContentChanged(const QString &clipboardContent);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
@@ -439,6 +456,8 @@ private:
     QStringList m_selectedEntityNameList;
     Qt::MouseButton m_mouseButton;
     Qt3DCore::QEntity *m_previousSelectedEntity;
+    QString m_clipboardEntityName;
+    ClipboardOperation m_clipboardOperation;
 
     QMap<QString, PlaceholderEntityData *> m_placeholderEntityMap;
 };

@@ -35,6 +35,7 @@
 #include "modelrolechangecommand.h"
 #include "replacecomponentcommand.h"
 #include "duplicateentitycommand.h"
+#include "pasteentitycommand.h"
 #include "copycamerapropertiescommand.h"
 #include "genericpropertychangecommand.h"
 #include "reparententitycommand.h"
@@ -189,6 +190,18 @@ void UndoHandler::createDuplicateEntityCommand(const QString &entityName)
         return;
 
     m_undoStack->push(new DuplicateEntityCommand(m_scene->sceneModel(), entityName));
+}
+
+void UndoHandler::createPasteEntityCommand(const QVector3D &pos)
+{
+    if (m_scene->clipboardContent().isEmpty()
+            || m_scene->clipboardOperation() == EditorScene::ClipboardNone) {
+        return;
+    }
+
+    m_undoStack->push(new PasteEntityCommand(m_scene->sceneModel(),
+                                             m_scene->clipboardOperation(),
+                                             m_scene->clipboardContent(), pos));
 }
 
 void UndoHandler::createCopyCameraPropertiesCommand(const QString &targetCamera,

@@ -60,6 +60,10 @@ ApplicationWindow {
     property int currentHelperPlane: 1
     property alias selectedEntityType: generalPropertyView.entityType
 
+    property bool trackMousePosition: false
+    property int mousePosY: -1
+    property int mousePosX: -1
+
     property color textColor: "#ffffff"
     property color disabledTextColor: "#a0a1a2"
     property color selectionColor: "#43adee"
@@ -192,6 +196,68 @@ ApplicationWindow {
         currentHelperPlane = 3
     }
 
+    Shortcut {
+        id: copyShortcut
+        sequence: StandardKey.Copy
+        onActivated: {
+            // Prevent copying multiselection (for now, at least)
+            if (!selectionList.length)
+                mainwindow.copyEntity(selectedEntityName)
+        }
+    }
+    function copyEntity(entityName) {
+        if (entityName !== editorScene.sceneRootName()) {
+            // Disable possible previous cut operation
+            if (editorScene.clipboardOperation === EditorScene.ClipboardCut) {
+                var index = editorScene.sceneModel.getModelIndexByName(
+                            editorScene.clipboardContent)
+                var sceneItem = editorScene.sceneModel.editorSceneItemFromIndex(index)
+                sceneItem.entity().enabled = true
+            }
+            editorScene.clipboardContent = entityName
+            editorScene.clipboardOperation = EditorScene.ClipboardCopy
+            trackMousePosition = true
+            // TODO: When to stop reading mouse movements when copy-pasting?
+            // TODO: When any other operation is done?
+        }
+    }
+
+    Shortcut {
+        id: cutShortcut
+        sequence: StandardKey.Cut
+        onActivated: {
+            // Prevent cutting multiselection (for now, at least)
+            if (!selectionList.length)
+                mainwindow.cutEntity(selectedEntityName, selectedEntity)
+        }
+    }
+    function cutEntity(entityName, entity) {
+        if (entityName !== editorScene.sceneRootName()) {
+            editorScene.clipboardContent = entityName
+            editorScene.clipboardOperation = EditorScene.ClipboardCut
+            entity.entity().enabled = false
+            trackMousePosition = true
+        }
+    }
+
+    Shortcut {
+        id: pasteShortcut
+        sequence: StandardKey.Paste
+        onActivated: {
+            mainwindow.pasteEntity()
+        }
+    }
+    function pasteEntity() {
+        if (editorScene.clipboardContent.length) {
+            editorScene.undoHandler.createPasteEntityCommand(editorScene.getWorldPosition(mousePosX,
+                                                                                          mousePosY))
+            if (editorScene.clipboardOperation === EditorScene.ClipboardCut) {
+                trackMousePosition = false
+                editorScene.clipboardOperation = EditorScene.ClipboardNone
+            }
+        }
+    }
+
     EditorScene {
         id: editorScene
         viewport: editorViewport
@@ -234,10 +300,15 @@ ApplicationWindow {
             entityTree.menu.popup()
         }
 
+        onClipboardOperationChanged: {
+            if (clipboardOperation === EditorScene.ClipboardNone)
+                trackMousePosition = false
+        }
+
         function restoreSelection(entity) {
             var index = editorScene.sceneModel.getModelIndex(entity)
             selectIndex(index)
-         }
+        }
 
         function selectIndex(index) {
             expandTo(index)
@@ -327,7 +398,11 @@ ApplicationWindow {
                         entityTree.focusTree()
                         mouse.accepted = false
                     }
+                    hoverEnabled: trackMousePosition
+                    onMouseYChanged: mousePosY = mouseY
+                    onMouseXChanged: mousePosX = mouseX
                 }
+
                 DropArea {
                     anchors.fill: parent
                     keys: [ "insertEntity" ]

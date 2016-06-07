@@ -456,6 +456,9 @@ const QString EditorSceneItemModel::setEntityName(const QModelIndex &index, cons
         m_scene->setMultiSelection(multiSelection);
     }
 
+    if (oldName == m_scene->clipboardContent())
+        m_scene->setClipboardContent(name);
+
     return finalName;
 }
 
@@ -599,10 +602,15 @@ QString EditorSceneItemModel::insertSceneLoaderEntity(const QUrl &fileUrl)
 
 Qt3DCore::QEntity *EditorSceneItemModel::duplicateEntity(Qt3DCore::QEntity *entity,
                                                          Qt3DCore::QEntity *newParent,
-                                                         const QVector3D &duplicateOffset)
+                                                         const QVector3D &duplicateOffset,
+                                                         bool offset)
 {
     // Copies the entity, including making copies of all components and child entities
     // Both copies will retain their entity names.
+
+    // If offset flag is false, the entity will be placed exactly at duplicateOffset position,
+    // otherwise duplicateOffset will be used as the offset from the position of the one being
+    // duplicated.
 
     Qt3DCore::QEntity *newEntity = nullptr;
     Qt3DRender::QSceneLoader *sceneLoader = nullptr;
@@ -629,7 +637,10 @@ Qt3DCore::QEntity *EditorSceneItemModel::duplicateEntity(Qt3DCore::QEntity *enti
                     newEntity, false);
 
         // Offset the position of the duplicate
-        newCam->setPosition(newCam->position() + duplicateOffset);
+        if (offset)
+            newCam->setPosition(newCam->position() + duplicateOffset);
+        else
+            newCam->setPosition(duplicateOffset);
     } else {
         newEntity = new Qt3DCore::QEntity(newParent);
         // Duplicate non-internal components
@@ -649,8 +660,19 @@ Qt3DCore::QEntity *EditorSceneItemModel::duplicateEntity(Qt3DCore::QEntity *enti
                     Qt3DCore::QTransform *newTransform =
                             qobject_cast<Qt3DCore::QTransform *>(newComponent);
                     if (newTransform) {
-                        newTransform->setTranslation(newTransform->translation()
-                                                     + duplicateOffset * newTransform->scale3D());
+                        if (offset) {
+                            newTransform->setTranslation(newTransform->translation()
+                                                         + duplicateOffset
+                                                         * newTransform->scale3D());
+                        } else {
+                            QVector3D newPos = (duplicateOffset
+                                                - EditorUtils::totalAncestralTransform(
+                                                    entity).column(3).toVector3D())
+                                                   / EditorUtils::totalAncestralScale(entity);
+                            newTransform->setTranslation(
+                                        EditorUtils::totalAncestralRotation(
+                                            entity).inverted().rotatedVector(newPos));
+                        }
                     }
                 }
             }

@@ -119,6 +119,7 @@ EditorScene::EditorScene(QObject *parent)
     , m_previousDuplicate(nullptr)
     , m_multiSelect(false)
     , m_previousSelectedEntity(nullptr)
+    , m_clipboardOperation(ClipboardNone)
 {
     retranslateUi();
     createRootEntity();
@@ -208,6 +209,9 @@ void EditorScene::removeEntity(Qt3DCore::QEntity *entity)
 {
     if (entity == nullptr || entity == m_rootEntity)
         return;
+
+    if (entity->objectName() == m_clipboardEntityName)
+        setClipboardOperation(ClipboardNone);
 
     if (entity == m_sceneEntity) {
         m_sceneEntity = nullptr;
@@ -1812,6 +1816,26 @@ void EditorScene::addToMultiSelection(const QString &name)
     if (oldList != m_selectedEntityNameList) {
         checkMultiSelectionHighlights(oldList, m_selectedEntityNameList);
         emit multiSelectionChanged(m_selectedEntityNameList);
+    }
+}
+
+void EditorScene::setClipboardOperation(ClipboardOperation operation)
+{
+    if (operation != m_clipboardOperation) {
+        m_clipboardOperation = operation;
+        emit clipboardOperationChanged(operation);
+        if (operation == ClipboardNone) {
+            m_clipboardEntityName.clear();
+            emit clipboardContentChanged(m_clipboardEntityName);
+        }
+    }
+}
+
+void EditorScene::setClipboardContent(const QString &entityName)
+{
+    if (entityName != m_clipboardEntityName) {
+        m_clipboardEntityName = entityName;
+        emit clipboardContentChanged(entityName);
     }
 }
 

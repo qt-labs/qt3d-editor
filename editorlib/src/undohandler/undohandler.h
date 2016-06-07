@@ -104,6 +104,7 @@ public:
                                        Qt3DCore::QComponent *newComponent,
                                        Qt3DCore::QComponent *oldComponent);
     Q_INVOKABLE void createDuplicateEntityCommand(const QString &entityName);
+    Q_INVOKABLE void createPasteEntityCommand(const QVector3D &pos);
     Q_INVOKABLE void createCopyCameraPropertiesCommand(const QString &targetCamera,
                                                        const QString &sourceCamera = QString(),
                                                        const QString &text = QString());

@@ -118,6 +118,30 @@ Menu {
         }
     }
     MenuItem {
+        text: qsTr("Copy (Ctrl + c)") + editorScene.emptyString
+        enabled: !multiSelect && !entityTreeView.sceneRootSelected
+        iconSource: "images/duplicate.png" // TODO: Add an icon
+        onTriggered: {
+            mainwindow.copyEntity(selectedEntityName)
+        }
+    }
+    MenuItem {
+        text: qsTr("Cut (Ctrl + x)") + editorScene.emptyString
+        enabled: !multiSelect && !entityTreeView.sceneRootSelected
+        iconSource: "images/duplicate.png" // TODO: Add an icon
+        onTriggered: {
+            mainwindow.cutEntity(selectedEntityName, selectedEntity)
+        }
+    }
+    MenuItem {
+        text: qsTr("Paste (Ctrl + v)") + editorScene.emptyString
+        enabled: trackMousePosition && !multiSelect && !entityTreeView.sceneRootSelected
+        iconSource: "images/duplicate.png" // TODO: Add an icon
+        onTriggered: {
+            mainwindow.pasteEntity()
+        }
+    }
+    MenuItem {
         text: qsTr("Reset") + editorScene.emptyString
         iconSource: "images/reset_all.png"
         enabled: !multiSelect && !entityTreeView.sceneRootSelected

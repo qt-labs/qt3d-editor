@@ -31,6 +31,7 @@ SOURCES += src/qt3dsceneeditor.cpp \
     src/undohandler/modelrolechangecommand.cpp \
     src/undohandler/replacecomponentcommand.cpp \
     src/undohandler/duplicateentitycommand.cpp \
+    src/undohandler/pasteentitycommand.cpp \
     src/undohandler/copycamerapropertiescommand.cpp \
     src/undohandler/genericpropertychangecommand.cpp \
     src/undohandler/reparententitycommand.cpp \
@@ -76,6 +77,7 @@ HEADERS += \
     src/undohandler/modelrolechangecommand.h \
     src/undohandler/replacecomponentcommand.h \
     src/undohandler/duplicateentitycommand.h \
+    src/undohandler/pasteentitycommand.h \
     src/undohandler/copycamerapropertiescommand.h \
     src/undohandler/genericpropertychangecommand.h \
     src/undohandler/reparententitycommand.h \

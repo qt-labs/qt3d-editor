@@ -92,7 +92,8 @@ public:
     QString insertSceneLoaderEntity(const QUrl &fileUrl);
     Qt3DCore::QEntity *duplicateEntity(Qt3DCore::QEntity *entity,
                                        Qt3DCore::QEntity *newParent = nullptr,
-                                       const QVector3D &duplicateOffset = QVector3D());
+                                       const QVector3D &duplicateOffset = QVector3D(),
+                                       bool offset = true);
     Q_INVOKABLE bool importEntityInProgress() const { return m_sceneLoaderEntity != nullptr; }
     void abortImportEntity();
 
