@@ -120,7 +120,7 @@ Menu {
     MenuItem {
         text: qsTr("Copy (Ctrl + c)") + editorScene.emptyString
         enabled: !multiSelect && !entityTreeView.sceneRootSelected
-        iconSource: "images/duplicate.png" // TODO: Add an icon
+        iconSource: "images/copy.png"
         onTriggered: {
             mainwindow.copyEntity(selectedEntityName)
         }
@@ -128,7 +128,7 @@ Menu {
     MenuItem {
         text: qsTr("Cut (Ctrl + x)") + editorScene.emptyString
         enabled: !multiSelect && !entityTreeView.sceneRootSelected
-        iconSource: "images/duplicate.png" // TODO: Add an icon
+        iconSource: "images/cut.png"
         onTriggered: {
             mainwindow.cutEntity(selectedEntityName, selectedEntity)
         }
@@ -136,7 +136,7 @@ Menu {
     MenuItem {
         text: qsTr("Paste (Ctrl + v)") + editorScene.emptyString
         enabled: trackMousePosition && !multiSelect && !entityTreeView.sceneRootSelected
-        iconSource: "images/duplicate.png" // TODO: Add an icon
+        iconSource: "images/paste.png"
         onTriggered: {
             mainwindow.pasteEntity()
         }
@@ -161,7 +161,7 @@ Menu {
     MenuItem {
         text: qsTr("Group Selected") + editorScene.emptyString
         enabled: multiSelect && !multiSelectedCamera
-        iconSource: "images/group_large.png" // TODO: add a new icon, or a small version of group icon
+        iconSource: "images/group.png"
         onTriggered: {
             editorScene.undoHandler.beginMacro(text)
             var reparentList = selectionList // Copy list, as the original is emptied on insertEntity

@@ -34,13 +34,6 @@ Menu {
     title: qsTr("Add Entity") + editorScene.emptyString
 
     MenuItem {
-        text: selectedEntityName === "" ? qsTr("Add new entity") + editorScene.emptyString : qsTr("Add new entity under '%1'").arg(selectedEntityName) + editorScene.emptyString
-        enabled: false
-    }
-
-    MenuSeparator {}
-
-    MenuItem {
         text: qsTr("Mesh") + editorScene.emptyString
         iconSource: "images/mesh.png"
         enabled: !entityTreeView.cameraSelected
@@ -66,7 +59,7 @@ Menu {
     }
     MenuItem {
         text: qsTr("Group") + editorScene.emptyString
-        iconSource: "images/cross.png"
+        iconSource: "images/group.png"
         enabled: entityTreeView.groupSelected || entityTreeView.sceneRootSelected
         onTriggered: {
             entityTree.addNewEntity(EditorUtils.GroupEntity)

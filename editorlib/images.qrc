@@ -92,5 +92,9 @@
         <file>images/snap_to.png</file>
         <file>images/snap_to_disabled.png</file>
         <file>images/settings.png</file>
+        <file>images/group.png</file>
+        <file>images/cut.png</file>
+        <file>images/paste.png</file>
+        <file>images/copy.png</file>
     </qresource>
 </RCC>
