@@ -2168,8 +2168,7 @@ bool EditorScene::handleMouseRelease(QMouseEvent *event)
 {
     if (event->button() == Qt::RightButton) {
         if (m_dragMode == DragNone || m_ignoringInitialDrag) {
-            emit mouseRightButtonReleasedWithoutDragging(m_multiSelect
-                                                         && m_selectedEntityNameList.count() > 1);
+            emit mouseRightButtonReleasedWithoutDragging();
         }
     }
     cancelDrag();

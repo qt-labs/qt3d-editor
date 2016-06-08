@@ -316,7 +316,7 @@ signals:
     void languageChanged(const QString &language);
     void translationChanged(const QString &translation);
     void gridSizeChanged(int gridSize);
-    void mouseRightButtonReleasedWithoutDragging(bool multiSelect);
+    void mouseRightButtonReleasedWithoutDragging();
     void repositionDragHandle(DragMode dragMode, const QPoint &pos, bool visible, int handleIndex);
     void beginDragHandlesRepositioning();
     void endDragHandlesRepositioning();

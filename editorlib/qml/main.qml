@@ -296,7 +296,6 @@ ApplicationWindow {
         }
 
         onMouseRightButtonReleasedWithoutDragging: {
-            entityTree.multiSelect = multiSelect
             entityTree.menu.popup()
         }
 
