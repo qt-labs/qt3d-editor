@@ -51,6 +51,8 @@
 
 #include "editorsceneitemcomponentsmodel.h"
 
+const QVector3D selectionBoxAdjuster(0.002f, 0.002f, 0.002f);
+
 EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
                                  EditorSceneItem *parentItem,
                                  int index, QObject *parent)
@@ -435,6 +437,91 @@ void EditorSceneItem::updateChildLightTransforms()
     }
 }
 
+void EditorSceneItem::updateGroupExtents()
+{
+    if (m_itemType == EditorSceneItem::Group) {
+        QVector3D min(FLT_MAX, FLT_MAX, FLT_MAX);
+        QVector3D max(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+        QMatrix4x4 matrix;
+
+        // Go through all children and map their selection box extents to group coordinates
+        if (childItems().size()) {
+            Q_FOREACH (EditorSceneItem *child, childItems())
+                child->findTotalExtents(min, max, matrix);
+
+            m_entityMeshExtents = QVector3D(qMax(qAbs(min.x()), qAbs(max.x())),
+                                            qMax(qAbs(min.y()), qAbs(max.y())),
+                                            qMax(qAbs(min.z()), qAbs(max.z()))) * 2.0f;
+        }
+
+        // Finally update the group's selection box
+        doUpdateSelectionBoxTransform();
+    }
+}
+
+void EditorSceneItem::doUpdateSelectionBoxTransform()
+{
+    // Transform mesh extents, first scale, then translate
+    QMatrix4x4 transformMatrix = composeSelectionBoxTransform();
+    transformMatrix.translate(m_entityMeshCenter);
+    m_selectionBoxCenter = transformMatrix * QVector3D();
+    m_selectionBoxExtents = m_entityMeshExtents + selectionBoxAdjuster;
+    transformMatrix.scale(m_selectionBoxExtents);
+
+    QVector3D ancestralScale = EditorUtils::totalAncestralScale(m_entity);
+    m_selectionBoxExtents *= ancestralScale;
+    if (m_entityTransform)
+        m_selectionBoxExtents *= m_entityTransform->scale3D();
+
+    m_selectionTransform->setMatrix(transformMatrix);
+
+    // Check if we have lights as children and update their visible translations, as they are
+    // not part of the normal scene.
+    updateChildLightTransforms();
+
+    emit selectionBoxTransformChanged(this);
+}
+
+void EditorSceneItem::findTotalExtents(QVector3D &min, QVector3D &max, const QMatrix4x4 &matrix)
+{
+    doUpdateSelectionBoxTransform();
+
+    QMatrix4x4 newMatrix = matrix;
+    if (m_entityTransform)
+        newMatrix *= m_entityTransform->matrix();
+
+    QVector<QVector3D> corners = getSelectionBoxCorners(newMatrix);
+    Q_FOREACH (QVector3D corner, corners) {
+        min.setX(qMin(corner.x(), min.x()));
+        min.setY(qMin(corner.y(), min.y()));
+        min.setZ(qMin(corner.z(), min.z()));
+        max.setX(qMax(corner.x(), max.x()));
+        max.setY(qMax(corner.y(), max.y()));
+        max.setZ(qMax(corner.z(), max.z()));
+    }
+
+    Q_FOREACH (EditorSceneItem *child, childItems())
+        child->findTotalExtents(min, max, newMatrix);
+}
+
+QVector<QVector3D> EditorSceneItem::getSelectionBoxCorners(const QMatrix4x4 &matrix)
+{
+    QVector<QVector3D> corners(8);
+    const QVector3D &e = (selectionBoxAdjuster + m_entityMeshExtents) / 2.0f;
+    const QVector3D &c = m_entityMeshCenter;
+
+    corners[0] = matrix * (c + QVector3D( e.x(),  e.y(),  e.z()));
+    corners[1] = matrix * (c + QVector3D( e.x(),  e.y(), -e.z()));
+    corners[2] = matrix * (c + QVector3D( e.x(), -e.y(),  e.z()));
+    corners[3] = matrix * (c + QVector3D( e.x(), -e.y(), -e.z()));
+    corners[4] = matrix * (c + QVector3D(-e.x(),  e.y(),  e.z()));
+    corners[5] = matrix * (c + QVector3D(-e.x(),  e.y(), -e.z()));
+    corners[6] = matrix * (c + QVector3D(-e.x(), -e.y(),  e.z()));
+    corners[7] = matrix * (c + QVector3D(-e.x(), -e.y(), -e.z()));
+
+    return corners;
+}
+
 void EditorSceneItem::connectSelectionBoxTransformsRecursive(bool enabled)
 {
     if (enabled) {
@@ -603,27 +690,8 @@ void EditorSceneItem::connectEntityMesh(bool enabled)
 
 void EditorSceneItem::updateSelectionBoxTransform()
 {
-    if (isSelectionBoxShowing()) {
-        // Transform mesh extents, first scale, then translate
-        QMatrix4x4 transformMatrix = composeSelectionBoxTransform();
-        transformMatrix.translate(m_entityMeshCenter);
-        m_selectionBoxCenter = transformMatrix * QVector3D();
-        m_selectionBoxExtents = m_entityMeshExtents + QVector3D(0.002f, 0.002f, 0.002f);
-        transformMatrix.scale(m_selectionBoxExtents);
-
-        QVector3D ancestralScale = EditorUtils::totalAncestralScale(m_entity);
-        m_selectionBoxExtents *= ancestralScale;
-        if (m_entityTransform)
-            m_selectionBoxExtents *= m_entityTransform->scale3D();
-
-        m_selectionTransform->setMatrix(transformMatrix);
-
-        // Check if we have lights as children and update their visible translations, as they are
-        // not part of the normal scene.
-        updateChildLightTransforms();
-
-        emit selectionBoxTransformChanged(this);
-    }
+    if (isSelectionBoxShowing())
+        doUpdateSelectionBoxTransform();
 
     // Update selection boxes of all child entites, too
     Q_FOREACH (EditorSceneItem *child, childItems())
@@ -632,7 +700,7 @@ void EditorSceneItem::updateSelectionBoxTransform()
 
 void EditorSceneItem::setShowSelectionBox(bool enabled)
 {
-    if (m_selectionBox) {
+    if (m_selectionBox && m_selectionBox->isEnabled() != enabled) {
         connectSelectionBoxTransformsRecursive(enabled);
         connectEntityMesh(enabled);
         m_selectionBox->setEnabled(enabled);
@@ -641,6 +709,8 @@ void EditorSceneItem::setShowSelectionBox(bool enabled)
             // Update mesh extents if they are dirty, otherwise just update transform
             if (m_entityMeshExtents.isNull())
                 recalculateMeshExtents();
+            else if (m_itemType == EditorSceneItem::Group)
+                updateGroupExtents();
             else
                 updateSelectionBoxTransform();
         }

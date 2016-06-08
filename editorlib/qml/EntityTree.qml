@@ -419,11 +419,14 @@ Item {
             onCurrentIndexChanged: {
                 entityTreeView.editing = false
                 // If there is no current item selected for some reason, fall back to scene root
-                // TODO: Causes unwanted behavior with multiselection. Find out why before taking back into use.
-                /*if (entityTreeView.selection.currentIndex.row === -1) {
+                if (entityTreeView.selection.currentIndex.row === -1) {
                     selectedEntityName = ""
-                    selectSceneRoot()
-                } else*/ {
+                    if (!selectionList.length) {
+                        editorScene.clearSelectionBoxes()
+                        selectedEntity.showSelectionBox = true
+                        selectSceneRoot()
+                    }
+                } else {
                     entityTreeView.sceneRootSelected =
                             (editorScene.sceneModel.sceneEntityIndex() === entityTreeView.selection.currentIndex)
                     selectedEntity = editorScene.sceneModel.editorSceneItemFromIndex(entityTreeView.selection.currentIndex)

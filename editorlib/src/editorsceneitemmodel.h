@@ -80,6 +80,7 @@ public:
     Q_INVOKABLE QModelIndex sceneEntityIndex();
     Q_INVOKABLE QModelIndex getModelIndex(Qt3DCore::QEntity *entity);
     Q_INVOKABLE QModelIndex getModelIndexByName(const QString &entityName);
+    EditorSceneItem *getItemByName(const QString &entityName);
     QString generateValidName(const QString &desiredName, const Qt3DCore::QEntity *skipEntity);
     EditorScene *scene() { return m_scene; }
     Q_INVOKABLE bool canReparent(EditorSceneItem *newParentItem, EditorSceneItem *movedItem);

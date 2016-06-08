@@ -165,10 +165,14 @@ Menu {
         onTriggered: {
             editorScene.undoHandler.beginMacro(text)
             var reparentList = selectionList // Copy list, as the original is emptied on insertEntity
-            // Add new group
             // TODO: Allow creating groups under other entities?
+
+            // Center the new group on the grouped items
+            var groupCenter = editorScene.getMultiSelectionCenter()
+
+            // Add new group
             editorScene.undoHandler.createInsertEntityCommand(1, editorScene.sceneRootName(),
-                                                              Qt.vector3d(0, 0, 0))
+                                                              groupCenter)
             var index = editorScene.sceneModel.lastInsertedIndex()
             var groupName = editorScene.sceneModel.entityName(index)
             // Move selected entities under the added group

@@ -140,6 +140,12 @@ QModelIndex EditorSceneItemModel::getModelIndexByName(const QString &entityName)
     return selectedIndex;
 }
 
+EditorSceneItem *EditorSceneItemModel::getItemByName(const QString &entityName)
+{
+    QModelIndex index = getModelIndexByName(entityName);
+    return editorSceneItemFromIndex(index);
+}
+
 void EditorSceneItemModel::handleEntityNameChange()
 {
     Qt3DCore::QEntity *entity = qobject_cast<Qt3DCore::QEntity *>(sender());

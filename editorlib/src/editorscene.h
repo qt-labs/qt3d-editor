@@ -238,6 +238,7 @@ public:
     Q_INVOKABLE QString sceneRootName() const { return m_sceneEntity->objectName(); }
     Q_INVOKABLE QString previousSelectedEntityName() const;
     Q_INVOKABLE void addToMultiSelection(const QString &name);
+    Q_INVOKABLE QVector3D getMultiSelectionCenter();
 
     ClipboardOperation clipboardOperation() { return m_clipboardOperation; }
     void setClipboardOperation(ClipboardOperation operation);
@@ -302,7 +303,7 @@ public:
     Qt3DRender::QObjectPicker *createObjectPickerForEntity(Qt3DCore::QEntity *entity);
 
 public slots:
-    void clearSelectionBoxes();
+    void clearSelectionBoxes(Qt3DCore::QEntity *skipEntity = nullptr);
 
 signals:
     void selectionChanged(Qt3DCore::QEntity *selection);

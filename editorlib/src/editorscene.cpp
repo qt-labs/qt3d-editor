@@ -201,6 +201,7 @@ void EditorScene::addEntity(Qt3DCore::QEntity *entity, int index, Qt3DCore::QEnt
     if (!m_selectedEntityNameList.isEmpty()) {
         // Clear multiselection list, otherwise treeview gets messed up
         m_selectedEntityNameList.clear();
+        m_multiSelect = false;
         emit multiSelectionChanged(m_selectedEntityNameList);
     }
 }
@@ -1724,6 +1725,8 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
 
             // Emit signal to highlight the entity from the list
             emit selectionChanged(m_selectedEntity);
+        } else if (!m_multiSelect) {
+            clearSelectionBoxes(m_selectedEntity);
         }
         m_dragHandlesTransform->setEnabled(item->isSelectionBoxShowing() && !m_multiSelect);
 
@@ -1818,6 +1821,19 @@ void EditorScene::addToMultiSelection(const QString &name)
         checkMultiSelectionHighlights(oldList, m_selectedEntityNameList);
         emit multiSelectionChanged(m_selectedEntityNameList);
     }
+}
+
+QVector3D EditorScene::getMultiSelectionCenter()
+{
+    QVector3D pos;
+    for (int i = 0; i < m_selectedEntityNameList.size(); i++) {
+        EditorSceneItem *item = m_sceneModel->getItemByName(m_selectedEntityNameList.at(i));
+        if (item) {
+            item->doUpdateSelectionBoxTransform();
+            pos += item->selectionBoxCenter();
+        }
+    }
+    return m_selectedEntityNameList.size() ? (pos / m_selectedEntityNameList.size()) : QVector3D();
 }
 
 void EditorScene::setClipboardOperation(ClipboardOperation operation)
@@ -1915,10 +1931,12 @@ void EditorScene::setViewport(EditorViewportItem *viewport)
     }
 }
 
-void EditorScene::clearSelectionBoxes()
+void EditorScene::clearSelectionBoxes(Qt3DCore::QEntity *skipEntity)
 {
-    Q_FOREACH (EditorSceneItem *item, m_sceneItems.values())
-        item->setShowSelectionBox(false);
+    Q_FOREACH (EditorSceneItem *item, m_sceneItems.values()) {
+        if (item->entity() != skipEntity)
+            item->setShowSelectionBox(false);
+    }
 }
 
 void EditorScene::endSelectionHandling()
@@ -1940,6 +1958,7 @@ void EditorScene::endSelectionHandling()
         Qt3DRender::QCamera *cameraEntity = qobject_cast<Qt3DRender::QCamera *>(m_pickedEntity);
         bool viewCenterDrag = cameraEntity && m_cameraViewCenterSelected && !m_viewCenterLocked;
         bool entityDrag = m_dragHandleTranslateTransform->isEnabled()
+                && m_dragHandlesTransform->isEnabled()
                 && (!cameraEntity || !m_cameraViewCenterSelected);
         if (viewCenterDrag || entityDrag) {
             m_dragMode = DragTranslate;
