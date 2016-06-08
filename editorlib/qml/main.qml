@@ -412,6 +412,7 @@ ApplicationWindow {
                 }
                 DragHandle {
                     handleType: EditorScene.DragTranslate
+                    z: 3 // Make sure translate handle is on top of scale handles
                     color: "#c22555"
                     radius: height / 2
                 }
