@@ -35,11 +35,12 @@
 
 PasteEntityCommand::PasteEntityCommand(EditorSceneItemModel *sceneModel,
                                        EditorScene::ClipboardOperation operation,
-                                       const QString &entityName,
+                                       const QString &entityName, const QString &parentName,
                                        const QVector3D &pos) :
     m_sceneModel(sceneModel),
     m_operation(operation),
     m_cutEntityName(entityName),
+    m_parentName(parentName),
     m_pastePosition(pos),
     m_cutEntity(nullptr)
 {
@@ -64,29 +65,46 @@ void PasteEntityCommand::undo()
             QModelIndex parentIndex = m_sceneModel->getModelIndexByName(m_cutParentEntityName);
             m_sceneModel->insertExistingEntity(m_cutEntity, m_cutFromRow, parentIndex);
             // Return selection to it, as it's invisible at start
-            index = m_sceneModel->getModelIndex(m_cutEntity);
-            EditorSceneItem *item = m_sceneModel->editorSceneItemFromIndex(index);
-            item->scene()->setSelection(m_cutEntity);
+            m_sceneModel->scene()->setSelection(m_cutEntity);
             m_cutEntity = nullptr;
+        } else if (!m_parentName.isEmpty()) {
+            index = m_sceneModel->getModelIndexByName(m_parentName);
+            EditorSceneItem *item = m_sceneModel->editorSceneItemFromIndex(index);
+            m_sceneModel->scene()->setSelection(item->entity());
         }
     }
 }
 
 void PasteEntityCommand::redo()
 {
-    // Duplicate m_cutEntity to m_pastePosition
     QModelIndex index = m_sceneModel->getModelIndexByName(m_cutEntityName);
     if (!index.isValid())
         return;
 
-    QModelIndex parentIndex = m_sceneModel->parent(index);
-    EditorSceneItem *item = m_sceneModel->editorSceneItemFromIndex(index);
-    Qt3DCore::QEntity *pastedEntity = m_sceneModel->duplicateEntity(item->entity(), nullptr,
-                                                                    m_pastePosition, false);
+    QModelIndex parentIndex;
+    EditorSceneItem *item;
+    Qt3DCore::QEntity *pastedEntity;
+
+    // Duplicate m_cutEntity to m_pastePosition
+    if (m_parentName.isEmpty()) {
+        parentIndex = m_sceneModel->parent(index);
+        item = m_sceneModel->editorSceneItemFromIndex(index);
+        pastedEntity = m_sceneModel->duplicateEntity(item->entity(), nullptr,
+                                                     m_pastePosition, false);
+    } else {
+        parentIndex = m_sceneModel->getModelIndexByName(m_parentName);
+        if (index == parentIndex)
+            return;
+        item = m_sceneModel->editorSceneItemFromIndex(index);
+        EditorSceneItem *parentItem = m_sceneModel->editorSceneItemFromIndex(parentIndex);
+        pastedEntity = m_sceneModel->duplicateEntity(item->entity(), parentItem->entity(),
+                                                     QVector3D(), false);
+    }
+
     // Delete selected if cut operation
     if (m_operation == EditorScene::ClipboardCut) {
         m_cutEntity = m_sceneModel->duplicateEntity(item->entity(), nullptr);
-        m_cutParentEntityName = m_sceneModel->entityName(parentIndex);
+        m_cutParentEntityName = m_sceneModel->entityName(m_sceneModel->parent(index));
         m_cutFromRow = index.row();
         // Grab explicit ownership of the removed entity,
         // otherwise QML garbage collector may clean it up.
@@ -98,5 +116,5 @@ void PasteEntityCommand::redo()
     }
     m_pastedEntityName = pastedEntity->objectName();
     m_sceneModel->insertExistingEntity(pastedEntity, -1, parentIndex);
-    item->scene()->setSelection(pastedEntity);
+    m_sceneModel->scene()->setSelection(pastedEntity);
 }

@@ -84,7 +84,8 @@ public:
     QString generateValidName(const QString &desiredName, const Qt3DCore::QEntity *skipEntity);
     EditorScene *scene() { return m_scene; }
     Q_INVOKABLE QStringList parentList(const QStringList &originalList);
-    Q_INVOKABLE bool canReparent(EditorSceneItem *newParentItem, EditorSceneItem *movedItem);
+    Q_INVOKABLE bool canReparent(EditorSceneItem *newParentItem, EditorSceneItem *movedItem,
+                                 bool allowSameParent = false);
     void reparentEntity(const QModelIndex &newParentIndex, const QModelIndex &entityIndex);
     Q_INVOKABLE void addExpandedItem(const QModelIndex &index);
     Q_INVOKABLE void removeExpandedItem(const QModelIndex &index);

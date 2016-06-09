@@ -192,7 +192,7 @@ void UndoHandler::createDuplicateEntityCommand(const QString &entityName)
     m_undoStack->push(new DuplicateEntityCommand(m_scene->sceneModel(), entityName));
 }
 
-void UndoHandler::createPasteEntityCommand(const QVector3D &pos)
+void UndoHandler::createPasteEntityCommand(const QVector3D &pos, const QString &parentName)
 {
     if (m_scene->clipboardContent().isEmpty()
             || m_scene->clipboardOperation() == EditorScene::ClipboardNone) {
@@ -201,7 +201,8 @@ void UndoHandler::createPasteEntityCommand(const QVector3D &pos)
 
     m_undoStack->push(new PasteEntityCommand(m_scene->sceneModel(),
                                              m_scene->clipboardOperation(),
-                                             m_scene->clipboardContent(), pos));
+                                             m_scene->clipboardContent(),
+                                             parentName, pos));
 }
 
 void UndoHandler::createCopyCameraPropertiesCommand(const QString &targetCamera,

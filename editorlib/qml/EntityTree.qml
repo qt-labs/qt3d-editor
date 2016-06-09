@@ -39,6 +39,7 @@ Item {
 
     property alias view: entityTreeView
     property alias menu: addComponentMenu
+    property bool treeviewPasting: false
     property bool multiSelect: false
     property bool multiSelectedCamera: false
 
@@ -269,9 +270,6 @@ Item {
                     var dropValid =
                             dropSource.drag.target.entityType !== EditorUtils.InvalidEntity
                             && itemType !== EditorSceneItem.Camera
-                            && (dropSource.drag.target.entityType !== EditorUtils.LightEntity
-                                || itemType === EditorSceneItem.Light
-                                || itemType === EditorSceneItem.Group)
                             && (styleData.index === editorScene.sceneModel.sceneEntityIndex()
                                 || dropSource.drag.target.entityType !== EditorUtils.CameraEntity)
                             && (dropSource.drag.target.entityType !== EditorUtils.GroupEntity
@@ -464,15 +462,26 @@ Item {
 
         ComponentMenu {
             id: addComponentMenu
+            onAboutToHide: {
+                treeMouseArea.hoverEnabled = true
+            }
         }
 
         MouseArea {
+            id: treeMouseArea
             anchors.fill: parent
             acceptedButtons: Qt.RightButton
+            hoverEnabled: true
             onClicked: {
                 // Prevent menu popup if no entity is selected
-                if (componentPropertiesView.model !== undefined)
+                if (componentPropertiesView.model !== undefined) {
+                    hoverEnabled = false
                     addComponentMenu.popup()
+                }
+            }
+            onContainsMouseChanged: {
+                if (treeMouseArea.hoverEnabled)
+                    treeviewPasting = containsMouse
             }
         }
     }

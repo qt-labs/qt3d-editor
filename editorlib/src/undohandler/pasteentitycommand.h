@@ -44,7 +44,7 @@ class PasteEntityCommand : public QUndoCommand
 {
 public:
     PasteEntityCommand(EditorSceneItemModel *sceneModel, EditorScene::ClipboardOperation operation,
-                       const QString &entityName, const QVector3D &pos);
+                       const QString &entityName, const QString &parentName, const QVector3D &pos);
     virtual ~PasteEntityCommand();
 
     virtual void undo();
@@ -56,6 +56,7 @@ private:
     QString m_pastedEntityName;
     Qt3DCore::QEntity *m_cutEntity;
     QString m_cutEntityName;
+    QString m_parentName;
     QVector3D m_pastePosition;
     QString m_cutParentEntityName;
     int m_cutFromRow;

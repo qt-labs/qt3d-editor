@@ -249,8 +249,24 @@ ApplicationWindow {
     }
     function pasteEntity() {
         if (editorScene.clipboardContent.length) {
-            editorScene.undoHandler.createPasteEntityCommand(editorScene.getWorldPosition(mousePosX,
-                                                                                          mousePosY))
+            var parentName = ""
+            if (entityTree.treeviewPasting) {
+                parentName = selectedEntityName
+                // Prevent pasting an entity under itself in tree
+                if (!editorScene.sceneModel.canReparent(
+                            editorScene.sceneModel.editorSceneItemFromIndex(
+                                editorScene.sceneModel.getModelIndexByName(
+                                    selectedEntityName)),
+                            editorScene.sceneModel.editorSceneItemFromIndex(
+                                editorScene.sceneModel.getModelIndexByName(
+                                    editorScene.clipboardContent)), true)) {
+                    return
+                }
+            }
+            // When pasting to tree, world position is not used, and parent entity name is passed
+            editorScene.undoHandler.createPasteEntityCommand(editorScene.getWorldPosition(
+                                                                 mousePosX, mousePosY),
+                                                             parentName)
             if (editorScene.clipboardOperation === EditorScene.ClipboardCut) {
                 trackMousePosition = false
                 editorScene.clipboardOperation = EditorScene.ClipboardNone
@@ -397,6 +413,7 @@ ApplicationWindow {
                         entityTree.focusTree()
                         mouse.accepted = false
                     }
+                    onEntered: entityTree.treeviewPasting = false
                     hoverEnabled: trackMousePosition
                     onMouseYChanged: mousePosY = mouseY
                     onMouseXChanged: mousePosX = mouseX

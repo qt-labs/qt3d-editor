@@ -136,7 +136,14 @@ Menu {
     }
     MenuItem {
         text: qsTr("Paste (Ctrl + v)") + editorScene.emptyString
-        enabled: trackMousePosition && !multiSelect && !entityTreeView.sceneRootSelected
+        enabled: trackMousePosition && !multiSelect
+                 && (entityTree.treeviewPasting && editorScene.sceneModel.canReparent(
+                         editorScene.sceneModel.editorSceneItemFromIndex(
+                             editorScene.sceneModel.getModelIndexByName(
+                                 selectedEntityName)),
+                         editorScene.sceneModel.editorSceneItemFromIndex(
+                             editorScene.sceneModel.getModelIndexByName(
+                                 editorScene.clipboardContent)), true))
         iconSource: "images/paste.png"
         onTriggered: {
             mainwindow.pasteEntity()

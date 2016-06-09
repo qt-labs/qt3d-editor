@@ -399,11 +399,9 @@ void EditorSceneItemModel::insertExistingEntity(Qt3DCore::QEntity *entity, int r
     if (row < 0)
         row = rowCount(parentIndex);
 
-    beginInsertRows(parentIndex, row, row);
-
     m_scene->addEntity(entity, row, parentItem->entity());
 
-    endInsertRows();
+    resetModel();
 
     connectEntity(entity);
 
@@ -526,13 +524,19 @@ QStringList EditorSceneItemModel::parentList(const QStringList &originalList)
 }
 
 bool EditorSceneItemModel::canReparent(EditorSceneItem *newParentItem,
-                                       EditorSceneItem *movedItem)
+                                       EditorSceneItem *movedItem, bool allowSameParent)
 {
+    // Dropping into camera is invalid.
     // Dropping into same parent is invalid.
     // Dropping item into its descendant is invalid.
-    return movedItem->parentItem() != newParentItem
+    // If allowSameParent is true, "reparenting" under the same parent is allowed. This is useful
+    // for entity tree copy & paste functionality.
+    bool reparentOk = !EditorUtils::entityCameraLens(newParentItem->entity())
             && movedItem != newParentItem
             && !EditorUtils::isDescendant(movedItem, newParentItem);
+    if (!allowSameParent)
+        reparentOk = reparentOk && movedItem->parentItem() != newParentItem;
+    return reparentOk;
 }
 
 void EditorSceneItemModel::reparentEntity(const QModelIndex &newParentIndex,
@@ -703,13 +707,23 @@ Qt3DCore::QEntity *EditorSceneItemModel::duplicateEntity(Qt3DCore::QEntity *enti
                                                          + duplicateOffset
                                                          * newTransform->scale3D());
                         } else {
-                            QVector3D newPos = (duplicateOffset
-                                                - EditorUtils::totalAncestralTransform(
-                                                    entity).column(3).toVector3D())
-                                                   / EditorUtils::totalAncestralScale(entity);
-                            newTransform->setTranslation(
-                                        EditorUtils::totalAncestralRotation(
-                                            entity).inverted().rotatedVector(newPos));
+                            QVector3D newPos;
+                            if (!newParent) {
+                                newPos = EditorUtils::totalAncestralTransform(entity).inverted()
+                                        * duplicateOffset;
+                            } else {
+                                Qt3DCore::QTransform *newParentTransform =
+                                        EditorUtils::entityTransform(newParent);
+                                if (newParentTransform) {
+                                    newPos = (EditorUtils::totalAncestralTransform(newParent)
+                                              * newParentTransform->matrix()).inverted()
+                                            * duplicateOffset;
+                                } else {
+                                    newPos = EditorUtils::totalAncestralTransform(newParent)
+                                            * duplicateOffset;
+                                }
+                            }
+                            newTransform->setTranslation(newPos);
                         }
                     }
                 }
