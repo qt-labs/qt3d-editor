@@ -88,8 +88,9 @@ Menu {
             if (multiSelect) {
                 // Handle multiselection removal
                 editorScene.undoHandler.beginMacro(text)
-                for (var i = 0; i < selectionList.length; ++i)
-                    editorScene.undoHandler.createRemoveEntityCommand(selectionList[i])
+                var removeList = editorScene.sceneModel.parentList(selectionList)
+                for (var i = 0; i < removeList.length; ++i)
+                    editorScene.undoHandler.createRemoveEntityCommand(removeList[i])
                 editorScene.undoHandler.endMacro()
             } else {
                 // Doublecheck that we don't try to remove the scene root
@@ -104,9 +105,9 @@ Menu {
         iconSource: "images/duplicate.png"
         onTriggered: {
             if (multiSelect) {
-                var duplicateList = selectionList // Copy list, as the original is emptied on insertEntity
                 // Handle multiselection duplication
                 editorScene.undoHandler.beginMacro(text)
+                var duplicateList = editorScene.sceneModel.parentList(selectionList)
                 for (var i = 0; i < duplicateList.length; ++i)
                     editorScene.undoHandler.createDuplicateEntityCommand(duplicateList[i])
                 editorScene.undoHandler.endMacro()

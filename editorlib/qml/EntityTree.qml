@@ -43,9 +43,18 @@ Item {
     property bool multiSelectedCamera: false
 
     Keys.onDeletePressed: {
-        // Doublecheck that we don't try to remove the scene root
-        if (entityTreeView.selection.currentIndex !== editorScene.sceneModel.sceneEntityIndex())
-            editorScene.undoHandler.createRemoveEntityCommand(selectedEntityName)
+        if (multiSelect) {
+            // Handle multiselection removal
+            editorScene.undoHandler.beginMacro("Remove selected")
+            var removeList = editorScene.sceneModel.parentList(selectionList)
+            for (var i = 0; i < removeList.length; ++i)
+                editorScene.undoHandler.createRemoveEntityCommand(removeList[i])
+            editorScene.undoHandler.endMacro()
+        } else {
+            // Doublecheck that we don't try to remove the scene root
+            if (entityTreeView.selection.currentIndex !== editorScene.sceneModel.sceneEntityIndex())
+                editorScene.undoHandler.createRemoveEntityCommand(selectedEntityName)
+        }
     }
 
     function focusTree() {

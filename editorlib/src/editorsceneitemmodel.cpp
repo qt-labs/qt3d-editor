@@ -493,6 +493,38 @@ QString EditorSceneItemModel::generateValidName(const QString &desiredName,
     return testName;
 }
 
+QStringList EditorSceneItemModel::parentList(const QStringList &originalList)
+{
+    const int count = originalList.length();
+    QVector<EditorSceneItem *> itemList(count);
+    QVector<bool> skipList(count);
+
+    for (int i = 0; i < count; ++i) {
+        itemList[i] = editorSceneItemFromIndex(getModelIndexByName(originalList.at(i)));
+        skipList[i] = false;
+    }
+
+    QStringList prunedList;
+    prunedList.reserve(count);
+    for (int i = 0; i < count; ++i) {
+        bool pruned = false;
+        for (int j = count - 1; j >= 0; --j) {
+            if (i == j || skipList.at(j))
+                continue;
+            if (EditorUtils::isDescendant(itemList.at(j), itemList.at(i))) {
+                pruned = true;
+                // We don't need to consider discovered descendants as ancestors in future.
+                skipList[i] = true;
+                break;
+            }
+        }
+        if (!pruned)
+            prunedList.append(originalList.at(i));
+    }
+
+    return prunedList;
+}
+
 bool EditorSceneItemModel::canReparent(EditorSceneItem *newParentItem,
                                        EditorSceneItem *movedItem)
 {
