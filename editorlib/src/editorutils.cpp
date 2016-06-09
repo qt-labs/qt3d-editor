@@ -1223,16 +1223,14 @@ QVector3D EditorUtils::cameraNormal(Qt3DRender::QCamera *camera)
 
 bool EditorUtils::isDescendant(EditorSceneItem *ancestor, EditorSceneItem *descendantItem)
 {
-    bool descendant = ancestor == descendantItem;
-    if (!descendant) {
-        Q_FOREACH (EditorSceneItem *item, ancestor->childItems()) {
-            if (isDescendant(item, descendantItem)) {
-                descendant = true;
-                break;
-            }
-        }
+    EditorSceneItem *parent = descendantItem->parentItem();
+
+    while (parent) {
+        if (parent == ancestor)
+            return true;
+        parent = parent->parentItem();
     }
-    return descendant;
+    return false;
 }
 
 EditorUtils::InsertableEntities EditorUtils::insertableEntityType(Qt3DCore::QEntity *entity)
