@@ -223,7 +223,7 @@ void UndoHandler::createChangeGenericPropertyCommand(QObject *obj,
                                                      const QVariant &oldValue,
                                                      const QString &text)
 {
-    if (!obj || propertyName.isEmpty())
+    if (!obj || propertyName.isEmpty() || newValue == oldValue)
         return;
 
     m_undoStack->push(new GenericPropertyChangeCommand(text, obj, propertyName, newValue, oldValue));

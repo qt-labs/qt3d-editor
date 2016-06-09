@@ -44,6 +44,8 @@ public:
     virtual void undo();
     virtual void redo();
 
+    bool isNonOp() const;
+
 private:
     QObject *m_object;
     QByteArray m_propertyName;

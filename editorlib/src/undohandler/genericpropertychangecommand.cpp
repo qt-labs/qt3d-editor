@@ -45,11 +45,20 @@ GenericPropertyChangeCommand::GenericPropertyChangeCommand(const QString &text, 
 
 void GenericPropertyChangeCommand::undo()
 {
+    if (isNonOp())
+        return;
     if (m_object)
         m_object->setProperty(m_propertyName, m_oldValue);
 }
 
 void GenericPropertyChangeCommand::redo()
 {
+    if (isNonOp())
+        return;
     m_object->setProperty(m_propertyName, m_newValue);
+}
+
+bool GenericPropertyChangeCommand::isNonOp() const
+{
+    return m_newValue == m_oldValue;
 }
