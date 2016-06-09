@@ -168,15 +168,26 @@ Menu {
     }
     MenuItem {
         text: qsTr("Group Selected") + editorScene.emptyString
-        enabled: multiSelect && !multiSelectedCamera
+        enabled: !entityTreeView.sceneRootSelected
         iconSource: "images/group.png"
         onTriggered: {
             editorScene.undoHandler.beginMacro(text)
-            var reparentList = selectionList // Copy list, as the original is emptied on insertEntity
+            // Copy list, as the original is emptied on insertEntity
+            var reparentList = []
+            var groupCenter
+            if (entityTree.multiSelect) {
+                reparentList = editorScene.sceneModel.parentList(selectionList)
+                groupCenter = editorScene.getMultiSelectionCenter()
+            } else {
+                reparentList[0] = selectedEntityName
+                groupCenter = selectedEntity.selectionBoxCenter()
+            }
+
             // TODO: Allow creating groups under other entities?
 
-            // Center the new group on the grouped items
-            var groupCenter = editorScene.getMultiSelectionCenter()
+            // Select scene root before doing reparenting to avoid having selection changes
+            // while removing, as indexes can be corrupt during the removal
+            entityTree.selectSceneRoot()
 
             // Add new group
             editorScene.undoHandler.createInsertEntityCommand(1, editorScene.sceneRootName(),

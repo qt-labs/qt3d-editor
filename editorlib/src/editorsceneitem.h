@@ -97,7 +97,7 @@ public:
     Qt3DCore::QTransform *entityTransform() const { return m_entityTransform; }
     QVector3D selectionBoxExtents() const { return m_selectionBoxExtents; }
     QVector3D entityMeshExtents() const { return m_entityMeshExtents; }
-    QVector3D selectionBoxCenter() const { return m_selectionBoxCenter; }
+    Q_INVOKABLE QVector3D selectionBoxCenter() const { return m_selectionBoxCenter; }
     QVector3D entityMeshCenter() const { return m_entityMeshCenter; }
 
     bool canRotate() const { return m_canRotate; }
