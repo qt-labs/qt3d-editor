@@ -35,7 +35,7 @@ import com.theqtcompany.SceneEditor3D 1.0
 
 ApplicationWindow {
     id: mainwindow
-    title: qsTr("Qt 3D Scene Editor") + editorScene.emptyString
+    title: qsTr("Qt 3D Scene Editor") + editorScene.emptyString + saveFileTitleAddition
     width: 1280
     height: 800
     visible: false
@@ -57,6 +57,13 @@ ApplicationWindow {
     property string selectedEntityName: ""
     property var sceneModel: EditorSceneItemComponentsModel
     property url saveFileUrl: ""
+    property string saveFileTitleAddition: {
+        if (saveFileUrl != "")
+            " - " + saveFileUrl.toString().substring(saveFileUrl.toString().lastIndexOf("/") + 1)
+        else
+            saveFileUrl.toString()
+    }
+
     property int currentHelperPlane: 1
     property alias selectedEntityType: generalPropertyView.entityType
 
