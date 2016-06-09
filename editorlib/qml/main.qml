@@ -172,9 +172,8 @@ ApplicationWindow {
 
     function fileNew() {
         editorScene.resetScene()
-        planeOrientationY.checked = true
+        showNormalYPlane()
         saveFileUrl = ""
-        autoSave.checked = false
     }
 
     function showNormalXPlane() {
