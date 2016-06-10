@@ -30,7 +30,7 @@ import QtQuick 2.5
 Rectangle {
     id: menuSeparator
     height: 24
-    width: 3
+    width: 1
     color: mainwindow.listHighlightColor
     border.color: mainwindow.itemBackgroundColor
     border.width: 1
