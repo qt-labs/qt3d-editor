@@ -1678,17 +1678,24 @@ void EditorScene::createHelperPlane()
 void EditorScene::setFrameGraphCamera(Qt3DCore::QEntity *cameraEntity)
 {
     if (m_renderer) {
+        Qt3DCore::QTransform *cameraTransform = nullptr;
         Qt3DRender::QCamera *currentCamera =
                 qobject_cast<Qt3DRender::QCamera *>(m_renderer->camera());
         if (currentCamera) {
-            disconnect(currentCamera, &Qt3DRender::QCamera::viewMatrixChanged,
-                       this, &EditorScene::handleSelectionTransformChange);
+            cameraTransform = currentCamera->transform();
+            if (cameraTransform) {
+                disconnect(cameraTransform, &Qt3DCore::QTransform::matrixChanged,
+                           this, &EditorScene::handleSelectionTransformChange);
+            }
         }
         m_renderer->setCamera(cameraEntity);
         currentCamera = qobject_cast<Qt3DRender::QCamera *>(cameraEntity);
-        if (cameraEntity) {
-            connect(currentCamera, &Qt3DRender::QCamera::viewMatrixChanged,
-                    this, &EditorScene::handleSelectionTransformChange);
+        if (currentCamera) {
+            cameraTransform = currentCamera->transform();
+            if (cameraTransform) {
+                connect(cameraTransform, &Qt3DCore::QTransform::matrixChanged,
+                        this, &EditorScene::handleSelectionTransformChange);
+            }
         }
         // This will update drag handle positions if needed
         handleSelectionTransformChange();
@@ -2068,14 +2075,14 @@ void EditorScene::handleSelectionTransformChange()
         emit repositionDragHandle(DragRotate, QPoint(rotateHandlePos.x(), rotateHandlePos.y()),
                                   m_dragHandlesTransform->isEnabled()
                                   ? m_dragHandleRotateTransform->isEnabled()
-                                  && rotateHandlePos.z() > 0.0f : false, 0);
+                                    && rotateHandlePos.z() > 0.0f : false, 0);
         for (int i = 0; i < dragCornerHandleCount; i++) {
             emit repositionDragHandle(DragScale,
                                       QPoint(cornerHandlePositions[i].x(),
                                              cornerHandlePositions[i].y()),
                                       m_dragHandlesTransform->isEnabled()
                                       ? m_dragHandleScaleTransforms.at(0)->isEnabled()
-                                      && cornerHandlePositions[i].z() > 0.0f : false, i);
+                                        && cornerHandlePositions[i].z() > 0.0f : false, i);
         }
         emit endDragHandlesRepositioning();
     }
