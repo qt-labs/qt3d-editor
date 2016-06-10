@@ -129,6 +129,21 @@ Item {
             highlightedTextColor: mainwindow.textColor
             backgroundColor: mainwindow.paneBackgroundColor
             alternateBackgroundColor: mainwindow.paneBackgroundColor
+            branchDelegate: Item {
+                width: 10
+                height: 10
+                Image {
+                    visible: styleData.column === 0 && styleData.hasChildren
+                    anchors.fill: parent
+                    anchors.verticalCenterOffset: 2
+                    source: "images/arrow.png"
+                    transform: Rotation {
+                        origin.x: width / 2
+                        origin.y: height / 2
+                        angle: styleData.isExpanded ? 0 : -90
+                    }
+                }
+            }
         }
 
         property bool editing: false
