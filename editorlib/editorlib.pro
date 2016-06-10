@@ -38,7 +38,8 @@ SOURCES += src/qt3dsceneeditor.cpp \
     src/undohandler/importentitycommand.cpp \
     src/undohandler/resetentitycommand.cpp \
     src/undohandler/resettransformcommand.cpp \
-    src/inputcontrols/editorcameracontroller.cpp
+    src/inputcontrols/editorcameracontroller.cpp \
+    src/materials/ontopeffect.cpp
 
 TRANSLATIONS = editorlib_fi.ts \
                editorlib_en.ts
@@ -84,7 +85,8 @@ HEADERS += \
     src/undohandler/importentitycommand.h \
     src/undohandler/resetentitycommand.h \
     src/undohandler/resettransformcommand.h \
-    src/inputcontrols/editorcameracontroller.h
+    src/inputcontrols/editorcameracontroller.h \
+    src/materials/ontopeffect.h
 
 lupdate_only {
 SOURCES = qml/*.qml \

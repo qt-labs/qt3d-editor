@@ -449,9 +449,12 @@ void EditorSceneItem::updateGroupExtents()
             Q_FOREACH (EditorSceneItem *child, childItems())
                 child->findTotalExtents(min, max, matrix);
 
-            m_entityMeshExtents = QVector3D(qMax(qAbs(min.x()), qAbs(max.x())),
-                                            qMax(qAbs(min.y()), qAbs(max.y())),
-                                            qMax(qAbs(min.z()), qAbs(max.z()))) * 2.0f;
+            m_entityMeshExtents = QVector3D(max.x() - min.x(),
+                                            max.y() - min.y(),
+                                            max.z() - min.z());
+            m_entityMeshCenter = QVector3D(min.x() + m_entityMeshExtents.x() / 2.0f,
+                                           min.y() + m_entityMeshExtents.y() / 2.0f,
+                                           min.z() + m_entityMeshExtents.z() / 2.0f);
         }
 
         // Finally update the group's selection box

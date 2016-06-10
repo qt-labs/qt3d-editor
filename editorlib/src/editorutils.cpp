@@ -615,6 +615,43 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createWireframePlaneMesh(int lineCou
     return planeMesh;
 }
 
+Qt3DRender::QGeometryRenderer *EditorUtils::createSingleLineMesh()
+{
+    Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer();
+    Qt3DRender::QGeometry *geometry = new Qt3DRender::QGeometry(mesh);
+    Qt3DRender::QBuffer *dataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer,
+                                                              geometry);
+    QByteArray vertexBufferData;
+    QVector<QVector3D> vertices;
+
+    vertices.resize(2);
+    vertexBufferData.resize(vertices.size() * 3 * sizeof(float));
+
+    vertices[0] = QVector3D(0.0f, 0.0f, 0.0f);
+    vertices[1] = QVector3D(0.0f, 0.0f, 1.0f);
+
+    float *rawVertexArray = reinterpret_cast<float *>(vertexBufferData.data());
+    int idx = 0;
+    Q_FOREACH (const QVector3D &v, vertices) {
+        rawVertexArray[idx++] = v.x();
+        rawVertexArray[idx++] = v.y();
+        rawVertexArray[idx++] = v.z();
+    }
+
+    dataBuffer->setData(vertexBufferData);
+
+    addPositionAttributeToGeometry(geometry, dataBuffer, 2);
+
+    mesh->setInstanceCount(1);
+    mesh->setIndexOffset(0);
+    mesh->setFirstInstance(0);
+    mesh->setVertexCount(2);
+    mesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
+    mesh->setGeometry(geometry);
+
+    return mesh;
+}
+
 Qt3DRender::QGeometryRenderer *EditorUtils::createDefaultCustomMesh()
 {
     Qt3DRender::QMesh *customMesh = new Qt3DRender::QMesh();

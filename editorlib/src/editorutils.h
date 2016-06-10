@@ -113,6 +113,7 @@ public:
 
     static Qt3DRender::QGeometryRenderer *createWireframeBoxMesh(float extent = 1.0f);
     static Qt3DRender::QGeometryRenderer *createWireframePlaneMesh(int lineCount);
+    static Qt3DRender::QGeometryRenderer *createSingleLineMesh();
     static Qt3DRender::QGeometryRenderer *createDefaultCustomMesh();
     static Qt3DRender::QGeometryRenderer *createVisibleCameraMesh();
     static Qt3DRender::QGeometryRenderer *createCameraViewVectorMesh();

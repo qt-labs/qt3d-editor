@@ -317,7 +317,8 @@ signals:
     void translationChanged(const QString &translation);
     void gridSizeChanged(int gridSize);
     void mouseRightButtonReleasedWithoutDragging();
-    void repositionDragHandle(DragMode dragMode, const QPoint &pos, bool visible, int handleIndex);
+    void repositionDragHandle(DragMode dragMode, const QPoint &pos, bool visible, int handleIndex,
+                              float handleZ);
     void beginDragHandlesRepositioning();
     void endDragHandlesRepositioning();
     void clipboardOperationChanged(ClipboardOperation clipboardOperation);
@@ -411,6 +412,8 @@ private:
 
     Qt3DRender::QMaterial *m_selectionBoxMaterial;
     Qt3DRender::QGeometryRenderer *m_selectionBoxMesh;
+    Qt3DCore::QEntity *m_meshCenterIndicatorLine;
+    Qt3DCore::QTransform *m_meshCenterIndicatorLineTransform;
 
     QTranslator *m_qtTranslator;
     QTranslator *m_appTranslator;

@@ -31,6 +31,7 @@
 #include "editorsceneparser.h"
 #include "editorsceneitemcomponentsmodel.h"
 #include "editorviewportitem.h"
+#include "ontopeffect.h"
 #include "undohandler.h"
 
 #include <Qt3DCore/QTransform>
@@ -103,6 +104,8 @@ EditorScene::EditorScene(QObject *parent)
     , m_undoHandler(new UndoHandler(this))
     , m_helperPlane(nullptr)
     , m_helperPlaneTransform(nullptr)
+    , m_meshCenterIndicatorLine(nullptr)
+    , m_meshCenterIndicatorLineTransform(nullptr)
     , m_qtTranslator(new QTranslator(this))
     , m_appTranslator(new QTranslator(this))
     , m_dragHandlesTransform(nullptr)
@@ -520,10 +523,16 @@ void EditorScene::dragHandlePress(EditorScene::DragMode dragMode, const QPoint &
             m_cameraViewCenterSelected = false;
             Qt3DRender::QCamera *cameraEntity =
                     qobject_cast<Qt3DRender::QCamera *>(m_selectedEntity);
-            if (cameraEntity)
+            if (cameraEntity) {
                 m_dragInitialTranslationValue = cameraEntity->position();
-            else
-                m_dragInitialTranslationValue = m_dragHandlesTransform->translation();
+            } else {
+                if (handleIndex) {
+                    m_dragInitialTranslationValue = m_dragHandlesTransform->translation();
+                } else {
+                    m_dragInitialTranslationValue = m_dragHandlesTransform->matrix()
+                            * m_dragHandleTranslateTransform->matrix() * QVector3D();
+                }
+            }
             m_dragEntity = m_selectedEntity;
             m_dragMode = DragTranslate;
         } else if (dragMode == DragRotate && m_dragHandleRotateTransform->isEnabled()) {
@@ -868,7 +877,13 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
 
             // If entity has parents with transfroms, those need to be applied in inverse
             QMatrix4x4 totalTransform = EditorUtils::totalAncestralTransform(m_selectedEntity);
-            intersection = totalTransform.inverted() * intersection;
+            if (m_dragHandleIndex == 0) {
+                intersection = totalTransform.inverted()
+                        * (intersection + m_dragHandlesTransform->rotation()
+                           * m_dragHandleTranslateTransform->translation());
+            } else {
+                intersection = totalTransform.inverted() * intersection;
+            }
 
             if (ctrlDown) {
                 m_snapToGridIntersection.setX(qRound(intersection.x() / m_gridSize) * m_gridSize);
@@ -1555,6 +1570,22 @@ void EditorScene::createRootEntity()
     m_selectionBoxMaterial = selectionBoxMaterial;
     m_selectionBoxMesh = EditorUtils::createWireframeBoxMesh();
 
+    m_meshCenterIndicatorLine = new Qt3DCore::QEntity();
+    m_meshCenterIndicatorLine->setObjectName(QStringLiteral("__internal mesh center indicator line"));
+    Qt3DRender::QGeometryRenderer *indicatorMesh = EditorUtils::createSingleLineMesh();
+
+    Qt3DRender::QMaterial *meshCenterLineMaterial = new Qt3DRender::QMaterial();
+    meshCenterLineMaterial->setEffect(new OnTopEffect());
+    meshCenterLineMaterial->addParameter(new Qt3DRender::QParameter(QStringLiteral("handleColor"),
+                                                                    QColor("#f4be04")));
+
+    m_meshCenterIndicatorLineTransform = new Qt3DCore::QTransform();
+    m_meshCenterIndicatorLine->addComponent(indicatorMesh);
+    m_meshCenterIndicatorLine->addComponent(meshCenterLineMaterial);
+    m_meshCenterIndicatorLine->addComponent(m_meshCenterIndicatorLineTransform);
+    m_meshCenterIndicatorLine->setParent(m_rootEntity);
+    m_meshCenterIndicatorLine->setEnabled(false);
+
     // Save to cache, as these are needed after Load/New
     m_componentCache->addComponent(m_selectionBoxMesh);
     m_componentCache->addComponent(m_selectionBoxMaterial);
@@ -1987,7 +2018,7 @@ void EditorScene::endSelectionHandling()
 void EditorScene::handleSelectionTransformChange()
 {
     EditorSceneItem *item = nullptr;
-    if (m_selectedEntity)
+    if (m_selectedEntity && m_selectedEntity != m_sceneEntity)
         item = m_sceneItems.value(m_selectedEntity->id(), nullptr);
     if (item) {
         Qt3DRender::QCamera *camera = frameGraphCamera();
@@ -1998,9 +2029,23 @@ void EditorScene::handleSelectionTransformChange()
 
         QVector3D translation = (item->selectionBoxExtents() / 2.0f);
 
+        // m_dragHandleTranslateTransform indicates the mesh center position in drag handles
+        // coordinates, i.e. the position of the secondary translate handle.
+        // The primary handle at the center of the selection box always has zero translation.
+        QMatrix4x4 entityMatrix = EditorUtils::totalAncestralTransform(item->entity())
+                * item->entityTransform()->matrix();
+        QVector3D meshCenter = m_dragHandlesTransform->matrix().inverted() * entityMatrix
+                * QVector3D();
+        m_dragHandleTranslateTransform->setTranslation(meshCenter);
+
         // Find out x/y viewport positions of drag handles
 
         QVector3D translateHandlePos = EditorUtils::projectRay(
+                    camera->viewMatrix(), camera->projectionMatrix(),
+                    m_viewport->width(), m_viewport->height(),
+                    m_dragHandlesTransform->matrix() * QVector3D());
+
+        QVector3D itemCenterHandlePos = EditorUtils::projectRay(
                     camera->viewMatrix(), camera->projectionMatrix(),
                     m_viewport->width(), m_viewport->height(),
                     m_dragHandlesTransform->matrix() * m_dragHandleTranslateTransform->matrix()
@@ -2065,24 +2110,45 @@ void EditorScene::handleSelectionTransformChange()
             rotateHandlePos += adjustVector;
         }
 
+        QPoint translatePoint(translateHandlePos.x(), translateHandlePos.y());
+        QPoint centerPoint(itemCenterHandlePos.x(), itemCenterHandlePos.y());
+
+        bool showCenterHandle = translatePoint != centerPoint;
+        m_meshCenterIndicatorLine->setEnabled(showCenterHandle);
+        if (showCenterHandle) {
+            QQuaternion rot = QQuaternion::rotationTo(QVector3D(0.0f, 0.0f, 1.0f),
+                                                      meshCenter.normalized());
+            m_meshCenterIndicatorLineTransform->setRotation(
+                        m_dragHandlesTransform->rotation() * rot);
+            m_meshCenterIndicatorLineTransform->setTranslation(
+                        m_dragHandlesTransform->translation());
+            m_meshCenterIndicatorLineTransform->setScale(meshCenter.length());
+        }
+
         // Signal UI to reposition drag handles
         emit beginDragHandlesRepositioning();
-        emit repositionDragHandle(DragTranslate,
-                                  QPoint(translateHandlePos.x(), translateHandlePos.y()),
+        emit repositionDragHandle(DragTranslate, translatePoint,
                                   m_dragHandlesTransform->isEnabled()
                                   ? m_dragHandleTranslateTransform->isEnabled()
-                                    && translateHandlePos.z() > 0.0f : false, 0);
+                                    && translateHandlePos.z() > 0.0f : false, 0,
+                                  translateHandlePos.z());
+        emit repositionDragHandle(DragTranslate, centerPoint,
+                                  m_dragHandlesTransform->isEnabled()
+                                  ? m_dragHandleTranslateTransform->isEnabled()
+                                    && itemCenterHandlePos.z() > 0.0f && showCenterHandle : false,
+                                  1, itemCenterHandlePos.z());
         emit repositionDragHandle(DragRotate, QPoint(rotateHandlePos.x(), rotateHandlePos.y()),
                                   m_dragHandlesTransform->isEnabled()
                                   ? m_dragHandleRotateTransform->isEnabled()
-                                    && rotateHandlePos.z() > 0.0f : false, 0);
+                                    && rotateHandlePos.z() > 0.0f : false, 0, rotateHandlePos.z());
         for (int i = 0; i < dragCornerHandleCount; i++) {
             emit repositionDragHandle(DragScale,
                                       QPoint(cornerHandlePositions[i].x(),
                                              cornerHandlePositions[i].y()),
                                       m_dragHandlesTransform->isEnabled()
                                       ? m_dragHandleScaleTransforms.at(0)->isEnabled()
-                                        && cornerHandlePositions[i].z() > 0.0f : false, i);
+                                        && cornerHandlePositions[i].z() > 0.0f : false, i,
+                                      cornerHandlePositions[i].z());
         }
         emit endDragHandlesRepositioning();
     }

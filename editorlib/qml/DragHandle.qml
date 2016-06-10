@@ -29,7 +29,6 @@ import QtQuick 2.5
 
 Item {
     id: dragHandle
-    z: 2
     width: 16
     height: 16
     visible: false
@@ -50,6 +49,7 @@ Item {
     property alias color: handleRect.color
     property alias radius: handleRect.radius
     property bool dragging: false
+    property real baseZ: 2
 
     MouseArea {
         id: dragHandleMouseArea
@@ -85,6 +85,7 @@ Item {
                 x = pos.x - offset.x
                 y = pos.y - offset.y
                 dragHandle.visible = visible
+                z = baseZ + handleZ
             }
         }
         onBeginDragHandlesRepositioning: {

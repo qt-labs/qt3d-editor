@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/qt3deditorlib/">
+    <qresource prefix="/qt3deditorlib">
         <file>meshes/cameracone.obj</file>
         <file>meshes/defaultmesh.obj</file>
         <file>meshes/spotlight.obj</file>
@@ -85,5 +85,7 @@
         <file alias="SettingsDialog.qml">qml/SettingsDialog.qml</file>
         <file>editorlib_en.qm</file>
         <file>editorlib_fi.qm</file>
+        <file>shaders/ontopmaterial.frag</file>
+        <file>shaders/ontopmaterial.vert</file>
     </qresource>
 </RCC>

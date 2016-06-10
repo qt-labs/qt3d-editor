@@ -433,14 +433,24 @@ ApplicationWindow {
                     }
                 }
                 DragHandle {
+                    // This is the translate handle at the center of selection box
                     handleType: EditorScene.DragTranslate
-                    z: 3 // Make sure translate handle is on top of scale handles
+                    baseZ: 3 // Make sure translate handle is on top of scale handles
                     color: "#c22555"
                     radius: height / 2
+                    handleIndex: 0
+                }
+                DragHandle {
+                    // This is the group/mesh center indicator handle
+                    handleType: EditorScene.DragTranslate
+                    baseZ: 3 // Make sure center handle is on top of scale handles
+                    color: "blue"
+                    radius: height / 2
+                    handleIndex: 1
                 }
                 DragHandle {
                     handleType: EditorScene.DragRotate
-                    z: 3 // Make sure rotate handle is on top of scale handles
+                    baseZ: 3 // Make sure rotate handle is on top of scale handles
                     Image {
                         anchors.fill: parent
                         source: "images/rotate_handle.png"
