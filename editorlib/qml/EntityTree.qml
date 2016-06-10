@@ -230,26 +230,11 @@ Item {
                         }
                     } else {
                         // Clear selectionList
-                        if (selectionList.length > 1
-                                || styleData.index === editorScene.sceneModel.sceneEntityIndex()) {
-                            entityTreeView.selection.clear()
-                        }
+                        entityTreeView.selection.clear()
                         selectionList.length = 0
                         editorScene.multiSelection = selectionList
-                        // Deselect if clicked is already selected
-                        if (editorScene.previousSelectedEntityName()
-                                === editorScene.sceneModel.entityName(styleData.index)) {
-                            entityTreeView.selection.select(styleData.index,
-                                                            ItemSelectionModel.Toggle)
-                            // Handle deselection
-                            if (!entityTreeView.selection.selectedIndexes.length) {
-                                selectedEntityName = ""
-                                selectSceneRoot()
-                            }
-                        } else {
-                            entityTreeView.selection.setCurrentIndex(styleData.index,
-                                                                     ItemSelectionModel.SelectCurrent)
-                        }
+                        entityTreeView.selection.setCurrentIndex(styleData.index,
+                                                                 ItemSelectionModel.SelectCurrent)
                     }
                     entityTreeView.expand(styleData.index)
                 }
