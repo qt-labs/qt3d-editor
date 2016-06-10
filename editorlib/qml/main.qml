@@ -143,7 +143,12 @@ ApplicationWindow {
     }
 
     function fileLoad() {
-        loadFileDialog.open()
+        if (!editorScene.undoHandler.isClean()) {
+            saveUnsavedDialog.newFile = false
+            saveUnsavedDialog.open()
+        } else {
+           loadFileDialog.open()
+        }
     }
 
     function fileSave() {
@@ -171,9 +176,14 @@ ApplicationWindow {
     }
 
     function fileNew() {
-        editorScene.resetScene()
-        showNormalYPlane()
-        saveFileUrl = ""
+        if (!editorScene.undoHandler.isClean()) {
+            saveUnsavedDialog.newFile = true
+            saveUnsavedDialog.open()
+        } else {
+            editorScene.resetScene()
+            showNormalYPlane()
+            saveFileUrl = ""
+        }
     }
 
     function showNormalXPlane() {
@@ -379,6 +389,38 @@ ApplicationWindow {
 
         onDiscard: {
             Qt.quit()
+        }
+
+        // Cancel doesn't need to do anything
+    }
+
+    MessageDialog {
+        id: saveUnsavedDialog
+        property bool newFile: false
+        icon: StandardIcon.Warning
+        standardButtons: StandardButton.Save | StandardButton.Cancel | StandardButton.Discard
+        title: qsTr("Save changes?") + editorScene.emptyString
+        text: qsTr("There are unsaved changes. Continue without saving?")
+              + editorScene.emptyString
+
+        onAccepted: {
+            if (saveFileUrl == "") {
+                saveFileDialog.open()
+                // No previous autosave file, no need to delete anything
+            } else {
+                editorScene.saveScene(saveFileUrl)
+                editorScene.deleteScene(saveFileUrl, true)
+            }
+        }
+
+        onDiscard: {
+            if (newFile) {
+                editorScene.resetScene()
+                showNormalYPlane()
+                saveFileUrl = ""
+            } else {
+                loadFileDialog.open()
+            }
         }
 
         // Cancel doesn't need to do anything
