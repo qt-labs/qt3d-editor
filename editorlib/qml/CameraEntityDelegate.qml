@@ -73,7 +73,21 @@ ComponentDelegate {
         width: parent.width
 
         QQC2.GroupBox {
+            id: groupBoxControl
             title: qsTr("Projection Type") + editorScene.emptyString
+
+            label: Text {
+                width: groupBoxControl.availableWidth
+                text: groupBoxControl.title
+                color: enabled ? mainwindow.textColor : mainwindow.disabledTextColor
+                font.family: mainwindow.labelFontFamily
+                font.weight: mainwindow.labelFontWeight
+                font.pixelSize: mainwindow.labelFontPixelSize
+                elide: Text.ElideRight
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignVCenter
+            }
+
             Row {
                 StyledRadioButton {
                     id: orthoButton
