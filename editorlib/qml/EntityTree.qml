@@ -203,8 +203,11 @@ Item {
                 onPressed: {
                     if (mouse.modifiers & Qt.ControlModifier) {
                         // Handle multiselection
-                        editorScene.addToMultiSelection(editorScene.sceneModel.entityName(
-                                                            styleData.index))
+                        // Prevent multiselecting scene root
+                        if (styleData.index !== editorScene.sceneModel.sceneEntityIndex()) {
+                            editorScene.addToMultiSelection(editorScene.sceneModel.entityName(
+                                                                styleData.index))
+                        }
                         // If empty list, select scene root
                         if (selectionList.length === 0) {
                             selectedEntityName = ""
@@ -212,6 +215,10 @@ Item {
                         }
                     } else {
                         // Clear selectionList
+                        if (selectionList.length > 1
+                                || styleData.index === editorScene.sceneModel.sceneEntityIndex()) {
+                            entityTreeView.selection.clear()
+                        }
                         selectionList.length = 0
                         editorScene.multiSelection = selectionList
                         // Deselect if clicked is already selected
