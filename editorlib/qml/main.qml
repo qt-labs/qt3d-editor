@@ -402,12 +402,12 @@ ApplicationWindow {
     MessageDialog {
         id: closingDialog
         icon: StandardIcon.Warning
-        standardButtons: StandardButton.Save | StandardButton.Cancel | StandardButton.Discard
+        standardButtons: StandardButton.Yes | StandardButton.No | StandardButton.Cancel
         title: qsTr("Exit Qt 3D Scene Editor") + editorScene.emptyString
-        text: qsTr("There are unsaved changes.\nQuit anyway?")
+        text: qsTr("There are unsaved changes.\nSave changes before exiting?")
               + editorScene.emptyString
 
-        onAccepted: {
+        onYes: {
             if (saveFileUrl == "") {
                 saveFileDialog.exiting = true
                 saveFileDialog.open()
@@ -420,7 +420,7 @@ ApplicationWindow {
             }
         }
 
-        onDiscard: {
+        onNo: {
             Qt.quit()
         }
 
@@ -431,12 +431,12 @@ ApplicationWindow {
         id: saveUnsavedDialog
         property bool newFile: false
         icon: StandardIcon.Warning
-        standardButtons: StandardButton.Save | StandardButton.Cancel | StandardButton.Discard
+        standardButtons: StandardButton.Yes | StandardButton.No | StandardButton.Cancel
         title: qsTr("Save changes?") + editorScene.emptyString
-        text: qsTr("There are unsaved changes. Continue without saving?")
+        text: qsTr("There are unsaved changes.\nSave changes?")
               + editorScene.emptyString
 
-        onAccepted: {
+        onYes: {
             if (saveFileUrl == "") {
                 saveFileDialog.open()
                 // No previous autosave file, no need to delete anything
@@ -446,7 +446,7 @@ ApplicationWindow {
             }
         }
 
-        onDiscard: {
+        onNo: {
             if (newFile) {
                 editorScene.resetScene()
                 showNormalYPlane()

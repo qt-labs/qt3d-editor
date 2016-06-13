@@ -327,6 +327,7 @@ Qt3DCore::QEntity *EditorSceneItemModel::createEntity(EditorUtils::InsertableEnt
     Qt3DCore::QEntity *newEntity = nullptr;
     if (type == EditorUtils::CameraEntity) {
         Qt3DRender::QCamera *newCamera = new Qt3DRender::QCamera(parentItem->entity());
+        //: This string is entity name, no non-ascii characters allowed
         newCamera->setObjectName(generateValidName(tr("New Camera"), newEntity));
         newCamera->setPosition(pos);
         newEntity = newCamera;
@@ -351,39 +352,48 @@ Qt3DCore::QEntity *EditorSceneItemModel::createEntity(EditorUtils::InsertableEnt
 
         switch (type) {
         case EditorUtils::CuboidEntity: {
+            //: This string is entity name, no non-ascii characters allowed
             newEntity->setObjectName(generateValidName(tr("New Cube"), newEntity));
             break;
         }
         case EditorUtils::CylinderEntity: {
+            //: This string is entity name, no non-ascii characters allowed
             newEntity->setObjectName(generateValidName(tr("New Cylinder"), newEntity));
             break;
         }
         case EditorUtils::PlaneEntity: {
+            //: This string is entity name, no non-ascii characters allowed
             newEntity->setObjectName(generateValidName(tr("New Plane"), newEntity));
             break;
         }
         case EditorUtils::SphereEntity: {
+            //: This string is entity name, no non-ascii characters allowed
             newEntity->setObjectName(generateValidName(tr("New Sphere"), newEntity));
             break;
         }
         case EditorUtils::TorusEntity: {
+            //: This string is entity name, no non-ascii characters allowed
             newEntity->setObjectName(generateValidName(tr("New Torus"), newEntity));
             break;
         }
         case EditorUtils::CustomEntity: {
+            //: This string is entity name, no non-ascii characters allowed
             newEntity->setObjectName(generateValidName(tr("New Custom"), newEntity));
             break;
         }
         case EditorUtils::LightEntity: {
+            //: This string is entity name, no non-ascii characters allowed
             newEntity->setObjectName(generateValidName(tr("New Light"), newEntity));
             newEntity->addComponent(new Qt3DRender::QPointLight());
             break;
         }
         case EditorUtils::GroupEntity: {
+            //: This string is entity name, no non-ascii characters allowed
             newEntity->setObjectName(generateValidName(tr("New Group"), newEntity));
             break;
         }
         default:
+            //: This string is entity name, no non-ascii characters allowed
             newEntity->setObjectName(generateValidName(tr("New Empty Entity"), newEntity));
             break;
         }
@@ -601,6 +611,7 @@ void EditorSceneItemModel::removeExpandedItems(Qt3DCore::QEntity *entity)
 QString EditorSceneItemModel::importEntity(const QUrl &fileUrl)
 {
     m_sceneLoaderEntity = new Qt3DCore::QEntity(m_scene->rootEntity());
+    //: This string is entity name, no non-ascii characters allowed
     m_sceneLoaderEntity->setObjectName(generateValidName(tr("New imported entity"),
                                                          m_sceneLoaderEntity));
     Qt3DRender::QSceneLoader *sceneLoader = new Qt3DRender::QSceneLoader(m_sceneLoaderEntity);
@@ -630,6 +641,7 @@ QString EditorSceneItemModel::insertSceneLoaderEntity(const QUrl &fileUrl)
                      this, &EditorSceneItemModel::handleSceneLoaderStatusChanged);
     sceneLoader->setSource(fileUrl);
     sceneLoaderEntity->addComponent(sceneLoader);
+    //: This string is entity name, no non-ascii characters allowed
     sceneLoaderEntity->setObjectName(generateValidName(tr("New Scene Loader"), sceneLoaderEntity));
 
     Qt3DCore::QTransform *loaderTransform = new Qt3DCore::QTransform();

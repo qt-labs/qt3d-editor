@@ -664,6 +664,7 @@ void EditorScene::setLanguage(const QString &language)
 
 void EditorScene::retranslateUi()
 {
+    //: This string is entity name, no non-ascii characters allowed
     m_sceneRootString = tr("Scene root");
     m_saveFailString = tr("Failed to save the scene");
     m_loadFailString = tr("Failed to load a new scene");
