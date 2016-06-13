@@ -260,13 +260,13 @@ QHash<int, QByteArray> EditorSceneItemModel::roleNames() const
 
 void EditorSceneItemModel::resetModel()
 {
-    beginResetModel();
+    QAbstractItemModel::beginResetModel();
 
     // Reconnect all entities
     disconnectEntity(m_scene->sceneEntityItem()->entity());
     connectEntity(m_scene->sceneEntityItem()->entity());
 
-    endResetModel();
+    QAbstractItemModel::endResetModel();
 
     // Restore TreeView branch expansions, since resetting the model will collapse the branches
     QModelIndexList expandedIndexList;
@@ -274,8 +274,9 @@ void EditorSceneItemModel::resetModel()
         expandedIndexList.append(getModelIndexByName(entityName));
     emit expandItems(expandedIndexList);
 
-    // Select scene root after reset
-    emit selectIndex(sceneEntityIndex());
+    // Select scene root after reset, unless multiselecting
+    if (!m_scene->multiSelection())
+        emit selectIndex(sceneEntityIndex());
 }
 
 EditorSceneItem *EditorSceneItemModel::editorSceneItemFromIndex(const QModelIndex &index) const
@@ -464,11 +465,7 @@ const QString EditorSceneItemModel::setEntityName(const QModelIndex &index, cons
 
     setData(index, finalName, NameRole);
 
-    QStringList multiSelection = m_scene->multiSelection();
-    if (multiSelection.removeOne(oldName)) {
-        multiSelection.append(finalName);
-        m_scene->setMultiSelection(multiSelection);
-    }
+    m_scene->renameEntityInMultiSelectionList(oldName, finalName);
 
     if (oldName == m_scene->clipboardContent())
         m_scene->setClipboardContent(name);
@@ -537,11 +534,13 @@ bool EditorSceneItemModel::canReparent(EditorSceneItem *newParentItem,
                                        EditorSceneItem *movedItem, bool allowSameParent)
 {
     // Dropping into camera is invalid.
+    // Reparenting camera is invalid.
     // Dropping into same parent is invalid.
     // Dropping item into its descendant is invalid.
     // If allowSameParent is true, "reparenting" under the same parent is allowed. This is useful
     // for entity tree copy & paste functionality.
-    bool reparentOk = !EditorUtils::entityCameraLens(newParentItem->entity())
+    bool reparentOk = newParentItem->itemType() != EditorSceneItem::Camera
+            && movedItem->itemType() != EditorSceneItem::Camera
             && movedItem != newParentItem
             && !EditorUtils::isDescendant(movedItem, newParentItem);
     if (!allowSameParent)

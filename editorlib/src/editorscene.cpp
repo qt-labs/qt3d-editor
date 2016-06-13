@@ -120,8 +120,7 @@ EditorScene::EditorScene(QObject *parent)
     , m_gridSize(3)
     , m_duplicateCount(0)
     , m_previousDuplicate(nullptr)
-    , m_multiSelect(false)
-    , m_previousSelectedEntity(nullptr)
+    , m_ctrlDownOnLastLeftPress(false)
     , m_clipboardOperation(ClipboardNone)
 {
     setLanguage(language());
@@ -200,13 +199,6 @@ void EditorScene::addEntity(Qt3DCore::QEntity *entity, int index, Qt3DCore::QEnt
                 addEntity(childEntity);
         }
     }
-
-    if (!m_selectedEntityNameList.isEmpty()) {
-        // Clear multiselection list, otherwise treeview gets messed up
-        m_selectedEntityNameList.clear();
-        m_multiSelect = false;
-        emit multiSelectionChanged(m_selectedEntityNameList);
-    }
 }
 
 // Removed entity is deleted
@@ -243,7 +235,7 @@ void EditorScene::removeEntity(Qt3DCore::QEntity *entity)
 
     m_sceneItems.remove(entity->id());
 
-    if (m_sceneEntity && m_selectedEntity == entity)
+    if (!multiSelection() && m_sceneEntity && m_selectedEntity == entity)
         setSelection(m_sceneEntity);
 
     delete item;
@@ -1744,30 +1736,33 @@ Qt3DRender::QCamera *EditorScene::frameGraphCamera() const
 
 void EditorScene::setSelection(Qt3DCore::QEntity *entity)
 {
+    // Setting selection implies end to multiSelection
+    if (m_selectedEntityNameList.size())
+        clearMultiSelection();
     EditorSceneItem *item = m_sceneItems.value(entity->id(), nullptr);
     if (item) {
         if (entity != m_selectedEntity) {
-            if (m_selectedEntity)
-                connectDragHandles(m_sceneItems.value(m_selectedEntity->id(), nullptr), false);
+            if (m_selectedEntity) {
+                EditorSceneItem *oldItem = m_sceneItems.value(m_selectedEntity->id(), nullptr);
+                if (oldItem) {
+                    connectDragHandles(oldItem, false);
+                    oldItem->setShowSelectionBox(false);
+                }
+            }
 
             m_selectedEntity = entity;
 
             if (m_selectedEntity) {
                 connectDragHandles(item, true);
+                if (m_selectedEntity != m_sceneEntity)
+                    item->setShowSelectionBox(true);
                 m_selectedEntityTransform = EditorUtils::entityTransform(m_selectedEntity);
             }
 
-            if (!m_multiSelect && m_selectedEntity != m_rootEntity)
-                m_previousSelectedEntity = m_selectedEntity;
-            else
-                m_previousSelectedEntity = nullptr;
-
             // Emit signal to highlight the entity from the list
             emit selectionChanged(m_selectedEntity);
-        } else if (!m_multiSelect) {
-            clearSelectionBoxes(m_selectedEntity);
         }
-        m_dragHandlesTransform->setEnabled(item->isSelectionBoxShowing() && !m_multiSelect);
+        m_dragHandlesTransform->setEnabled(item->isSelectionBoxShowing());
 
         if (item->itemType() == EditorSceneItem::Camera) {
             // Disable scale handles for cameras
@@ -1818,47 +1813,29 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
         handleSelectionTransformChange();
     } else {
         m_dragHandlesTransform->setEnabled(false);
+        if (m_selectedEntity != m_sceneEntity)
+            setSelection(m_sceneEntity);
     }
 }
 
-QString EditorScene::previousSelectedEntityName() const {
-    if (m_previousSelectedEntity)
-        return m_previousSelectedEntity->objectName();
-    else
-        return QString();
-}
-
-void EditorScene::setMultiSelection(const QStringList &multiSelection)
+void EditorScene::toggleEntityMultiSelection(const QString &name)
 {
-    if (m_selectedEntityNameList != multiSelection) {
-        checkMultiSelectionHighlights(m_selectedEntityNameList, multiSelection);
-        m_selectedEntityNameList = multiSelection;
-    }
-}
-
-QStringList EditorScene::multiSelection()
-{
-    return m_selectedEntityNameList;
-}
-
-void EditorScene::addToMultiSelection(const QString &name)
-{
-    QStringList oldList = m_selectedEntityNameList;
-    // Add previously selected one, if different than new one and other than scene root.
-    if (m_selectedEntityNameList.isEmpty() && m_pickedEntity != m_selectedEntity
-            && m_selectedEntity != m_sceneEntity) {
-        m_selectedEntityNameList.append(previousSelectedEntityName());
-    }
     // If the new one is already in, remove it. Otherwise add it.
-    if (!m_selectedEntityNameList.contains(name))
-        m_selectedEntityNameList.append(name);
+    if (m_selectedEntityNameList.contains(name))
+        removeEntityFromMultiSelection(name);
     else
-        m_selectedEntityNameList.removeOne(name);
+        addEntityToMultiSelection(name);
+}
 
-    // Emit multiselection list if it changed
-    if (oldList != m_selectedEntityNameList) {
+void EditorScene::clearMultiSelection()
+{
+    if (m_selectedEntityNameList.size() > 0) {
+        QStringList oldList = m_selectedEntityNameList;
+        m_selectedEntityNameList.clear();
         checkMultiSelectionHighlights(oldList, m_selectedEntityNameList);
-        emit multiSelectionChanged(m_selectedEntityNameList);
+        emit multiSelectionChanged(false);
+        emit multiSelectionListChanged();
+        setSelection(m_sceneEntity);
     }
 }
 
@@ -1873,6 +1850,69 @@ QVector3D EditorScene::getMultiSelectionCenter()
         }
     }
     return m_selectedEntityNameList.size() ? (pos / m_selectedEntityNameList.size()) : QVector3D();
+}
+
+void EditorScene::addEntityToMultiSelection(const QString &name)
+{
+    QStringList oldList = m_selectedEntityNameList;
+
+    if (oldList.size() == 0) {
+        // Do not add if multiselecting the currently selected entity as the first entity
+        if (m_selectedEntity->objectName() == name)
+            return;
+
+        if (m_selectedEntity != m_sceneEntity) {
+            m_selectedEntityNameList.append(m_selectedEntity->objectName());
+            m_dragHandlesTransform->setEnabled(false);
+            handleSelectionTransformChange();
+            m_selectedEntity = nullptr;
+        } else {
+            // Just single-select the new entity and return if the other entity was scene entity
+            EditorSceneItem *item = m_sceneModel->getItemByName(name);
+            if (item) {
+                setSelection(item->entity());
+                return;
+            }
+        }
+    }
+    m_selectedEntityNameList.append(name);
+
+    checkMultiSelectionHighlights(oldList, m_selectedEntityNameList);
+
+    if (oldList.size() == 0)
+        emit multiSelectionChanged(true);
+    emit multiSelectionListChanged();
+}
+
+void EditorScene::removeEntityFromMultiSelection(const QString &name)
+{
+    QStringList oldList = m_selectedEntityNameList;
+    bool removed = m_selectedEntityNameList.removeOne(name);
+
+    if (removed) {
+        checkMultiSelectionHighlights(oldList, m_selectedEntityNameList);
+        bool lastRemoved = m_selectedEntityNameList.size() == 1;
+        EditorSceneItem *lastItem = nullptr;
+        if (lastRemoved) {
+            lastItem = m_sceneModel->getItemByName(m_selectedEntityNameList.at(0));
+            m_selectedEntityNameList.clear();
+            emit multiSelectionChanged(false);
+        }
+        emit multiSelectionListChanged();
+        if (lastRemoved) {
+            if (lastItem)
+                setSelection(lastItem->entity());
+            else
+                setSelection(m_sceneEntity);
+        }
+    }
+}
+
+void EditorScene::renameEntityInMultiSelectionList(const QString &oldName, const QString &newName)
+{
+    int index = m_selectedEntityNameList.indexOf(oldName);
+    if (index > 0)
+        m_selectedEntityNameList.replace(index, newName);
 }
 
 void EditorScene::setClipboardOperation(ClipboardOperation operation)
@@ -1981,34 +2021,30 @@ void EditorScene::clearSelectionBoxes(Qt3DCore::QEntity *skipEntity)
 void EditorScene::endSelectionHandling()
 {
     if (m_dragMode == DragNone && m_pickedEntity) {
-        // Multiselection handling
-        if (m_multiSelect)
-            addToMultiSelection(m_pickedEntity->objectName());
-        else
-            m_selectedEntityNameList.clear();
-
-        // Selection handling
-        if (m_multiSelect && m_selectedEntityNameList.isEmpty())
-            setSelection(m_sceneEntity);
-        else
+        if (m_ctrlDownOnLastLeftPress) {
+            // Multiselection handling
+            toggleEntityMultiSelection(m_pickedEntity->objectName());
+        } else {
+            // Single selection handling
             setSelection(m_pickedEntity);
 
-        // Selecting an object also starts drag, if translate handle is enabled
-        Qt3DRender::QCamera *cameraEntity = qobject_cast<Qt3DRender::QCamera *>(m_pickedEntity);
-        bool viewCenterDrag = cameraEntity && m_cameraViewCenterSelected && !m_viewCenterLocked;
-        bool entityDrag = m_dragHandleTranslateTransform->isEnabled()
-                && m_dragHandlesTransform->isEnabled()
-                && (!cameraEntity || !m_cameraViewCenterSelected);
-        if (viewCenterDrag || entityDrag) {
-            m_dragMode = DragTranslate;
-            m_dragEntity = m_pickedEntity;
-            if (cameraEntity) {
-                if (viewCenterDrag)
-                    m_dragInitialTranslationValue = cameraEntity->viewCenter();
-                else
-                    m_dragInitialTranslationValue = cameraEntity->position();
-            } else {
-                m_dragInitialTranslationValue = m_dragHandlesTransform->translation();
+            // Selecting an object also starts drag, if translate handle is enabled
+            Qt3DRender::QCamera *cameraEntity = qobject_cast<Qt3DRender::QCamera *>(m_pickedEntity);
+            bool viewCenterDrag = cameraEntity && m_cameraViewCenterSelected && !m_viewCenterLocked;
+            bool entityDrag = m_dragHandleTranslateTransform->isEnabled()
+                    && m_dragHandlesTransform->isEnabled()
+                    && (!cameraEntity || !m_cameraViewCenterSelected);
+            if (viewCenterDrag || entityDrag) {
+                m_dragMode = DragTranslate;
+                m_dragEntity = m_pickedEntity;
+                if (cameraEntity) {
+                    if (viewCenterDrag)
+                        m_dragInitialTranslationValue = cameraEntity->viewCenter();
+                    else
+                        m_dragInitialTranslationValue = cameraEntity->position();
+                } else {
+                    m_dragInitialTranslationValue = m_dragHandlesTransform->translation();
+                }
             }
         }
         m_pickedEntity = nullptr;
@@ -2021,6 +2057,14 @@ void EditorScene::handleSelectionTransformChange()
     EditorSceneItem *item = nullptr;
     if (m_selectedEntity && m_selectedEntity != m_sceneEntity)
         item = m_sceneItems.value(m_selectedEntity->id(), nullptr);
+    QPoint translatePoint;
+    QPoint centerPoint;
+    QVector3D translateHandlePos;
+    QVector3D itemCenterHandlePos;
+    QVector3D rotateHandlePos;
+    QVector3D cornerHandlePositions[dragCornerHandleCount];
+    bool showCenterHandle = false;
+
     if (item) {
         Qt3DRender::QCamera *camera = frameGraphCamera();
         resizeCameraViewCenterEntity();
@@ -2041,12 +2085,11 @@ void EditorScene::handleSelectionTransformChange()
 
         // Find out x/y viewport positions of drag handles
 
-        QVector3D translateHandlePos = EditorUtils::projectRay(
+        translateHandlePos = EditorUtils::projectRay(
                     camera->viewMatrix(), camera->projectionMatrix(),
                     m_viewport->width(), m_viewport->height(),
                     m_dragHandlesTransform->matrix() * QVector3D());
 
-        QVector3D cornerHandlePositions[dragCornerHandleCount];
         for (int i = 0; i < dragCornerHandleCount; i++) {
             m_dragHandleScaleTransforms.at(i)->setTranslation(
                         translation * m_dragHandleCornerAdjustments.at(i));
@@ -2060,7 +2103,6 @@ void EditorScene::handleSelectionTransformChange()
 
         // Try to position rotate handle to the upper right corner of the selection box, as
         // drawn on the screen. However, we don't change the corner during drag-rotation.
-        QVector3D rotateHandlePos;
         const float handleDistance = 12.0f;
         if (m_dragMode != DragRotate) {
             float maxDelta = 0.0f;
@@ -2105,11 +2147,7 @@ void EditorScene::handleSelectionTransformChange()
             rotateHandlePos += adjustVector;
         }
 
-        QPoint translatePoint(translateHandlePos.x(), translateHandlePos.y());
-
-        QPoint centerPoint;
-        QVector3D itemCenterHandlePos;
-        bool showCenterHandle = false;
+        translatePoint = QPoint(translateHandlePos.x(), translateHandlePos.y());
         if (item->itemType() != EditorSceneItem::Camera
                 && item->itemType() != EditorSceneItem::Light) {
             itemCenterHandlePos = EditorUtils::projectRay(
@@ -2117,11 +2155,9 @@ void EditorScene::handleSelectionTransformChange()
                         m_viewport->width(), m_viewport->height(),
                         m_dragHandlesTransform->matrix() * m_dragHandleTranslateTransform->matrix()
                         * QVector3D());
-
             centerPoint = QPoint(itemCenterHandlePos.x(), itemCenterHandlePos.y());
             showCenterHandle = translatePoint != centerPoint;
         }
-
         m_meshCenterIndicatorLine->setEnabled(showCenterHandle);
         if (showCenterHandle) {
             QQuaternion rot = QQuaternion::rotationTo(QVector3D(0.0f, 0.0f, 1.0f),
@@ -2132,34 +2168,33 @@ void EditorScene::handleSelectionTransformChange()
                         m_dragHandlesTransform->translation());
             m_meshCenterIndicatorLineTransform->setScale(meshCenter.length());
         }
-
-        // Signal UI to reposition drag handles
-        emit beginDragHandlesRepositioning();
-        emit repositionDragHandle(DragTranslate, translatePoint,
-                                  m_dragHandlesTransform->isEnabled()
-                                  ? m_dragHandleTranslateTransform->isEnabled()
-                                    && translateHandlePos.z() > 0.0f : false, 0,
-                                  translateHandlePos.z());
-        emit repositionDragHandle(DragTranslate, centerPoint,
-                                  m_dragHandlesTransform->isEnabled()
-                                  ? m_dragHandleTranslateTransform->isEnabled()
-                                    && itemCenterHandlePos.z() > 0.0f && showCenterHandle : false,
-                                  1, itemCenterHandlePos.z());
-        emit repositionDragHandle(DragRotate, QPoint(rotateHandlePos.x(), rotateHandlePos.y()),
-                                  m_dragHandlesTransform->isEnabled()
-                                  ? m_dragHandleRotateTransform->isEnabled()
-                                    && rotateHandlePos.z() > 0.0f : false, 0, rotateHandlePos.z());
-        for (int i = 0; i < dragCornerHandleCount; i++) {
-            emit repositionDragHandle(DragScale,
-                                      QPoint(cornerHandlePositions[i].x(),
-                                             cornerHandlePositions[i].y()),
-                                      m_dragHandlesTransform->isEnabled()
-                                      ? m_dragHandleScaleTransforms.at(0)->isEnabled()
-                                        && cornerHandlePositions[i].z() > 0.0f : false, i,
-                                      cornerHandlePositions[i].z());
-        }
-        emit endDragHandlesRepositioning();
     }
+    // Signal UI to reposition drag handles
+    emit beginDragHandlesRepositioning();
+    emit repositionDragHandle(DragTranslate, translatePoint,
+                              m_dragHandlesTransform->isEnabled()
+                              ? m_dragHandleTranslateTransform->isEnabled()
+                                && translateHandlePos.z() > 0.0f : false, 0,
+                              translateHandlePos.z());
+    emit repositionDragHandle(DragTranslate, centerPoint,
+                              m_dragHandlesTransform->isEnabled()
+                              ? m_dragHandleTranslateTransform->isEnabled()
+                                && itemCenterHandlePos.z() > 0.0f && showCenterHandle : false,
+                              1, itemCenterHandlePos.z());
+    emit repositionDragHandle(DragRotate, QPoint(rotateHandlePos.x(), rotateHandlePos.y()),
+                              m_dragHandlesTransform->isEnabled()
+                              ? m_dragHandleRotateTransform->isEnabled()
+                                && rotateHandlePos.z() > 0.0f : false, 0, rotateHandlePos.z());
+    for (int i = 0; i < dragCornerHandleCount; i++) {
+        emit repositionDragHandle(DragScale,
+                                  QPoint(cornerHandlePositions[i].x(),
+                                         cornerHandlePositions[i].y()),
+                                  m_dragHandlesTransform->isEnabled()
+                                  ? m_dragHandleScaleTransforms.at(0)->isEnabled()
+                                    && cornerHandlePositions[i].z() > 0.0f : false, i,
+                                  cornerHandlePositions[i].z());
+    }
+    emit endDragHandlesRepositioning();
 }
 
 void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
@@ -2235,12 +2270,8 @@ bool EditorScene::handleMousePress(QMouseEvent *event)
 {
     m_previousMousePosition = event->pos();
     m_mouseButton = event->button();
-    if (m_mouseButton == Qt::LeftButton) {
-        m_multiSelect = event->modifiers() & Qt::ControlModifier;
-        // Clear multiselection list if m_multiSelect is false
-        if (!m_multiSelect)
-            m_selectedEntityNameList.clear();
-    }
+    if (m_mouseButton == Qt::LeftButton)
+        m_ctrlDownOnLastLeftPress = event->modifiers() & Qt::ControlModifier;
     cancelDrag();
     return false; // Never consume press event
 }

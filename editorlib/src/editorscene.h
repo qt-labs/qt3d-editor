@@ -72,7 +72,8 @@ class EditorScene : public QObject
     Q_OBJECT
     Q_PROPERTY(EditorSceneItemModel *sceneModel READ sceneModel CONSTANT)
     Q_PROPERTY(Qt3DCore::QEntity *selection READ selection WRITE setSelection NOTIFY selectionChanged)
-    Q_PROPERTY(QStringList multiSelection READ multiSelection WRITE setMultiSelection NOTIFY multiSelectionChanged)
+    Q_PROPERTY(QStringList multiSelectionList READ multiSelectionList NOTIFY multiSelectionListChanged)
+    Q_PROPERTY(bool multiSelection READ multiSelection NOTIFY multiSelectionChanged)
     Q_PROPERTY(QString error READ error NOTIFY errorChanged)
     Q_PROPERTY(int activeSceneCameraIndex READ activeSceneCameraIndex WRITE setActiveSceneCameraIndex NOTIFY activeSceneCameraIndexChanged)
     Q_PROPERTY(EditorViewportItem *viewport READ viewport WRITE setViewport NOTIFY viewportChanged)
@@ -236,9 +237,13 @@ public:
     Q_INVOKABLE void dragHandleMove(const QPoint &pos, bool shiftDown, bool ctrlDown, bool altDown);
     Q_INVOKABLE void dragHandleRelease();
     Q_INVOKABLE QString sceneRootName() const { return m_sceneEntity->objectName(); }
-    Q_INVOKABLE QString previousSelectedEntityName() const;
-    Q_INVOKABLE void addToMultiSelection(const QString &name);
+    Q_INVOKABLE void toggleEntityMultiSelection(const QString &name);
+    Q_INVOKABLE void clearMultiSelection();
     Q_INVOKABLE QVector3D getMultiSelectionCenter();
+
+    void removeEntityFromMultiSelection(const QString &name);
+    void addEntityToMultiSelection(const QString &name);
+    void renameEntityInMultiSelectionList(const QString &oldName, const QString &newName);
 
     ClipboardOperation clipboardOperation() { return m_clipboardOperation; }
     void setClipboardOperation(ClipboardOperation operation);
@@ -256,8 +261,9 @@ public:
     void setSelection(Qt3DCore::QEntity *entity);
     Qt3DCore::QEntity *selection() const { return m_selectedEntity; }
 
-    void setMultiSelection(const QStringList &multiSelection);
-    QStringList multiSelection();
+    QStringList multiSelectionList() { return m_selectedEntityNameList; }
+
+    bool multiSelection() const { return m_selectedEntityNameList.size() > 0; }
 
     const QString &error() const { return m_errorString; }
 
@@ -307,7 +313,8 @@ public slots:
 
 signals:
     void selectionChanged(Qt3DCore::QEntity *selection);
-    void multiSelectionChanged(QStringList multiSelection);
+    void multiSelectionListChanged();
+    void multiSelectionChanged(bool multiSelection);
     void errorChanged(const QString &error);
     void freeViewChanged(bool enabled);
     void activeSceneCameraIndexChanged(int index);
@@ -456,10 +463,9 @@ private:
     int m_gridSize;
     int m_duplicateCount;
     Qt3DCore::QEntity *m_previousDuplicate;
-    bool m_multiSelect;
+    bool m_ctrlDownOnLastLeftPress;
     QStringList m_selectedEntityNameList;
     Qt::MouseButton m_mouseButton;
-    Qt3DCore::QEntity *m_previousSelectedEntity;
     QString m_clipboardEntityName;
     ClipboardOperation m_clipboardOperation;
 

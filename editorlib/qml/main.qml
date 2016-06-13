@@ -123,8 +123,6 @@ ApplicationWindow {
 
     property real qlcControlHeight: 28
 
-    property var selectionList: []
-
     property string systemLanguage: editorScene.language
 
     toolBar: EditorToolbar {}
@@ -250,7 +248,7 @@ ApplicationWindow {
         sequence: StandardKey.Copy
         onActivated: {
             // Prevent copying multiselection (for now, at least)
-            if (!selectionList.length)
+            if (!editorScene.multiSelection)
                 mainwindow.copyEntity(selectedEntityName)
         }
     }
@@ -276,7 +274,7 @@ ApplicationWindow {
         sequence: StandardKey.Cut
         onActivated: {
             // Prevent cutting multiselection (for now, at least)
-            if (!selectionList.length)
+            if (!editorScene.multiSelection)
                 mainwindow.cutEntity(selectedEntityName, selectedEntity)
         }
     }
@@ -329,29 +327,11 @@ ApplicationWindow {
         freeView: true
 
         onSelectionChanged: {
-            if (multiSelection.length >= 1) {
-                entityTree.multiSelect = true
-            } else {
-                selectionList.length = 0
-                entityTree.multiSelect = false
-            }
             restoreSelection(selection)
         }
 
-        onMultiSelectionChanged: {
-            selectionList = multiSelection
-            entityTree.multiSelectedCamera = false
-            // Deselect old ones
-            entityTree.view.selection.clear()
-            // Dig indexes of all selected entities and pass the selections to entitytree
-            for (var i = 0; i < multiSelection.length; ++i) {
-                var index = editorScene.sceneModel.getModelIndexByName(multiSelection[i])
-                entityTree.view.selection.select(index, ItemSelectionModel.Select)
-                if (editorScene.sceneModel.editorSceneItemFromIndex(index).itemType()
-                        === EditorSceneItem.Camera) {
-                    entityTree.multiSelectedCamera = true
-                }
-            }
+        onMultiSelectionListChanged: {
+            restoreMultiSelection(editorScene.multiSelectionList)
         }
 
         onErrorChanged: {
@@ -374,18 +354,28 @@ ApplicationWindow {
             selectIndex(index)
         }
 
+        function restoreMultiSelection(selectionList) {
+            // Deselect old ones
+            entityTree.view.selection.clear()
+            // Dig indexes of all selected entities and pass the selections to entitytree
+            for (var i = 0; i < selectionList.length; ++i) {
+                var index = editorScene.sceneModel.getModelIndexByName(multiSelectionList[i])
+                entityTree.view.selection.select(index, ItemSelectionModel.Select)
+                expandTo(index)
+            }
+        }
+
         function selectIndex(index) {
             expandTo(index)
             entityTree.view.forceActiveFocus()
-            if (!entityTree.multiSelect)
-                entityTree.view.selection.setCurrentIndex(index, ItemSelectionModel.ClearAndSelect)
+            entityTree.view.selection.setCurrentIndex(index, ItemSelectionModel.ClearAndSelect)
         }
 
         function expandTo(index) {
             var target = index
             do {
-                target = target.parent
                 entityTree.view.expand(target)
+                target = target.parent
             } while (target.valid)
         }
     }

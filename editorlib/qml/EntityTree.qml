@@ -40,17 +40,16 @@ Item {
     property alias view: entityTreeView
     property alias menu: addComponentMenu
     property bool treeviewPasting: false
-    property bool multiSelect: false
-    property bool multiSelectedCamera: false
 
     Keys.onDeletePressed: {
-        if (multiSelect) {
+        if (editorScene.multiSelection) {
             // Handle multiselection removal
             editorScene.undoHandler.beginMacro("Remove selected")
-            var removeList = editorScene.sceneModel.parentList(selectionList)
+            var removeList = editorScene.sceneModel.parentList(editorScene.multiSelectionList)
             for (var i = 0; i < removeList.length; ++i)
                 editorScene.undoHandler.createRemoveEntityCommand(removeList[i])
             editorScene.undoHandler.endMacro()
+            selectSceneRoot()
         } else {
             // Doublecheck that we don't try to remove the scene root
             if (entityTreeView.selection.currentIndex !== editorScene.sceneModel.sceneEntityIndex())
@@ -63,6 +62,7 @@ Item {
     }
 
     function selectSceneRoot() {
+        editorScene.clearMultiSelection()
         entityTreeView.selection.setCurrentIndex(
                     editorScene.sceneModel.sceneEntityIndex(),
                     ItemSelectionModel.SelectCurrent)
@@ -73,6 +73,8 @@ Item {
         var x = xPos ? xPos : -1
         var y = yPos ? yPos : -1
         entityTreeView.editing = false
+
+        editorScene.clearMultiSelection()
 
         // Never allow inserting to root
         if (entityTreeView.selection.currentIndex.row === -1)
@@ -218,21 +220,16 @@ Item {
                 onPressed: {
                     if (mouse.modifiers & Qt.ControlModifier) {
                         // Handle multiselection
-                        // Prevent multiselecting scene root
-                        if (styleData.index !== editorScene.sceneModel.sceneEntityIndex()) {
-                            editorScene.addToMultiSelection(editorScene.sceneModel.entityName(
-                                                                styleData.index))
-                        }
-                        // If empty list, select scene root
-                        if (selectionList.length === 0) {
-                            selectedEntityName = ""
-                            selectSceneRoot()
+                        // Prevent multiselecting scene root and toggling when singly selected
+                        // entity is clicked again
+                        if ((editorScene.multiSelection
+                                || styleData.index !== entityTreeView.selection.currentIndex)
+                                && styleData.index !== editorScene.sceneModel.sceneEntityIndex()) {
+                            editorScene.toggleEntityMultiSelection(editorScene.sceneModel.entityName(
+                                                                       styleData.index))
                         }
                     } else {
-                        // Clear selectionList
-                        entityTreeView.selection.clear()
-                        selectionList.length = 0
-                        editorScene.multiSelection = selectionList
+                        editorScene.clearMultiSelection()
                         entityTreeView.selection.setCurrentIndex(styleData.index,
                                                                  ItemSelectionModel.SelectCurrent)
                     }
@@ -295,6 +292,7 @@ Item {
                 onDropped: {
                     if (isValidDropTarget(drop.source)) {
                         dragHighlight.visible = false
+                        editorScene.clearMultiSelection()
                         entityTreeView.selection.setCurrentIndex(styleData.index,
                                                                  ItemSelectionModel.SelectCurrent)
                         if (drop.source.drag.target.dragKey === "changeParent") {
@@ -432,14 +430,12 @@ Item {
             target: entityTreeView.selection
             onCurrentIndexChanged: {
                 entityTreeView.editing = false
-                // If there is no current item selected for some reason, fall back to scene root
+                // If there is no current item selected for some reason, fall back to scene root,
+                // except when dealing with multiselection, during which currentIndex can become -1 temporarily.
                 if (entityTreeView.selection.currentIndex.row === -1) {
                     selectedEntityName = ""
-                    if (!selectionList.length) {
-                        editorScene.clearSelectionBoxes()
-                        selectedEntity.showSelectionBox = true
+                    if (!editorScene.multiSelection)
                         selectSceneRoot()
-                    }
                 } else {
                     entityTreeView.sceneRootSelected =
                             (editorScene.sceneModel.sceneEntityIndex() === entityTreeView.selection.currentIndex)
@@ -452,17 +448,13 @@ Item {
                                 selectedEntity.itemType() === EditorSceneItem.Group
                         selectedEntityName = editorScene.sceneModel.entityName(
                                     entityTreeView.selection.currentIndex)
-                        // Don't clear selection boxes if there are items in multiselection list
-                        if (!selectionList.length) {
-                            editorScene.clearSelectionBoxes()
-                            selectedEntity.showSelectionBox = true
-                        }
                     } else {
                         // Should never get here
                         selectedEntityName = ""
-                        editorScene.clearSelectionBoxes()
+                        selectSceneRoot()
                     }
-                    editorScene.selection = selectedEntity.entity()
+                    if (!editorScene.multiSelection)
+                        editorScene.selection = selectedEntity.entity()
                 }
             }
         }

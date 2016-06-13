@@ -62,11 +62,6 @@ void ResetEntityCommand::undo()
         m_sceneModel->insertExistingEntity(m_removedEntity, m_row, parentIndex);
         m_removedEntity = nullptr;
 
-        if (m_type == EditorUtils::InsertableEntities::LightEntity
-                || m_type == EditorUtils::InsertableEntities::CameraEntity) {
-            m_sceneModel->resetModel();
-        }
-
         emit m_sceneModel->selectIndex(m_sceneModel->getModelIndexByName(m_entityName));
     }
 }

@@ -42,6 +42,7 @@
 #include "importentitycommand.h"
 #include "resetentitycommand.h"
 #include "resettransformcommand.h"
+#include "editorsceneitem.h"
 
 #include <QtWidgets/QUndoStack>
 
@@ -235,7 +236,14 @@ void UndoHandler::createReparentEntityCommand(const QString &newParentName,
     if (newParentName.isEmpty() || entityName.isEmpty())
         return;
 
-    m_undoStack->push(new ReparentEntityCommand(m_scene->sceneModel(), newParentName, entityName));
+    // Don't create commands for illegal reparentings
+    EditorSceneItem *newParentItem = m_scene->sceneModel()->getItemByName(newParentName);
+    EditorSceneItem *entityItem = m_scene->sceneModel()->getItemByName(entityName);
+
+    if (m_scene->sceneModel()->canReparent(newParentItem, entityItem)) {
+        m_undoStack->push(new ReparentEntityCommand(m_scene->sceneModel(), newParentName,
+                                                    entityName));
+    }
 }
 
 void UndoHandler::createImportEntityCommand(const QUrl &url)

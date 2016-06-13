@@ -46,7 +46,7 @@ Item {
     Layout.minimumHeight: componentHeight
     Layout.maximumHeight: Layout.minimumHeight
 
-    visible: !entityTree.multiSelect
+    visible: !editorScene.multiSelection
 
     Component.onCompleted: {
         componentHeight = columnLayout.y + columnLayout.height

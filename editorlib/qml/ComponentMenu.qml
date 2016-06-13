@@ -67,7 +67,7 @@ Menu {
     MenuItem {
         text: qsTr("Object Picker") + editorScene.emptyString
         iconSource: "images/picker.png"
-        enabled: !entityTree.multiSelect
+        enabled: !editorScene.multiSelection
         onTriggered: {
             componentPropertiesView.model.appendNewComponent(sceneModel.ObjectPicker)
         }
@@ -77,7 +77,7 @@ Menu {
 
     EntityMenu {
         iconSource: "images/plus.png"
-        enabled: !entityTree.multiSelect && !entityTreeView.cameraSelected
+        enabled: !editorScene.multiSelection && !entityTreeView.cameraSelected
     }
     MenuItem {
         text: qsTr("Remove") + editorScene.emptyString
@@ -85,13 +85,14 @@ Menu {
         iconSource: "images/minus.png"
         onTriggered: {
             entityTreeView.editing = false
-            if (entityTree.multiSelect) {
+            if (editorScene.multiSelection) {
                 // Handle multiselection removal
                 editorScene.undoHandler.beginMacro(text)
-                var removeList = editorScene.sceneModel.parentList(selectionList)
+                var removeList = editorScene.sceneModel.parentList(editorScene.multiSelectionList)
                 for (var i = 0; i < removeList.length; ++i)
                     editorScene.undoHandler.createRemoveEntityCommand(removeList[i])
                 editorScene.undoHandler.endMacro()
+                entityTree.selectSceneRoot()
             } else {
                 // Doublecheck that we don't try to remove the scene root
                 if (entityTreeView.selection.currentIndex !== editorScene.sceneModel.sceneEntityIndex())
@@ -104,13 +105,14 @@ Menu {
         enabled: !entityTreeView.sceneRootSelected
         iconSource: "images/duplicate.png"
         onTriggered: {
-            if (entityTree.multiSelect) {
+            if (editorScene.multiSelection) {
                 // Handle multiselection duplication
                 editorScene.undoHandler.beginMacro(text)
-                var duplicateList = editorScene.sceneModel.parentList(selectionList)
+                var duplicateList = editorScene.sceneModel.parentList(editorScene.multiSelectionList)
                 for (var i = 0; i < duplicateList.length; ++i)
                     editorScene.undoHandler.createDuplicateEntityCommand(duplicateList[i])
                 editorScene.undoHandler.endMacro()
+                editorScene.restoreMultiSelection(editorScene.multiSelectionList)
             } else {
                 var currentSelection = selectedEntity.entity()
                 editorScene.undoHandler.createDuplicateEntityCommand(selectedEntityName)
@@ -120,7 +122,7 @@ Menu {
     }
     MenuItem {
         text: qsTr("Copy (Ctrl + c)") + editorScene.emptyString
-        enabled: !entityTree.multiSelect && !entityTreeView.sceneRootSelected
+        enabled: !editorScene.multiSelection && !entityTreeView.sceneRootSelected
         iconSource: "images/copy.png"
         onTriggered: {
             mainwindow.copyEntity(selectedEntityName)
@@ -128,7 +130,7 @@ Menu {
     }
     MenuItem {
         text: qsTr("Cut (Ctrl + x)") + editorScene.emptyString
-        enabled: !entityTree.multiSelect && !entityTreeView.sceneRootSelected
+        enabled: !editorScene.multiSelection && !entityTreeView.sceneRootSelected
         iconSource: "images/cut.png"
         onTriggered: {
             mainwindow.cutEntity(selectedEntityName, selectedEntity)
@@ -136,7 +138,7 @@ Menu {
     }
     MenuItem {
         text: qsTr("Paste (Ctrl + v)") + editorScene.emptyString
-        enabled: trackMousePosition && !entityTree.multiSelect
+        enabled: trackMousePosition && !editorScene.multiSelection
                  && (!entityTree.treeviewPasting || (entityTree.treeviewPasting
                                                      && editorScene.sceneModel.canReparent(
                          editorScene.sceneModel.editorSceneItemFromIndex(
@@ -153,7 +155,7 @@ Menu {
     MenuItem {
         text: qsTr("Reset") + editorScene.emptyString
         iconSource: "images/reset_all.png"
-        enabled: !entityTree.multiSelect && !entityTreeView.sceneRootSelected
+        enabled: !editorScene.multiSelection && !entityTreeView.sceneRootSelected
         onTriggered: {
             editorScene.undoHandler.createResetEntityCommand(selectedEntityName)
         }
@@ -161,7 +163,7 @@ Menu {
     MenuItem {
         text: qsTr("Reset Transform") + editorScene.emptyString
         iconSource: "images/reset.png"
-        enabled: !entityTree.multiSelect && !entityTreeView.sceneRootSelected
+        enabled: !editorScene.multiSelection && !entityTreeView.sceneRootSelected
                  && !entityTreeView.cameraSelected
         onTriggered: {
             editorScene.undoHandler.createResetTransformCommand(selectedEntityName)
@@ -176,8 +178,8 @@ Menu {
             // Copy list, as the original is emptied on insertEntity
             var reparentList = []
             var groupCenter
-            if (entityTree.multiSelect) {
-                reparentList = editorScene.sceneModel.parentList(selectionList)
+            if (editorScene.multiSelection) {
+                reparentList = editorScene.sceneModel.parentList(editorScene.multiSelectionList)
                 groupCenter = editorScene.getMultiSelectionCenter()
             } else {
                 reparentList[0] = selectedEntityName
@@ -185,10 +187,6 @@ Menu {
             }
 
             // TODO: Allow creating groups under other entities?
-
-            // Select scene root before doing reparenting to avoid having selection changes
-            // while removing, as indexes can be corrupt during the removal
-            entityTree.selectSceneRoot()
 
             // Add new group
             editorScene.undoHandler.createInsertEntityCommand(1, editorScene.sceneRootName(),
@@ -199,11 +197,11 @@ Menu {
             for (var i = 0; i < reparentList.length; ++i)
                 editorScene.undoHandler.createReparentEntityCommand(groupName, reparentList[i])
             editorScene.undoHandler.endMacro()
-            // Clear selection
-            entityTree.multiSelect = false
-            editorScene.multiSelection = []
-            // Select the added group
-            editorScene.selectIndex(index)
+
+            // Single-select the added group. Need to fetch group index again as reparenting
+            // resets the model.
+            editorScene.clearMultiSelection()
+            editorScene.selectIndex(editorScene.sceneModel.getModelIndexByName(groupName))
         }
     }
 }
