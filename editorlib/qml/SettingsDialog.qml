@@ -174,6 +174,10 @@ Window {
         onAccepted: {
             mainwindow.defaultFolder = fileUrl // Use fileUrl, as dialog is in select folder mode
             parseFolderString()
+            // When default folder is changed, reset all saved folders
+            mainwindow.importFolder = fileUrl
+            mainwindow.saveFolder = fileUrl
+            mainwindow.textureFolder = fileUrl
         }
     }
 

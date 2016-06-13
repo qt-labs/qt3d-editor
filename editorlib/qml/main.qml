@@ -80,10 +80,10 @@ ApplicationWindow {
     property string selectedEntityName: ""
     property var sceneModel: EditorSceneItemComponentsModel
     property url saveFileUrl: ""
-    property url defaultFolder: "file:///c:"
-    property url saveFolder: defaultFolder
-    property url textureFolder: defaultFolder
-    property url importFolder: defaultFolder
+    property url defaultFolder: "file:///"
+    property url saveFolder: "file:///"
+    property url textureFolder: "file:///"
+    property url importFolder: "file:///"
     property string saveFileTitleAddition: {
         if (saveFileUrl != "")
             " - " + saveFileUrl.toString().substring(saveFileUrl.toString().lastIndexOf("/") + 1)
