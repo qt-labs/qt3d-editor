@@ -49,6 +49,7 @@ ModelRoleInputField {
         onAccepted: {
             fileInput.undoText = qsTr("Change texture")
             handleEditingFinished(fileUrl)
+            mainwindow.textureFolder = folder
         }
     }
 
@@ -74,7 +75,10 @@ ModelRoleInputField {
                 Layout.alignment: Qt.AlignLeft
                 implicitWidth: parent.width
                 text: url
-                onClicked: fileDialog.open()
+                onClicked: {
+                    fileDialog.folder = mainwindow.textureFolder
+                    fileDialog.open()
+                }
             }
         }
 
@@ -93,7 +97,10 @@ ModelRoleInputField {
             }
             MouseArea {
                 anchors.fill: parent
-                onClicked: fileDialog.open()
+                onClicked: {
+                    fileDialog.folder = mainwindow.textureFolder
+                    fileDialog.open()
+                }
             }
         }
     }

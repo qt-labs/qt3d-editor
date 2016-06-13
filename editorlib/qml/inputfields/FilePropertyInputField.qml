@@ -53,6 +53,7 @@ PropertyInputField {
         title: fileLabel.text
         onAccepted: {
             handleEditingFinished(fileUrl)
+            mainwindow.importFolder = folder
         }
         onRejected: {
             if (fileButton.text === "")
@@ -85,7 +86,10 @@ PropertyInputField {
             implicitWidth: fileInput.width * 0.6 + 20 // Lockbutton width
             implicitHeight: qlcControlHeight
             text: url
-            onClicked: fileDialog.open()
+            onClicked: {
+                fileDialog.folder = mainwindow.importFolder
+                fileDialog.open()
+            }
         }
     }
 }

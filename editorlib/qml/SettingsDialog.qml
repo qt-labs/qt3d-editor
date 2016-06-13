@@ -28,6 +28,7 @@
 import QtQuick 2.5
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.2
+import QtQuick.Dialogs 1.2
 import Qt.labs.settings 1.0
 
 Window {
@@ -42,6 +43,7 @@ Window {
     property bool previousAutoSaveEnabled: autoSaveTimer.running
     property string currentLanguage
     property int currentGridSize
+    property string folderPath
 
     Settings {
         // Use detailed category name, as plugin saves settings under QtCreator application
@@ -49,9 +51,6 @@ Window {
         property alias language: dialog.currentLanguage
         property alias gridSize: dialog.currentGridSize
         // TODO: Save autosave flag?
-        // TODO: Add a default save folder and default texture/mesh/import folder?
-        //property alias defaultSaveFolder: dialog.currentSaveFolder
-        //property alias defaultImportFolder: dialog.currentImportFolder
         // TODO: Anything else?
     }
 
@@ -74,12 +73,13 @@ Window {
         Layout.minimumHeight: savingLayout.Layout.minimumHeight
                               + languageLayout.Layout.minimumHeight
                               + gridLayout.Layout.minimumHeight
-                              + 4 * spacing
+                              + defaultFolderLayout.minimumHeight
+                              + 6 * spacing
 
         ColumnLayout {
             id: savingLayout
 
-            StyledLabel  {
+            StyledLabel {
                 text: qsTr("Automatic Saving") + editorScene.emptyString
                 font.weight: Font.Bold
             }
@@ -98,7 +98,7 @@ Window {
         ColumnLayout {
             id: languageLayout
 
-            StyledLabel  {
+            StyledLabel {
                 text: qsTr("Language") + editorScene.emptyString
                 font.weight: Font.Bold
             }
@@ -127,10 +127,8 @@ Window {
         ColumnLayout {
             id: gridLayout
             width: parent.width
-            spacing: 8
-            Layout.bottomMargin: 8
 
-            StyledLabel  {
+            StyledLabel {
                 text: qsTr("Grid Spacing") + editorScene.emptyString
                 font.weight: Font.Bold
             }
@@ -146,6 +144,36 @@ Window {
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
                 }
             }
+        }
+
+        ColumnLayout {
+            id: defaultFolderLayout
+            width: parent.width
+            spacing: 8
+            Layout.bottomMargin: 8
+
+            StyledLabel {
+                id: defaultFolderLabel
+                text: qsTr("Default Folder") + editorScene.emptyString
+                font.weight: Font.Bold
+            }
+            StyledButton {
+                implicitWidth: parent.width
+                implicitHeight: qlcControlHeight
+                text: folderPath
+                onButtonClicked: fileDialog.open()
+            }
+        }
+    }
+
+    FileDialog {
+        id: fileDialog
+        folder: mainwindow.defaultFolder
+        title: defaultFolderLabel.text
+        selectFolder: true
+        onAccepted: {
+            mainwindow.defaultFolder = fileUrl // Use fileUrl, as dialog is in select folder mode
+            parseFolderString()
         }
     }
 
@@ -227,8 +255,14 @@ Window {
             currentLanguage = "fi"
     }
 
+    function parseFolderString() {
+        folderPath = mainwindow.defaultFolder.toString()
+        folderPath = folderPath.replace(/^(file:\/{3})/,"");
+    }
+
     Component.onCompleted: {
         currentLanguage = editorScene.language
         currentGridSize = editorScene.gridSize
+        parseFolderString()
     }
 }

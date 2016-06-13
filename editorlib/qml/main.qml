@@ -58,6 +58,14 @@ ApplicationWindow {
         property alias entityTreeHeight: entityTree.height
     }
 
+    Settings {
+        category: "Qt 3D SceneEditor Folders"
+        property alias saveFolder: mainwindow.saveFolder
+        property alias textureFolder: mainwindow.textureFolder
+        property alias importFolder: mainwindow.importFolder
+        property alias defaultFolder: mainwindow.defaultFolder
+    }
+
     Item {
         // This item is used to map global mouse position
         id: applicationArea
@@ -72,6 +80,10 @@ ApplicationWindow {
     property string selectedEntityName: ""
     property var sceneModel: EditorSceneItemComponentsModel
     property url saveFileUrl: ""
+    property url defaultFolder: "file:///c:"
+    property url saveFolder: defaultFolder
+    property url textureFolder: defaultFolder
+    property url importFolder: defaultFolder
     property string saveFileTitleAddition: {
         if (saveFileUrl != "")
             " - " + saveFileUrl.toString().substring(saveFileUrl.toString().lastIndexOf("/") + 1)
@@ -126,6 +138,7 @@ ApplicationWindow {
         onAccepted: {
             if (editorScene.loadScene(fileUrl)) {
                 entityTree.selectSceneRoot()
+                saveFolder = folder
                 saveFileUrl = fileUrl
             }
         }
@@ -140,6 +153,7 @@ ApplicationWindow {
         nameFilters: [qsTr("Qt3D Scenes (*.qt3d.qrc)") + editorScene.emptyString]
         onAccepted: {
             editorScene.saveScene(fileUrl)
+            saveFolder = folder
             saveFileUrl = fileUrl
             if (exiting)
                 Qt.quit()
@@ -154,6 +168,7 @@ ApplicationWindow {
         nameFilters: [qsTr("All files (*)") + editorScene.emptyString]
         onAccepted: {
             editorScene.undoHandler.createImportEntityCommand(fileUrl)
+            importFolder = folder
         }
     }
 
@@ -162,12 +177,14 @@ ApplicationWindow {
             saveUnsavedDialog.newFile = false
             saveUnsavedDialog.open()
         } else {
-           loadFileDialog.open()
+            loadFileDialog.folder = saveFolder
+            loadFileDialog.open()
         }
     }
 
     function fileSave() {
         if (saveFileUrl == "") {
+            saveFileDialog.folder = saveFolder
             saveFileDialog.open()
             // No previous autosave file, no need to delete anything
         } else {
@@ -179,6 +196,7 @@ ApplicationWindow {
     function fileSaveAs() {
         if (saveFileUrl != "")
             editorScene.deleteScene(saveFileUrl, true)
+        saveFileDialog.folder = saveFolder
         saveFileDialog.open()
     }
 

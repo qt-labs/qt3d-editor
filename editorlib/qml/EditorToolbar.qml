@@ -66,7 +66,10 @@ Item {
                 disabledIconSource: "images/import_disabled.png"
                 tooltip: qsTr("Import Entity") + editorScene.emptyString
                 buttonEnabled: !editorScene.sceneModel.importEntityInProgress
-                onEnabledButtonClicked: importEntityDialog.open()
+                onEnabledButtonClicked: {
+                    importEntityDialog.folder = mainwindow.importFolder
+                    importEntityDialog.open()
+                }
             }
 
             ToolbarSeparator {}
