@@ -877,7 +877,7 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
 
             // If entity has parents with transfroms, those need to be applied in inverse
             QMatrix4x4 totalTransform = EditorUtils::totalAncestralTransform(m_selectedEntity);
-            if (m_dragHandleIndex == 0) {
+            if (m_dragHandleIndex == 0 && !cameraEntity) {
                 intersection = totalTransform.inverted()
                         * (intersection + m_dragHandlesTransform->rotation()
                            * m_dragHandleTranslateTransform->translation());
@@ -2045,12 +2045,6 @@ void EditorScene::handleSelectionTransformChange()
                     m_viewport->width(), m_viewport->height(),
                     m_dragHandlesTransform->matrix() * QVector3D());
 
-        QVector3D itemCenterHandlePos = EditorUtils::projectRay(
-                    camera->viewMatrix(), camera->projectionMatrix(),
-                    m_viewport->width(), m_viewport->height(),
-                    m_dragHandlesTransform->matrix() * m_dragHandleTranslateTransform->matrix()
-                    * QVector3D());
-
         QVector3D cornerHandlePositions[dragCornerHandleCount];
         for (int i = 0; i < dragCornerHandleCount; i++) {
             m_dragHandleScaleTransforms.at(i)->setTranslation(
@@ -2111,9 +2105,22 @@ void EditorScene::handleSelectionTransformChange()
         }
 
         QPoint translatePoint(translateHandlePos.x(), translateHandlePos.y());
-        QPoint centerPoint(itemCenterHandlePos.x(), itemCenterHandlePos.y());
 
-        bool showCenterHandle = translatePoint != centerPoint;
+        QPoint centerPoint;
+        QVector3D itemCenterHandlePos;
+        bool showCenterHandle = false;
+        if (item->itemType() != EditorSceneItem::Camera
+                && item->itemType() != EditorSceneItem::Light) {
+            itemCenterHandlePos = EditorUtils::projectRay(
+                        camera->viewMatrix(), camera->projectionMatrix(),
+                        m_viewport->width(), m_viewport->height(),
+                        m_dragHandlesTransform->matrix() * m_dragHandleTranslateTransform->matrix()
+                        * QVector3D());
+
+            centerPoint = QPoint(itemCenterHandlePos.x(), itemCenterHandlePos.y());
+            showCenterHandle = translatePoint != centerPoint;
+        }
+
         m_meshCenterIndicatorLine->setEnabled(showCenterHandle);
         if (showCenterHandle) {
             QQuaternion rot = QQuaternion::rotationTo(QVector3D(0.0f, 0.0f, 1.0f),
