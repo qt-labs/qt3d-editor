@@ -33,6 +33,10 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
+    app.setOrganizationName("The Qt Company");
+    app.setOrganizationDomain("qt.io");
+    app.setApplicationName("Qt 3D Scene Editor");
+
     register3DSceneEditorQML();
 
     QQmlApplicationEngine engine;

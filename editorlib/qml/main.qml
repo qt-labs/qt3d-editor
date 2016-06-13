@@ -30,7 +30,9 @@ import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.2
 import QtQuick.Dialogs 1.2
 import QtQml.Models 2.2
+import QtQml 2.2
 import Qt3D.Core 2.0
+import Qt.labs.settings 1.0
 import com.theqtcompany.SceneEditor3D 1.0
 
 ApplicationWindow {
@@ -42,6 +44,19 @@ ApplicationWindow {
     color: paneBackgroundColor
     minimumHeight: 400
     minimumWidth: 640
+
+    Settings {
+        // Save window placement, size, and view panel sizes
+        // Use detailed category name, as plugin saves settings under QtCreator application
+        category: "Qt 3D SceneEditor Window"
+        property alias x: mainwindow.x
+        property alias y: mainwindow.y
+        property alias width: mainwindow.width
+        property alias height: mainwindow.height
+        property alias leftPaneWidth: entityLibrary.width
+        property alias rightPaneWidth: propertyPane.width
+        property alias entityTreeHeight: entityTree.height
+    }
 
     Item {
         // This item is used to map global mouse position
@@ -662,6 +677,9 @@ ApplicationWindow {
     }
 
     Component.onCompleted: {
+        Qt.application.organization = "The Qt Company"
+        Qt.application.domain = "qt.io"
+        Qt.application.name = "Qt 3D Scene Editor"
         // Redraw everything to get rid of artifacts
         showMaximized()
         show()

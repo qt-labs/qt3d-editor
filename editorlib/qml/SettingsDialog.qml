@@ -28,6 +28,7 @@
 import QtQuick 2.5
 import QtQuick.Window 2.2
 import QtQuick.Layouts 1.2
+import Qt.labs.settings 1.0
 
 Window {
     id: dialog
@@ -39,6 +40,28 @@ Window {
     minimumHeight: settingsLayout.Layout.minimumHeight + buttonRow.Layout.minimumHeight
     minimumWidth: buttonRow.Layout.minimumWidth
     property bool previousAutoSaveEnabled: autoSaveTimer.running
+    property string currentLanguage
+    property int currentGridSize
+
+    Settings {
+        // Use detailed category name, as plugin saves settings under QtCreator application
+        category: "Qt 3D SceneEditor General"
+        property alias language: dialog.currentLanguage
+        property alias gridSize: dialog.currentGridSize
+        // TODO: Save autosave flag?
+        // TODO: Add a default save folder and default texture/mesh/import folder?
+        //property alias defaultSaveFolder: dialog.currentSaveFolder
+        //property alias defaultImportFolder: dialog.currentImportFolder
+        // TODO: Anything else?
+    }
+
+    onCurrentLanguageChanged: {
+        editorScene.language = currentLanguage
+    }
+
+    onCurrentGridSizeChanged: {
+        editorScene.gridSize = currentGridSize
+    }
 
     ColumnLayout {
         id: settingsLayout
@@ -82,7 +105,7 @@ Window {
             RowLayout {
                 StyledRadioButton {
                     id: englishButton
-                    checked: (editorScene.language === "en")
+                    checked: (currentLanguage === "en")
                 }
                 StyledLabel {
                     id: englishLabel
@@ -91,7 +114,7 @@ Window {
                 }
                 StyledRadioButton {
                     id: finnishButton
-                    checked: (editorScene.language === "fi")
+                    checked: (currentLanguage === "fi")
                 }
                 StyledLabel {
                     id: finnishLabel
@@ -117,7 +140,7 @@ Window {
                 to: 20
                 stepSize: 1
                 from: 1
-                value: editorScene.gridSize
+                value: currentGridSize
                 Layout.leftMargin: 8
                 contentItem: StyledTextInput {
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
@@ -151,7 +174,7 @@ Window {
             text: qsTr("Apply") + editorScene.emptyString
             onButtonClicked: {
                 setAutoSave()
-                editorScene.gridSize = gridSizeSpinBox.value
+                currentGridSize = gridSizeSpinBox.value
                 setLanguage()
             }
 
@@ -161,12 +184,12 @@ Window {
             text: qsTr("Cancel") + editorScene.emptyString
             onButtonClicked: {
                 saveCheckBox.checked = previousAutoSaveEnabled
-                if (gridSizeSpinBox.value !== editorScene.gridSize)
-                    gridSizeSpinBox.value = editorScene.gridSize
-                if (editorScene.language === "en") {
+                if (gridSizeSpinBox.value !== currentGridSize)
+                    gridSizeSpinBox.value = currentGridSize
+                if (currentLanguage === "en") {
                     englishButton.checked = true
                     finnishButton.checked = false
-                } else if (editorScene.language === "fi") {
+                } else if (currentLanguage === "fi") {
                     englishButton.checked = false
                     finnishButton.checked = true
                 }
@@ -178,7 +201,7 @@ Window {
             text: qsTr("Ok") + editorScene.emptyString
             onButtonClicked: {
                 setAutoSave()
-                editorScene.gridSize = gridSizeSpinBox.value
+                currentGridSize = gridSizeSpinBox.value
                 setLanguage()
                 dialog.close()
             }
@@ -199,8 +222,13 @@ Window {
 
     function setLanguage() {
         if (englishButton.checked)
-            editorScene.language = "en"
+            currentLanguage = "en"
         else if (finnishButton.checked)
-            editorScene.language = "fi"
+            currentLanguage = "fi"
+    }
+
+    Component.onCompleted: {
+        currentLanguage = editorScene.language
+        currentGridSize = editorScene.gridSize
     }
 }

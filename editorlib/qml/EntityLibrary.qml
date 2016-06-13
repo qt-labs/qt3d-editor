@@ -44,8 +44,9 @@ Item {
     Layout.minimumHeight: entityViewHeader.height
     height: splitHeight
     // Adjust width automatically for scrollbar, unless width has been adjusted manually
-    width: ((gridRoot.cellHeight * (gridRoot.count / 2)) > entityView.height)
-           ? optimalWidth + 21 : optimalWidth
+    // TODO: This causes settings save problems. Do we need it, or want to save width instead?
+//    width: ((gridRoot.cellHeight * (gridRoot.count / 2)) > entityView.height)
+//           ? optimalWidth + 21 : optimalWidth
 
     ButtonViewHeader {
         id: entityViewHeader
