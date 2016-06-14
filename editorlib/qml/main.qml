@@ -263,9 +263,9 @@ ApplicationWindow {
                 var sceneItem = editorScene.sceneModel.editorSceneItemFromIndex(index)
                 sceneItem.entity().enabled = true
             }
+            trackMousePosition = true
             editorScene.clipboardContent = entityName
             editorScene.clipboardOperation = EditorScene.ClipboardCopy
-            trackMousePosition = true
             // TODO: When to stop reading mouse movements when copy-pasting?
             // TODO: When any other operation is done?
         }
@@ -282,10 +282,10 @@ ApplicationWindow {
     }
     function cutEntity(entityName, entity) {
         if (entityName !== editorScene.sceneRootName()) {
+            trackMousePosition = true
             editorScene.clipboardContent = entityName
             editorScene.clipboardOperation = EditorScene.ClipboardCut
             entity.entity().enabled = false
-            trackMousePosition = true
         }
     }
 

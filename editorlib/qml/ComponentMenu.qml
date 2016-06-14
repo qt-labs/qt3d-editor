@@ -67,7 +67,7 @@ Menu {
     MenuItem {
         text: qsTr("Object Picker") + editorScene.emptyString
         iconSource: "images/picker.png"
-        enabled: !multiSelect
+        enabled: !entityTree.multiSelect
         onTriggered: {
             componentPropertiesView.model.appendNewComponent(sceneModel.ObjectPicker)
         }
@@ -77,7 +77,7 @@ Menu {
 
     EntityMenu {
         iconSource: "images/plus.png"
-        enabled: !multiSelect && !entityTreeView.cameraSelected
+        enabled: !entityTree.multiSelect && !entityTreeView.cameraSelected
     }
     MenuItem {
         text: qsTr("Remove") + editorScene.emptyString
@@ -85,7 +85,7 @@ Menu {
         iconSource: "images/minus.png"
         onTriggered: {
             entityTreeView.editing = false
-            if (multiSelect) {
+            if (entityTree.multiSelect) {
                 // Handle multiselection removal
                 editorScene.undoHandler.beginMacro(text)
                 var removeList = editorScene.sceneModel.parentList(selectionList)
@@ -104,7 +104,7 @@ Menu {
         enabled: !entityTreeView.sceneRootSelected
         iconSource: "images/duplicate.png"
         onTriggered: {
-            if (multiSelect) {
+            if (entityTree.multiSelect) {
                 // Handle multiselection duplication
                 editorScene.undoHandler.beginMacro(text)
                 var duplicateList = editorScene.sceneModel.parentList(selectionList)
@@ -120,7 +120,7 @@ Menu {
     }
     MenuItem {
         text: qsTr("Copy (Ctrl + c)") + editorScene.emptyString
-        enabled: !multiSelect && !entityTreeView.sceneRootSelected
+        enabled: !entityTree.multiSelect && !entityTreeView.sceneRootSelected
         iconSource: "images/copy.png"
         onTriggered: {
             mainwindow.copyEntity(selectedEntityName)
@@ -128,7 +128,7 @@ Menu {
     }
     MenuItem {
         text: qsTr("Cut (Ctrl + x)") + editorScene.emptyString
-        enabled: !multiSelect && !entityTreeView.sceneRootSelected
+        enabled: !entityTree.multiSelect && !entityTreeView.sceneRootSelected
         iconSource: "images/cut.png"
         onTriggered: {
             mainwindow.cutEntity(selectedEntityName, selectedEntity)
@@ -136,14 +136,15 @@ Menu {
     }
     MenuItem {
         text: qsTr("Paste (Ctrl + v)") + editorScene.emptyString
-        enabled: trackMousePosition && !multiSelect
-                 && (entityTree.treeviewPasting && editorScene.sceneModel.canReparent(
+        enabled: trackMousePosition && !entityTree.multiSelect
+                 && (!entityTree.treeviewPasting || (entityTree.treeviewPasting
+                                                     && editorScene.sceneModel.canReparent(
                          editorScene.sceneModel.editorSceneItemFromIndex(
                              editorScene.sceneModel.getModelIndexByName(
                                  selectedEntityName)),
                          editorScene.sceneModel.editorSceneItemFromIndex(
                              editorScene.sceneModel.getModelIndexByName(
-                                 editorScene.clipboardContent)), true))
+                                 editorScene.clipboardContent)), true)))
         iconSource: "images/paste.png"
         onTriggered: {
             mainwindow.pasteEntity()
@@ -152,7 +153,7 @@ Menu {
     MenuItem {
         text: qsTr("Reset") + editorScene.emptyString
         iconSource: "images/reset_all.png"
-        enabled: !multiSelect && !entityTreeView.sceneRootSelected
+        enabled: !entityTree.multiSelect && !entityTreeView.sceneRootSelected
         onTriggered: {
             editorScene.undoHandler.createResetEntityCommand(selectedEntityName)
         }
@@ -160,7 +161,7 @@ Menu {
     MenuItem {
         text: qsTr("Reset Transform") + editorScene.emptyString
         iconSource: "images/reset.png"
-        enabled: !multiSelect && !entityTreeView.sceneRootSelected
+        enabled: !entityTree.multiSelect && !entityTreeView.sceneRootSelected
                  && !entityTreeView.cameraSelected
         onTriggered: {
             editorScene.undoHandler.createResetTransformCommand(selectedEntityName)
