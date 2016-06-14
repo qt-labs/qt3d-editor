@@ -2401,6 +2401,12 @@ void EditorScene::handleCameraRemoved(Qt3DRender::QCamera *camera)
         if (removeIndex <= m_activeSceneCameraIndex)
             setActiveSceneCameraIndex(m_activeSceneCameraIndex - 1);
     }
+
+    if (!m_sceneCameras.length()) {
+        m_activeSceneCameraFrustumData.frustumEntity->setEnabled(false);
+        m_activeSceneCameraFrustumData.viewCenterEntity->setEnabled(false);
+        m_activeSceneCameraFrustumData.viewVectorEntity->setEnabled(false);
+    }
 }
 
 void EditorScene::handleLightAdded(Qt3DCore::QEntity *lightEntity)
