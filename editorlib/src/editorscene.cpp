@@ -394,7 +394,7 @@ QString EditorScene::duplicateEntity(Qt3DCore::QEntity *entity)
                                                              * ++m_duplicateCount);
 
     Qt3DCore::QEntity *newEntity =
-            m_sceneModel->duplicateEntity(entity, m_sceneEntity, duplicateOffset);
+            m_sceneModel->duplicateEntity(entity, entity->parentEntity(), duplicateOffset);
 
     // Set name and add to scene
     duplicateName = EditorUtils::nameDuplicate(newEntity, entity, m_sceneModel);
