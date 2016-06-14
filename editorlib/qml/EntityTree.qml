@@ -146,6 +146,36 @@ Item {
                     }
                 }
             }
+            handle: Rectangle {
+                    implicitWidth: 20
+                    implicitHeight: 30
+                    color: "transparent"
+                    Rectangle {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        implicitWidth: 14
+                        anchors.bottom: parent.bottom
+                        anchors.top: parent.top
+                        color: mainwindow.selectionColor
+                    }
+            }
+            scrollBarBackground: Rectangle {
+                implicitWidth: 20
+                implicitHeight: 30
+                color: mainwindow.paneBackgroundColor
+            }
+            decrementControl: Image {
+                width: 20
+                source: "images/arrow.png"
+                transform: Rotation {
+                    origin.x: width / 2
+                    origin.y: height / 2
+                    angle: 180
+                }
+            }
+            incrementControl: Image {
+                width: 20
+                source: "images/arrow.png"
+            }
         }
 
         property bool editing: false
