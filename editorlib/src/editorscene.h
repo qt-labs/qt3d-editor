@@ -95,7 +95,8 @@ public:
         DragNone = 0,
         DragTranslate,
         DragScale,
-        DragRotate
+        DragRotate,
+        DragDebug  // Can be used to debugging positions
     };
     Q_ENUM(DragMode)
 
@@ -308,6 +309,8 @@ public:
     void setError(const QString &errorString);
     Qt3DRender::QObjectPicker *createObjectPickerForEntity(Qt3DCore::QEntity *entity);
 
+    void showDebugHandle(bool show, int handleIndex = 0, const QVector3D &worldPosition = QVector3D());
+
 public slots:
     void clearSelectionBoxes(Qt3DCore::QEntity *skipEntity = nullptr);
 
@@ -381,7 +384,7 @@ private:
     void createSceneLoaderChildPickers(Qt3DCore::QEntity *entity,
                                        QList<Qt3DRender::QObjectPicker *> *pickers);
     void checkMultiSelectionHighlights(const QStringList &oldlist, const QStringList &newlist);
-
+    QVector3D snapPosition(const QVector3D &worldPos, bool x, bool y, bool z);
 private:
     Qt3DCore::QEntity *m_rootEntity;
     Qt3DCore::QEntity *m_componentCache;
@@ -444,7 +447,8 @@ private:
     int m_dragHandleIndex;
     DragMode m_dragMode;
     QPoint m_previousMousePosition;
-    QVector3D m_dragInitialTranslationValue;
+    QVector3D m_dragInitialEntityTranslationValue;
+    QVector3D m_dragInitialWorldTranslationValue;
     QVector3D m_dragInitialScaleValue;
     QQuaternion m_dragInitialRotationValue;
     QVector3D m_dragInitialRotateCustomVector;
@@ -452,14 +456,13 @@ private:
     QVector3D m_dragInitialHandleCornerTranslation;
     QVector3D m_dragInitialCenterTranslation;
     QVector3D m_dragHandleCornerTranslation;
+    QVector<QVector3D> m_dragEntitySnapOffsets;
     QMatrix4x4 m_dragInitialHandleMatrix;
     Qt3DCore::QEntity *m_dragEntity;
     bool m_ignoringInitialDrag;
     bool m_viewCenterLocked;
     Qt3DCore::QEntity *m_pickedEntity;
     float m_pickedDistance;
-    QVector3D m_snapToGridIntersection;
-    QVector3D m_lockToAxisScale;
     int m_gridSize;
     int m_duplicateCount;
     Qt3DCore::QEntity *m_previousDuplicate;

@@ -518,19 +518,41 @@ void EditorScene::dragHandlePress(EditorScene::DragMode dragMode, const QPoint &
     if (selectedItem) {
         m_dragHandleIndex = handleIndex;
         if (dragMode == DragTranslate && m_dragHandleTranslateTransform->isEnabled()) {
-            m_cameraViewCenterSelected = false;
             Qt3DRender::QCamera *cameraEntity =
                     qobject_cast<Qt3DRender::QCamera *>(m_selectedEntity);
             if (cameraEntity) {
-                m_dragInitialTranslationValue = cameraEntity->position();
+                if (m_cameraViewCenterSelected && !m_viewCenterLocked)
+                    m_dragInitialWorldTranslationValue = cameraEntity->viewCenter();
+                else
+                    m_dragInitialWorldTranslationValue = cameraEntity->position();
             } else {
                 if (handleIndex) {
-                    m_dragInitialTranslationValue = m_dragHandlesTransform->translation();
+                    m_dragInitialWorldTranslationValue = m_dragHandlesTransform->translation();
                 } else {
-                    m_dragInitialTranslationValue = m_dragHandlesTransform->matrix()
+                    m_dragInitialWorldTranslationValue = m_dragHandlesTransform->matrix()
                             * m_dragHandleTranslateTransform->matrix() * QVector3D();
                 }
             }
+            m_dragInitialEntityTranslationValue = m_selectedEntityTransform->translation();
+
+            // Calculate snap point offset in world coordinates
+            for (int i = 0; i < dragCornerHandleCount; ++i) {
+                if (cameraEntity) {
+                    m_dragEntitySnapOffsets[i] = QVector3D();
+                } else {
+                    QVector3D centerHandleAdj = handleIndex
+                            ? selectedItem->entityMeshCenter()
+                              * m_selectedEntityTransform->scale3D()
+                              / selectedItem->selectionTransform()->scale3D()
+                            : QVector3D();
+                    QVector3D snapPos = (selectedItem->selectionTransform()->matrix()
+                                         * (m_dragHandleCornerAdjustments.at(i)
+                                            * QVector3D(0.5f, 0.5f, 0.5f) + centerHandleAdj));
+                    snapPos -= selectedItem->selectionBoxCenter();
+                    m_dragEntitySnapOffsets[i] = snapPos;
+                }
+            }
+
             m_dragEntity = m_selectedEntity;
             m_dragMode = DragTranslate;
         } else if (dragMode == DragRotate && m_dragHandleRotateTransform->isEnabled()) {
@@ -552,7 +574,7 @@ void EditorScene::dragHandlePress(EditorScene::DragMode dragMode, const QPoint &
             }
             m_dragEntity = m_selectedEntity;
             m_dragMode = DragRotate;
-            m_dragInitialRotationValue = selectedItem->entityTransform()->rotation();
+            m_dragInitialRotationValue = m_selectedEntityTransform->rotation();
             m_dragInitialHandleTranslation = m_dragHandlesTransform->rotation()
                     * m_dragHandleRotateTransform->translation();
             m_dragInitialCenterTranslation = m_dragHandlesTransform->translation();
@@ -560,9 +582,7 @@ void EditorScene::dragHandlePress(EditorScene::DragMode dragMode, const QPoint &
                    && m_dragHandleScaleTransforms.at(0)->isEnabled()) {
             m_dragMode = DragScale;
             m_dragEntity = m_selectedEntity;
-            Qt3DCore::QTransform *itemTransform = selectedItem->entityTransform();
-            m_dragInitialScaleValue = itemTransform->scale3D();
-            m_dragInitialTranslationValue = itemTransform->translation();
+            m_dragInitialScaleValue = m_selectedEntityTransform->scale3D();
             m_dragInitialCenterTranslation = m_dragHandlesTransform->translation();
             m_dragInitialHandleTranslation = m_dragHandlesTransform->rotation()
                     * m_dragHandleScaleTransforms.at(m_dragHandleIndex)->translation();
@@ -769,6 +789,21 @@ Qt3DRender::QObjectPicker *EditorScene::createObjectPickerForEntity(Qt3DCore::QE
     return picker;
 }
 
+// Debug handle is useful for visually debugging calculated world positions
+void EditorScene::showDebugHandle(bool show, int handleIndex, const QVector3D &worldPosition)
+{
+    QVector3D screenPoint;
+    if (show) {
+        Qt3DRender::QCamera *camera = frameGraphCamera();
+        screenPoint = EditorUtils::projectRay(
+                    camera->viewMatrix(), camera->projectionMatrix(),
+                    m_viewport->width(), m_viewport->height(), worldPosition);
+    }
+
+    emit repositionDragHandle(DragDebug, QPoint(screenPoint.x(), screenPoint.y()),
+                              show, handleIndex, 0);
+}
+
 int EditorScene::cameraIndexForEntity(Qt3DCore::QEntity *entity)
 {
     int index = -1;
@@ -837,18 +872,20 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
         QVector3D entityTranslation = m_selectedEntityTransform->translation();
         Qt3DRender::QCamera *cameraEntity = qobject_cast<Qt3DRender::QCamera *>(m_selectedEntity);
         if (cameraEntity) {
-            if (m_cameraViewCenterSelected)
+            if (m_cameraViewCenterSelected && !m_viewCenterLocked)
                 entityTranslation = cameraEntity->viewCenter();
             else
                 entityTranslation = cameraEntity->position();
         }
 
-        QVector3D planeOrigin = m_dragInitialTranslationValue;
+        QVector3D helperNormal = helperPlaneNormal();
+        QVector3D planeOrigin = m_dragInitialWorldTranslationValue;
         QVector3D planeNormal;
-        if (shiftDown || altDown)
+        const bool useCameraNormal = shiftDown || altDown;
+        if (useCameraNormal)
             planeNormal = EditorUtils::cameraNormal(frameGraphCamera());
         else
-            planeNormal = helperPlaneNormal();
+            planeNormal = helperNormal;
 
         float cosAngle = QVector3D::dotProduct(planeOrigin.normalized(), planeNormal);
         float planeOffset = planeOrigin.length() * cosAngle;
@@ -866,7 +903,7 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
 
             if (cameraEntity) {
                 componentType = EditorSceneItemComponentsModel::CameraEntity;
-                if (m_cameraViewCenterSelected)
+                if (m_cameraViewCenterSelected && !m_viewCenterLocked)
                     propertyName = QStringLiteral("viewCenter");
                 else
                     propertyName = QStringLiteral("position");
@@ -874,34 +911,36 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
                 propertyName = QStringLiteral("translation");
             }
 
-            // If entity has parents with transfroms, those need to be applied in inverse
-            QMatrix4x4 totalTransform = EditorUtils::totalAncestralTransform(m_selectedEntity);
-            if (m_dragHandleIndex == 0 && !cameraEntity) {
-                intersection = totalTransform.inverted()
-                        * (intersection + m_dragHandlesTransform->rotation()
-                           * m_dragHandleTranslateTransform->translation());
-            } else {
-                intersection = totalTransform.inverted() * intersection;
-            }
-
+            QVector3D newPosition = intersection;
             if (ctrlDown) {
-                m_snapToGridIntersection.setX(qRound(intersection.x() / m_gridSize) * m_gridSize);
-                m_snapToGridIntersection.setY(qRound(intersection.y() / m_gridSize) * m_gridSize);
-                m_snapToGridIntersection.setZ(qRound(intersection.z() / m_gridSize) * m_gridSize);
-            } else if (altDown) {
-                QVector3D lockedAxis = intersection * helperPlaneNormal();
-                if (!qFuzzyCompare(lockedAxis.x(), 0.0f))
-                    m_snapToGridIntersection.setX(lockedAxis.x());
-                else if (!qFuzzyCompare(lockedAxis.y(), 0.0f))
-                    m_snapToGridIntersection.setY(lockedAxis.y());
-                else if (!qFuzzyCompare(lockedAxis.z(), 0.0f))
-                    m_snapToGridIntersection.setZ(lockedAxis.z());
+                newPosition = snapPosition(intersection,
+                                           useCameraNormal || helperNormal.x() < 0.5,
+                                           useCameraNormal || helperNormal.y() < 0.5,
+                                           useCameraNormal || helperNormal.z() < 0.5);
+            }
+            if (altDown) {
+                QVector3D snapPos = newPosition;
+                newPosition = m_dragInitialEntityTranslationValue;
+                if (helperNormal.x() > 0.5)
+                    newPosition.setX(snapPos.x());
+                else if (helperNormal.y() > 0.5)
+                    newPosition.setY(snapPos.y());
+                else if (helperNormal.z() > 0.5)
+                    newPosition.setZ(snapPos.z());
             } else {
-                m_snapToGridIntersection = intersection;
+                // If entity has parents with transfroms, those need to be applied in inverse
+                QMatrix4x4 totalTransform = EditorUtils::totalAncestralTransform(m_selectedEntity);
+                if (m_dragHandleIndex == 0 && !cameraEntity) {
+                    newPosition = totalTransform.inverted()
+                            * (newPosition + m_dragHandlesTransform->rotation()
+                               * m_dragHandleTranslateTransform->translation());
+                } else {
+                    newPosition = totalTransform.inverted() * newPosition;
+                }
             }
 
             m_undoHandler->createChangePropertyCommand(m_selectedEntity->objectName(), componentType,
-                                                       propertyName, m_snapToGridIntersection,
+                                                       propertyName, newPosition,
                                                        entityTranslation, true);
         }
     }
@@ -949,23 +988,23 @@ void EditorScene::dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, 
             newScale.setX(qMax(qRound(newScale.x()), 1));
             newScale.setY(qMax(qRound(newScale.y()), 1));
             newScale.setZ(qMax(qRound(newScale.z()), 1));
-            m_lockToAxisScale = newScale;
-        } else if (altDown) {
-            QVector3D lockedAxis = newScale * helperPlaneNormal();
-            if (!qFuzzyCompare(lockedAxis.x(), 0.0f))
-                m_lockToAxisScale.setX(lockedAxis.x());
-            else if (!qFuzzyCompare(lockedAxis.y(), 0.0f))
-                m_lockToAxisScale.setY(lockedAxis.y());
-            else if (!qFuzzyCompare(lockedAxis.z(), 0.0f))
-                m_lockToAxisScale.setZ(lockedAxis.z());
-        } else {
-            m_lockToAxisScale = newScale;
+        }
+        if (altDown) {
+            QVector3D helperNormal = helperPlaneNormal();
+            QVector3D snapScale = newScale;
+            newScale = m_dragInitialScaleValue;
+            if (helperNormal.x() > 0.5f)
+                newScale.setX(snapScale.x());
+            else if (helperNormal.y() > 0.5f)
+                newScale.setY(snapScale.y());
+            else if (helperNormal.z() > 0.5f)
+                newScale.setZ(snapScale.z());
         }
 
         // Calculate the translate needed to keep opposite corner anchored
         QMatrix4x4 ancestralTransform = EditorUtils::totalAncestralTransform(m_selectedEntity);
         QVector3D ancestralScale =
-                EditorUtils::totalAncestralScale(m_selectedEntity) * m_lockToAxisScale;
+                EditorUtils::totalAncestralScale(m_selectedEntity) * newScale;
         QVector3D newHandleCornerTranslation = ancestralScale * m_dragHandleCornerTranslation;
         EditorSceneItem *selectedItem = m_sceneItems.value(m_selectedEntity->id(), nullptr);
         if (selectedItem)
@@ -975,7 +1014,7 @@ void EditorScene::dragScaleSelectedEntity(const QPoint &newPos, bool shiftDown, 
 
         m_undoHandler->createChangePropertyCommand(m_selectedEntity->objectName(),
                                                    EditorSceneItemComponentsModel::Transform,
-                                                   QStringLiteral("scale3D"), m_lockToAxisScale,
+                                                   QStringLiteral("scale3D"), newScale,
                                                    m_selectedEntityTransform->scale3D(),
                                                    QStringLiteral("translation"), newTranslation,
                                                    m_selectedEntityTransform->translation(), true);
@@ -1644,6 +1683,8 @@ void EditorScene::createRootEntity()
     m_dragHandleCornerAdjustments[6] = QVector3D( 1.0f,  1.0f, -1.0f);
     m_dragHandleCornerAdjustments[7] = QVector3D( 1.0f,  1.0f,  1.0f);
 
+    m_dragEntitySnapOffsets.resize(dragCornerHandleCount);
+
     // Active scene camera frustum visualization
     m_activeSceneCameraFrustumData.frustumEntity = new Qt3DCore::QEntity(m_rootEntity);
     m_activeSceneCameraFrustumData.viewVectorEntity = new Qt3DCore::QEntity(m_rootEntity);
@@ -2041,16 +2082,8 @@ void EditorScene::endSelectionHandling()
                     && m_dragHandlesTransform->isEnabled()
                     && (!cameraEntity || !m_cameraViewCenterSelected);
             if (viewCenterDrag || entityDrag) {
-                m_dragMode = DragTranslate;
-                m_dragEntity = m_pickedEntity;
-                if (cameraEntity) {
-                    if (viewCenterDrag)
-                        m_dragInitialTranslationValue = cameraEntity->viewCenter();
-                    else
-                        m_dragInitialTranslationValue = cameraEntity->position();
-                } else {
-                    m_dragInitialTranslationValue = m_dragHandlesTransform->translation();
-                }
+                // The mouse position passed to dragHandlePress is irrelevant in this case
+                dragHandlePress(DragTranslate, QPoint(0, 0), 0);
             }
         }
         m_pickedEntity = nullptr;
@@ -2205,7 +2238,7 @@ void EditorScene::handleSelectionTransformChange()
 
 void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
 {
-    if (m_dragMode == DragNone) {
+    if (m_dragMode == DragNone && m_mouseButton == Qt::LeftButton) {
         Qt3DCore::QEntity *pressedEntity = qobject_cast<Qt3DCore::QEntity *>(sender()->parent());
         // If pressedEntity is not enabled, it typically means the pressedEntity is a drag handle
         // and the selection has changed to a different type of entity since the mouse press was
@@ -2241,6 +2274,7 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
                             if (lightData->visibleEntity == pressedEntity) {
                                 pressedEntity = lightData->lightEntity;
                                 select = true;
+                                break;
                             }
                         }
                     } else if (pressedEntity->objectName() == sceneLoaderSubEntityName) {
@@ -2259,13 +2293,9 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
                         }
                     }
                 }
-                if (select && !m_pickedEntity && m_mouseButton == Qt::LeftButton)
+                if (select && !m_pickedEntity)
                     QMetaObject::invokeMethod(this, "endSelectionHandling", Qt::QueuedConnection);
                 m_pickedEntity = pressedEntity;
-                // Get the position of the picked entity, and copy it to m_snapToGridIntersection
-                m_snapToGridIntersection = EditorUtils::entityTransform(m_pickedEntity)->translation();
-                // Get the scale of the picked entity, and copy it to m_lockToAxisScale
-                m_lockToAxisScale = EditorUtils::entityTransform(m_pickedEntity)->scale3D();
             }
         }
     }
@@ -2289,6 +2319,7 @@ bool EditorScene::handleMouseRelease(QMouseEvent *event)
             emit mouseRightButtonReleasedWithoutDragging();
         }
     }
+    m_cameraViewCenterSelected = false;
     cancelDrag();
     return false; // Never consume release event
 }
@@ -2597,4 +2628,43 @@ void EditorScene::checkMultiSelectionHighlights(const QStringList &oldlist,
                                                        newlist.at(i)))->setShowSelectionBox(true);
         }
     }
+}
+
+QVector3D EditorScene::snapPosition(const QVector3D &worldPos, bool x, bool y, bool z)
+{
+    QVector3D newPos = worldPos;
+    float shortestLen = FLT_MAX;
+    int index = 0;
+    QVector3D snapPos;
+    // Snap nearest corner to grid intersection
+    for (int i = 0; i < dragCornerHandleCount; ++i) {
+        QVector3D corner = worldPos;
+        QVector3D currentPos = worldPos;
+        if (x) {
+            corner.setX(worldPos.x() + m_dragEntitySnapOffsets.at(i).x());
+            currentPos.setX(qRound(corner.x() / m_gridSize) * m_gridSize);
+        }
+        if (y) {
+            corner.setY(worldPos.y() + m_dragEntitySnapOffsets.at(i).y());
+            currentPos.setY(qRound(corner.y() / m_gridSize) * m_gridSize);
+        }
+        if (z) {
+            corner.setZ(worldPos.z() + m_dragEntitySnapOffsets.at(i).z());
+            currentPos.setZ(qRound(corner.z() / m_gridSize) * m_gridSize);
+        }
+        float len = (corner - currentPos).length();
+        if (len < shortestLen) {
+            shortestLen = len;
+            snapPos = currentPos;
+            index = i;
+        }
+    }
+    if (x)
+        newPos.setX(snapPos.x() - m_dragEntitySnapOffsets.at(index).x());
+    if (y)
+        newPos.setY(snapPos.y() - m_dragEntitySnapOffsets.at(index).y());
+    if (z)
+        newPos.setZ(snapPos.z() - m_dragEntitySnapOffsets.at(index).z());
+
+    return newPos;
 }

@@ -557,6 +557,14 @@ ApplicationWindow {
                     handleType: EditorScene.DragScale
                     handleIndex: 7
                 }
+
+                // Debug handle for visualizing world positions, uncomment to use.
+                // You can show debug handles with EditorScene::showDebugHandle().
+//                DragHandle {
+//                    handleType: EditorScene.DragDebug
+//                    color: "green"
+//                    baseZ: 4
+//                }
             }
         }
     }
