@@ -276,10 +276,16 @@ void EditorScene::resetScene()
 
 bool EditorScene::saveScene(const QUrl &fileUrl, bool autosave)
 {
+    QUrl url = fileUrl;
+    if (!url.toString().endsWith(QStringLiteral(".qt3d.qrc"))) {
+        QString filePath = url.toString() + QStringLiteral(".qt3d.qrc");
+        url.setUrl(filePath);
+    }
+
     Qt3DCore::QEntity *camera = nullptr;
     if (m_activeSceneCameraIndex >= 0 && m_activeSceneCameraIndex < m_sceneCameras.size())
         camera = m_sceneCameras.at(m_activeSceneCameraIndex).cameraEntity;
-    bool retval = m_sceneParser->exportQmlScene(m_sceneEntity, fileUrl, camera, autosave);
+    bool retval = m_sceneParser->exportQmlScene(m_sceneEntity, url, camera, autosave);
     if (retval)
         m_undoHandler->setClean();
     else
