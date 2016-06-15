@@ -40,7 +40,11 @@ Window {
     color: mainwindow.paneBackgroundColor
     minimumHeight: settingsLayout.Layout.minimumHeight + buttonRow.Layout.minimumHeight
     minimumWidth: buttonRow.Layout.minimumWidth
-    property bool previousAutoSaveEnabled: autoSaveTimer.running
+    property bool previousAutoSaveEnabled
+    property string previousFolder
+    property int previousGridSize
+    property bool autoSaveEnabled: false
+    property string currentFolder
     property string currentLanguage
     property int currentGridSize
     property string folderPath
@@ -50,8 +54,7 @@ Window {
         category: "Qt 3D SceneEditor General"
         property alias language: dialog.currentLanguage
         property alias gridSize: dialog.currentGridSize
-        // TODO: Save autosave flag?
-        // TODO: Anything else?
+        property alias autoSave: dialog.autoSaveEnabled
     }
 
     onCurrentLanguageChanged: {
@@ -60,6 +63,10 @@ Window {
 
     onCurrentGridSizeChanged: {
         editorScene.gridSize = currentGridSize
+    }
+
+    onAutoSaveEnabledChanged: {
+        saveCheckBox.checked = autoSaveEnabled
     }
 
     ColumnLayout {
@@ -138,7 +145,6 @@ Window {
                 to: 20
                 stepSize: 1
                 from: 1
-                value: currentGridSize
                 Layout.leftMargin: 8
                 contentItem: StyledTextInput {
                     inputMethodHints: Qt.ImhFormattedNumbersOnly
@@ -172,12 +178,8 @@ Window {
         title: defaultFolderLabel.text
         selectFolder: true
         onAccepted: {
-            mainwindow.defaultFolder = fileUrl // Use fileUrl, as dialog is in select folder mode
-            parseFolderString()
-            // When default folder is changed, reset all saved folders
-            mainwindow.importFolder = fileUrl
-            mainwindow.saveFolder = fileUrl
-            mainwindow.textureFolder = fileUrl
+            currentFolder = fileUrl // Use fileUrl, as dialog is in select folder mode
+            parseFolderString(fileUrl)
         }
     }
 
@@ -208,22 +210,33 @@ Window {
                 setAutoSave()
                 currentGridSize = gridSizeSpinBox.value
                 setLanguage()
+                setFolder()
             }
-
         }
         StyledButton {
             id: cancelButton
             text: qsTr("Cancel") + editorScene.emptyString
             onButtonClicked: {
-                saveCheckBox.checked = previousAutoSaveEnabled
-                if (gridSizeSpinBox.value !== currentGridSize)
-                    gridSizeSpinBox.value = currentGridSize
+                autoSaveEnabled = previousAutoSaveEnabled
+                if (previousGridSize !== currentGridSize) {
+                    gridSizeSpinBox.value = previousGridSize
+                    currentGridSize = previousGridSize
+                }
                 if (currentLanguage === "en") {
                     englishButton.checked = true
                     finnishButton.checked = false
                 } else if (currentLanguage === "fi") {
                     englishButton.checked = false
                     finnishButton.checked = true
+                }
+                if (previousFolder.length > 0
+                        && currentFolder !== previousFolder) {
+                    mainwindow.defaultFolder = previousFolder
+                    currentFolder = previousFolder
+                    parseFolderString(currentFolder)
+                }
+                if (!autoSaveEnabled) {
+                    autoSaveTimer.stop()
                 }
                 dialog.close()
             }
@@ -233,16 +246,21 @@ Window {
             text: qsTr("Ok") + editorScene.emptyString
             onButtonClicked: {
                 setAutoSave()
+                previousAutoSaveEnabled = autoSaveEnabled
                 currentGridSize = gridSizeSpinBox.value
+                previousGridSize = currentGridSize
                 setLanguage()
+                setFolder()
+                previousFolder = currentFolder
                 dialog.close()
             }
         }
     }
 
     function setAutoSave() {
-        if (saveCheckBox.checked !== previousAutoSaveEnabled) {
-            if (saveCheckBox.checked) {
+        autoSaveEnabled = saveCheckBox.checked
+        if (autoSaveEnabled !== previousAutoSaveEnabled) {
+            if (autoSaveEnabled) {
                 if (saveFileUrl == "")
                     saveFileDialog.open()
                 autoSaveTimer.start()
@@ -259,14 +277,29 @@ Window {
             currentLanguage = "fi"
     }
 
-    function parseFolderString() {
-        folderPath = mainwindow.defaultFolder.toString()
-        folderPath = folderPath.replace(/^(file:\/{3})/,"");
+    function setFolder() {
+        if (previousFolder !== currentFolder) {
+            mainwindow.defaultFolder = currentFolder
+            // When default folder is changed, reset all saved folders
+            mainwindow.importFolder = currentFolder
+            mainwindow.saveFolder = currentFolder
+            mainwindow.textureFolder = currentFolder
+        }
+    }
+
+    function parseFolderString(url) {
+        folderPath = url.toString()
+        folderPath = folderPath.replace(/^(file:\/{2,})/,"");
     }
 
     Component.onCompleted: {
         currentLanguage = editorScene.language
         currentGridSize = editorScene.gridSize
-        parseFolderString()
+        previousGridSize = currentGridSize
+        gridSizeSpinBox.value = currentGridSize
+        currentFolder = mainwindow.defaultFolder
+        previousFolder = currentFolder
+        parseFolderString(currentFolder)
+        previousAutoSaveEnabled = autoSaveTimer.running
     }
 }
