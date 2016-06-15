@@ -83,6 +83,9 @@ static const float freeViewCameraNearPlane = 0.1f;
 static const float freeViewCameraFarPlane = 10000.0f;
 static const float freeViewCameraFov = 45.0f;
 static const int dragCornerHandleCount = 8; // One handle for each selection box corner
+static const QColor selectionBoxColor("#43adee");
+static const QColor cameraColor("#c22555");
+static const QColor helperPlaneColor("#585a5c");
 
 EditorScene::EditorScene(QObject *parent)
     : QObject(parent)
@@ -456,7 +459,7 @@ void EditorScene::showPlaceholderEntity(const QString &name, int type)
         Qt3DExtras::QPhongAlphaMaterial *material = new Qt3DExtras::QPhongAlphaMaterial();
         if (insertableType == EditorUtils::InsertableEntities::GroupEntity) {
             material->setAlpha(0.2f);
-            material->setAmbient("#f4be04");
+            material->setAmbient(selectionBoxColor);
         } else {
             material->setAlpha(0.4f);
             material->setAmbient("#53adee");
@@ -1601,7 +1604,7 @@ void EditorScene::createRootEntity()
     // Selection box material and mesh need to be created before any
     // EditorSceneItem are created
     Qt3DExtras::QPhongMaterial *selectionBoxMaterial = new Qt3DExtras::QPhongMaterial();
-    selectionBoxMaterial->setAmbient(QColor("#f4be04"));
+    selectionBoxMaterial->setAmbient(selectionBoxColor);
     selectionBoxMaterial->setDiffuse(QColor(Qt::black));
     selectionBoxMaterial->setSpecular(QColor(Qt::black));
     selectionBoxMaterial->setShininess(0);
@@ -1615,7 +1618,7 @@ void EditorScene::createRootEntity()
     Qt3DRender::QMaterial *meshCenterLineMaterial = new Qt3DRender::QMaterial();
     meshCenterLineMaterial->setEffect(new OnTopEffect());
     meshCenterLineMaterial->addParameter(new Qt3DRender::QParameter(QStringLiteral("handleColor"),
-                                                                    QColor("#f4be04")));
+                                                                    selectionBoxColor));
 
     m_meshCenterIndicatorLineTransform = new Qt3DCore::QTransform();
     m_meshCenterIndicatorLine->addComponent(indicatorMesh);
@@ -1695,7 +1698,7 @@ void EditorScene::createRootEntity()
     Qt3DRender::QGeometryRenderer *viewCenterMesh = EditorUtils::createCameraViewCenterMesh(1.0f);
 
     Qt3DExtras::QPhongMaterial *frustumMaterial = new Qt3DExtras::QPhongMaterial();
-    frustumMaterial->setAmbient(QColor("#c22555"));
+    frustumMaterial->setAmbient(cameraColor);
     frustumMaterial->setDiffuse(QColor(Qt::black));
     frustumMaterial->setSpecular(QColor(Qt::black));
     frustumMaterial->setShininess(0);
@@ -1731,7 +1734,7 @@ void EditorScene::createHelperPlane()
     Qt3DRender::QGeometryRenderer *planeMesh = EditorUtils::createWireframePlaneMesh(51);
 
     Qt3DExtras::QPhongMaterial *helperPlaneMaterial = new Qt3DExtras::QPhongMaterial();
-    helperPlaneMaterial->setAmbient(QColor("#585a5c"));
+    helperPlaneMaterial->setAmbient(helperPlaneColor);
     helperPlaneMaterial->setDiffuse(QColor(Qt::black));
     helperPlaneMaterial->setSpecular(QColor(Qt::black));
     helperPlaneMaterial->setShininess(0);
@@ -2429,7 +2432,7 @@ void EditorScene::handleCameraAdded(Qt3DRender::QCamera *camera)
     Qt3DRender::QGeometryRenderer *visibleMesh = EditorUtils::createVisibleCameraMesh();
 
     Qt3DExtras::QPhongMaterial *cameraMaterial = new Qt3DExtras::QPhongMaterial();
-    cameraMaterial->setAmbient(QColor("#c22555"));
+    cameraMaterial->setAmbient(cameraColor);
     cameraMaterial->setDiffuse(QColor(Qt::black));
     cameraMaterial->setSpecular(QColor(Qt::black));
     cameraMaterial->setShininess(0);
