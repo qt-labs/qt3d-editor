@@ -715,8 +715,7 @@ Qt3DCore::QEntity *EditorSceneItemModel::duplicateEntity(Qt3DCore::QEntity *enti
                     if (newTransform) {
                         if (offset) {
                             newTransform->setTranslation(newTransform->translation()
-                                                         + duplicateOffset
-                                                         * newTransform->scale3D());
+                                                         + duplicateOffset);
                         } else {
                             QVector3D newPos;
                             if (!newParent) {
