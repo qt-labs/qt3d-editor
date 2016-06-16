@@ -43,6 +43,7 @@ Window {
     property bool previousAutoSaveEnabled
     property string previousFolder
     property int previousGridSize
+    property string previousLanguage
     property bool autoSaveEnabled: false
     property string currentFolder
     property string currentLanguage
@@ -222,12 +223,15 @@ Window {
                     gridSizeSpinBox.value = previousGridSize
                     currentGridSize = previousGridSize
                 }
-                if (currentLanguage === "en") {
-                    englishButton.checked = true
-                    finnishButton.checked = false
-                } else if (currentLanguage === "fi") {
-                    englishButton.checked = false
-                    finnishButton.checked = true
+                if (previousLanguage !== currentLanguage) {
+                    currentLanguage = previousLanguage
+                    if (currentLanguage === "en") {
+                        englishButton.checked = true
+                        finnishButton.checked = false
+                    } else if (currentLanguage === "fi") {
+                        englishButton.checked = false
+                        finnishButton.checked = true
+                    }
                 }
                 if (previousFolder.length > 0
                         && currentFolder !== previousFolder) {
@@ -250,6 +254,7 @@ Window {
                 currentGridSize = gridSizeSpinBox.value
                 previousGridSize = currentGridSize
                 setLanguage()
+                previousLanguage = currentLanguage
                 setFolder()
                 previousFolder = currentFolder
                 dialog.close()
@@ -294,6 +299,7 @@ Window {
 
     Component.onCompleted: {
         currentLanguage = editorScene.language
+        previousLanguage = currentLanguage
         currentGridSize = editorScene.gridSize
         previousGridSize = currentGridSize
         gridSizeSpinBox.value = currentGridSize
