@@ -277,6 +277,8 @@ void EditorSceneItemModel::resetModel()
     // Select scene root after reset, unless multiselecting
     if (!m_scene->multiSelection())
         emit selectIndex(sceneEntityIndex());
+
+    emit resetComplete();
 }
 
 EditorSceneItem *EditorSceneItemModel::editorSceneItemFromIndex(const QModelIndex &index) const

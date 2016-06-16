@@ -182,6 +182,7 @@ Item {
         property bool sceneRootSelected: true
         property bool cameraSelected: true
         property bool groupSelected: true
+        property real preResetContentY: 0
 
         onExpanded: {
             model.addExpandedItem(index)
@@ -199,6 +200,12 @@ Item {
             onSelectIndex: {
                 entityTreeView.selection.setCurrentIndex(selectIndex,
                                                          ItemSelectionModel.SelectCurrent)
+            }
+            onModelAboutToBeReset: {
+                entityTreeView.preResetContentY = entityTreeView.flickableItem.contentY
+            }
+            onResetComplete: {
+                entityTreeView.flickableItem.contentY = entityTreeView.preResetContentY
             }
         }
 

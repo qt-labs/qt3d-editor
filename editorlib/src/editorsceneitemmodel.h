@@ -105,6 +105,7 @@ signals:
     void expandItems(const QModelIndexList &items);
     void selectIndex(const QModelIndex &selectIndex);
     void importEntityInProgressChanged(bool importInProgress);
+    void resetComplete();
 
 private slots:
     void handleEntityNameChange();
