@@ -86,7 +86,7 @@ static const float freeViewCameraFarPlane = 10000.0f;
 static const float freeViewCameraFov = 45.0f;
 static const int dragCornerHandleCount = 8; // One handle for each selection box corner
 static const QColor selectionBoxColor("#43adee");
-static const QColor cameraColor("#c22555");
+static const QColor cameraFrustumColor("#c22555");
 static const QColor helperPlaneColor("#585a5c");
 
 EditorScene::EditorScene(QObject *parent)
@@ -1638,9 +1638,7 @@ void EditorScene::createRootEntity()
     m_sceneItems.insert(m_rootEntity->id(), m_rootItem);
 
     m_renderSettings = new Qt3DRender::QRenderSettings();
-    // TODO: TrianglePicking doesn't work for current camera model as it is just GL_LINES.
-    // TODO: We need a proper camera mesh to enable it.
-    //m_renderSettings->pickingSettings()->setPickMethod(Qt3DRender::QPickingSettings::TrianglePicking);
+    m_renderSettings->pickingSettings()->setPickMethod(Qt3DRender::QPickingSettings::TrianglePicking);
     m_renderSettings->pickingSettings()->setPickResultMode(Qt3DRender::QPickingSettings::AllPicks);
     m_renderSettings->setObjectName(QStringLiteral("__internal Scene frame graph"));
     m_renderer = new Qt3DExtras::QForwardRenderer();
@@ -1700,7 +1698,7 @@ void EditorScene::createRootEntity()
     Qt3DRender::QGeometryRenderer *viewCenterMesh = EditorUtils::createCameraViewCenterMesh(1.0f);
 
     Qt3DExtras::QPhongMaterial *frustumMaterial = new Qt3DExtras::QPhongMaterial();
-    frustumMaterial->setAmbient(cameraColor);
+    frustumMaterial->setAmbient(cameraFrustumColor);
     frustumMaterial->setDiffuse(QColor(Qt::black));
     frustumMaterial->setSpecular(QColor(Qt::black));
     frustumMaterial->setShininess(0);
@@ -2109,9 +2107,10 @@ void EditorScene::handleSelectionTransformChange()
     QVector3D cornerHandlePositions[dragCornerHandleCount];
     bool showCenterHandle = false;
 
+    resizeCameraViewCenterEntity();
+
     if (item) {
         Qt3DRender::QCamera *camera = frameGraphCamera();
-        resizeCameraViewCenterEntity();
 
         m_dragHandlesTransform->setTranslation(item->selectionBoxCenter());
         m_dragHandlesTransform->setRotation(item->selectionTransform()->rotation());
@@ -2368,7 +2367,7 @@ QVector3D EditorScene::projectVectorOnCameraPlane(const QVector3D &vector) const
 void EditorScene::resizeCameraViewCenterEntity()
 {
     // Rescale the camera viewcenter entity according to distance, as it is draggable
-    const float vcEntityAngle = 0.006f;
+    const float vcEntityAngle = 0.0045f;
     QVector3D vcPos = m_activeSceneCameraFrustumData.viewCenterTransform->translation();
     float distanceToVc = (vcPos - frameGraphCamera()->position()).length();
     float vcScale = vcEntityAngle * distanceToVc;
@@ -2434,7 +2433,7 @@ void EditorScene::handleCameraAdded(Qt3DRender::QCamera *camera)
     Qt3DRender::QGeometryRenderer *visibleMesh = EditorUtils::createVisibleCameraMesh();
 
     Qt3DExtras::QPhongMaterial *cameraMaterial = new Qt3DExtras::QPhongMaterial();
-    cameraMaterial->setAmbient(cameraColor);
+    cameraMaterial->setAmbient(QColor(Qt::black));
     cameraMaterial->setDiffuse(QColor(Qt::black));
     cameraMaterial->setSpecular(QColor(Qt::black));
     cameraMaterial->setShininess(0);
@@ -2564,6 +2563,8 @@ void EditorScene::handleViewportSizeChange()
     qreal aspectRatio = m_viewport->width() / qMax(m_viewport->height(), 1.0);
     m_freeViewCameraEntity->lens()->setPerspectiveProjection(
                 freeViewCameraFov, aspectRatio, freeViewCameraNearPlane, freeViewCameraFarPlane);
+    // Need to update drag handle positions
+    handleSelectionTransformChange();
 }
 
 void EditorScene::handleEntityNameChange()

@@ -661,56 +661,9 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createDefaultCustomMesh()
 
 Qt3DRender::QGeometryRenderer *EditorUtils::createVisibleCameraMesh()
 {
-    // Creates a camera 'mesh' that is is made up of GL_LINES
-    // TODO: Perhaps create a nice custom mesh for camera instead?
-    Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer();
-    Qt3DRender::QGeometry *geometry = new Qt3DRender::QGeometry(mesh);
-    Qt3DRender::QBuffer *dataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::VertexBuffer,
-                                                              geometry);
-    Qt3DRender::QBuffer *indexDataBuffer = new Qt3DRender::QBuffer(Qt3DRender::QBuffer::IndexBuffer,
-                                                                   geometry);
-    QByteArray vertexBufferData;
-    QByteArray indexBufferData;
-
-    vertexBufferData.resize(8 * 3 * sizeof(float));
-    indexBufferData.resize(10 * 2 * sizeof(ushort));
-
-    float *vPtr = reinterpret_cast<float *>(vertexBufferData.data());
-    vPtr[0]  = -0.5f; vPtr[1]  = 0.5f;  vPtr[2]  = -0.5f;
-    vPtr[3]  = -0.5f; vPtr[4]  = -0.5f; vPtr[5]  = -0.5f;
-    vPtr[6]  = 0.5f;  vPtr[7]  = -0.5f; vPtr[8]  = -0.5f;
-    vPtr[9]  = 0.5f;  vPtr[10] = 0.5f;  vPtr[11] = -0.5f;
-    vPtr[12] = 0.0f;  vPtr[13] = 0.0f;  vPtr[14] = 0.5f;
-    vPtr[15] = -0.1f; vPtr[16] = 0.5f;  vPtr[17] = -0.5f;
-    vPtr[18] = 0.1f;  vPtr[19] = 0.5f;  vPtr[20] = -0.5f;
-    vPtr[21] = 0.0f;  vPtr[22] = 0.7f;  vPtr[23] = -0.5f;
-
-    ushort *iPtr = reinterpret_cast<ushort *>(indexBufferData.data());
-    iPtr[0]  = 0; iPtr[1]  = 1;
-    iPtr[2]  = 1; iPtr[3]  = 2;
-    iPtr[4]  = 2; iPtr[5]  = 3;
-    iPtr[6]  = 3; iPtr[7]  = 0;
-    iPtr[8]  = 0; iPtr[9]  = 4;
-    iPtr[10] = 1; iPtr[11] = 4;
-    iPtr[12] = 2; iPtr[13] = 4;
-    iPtr[14] = 3; iPtr[15] = 4;
-    iPtr[16] = 5; iPtr[17] = 7;
-    iPtr[18] = 6; iPtr[19] = 7;
-
-    dataBuffer->setData(vertexBufferData);
-    indexDataBuffer->setData(indexBufferData);
-
-    addPositionAttributeToGeometry(geometry, dataBuffer, 8);
-    addIndexAttributeToGeometry(geometry, indexDataBuffer, 20);
-
-    mesh->setInstanceCount(1);
-    mesh->setIndexOffset(0);
-    mesh->setFirstInstance(0);
-    mesh->setVertexCount(20);
-    mesh->setPrimitiveType(Qt3DRender::QGeometryRenderer::Lines);
-    mesh->setGeometry(geometry);
-
-    return mesh;
+    Qt3DRender::QMesh *customMesh = new Qt3DRender::QMesh();
+    customMesh->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/meshes/camera.obj")));
+    return customMesh;
 }
 
 Qt3DRender::QGeometryRenderer *EditorUtils::createCameraViewVectorMesh()

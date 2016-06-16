@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/qt3deditorlib">
-        <file>meshes/cameracone.obj</file>
+        <file>meshes/camera.obj</file>
         <file>meshes/defaultmesh.obj</file>
         <file>meshes/spotlight.obj</file>
         <file>meshes/directionallight.obj</file>

@@ -96,7 +96,7 @@ EditorSceneItem::EditorSceneItem(EditorScene *scene, Qt3DCore::QEntity *entity,
     }
     bool isCamera = qobject_cast<Qt3DRender::QCamera *>(entity);
     if (isCamera)
-        m_entityMeshExtents = QVector3D(1.4f, 1.4f, 1.4f);
+        m_entityMeshExtents = QVector3D(1.0f, 1.0f, 1.75f);
 
     // Selection transform is needed for child items, even if we don't have a box
     m_selectionTransform = new Qt3DCore::QTransform;
