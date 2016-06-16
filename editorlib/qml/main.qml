@@ -428,6 +428,7 @@ ApplicationWindow {
 
         onYes: {
             if (saveFileUrl == "") {
+                saveFileDialog.folder = saveFolder
                 saveFileDialog.open()
                 // No previous autosave file, no need to delete anything
             } else {
@@ -442,6 +443,7 @@ ApplicationWindow {
                 showNormalYPlane()
                 saveFileUrl = ""
             } else {
+                loadFileDialog.folder = saveFolder
                 loadFileDialog.open()
             }
         }
