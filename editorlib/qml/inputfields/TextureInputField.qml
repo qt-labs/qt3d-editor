@@ -75,6 +75,14 @@ ModelRoleInputField {
                 Layout.alignment: Qt.AlignLeft
                 implicitWidth: parent.width
                 text: url
+                contentItem: Text {
+                        text: fileButton.text
+                        font: fileButton.font
+                        color: mainwindow.itemBackgroundColor
+                        horizontalAlignment: Text.AlignLeft
+                        verticalAlignment: Text.AlignVCenter
+                        elide: Text.ElideRight
+                    }
                 onClicked: {
                     fileDialog.folder = mainwindow.textureFolder
                     fileDialog.open()
