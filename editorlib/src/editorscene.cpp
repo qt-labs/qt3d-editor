@@ -67,6 +67,8 @@
 
 #include <QtQml/QQmlEngine>
 
+#include <cfloat>
+
 //#define TEST_SCENE // If a test scene is wanted instead of the default scene
 
 #ifdef TEST_SCENE
