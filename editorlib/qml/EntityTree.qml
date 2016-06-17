@@ -197,10 +197,6 @@ Item {
                 for (var i = 0; i < items.length; i++)
                     entityTreeView.expand(items[i])
             }
-            onSelectIndex: {
-                entityTreeView.selection.setCurrentIndex(selectIndex,
-                                                         ItemSelectionModel.SelectCurrent)
-            }
             onModelAboutToBeReset: {
                 entityTreeView.preResetContentY = entityTreeView.flickableItem.contentY
             }

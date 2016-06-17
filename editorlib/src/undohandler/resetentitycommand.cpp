@@ -60,9 +60,8 @@ void ResetEntityCommand::undo()
         // Insert the old entity back
         QModelIndex parentIndex = m_sceneModel->getModelIndexByName(m_parentEntityName);
         m_sceneModel->insertExistingEntity(m_removedEntity, m_row, parentIndex);
+        m_sceneModel->scene()->setSelection(m_removedEntity);
         m_removedEntity = nullptr;
-
-        emit m_sceneModel->selectIndex(m_sceneModel->getModelIndexByName(m_entityName));
     }
 }
 
@@ -95,6 +94,5 @@ void ResetEntityCommand::redo()
             break;
         }
     }
-
-    emit m_sceneModel->selectIndex(m_sceneModel->getModelIndexByName(m_entityName));
+    m_sceneModel->scene()->setSelection(entity);
 }

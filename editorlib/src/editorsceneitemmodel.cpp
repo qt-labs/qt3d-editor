@@ -195,7 +195,7 @@ void EditorSceneItemModel::handleImportEntityLoaderStatusChanged()
                     fixEntityNames(duplicate);
                 }
                 resetModel();
-                emit selectIndex(getModelIndexByName(m_sceneLoaderEntity->objectName()));
+                m_scene->setSelection(m_sceneLoaderEntity);
             } else if (sceneLoader->status() == Qt3DRender::QSceneLoader::Error) {
                 m_scene->setError(tr("Failed to import an Entity"));
             }
@@ -260,6 +260,8 @@ QHash<int, QByteArray> EditorSceneItemModel::roleNames() const
 
 void EditorSceneItemModel::resetModel()
 {
+    m_scene->ensureSelection();
+
     QAbstractItemModel::beginResetModel();
 
     // Reconnect all entities
@@ -273,10 +275,6 @@ void EditorSceneItemModel::resetModel()
     Q_FOREACH (const QString entityName, m_expandedItems)
         expandedIndexList.append(getModelIndexByName(entityName));
     emit expandItems(expandedIndexList);
-
-    // Select scene root after reset, unless multiselecting
-    if (!m_scene->multiSelection())
-        emit selectIndex(sceneEntityIndex());
 
     emit resetComplete();
 }
@@ -580,9 +578,6 @@ void EditorSceneItemModel::reparentEntity(const QModelIndex &newParentIndex,
         entityTransform->setMatrix(newMatrix);
 
     resetModel();
-
-    // Keep the moved item selected
-    emit selectIndex(getModelIndexByName(duplicate->objectName()));
 }
 
 void EditorSceneItemModel::addExpandedItem(const QModelIndex &index)

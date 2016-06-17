@@ -310,6 +310,7 @@ public:
     Qt3DRender::QObjectPicker *createObjectPickerForEntity(Qt3DCore::QEntity *entity);
 
     void showDebugHandle(bool show, int handleIndex = 0, const QVector3D &worldPosition = QVector3D());
+    void ensureSelection();
 
 public slots:
     void clearSelectionBoxes(Qt3DCore::QEntity *skipEntity = nullptr);
@@ -383,8 +384,12 @@ private:
     void setSceneEntity(Qt3DCore::QEntity *newSceneEntity = nullptr);
     void createSceneLoaderChildPickers(Qt3DCore::QEntity *entity,
                                        QList<Qt3DRender::QObjectPicker *> *pickers);
-    void checkMultiSelectionHighlights(const QStringList &oldlist, const QStringList &newlist);
+    void checkMultiSelectionHighlights();
     QVector3D snapPosition(const QVector3D &worldPos, bool x, bool y, bool z);
+    Q_INVOKABLE void doEnsureSelection();
+    EditorSceneItem *itemByName(const QString &name);
+    void clearSingleSelection();
+
 private:
     Qt3DCore::QEntity *m_rootEntity;
     Qt3DCore::QEntity *m_componentCache;
@@ -400,6 +405,7 @@ private:
     EditorSceneItem *m_sceneEntityItem;
     Qt3DCore::QEntity *m_selectedEntity;
     Qt3DCore::QTransform *m_selectedEntityTransform;
+    QString m_ensureSelectionEntityName;
     bool m_cameraViewCenterSelected;
 
     QString m_errorString;

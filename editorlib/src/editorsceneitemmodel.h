@@ -103,7 +103,6 @@ public:
 signals:
     void freeViewChanged(bool enabled);
     void expandItems(const QModelIndexList &items);
-    void selectIndex(const QModelIndex &selectIndex);
     void importEntityInProgressChanged(bool importInProgress);
     void resetComplete();
 
