@@ -630,7 +630,6 @@ void EditorScene::dragHandleMove(const QPoint &pos, bool shiftDown, bool ctrlDow
         default:
             break;
         }
-        m_previousMousePosition = pos;
     }
 }
 
@@ -2385,9 +2384,9 @@ bool EditorScene::handleMousePress(QMouseEvent *event)
 bool EditorScene::handleMouseRelease(QMouseEvent *event)
 {
     if (event->button() == Qt::RightButton) {
-        if (m_dragMode == DragNone || m_ignoringInitialDrag) {
+        QPoint delta = event->pos() - m_previousMousePosition;
+        if (delta.manhattanLength() < 5 && (m_dragMode == DragNone || m_ignoringInitialDrag))
             emit mouseRightButtonReleasedWithoutDragging();
-        }
     }
     m_cameraViewCenterSelected = false;
     cancelDrag();
