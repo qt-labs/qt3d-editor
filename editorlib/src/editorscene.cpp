@@ -127,6 +127,7 @@ EditorScene::EditorScene(QObject *parent)
     , m_previousDuplicate(nullptr)
     , m_ctrlDownOnLastLeftPress(false)
     , m_clipboardOperation(ClipboardNone)
+    , m_groupBoxUpdatePending(false)
 {
     setLanguage(language());
     retranslateUi();
@@ -241,7 +242,9 @@ void EditorScene::removeEntity(Qt3DCore::QEntity *entity)
     m_sceneItems.remove(entity->id());
 
     if (m_selectedEntity == entity || multiSelection())
-        ensureSelection();
+        queueEnsureSelection();
+
+    queueUpdateGroupSelectionBoxes();
 
     delete item;
     delete entity;
@@ -809,7 +812,7 @@ void EditorScene::showDebugHandle(bool show, int handleIndex, const QVector3D &w
                               show, handleIndex, 0);
 }
 
-void EditorScene::ensureSelection()
+void EditorScene::queueEnsureSelection()
 {
     // Ensure that something is selected after the current pending events have executed
     if (m_sceneEntity && m_ensureSelectionEntityName.isEmpty()) {
@@ -858,6 +861,26 @@ void EditorScene::doEnsureSelection()
         }
     }
     m_ensureSelectionEntityName.clear();
+}
+
+void EditorScene::queueUpdateGroupSelectionBoxes()
+{
+    // Queue asynchronous update to group selection boxes
+    if (!m_groupBoxUpdatePending) {
+        m_groupBoxUpdatePending = true;
+        QMetaObject::invokeMethod(this, "doUpdateGroupSelectionBoxes", Qt::QueuedConnection);
+    }
+}
+
+void EditorScene::doUpdateGroupSelectionBoxes()
+{
+    const QList<EditorSceneItem *> items = m_sceneItems.values();
+    for (int i = 0; i < items.size(); ++i) {
+        EditorSceneItem *item = items.at(i);
+        if (item && item->itemType() == EditorSceneItem::Group && item->isSelectionBoxShowing())
+            item->updateGroupExtents();
+    }
+    m_groupBoxUpdatePending = false;
 }
 
 EditorSceneItem *EditorScene::itemByName(const QString &name)

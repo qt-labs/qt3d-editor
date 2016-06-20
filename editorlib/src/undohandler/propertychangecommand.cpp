@@ -87,6 +87,7 @@ void PropertyChangeCommand::undo()
     setProperty(object, m_propertyName, m_oldValue);
     if (!m_propertyName2.isEmpty())
         setProperty(object, m_propertyName2, m_oldValue2);
+    m_sceneModel->scene()->queueUpdateGroupSelectionBoxes();
 }
 
 void PropertyChangeCommand::redo()
@@ -97,6 +98,7 @@ void PropertyChangeCommand::redo()
     setProperty(object, m_propertyName, m_newValue);
     if (!m_propertyName2.isEmpty())
         setProperty(object, m_propertyName2, m_newValue2);
+    m_sceneModel->scene()->queueUpdateGroupSelectionBoxes();
 }
 
 bool PropertyChangeCommand::mergeWith(const QUndoCommand *other)

@@ -55,12 +55,15 @@ void ResetEntityCommand::undo()
     if (m_removedEntity) {
         // Remove the new entity with default values
         QModelIndex index = m_sceneModel->getModelIndexByName(m_entityName);
+        EditorSceneItem *item = m_sceneModel->editorSceneItemFromIndex(index);
+        bool reselect = item->entity() == m_sceneModel->scene()->selection();
         m_sceneModel->removeEntity(index);
 
         // Insert the old entity back
         QModelIndex parentIndex = m_sceneModel->getModelIndexByName(m_parentEntityName);
         m_sceneModel->insertExistingEntity(m_removedEntity, m_row, parentIndex);
-        m_sceneModel->scene()->setSelection(m_removedEntity);
+        if (reselect)
+            m_sceneModel->scene()->setSelection(m_removedEntity);
         m_removedEntity = nullptr;
     }
 }
@@ -73,6 +76,7 @@ void ResetEntityCommand::redo()
     m_row = index.row();
     EditorSceneItem *item = m_sceneModel->editorSceneItemFromIndex(index);
     m_type = EditorUtils::insertableEntityType(item->entity());
+    bool reselect = item->entity() == m_sceneModel->scene()->selection();
 
     // Insert a new entity with default values
     Qt3DCore::QEntity *entity = m_sceneModel->createEntity(m_type, QVector3D(), parentIndex);
@@ -94,5 +98,6 @@ void ResetEntityCommand::redo()
             break;
         }
     }
-    m_sceneModel->scene()->setSelection(entity);
+    if (reselect)
+        m_sceneModel->scene()->setSelection(entity);
 }

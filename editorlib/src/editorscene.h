@@ -310,7 +310,8 @@ public:
     Qt3DRender::QObjectPicker *createObjectPickerForEntity(Qt3DCore::QEntity *entity);
 
     void showDebugHandle(bool show, int handleIndex = 0, const QVector3D &worldPosition = QVector3D());
-    void ensureSelection();
+    void queueEnsureSelection();
+    void queueUpdateGroupSelectionBoxes();
 
 public slots:
     void clearSelectionBoxes(Qt3DCore::QEntity *skipEntity = nullptr);
@@ -389,6 +390,7 @@ private:
     Q_INVOKABLE void doEnsureSelection();
     EditorSceneItem *itemByName(const QString &name);
     void clearSingleSelection();
+    Q_INVOKABLE void doUpdateGroupSelectionBoxes();
 
 private:
     Qt3DCore::QEntity *m_rootEntity;
@@ -479,6 +481,7 @@ private:
     ClipboardOperation m_clipboardOperation;
 
     QMap<QString, PlaceholderEntityData *> m_placeholderEntityMap;
+    bool m_groupBoxUpdatePending;
 };
 
 #endif // EDITORSCENE_H

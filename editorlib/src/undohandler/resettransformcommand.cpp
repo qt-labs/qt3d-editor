@@ -55,6 +55,7 @@ void ResetTransformCommand::undo()
     EditorSceneItem *item = m_sceneModel->editorSceneItemFromIndex(index);
     Qt3DCore::QTransform *transform = EditorUtils::entityTransform(item->entity());
     transform->setMatrix(m_transformMatrix);
+    m_sceneModel->scene()->queueUpdateGroupSelectionBoxes();
 }
 
 void ResetTransformCommand::redo()
@@ -64,4 +65,5 @@ void ResetTransformCommand::redo()
     Qt3DCore::QTransform *transform = EditorUtils::entityTransform(item->entity());
     m_transformMatrix = transform->matrix();
     transform->setMatrix(QMatrix4x4());
+    m_sceneModel->scene()->queueUpdateGroupSelectionBoxes();
 }

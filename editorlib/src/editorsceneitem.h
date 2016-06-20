@@ -106,6 +106,7 @@ public:
     QList<Qt3DRender::QObjectPicker *> *internalPickers();
     void recalculateSubMeshesExtents();
     void doUpdateSelectionBoxTransform();
+    void updateGroupExtents();
 
 public slots:
     void updateSelectionBoxTransform();
@@ -125,7 +126,6 @@ private:
                                       QVector3D &meshCenter);
     void populateSubMeshData(Qt3DCore::QEntity *entity, QVector<QVector3D> &subMeshPoints);
     void updateChildLightTransforms();
-    void updateGroupExtents();
     void findTotalExtents(QVector3D &min, QVector3D &max, const QMatrix4x4 &matrix);
     QVector<QVector3D> getSelectionBoxCorners(const QMatrix4x4 &matrix);
 

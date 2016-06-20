@@ -487,20 +487,22 @@ void EditorSceneItem::doUpdateSelectionBoxTransform()
 
 void EditorSceneItem::findTotalExtents(QVector3D &min, QVector3D &max, const QMatrix4x4 &matrix)
 {
-    doUpdateSelectionBoxTransform();
-
     QMatrix4x4 newMatrix = matrix;
+    doUpdateSelectionBoxTransform();
     if (m_entityTransform)
         newMatrix *= m_entityTransform->matrix();
 
-    QVector<QVector3D> corners = getSelectionBoxCorners(newMatrix);
-    Q_FOREACH (QVector3D corner, corners) {
-        min.setX(qMin(corner.x(), min.x()));
-        min.setY(qMin(corner.y(), min.y()));
-        min.setZ(qMin(corner.z(), min.z()));
-        max.setX(qMax(corner.x(), max.x()));
-        max.setY(qMax(corner.y(), max.y()));
-        max.setZ(qMax(corner.z(), max.z()));
+    // Skip groups when finding total extents
+    if (m_itemType != EditorSceneItem::Group) {
+        QVector<QVector3D> corners = getSelectionBoxCorners(newMatrix);
+        Q_FOREACH (QVector3D corner, corners) {
+            min.setX(qMin(corner.x(), min.x()));
+            min.setY(qMin(corner.y(), min.y()));
+            min.setZ(qMin(corner.z(), min.z()));
+            max.setX(qMax(corner.x(), max.x()));
+            max.setY(qMax(corner.y(), max.y()));
+            max.setZ(qMax(corner.z(), max.z()));
+        }
     }
 
     Q_FOREACH (EditorSceneItem *child, childItems())

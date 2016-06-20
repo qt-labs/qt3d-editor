@@ -260,7 +260,8 @@ QHash<int, QByteArray> EditorSceneItemModel::roleNames() const
 
 void EditorSceneItemModel::resetModel()
 {
-    m_scene->ensureSelection();
+    m_scene->queueEnsureSelection();
+    m_scene->queueUpdateGroupSelectionBoxes();
 
     QAbstractItemModel::beginResetModel();
 
@@ -315,6 +316,8 @@ Qt3DCore::QEntity *EditorSceneItemModel::insertEntity(EditorUtils::InsertableEnt
         if (childItem != nullptr)
             m_lastInsertedIndex = createIndex(childCount - 1, 0, childItem);
     }
+
+    m_scene->queueUpdateGroupSelectionBoxes();
 
     return newEntity;
 }

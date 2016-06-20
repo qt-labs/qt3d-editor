@@ -76,5 +76,6 @@ void ReplaceComponentCommand::replaceAndSwap()
         // Grab explicit ownership of the component, otherwise QML garbage collector may clean it up
         QQmlEngine::setObjectOwnership(m_component2, QQmlEngine::CppOwnership);
         std::swap(m_component1, m_component2);
+        m_sceneModel->scene()->queueUpdateGroupSelectionBoxes();
     }
 }
