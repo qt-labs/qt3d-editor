@@ -2431,12 +2431,14 @@ QVector3D EditorScene::projectVectorOnCameraPlane(const QVector3D &vector) const
 
 void EditorScene::resizeCameraViewCenterEntity()
 {
-    // Rescale the camera viewcenter entity according to distance, as it is draggable
-    const float vcEntityAngle = 0.0045f;
-    QVector3D vcPos = m_activeSceneCameraFrustumData.viewCenterTransform->translation();
-    float distanceToVc = (vcPos - frameGraphCamera()->position()).length();
-    float vcScale = vcEntityAngle * distanceToVc;
-    m_activeSceneCameraFrustumData.viewCenterTransform->setScale(vcScale * 2.0f);
+    if (frameGraphCamera()) {
+        // Rescale the camera viewcenter entity according to distance, as it is draggable
+        const float vcEntityAngle = 0.0045f;
+        QVector3D vcPos = m_activeSceneCameraFrustumData.viewCenterTransform->translation();
+        float distanceToVc = (vcPos - frameGraphCamera()->position()).length();
+        float vcScale = vcEntityAngle * distanceToVc;
+        m_activeSceneCameraFrustumData.viewCenterTransform->setScale(vcScale * 2.0f);
+    }
 }
 
 bool EditorScene::isPropertyLocked(const QString &propertyName, QObject *obj)
