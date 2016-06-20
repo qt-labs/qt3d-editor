@@ -194,7 +194,7 @@ Item {
                     model: editorScene.sceneCamerasModel
                     textRole: "display"
 
-                    onCurrentIndexChanged: {
+                    onActivated: {
                         editorScene.undoHandler.createChangeGenericPropertyCommand(
                                     editorScene, "activeSceneCameraIndex",
                                     currentIndex, editorScene.activeSceneCameraIndex,
