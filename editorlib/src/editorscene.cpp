@@ -2266,7 +2266,6 @@ void EditorScene::handleSelectionTransformChange()
             centerPoint = QPoint(itemCenterHandlePos.x(), itemCenterHandlePos.y());
             showCenterHandle = translatePoint != centerPoint;
         }
-        m_meshCenterIndicatorLine->setEnabled(showCenterHandle);
         if (showCenterHandle) {
             QQuaternion rot = QQuaternion::rotationTo(QVector3D(0.0f, 0.0f, 1.0f),
                                                       meshCenter.normalized());
@@ -2277,6 +2276,8 @@ void EditorScene::handleSelectionTransformChange()
             m_meshCenterIndicatorLineTransform->setScale(meshCenter.length());
         }
     }
+    m_meshCenterIndicatorLine->setEnabled(showCenterHandle && m_dragHandlesTransform->isEnabled());
+
     // Signal UI to reposition drag handles
     emit beginDragHandlesRepositioning();
     emit repositionDragHandle(DragTranslate, translatePoint,
