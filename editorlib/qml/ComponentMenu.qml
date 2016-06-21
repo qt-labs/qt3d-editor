@@ -84,7 +84,6 @@ Menu {
         enabled: !entityTreeView.sceneRootSelected
         iconSource: "images/minus.png"
         onTriggered: {
-            entityTreeView.editing = false
             if (editorScene.multiSelection) {
                 // Handle multiselection removal
                 editorScene.undoHandler.beginMacro(text)

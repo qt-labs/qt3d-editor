@@ -368,7 +368,7 @@ QQC2.ApplicationWindow {
 
         function selectIndex(index) {
             expandTo(index)
-            entityTree.view.forceActiveFocus()
+            entityTree.focusTree()
             entityTree.view.selection.setCurrentIndex(index, ItemSelectionModel.ClearAndSelect)
         }
 

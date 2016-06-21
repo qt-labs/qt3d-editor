@@ -64,6 +64,7 @@ Item {
                                        mouse.modifiers & Qt.AltModifier)
         }
         onPressed: {
+            entityTree.focusTree()
             var scenePos = editorViewport.mapFromItem(parent, mouseX, mouseY)
             editorScene.dragHandlePress(handleType, scenePos, handleIndex)
             dragHandle.dragging = true

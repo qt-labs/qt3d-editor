@@ -35,11 +35,10 @@ import QtQuick.Controls.Styles 1.4
 Item {
     id: treeViewSplit
 
-    property bool entityTreeViewEditing: entityTreeView.editing
-
     property alias view: entityTreeView
     property alias menu: addComponentMenu
     property bool treeviewPasting: false
+    signal closeNameEditor()
 
     Keys.onDeletePressed: {
         if (editorScene.multiSelection) {
@@ -58,6 +57,7 @@ Item {
     }
 
     function focusTree() {
+        closeNameEditor()
         entityTreeView.forceActiveFocus(Qt.MouseFocusReason)
     }
 
@@ -72,7 +72,6 @@ Item {
     function addNewEntity(entityType, xPos, yPos) {
         var x = xPos ? xPos : -1
         var y = yPos ? yPos : -1
-        entityTreeView.editing = false
 
         editorScene.clearMultiSelection()
 
@@ -86,8 +85,6 @@ Item {
         entityTreeView.expand(entityTreeView.selection.currentIndex)
         entityTreeView.selection.setCurrentIndex(newItemIndex,
                                                  ItemSelectionModel.SelectCurrent)
-        // Remove focus so activating editing will always force it on
-        entityTreeView.focus = true
     }
 
     Component.onCompleted: selectSceneRoot()
@@ -123,6 +120,7 @@ Item {
         selection: ItemSelectionModel {
             model: editorScene.sceneModel
         }
+        focus: true
         headerVisible: false
         alternatingRowColors: false
         backgroundVisible: false
@@ -178,7 +176,6 @@ Item {
             }
         }
 
-        property bool editing: false
         property bool sceneRootSelected: true
         property bool cameraSelected: true
         property bool groupSelected: true
@@ -289,7 +286,9 @@ Item {
                 }
 
                 onDoubleClicked: {
-                    entityTreeView.editing = true
+                    valueField.visible = false
+                    renameTextiInput.forceActiveFocus(Qt.MouseFocusReason)
+
                 }
             }
             DropArea {
@@ -369,7 +368,7 @@ Item {
                 color: mainwindow.textColor
                 elide: styleData.elideMode
                 text: styleData.value
-                visible: !entityTreeView.editing || !styleData.selected
+                visible: true
                 anchors.fill: parent
                 clip: true
             }
@@ -385,7 +384,7 @@ Item {
                     clip: true
                     visible: !valueField.visible
                     selectByMouse: true
-                    focus: true
+                    focus: visible
                     color: mainwindow.textColor
                     selectionColor: mainwindow.selectionColor
                     selectedTextColor: mainwindow.textColor
@@ -396,21 +395,17 @@ Item {
                         regExp: /^[A-Za-z_][A-Za-z0-9_ ]*$/
                     }
 
-                    onVisibleChanged: {
-                        if (visible) {
+                    onActiveFocusChanged: {
+                        if (activeFocus) {
                             text = styleData.value
                             selectAll()
-                            forceActiveFocus(Qt.MouseFocusReason)
+                        } else {
+                            valueField.visible = true
                         }
                     }
 
-                    onCursorVisibleChanged: {
-                        if (!cursorVisible)
-                            entityTreeView.editing = false
-                    }
-
                     Keys.onReturnPressed: {
-                        entityTreeView.editing = false
+                        valueField.visible = true
                         if (text !== model.name) {
                             editorScene.undoHandler.createRenameEntityCommand(selectedEntityName,
                                                                               text)
@@ -418,11 +413,20 @@ Item {
                         selectedEntityName = editorScene.sceneModel.entityName(
                                     entityTreeView.selection.currentIndex)
                     }
+                    Connections {
+                        target: entityTreeView.selection
+                        onCurrentIndexChanged: {
+                            valueField.visible = true
+                        }
+                    }
+                    Connections {
+                        target: treeViewSplit
+                        onCloseNameEditor: {
+                            valueField.visible = true
+                        }
+                    }
                 }
             }
-        }
-        onDoubleClicked: {
-            entityTreeView.editing = true
         }
 
         TableViewColumn {
@@ -461,7 +465,6 @@ Item {
         Connections {
             target: entityTreeView.selection
             onCurrentIndexChanged: {
-                entityTreeView.editing = false
                 // If there is no current item selected for some reason, fall back to scene root,
                 // except when dealing with multiselection, during which currentIndex can become -1 temporarily.
                 if (entityTreeView.selection.currentIndex.row === -1) {

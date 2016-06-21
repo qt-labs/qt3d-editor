@@ -112,6 +112,7 @@ Item {
                         drag.target: dragEntityItem
 
                         onPressed: {
+                            entityTree.focusTree()
                             var globalPos = mapToItem(applicationArea, mouseX, mouseY)
                             dragPositionX = globalPos.x
                             dragPositionY = globalPos.y
