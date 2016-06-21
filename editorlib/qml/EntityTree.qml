@@ -230,8 +230,7 @@ Item {
                         // TODO: because it cannot be safely deleted, which is needed when
                         // TODO: reparenting, which does duplicate+delete (QTBUG-52723).
                         meshType = EditorUtils.InvalidEntity
-                        // TODO: make a proper "invalid drag" icon
-                        meshDragImage = "images/cross.png"
+                        meshDragImage = "images/no_drag.png"
                     } else if (itemType === EditorSceneItem.Light) {
                         meshType = EditorUtils.LightEntity
                         meshDragImage = "images/light_large.png"

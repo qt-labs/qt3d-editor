@@ -1,16 +1,7 @@
 <RCC>
     <qresource prefix="/qt3deditorlib/">
-        <file>images/addroot.png</file>
         <file>images/camera.png</file>
-        <file>images/cross.png</file>
-        <file>images/down.png</file>
-        <file>images/layer.png</file>
         <file>images/light.png</file>
-        <file>images/light_basic.png</file>
-        <file>images/light_directional.png</file>
-        <file>images/light_point.png</file>
-        <file>images/light_spot.png</file>
-        <file>images/material.png</file>
         <file>images/mesh.png</file>
         <file>images/mesh_cuboid.png</file>
         <file>images/mesh_custom.png</file>
@@ -24,20 +15,10 @@
         <file>images/qtlogo.png</file>
         <file>images/qtlogo_normal.png</file>
         <file>images/qtlogo_specular.png</file>
-        <file>images/transform.png</file>
-        <file>images/transform_matrix.png</file>
-        <file>images/transform_srt.png</file>
-        <file>images/up.png</file>
         <file>images/arrow.png</file>
-        <file>images/layer-large.png</file>
-        <file>images/light_basic-large.png</file>
-        <file>images/light_point-large.png</file>
         <file>images/light_spot-large.png</file>
-        <file>images/light_directional-large.png</file>
         <file>images/visible_off.png</file>
         <file>images/visible_on.png</file>
-        <file>images/keyboard_input.png</file>
-        <file>images/logic.png</file>
         <file>images/lock_locked.png</file>
         <file>images/lock_open.png</file>
         <file>images/property_material_hidden.png</file>
@@ -96,5 +77,6 @@
         <file>images/cut.png</file>
         <file>images/paste.png</file>
         <file>images/copy.png</file>
+        <file>images/no_drag.png</file>
     </qresource>
 </RCC>
