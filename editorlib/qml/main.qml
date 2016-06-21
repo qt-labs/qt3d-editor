@@ -29,13 +29,14 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.2
 import QtQuick.Dialogs 1.2
+import QtQuick.Controls 2.0 as QQC2
 import QtQml.Models 2.2
 import QtQml 2.2
 import Qt3D.Core 2.0
 import Qt.labs.settings 1.0
 import com.theqtcompany.SceneEditor3D 1.0
 
-ApplicationWindow {
+QQC2.ApplicationWindow {
     id: mainwindow
     title: qsTr("Qt 3D Scene Editor") + editorScene.emptyString + saveFileTitleAddition
     width: 1280
@@ -125,7 +126,7 @@ ApplicationWindow {
 
     property string systemLanguage: editorScene.language
 
-    toolBar: EditorToolbar {}
+    header: EditorToolbar {}
 
     FileDialog {
         id: loadFileDialog
