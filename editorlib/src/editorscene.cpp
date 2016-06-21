@@ -2606,6 +2606,8 @@ void EditorScene::handleLightAdded(Qt3DCore::QEntity *lightEntity)
     visibleTransform->setMatrix(matrix);
 
     handleLightTypeChanged(m_sceneItems.value(lightEntity->id()));
+
+    updateLightVisibleTransform(lightEntity);
 }
 
 void EditorScene::handleLightRemoved(Qt3DCore::QEntity *lightEntity)
