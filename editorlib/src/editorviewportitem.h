@@ -33,6 +33,8 @@
 class EditorScene;
 class EditorCameraController;
 
+class QOffscreenSurface;
+
 namespace Qt3DCore
 {
 class QAspectEngine;
@@ -66,6 +68,7 @@ public:
 
     bool inputEnabled() const;
     void setInputEnabled(bool enable);
+    void handleWindowChanged(QQuickWindow *win);
 
 public slots:
     void setScene(EditorScene* scene);
@@ -97,6 +100,7 @@ private:
     EditorCameraController *m_cameraController;
 
     bool m_inputEnabled;
+    QOffscreenSurface *m_surface;
 };
 
 #endif // EDITORVIEWPORTITEM_H

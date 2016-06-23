@@ -79,15 +79,19 @@ public:
                               Qt3DCore::QAspectEngine *aspectEngine,
                               Qt3DRender::QRenderAspect *renderAspect,
                               Qt3DInput::QInputAspect *inputAspect,
-                              Qt3DLogic::QLogicAspect *logicAspect)
+                              Qt3DLogic::QLogicAspect *logicAspect,
+                              QOffscreenSurface *surface)
         : m_item(item)
         , m_aspectEngine(aspectEngine)
         , m_renderAspect(renderAspect)
         , m_inputAspect(inputAspect)
         , m_logicAspect(logicAspect)
+        , m_surface(surface)
     {
         ContextSaver saver;
-        m_item->scene()->renderer()->setSurface(reinterpret_cast<QObject *>(saver.surface()));
+        // HACK: Use dummy surface for renderer to work around crash when running in creator
+        // TODO: Remove hack when QTBUG-54318 is fixed
+        m_item->scene()->renderer()->setSurface(reinterpret_cast<QObject *>(m_surface));
         static_cast<Qt3DRender::QRenderAspectPrivate *>(
                     Qt3DRender::QRenderAspectPrivate::get(m_renderAspect))
                 ->renderInitialize(saver.context());
@@ -134,6 +138,7 @@ public:
     Qt3DRender::QRenderAspect *m_renderAspect;
     Qt3DInput::QInputAspect *m_inputAspect;
     Qt3DLogic::QLogicAspect *m_logicAspect;
+    QOffscreenSurface *m_surface;
 };
 
 EditorViewportItem::EditorViewportItem(QQuickItem *parent)
@@ -145,6 +150,7 @@ EditorViewportItem::EditorViewportItem(QQuickItem *parent)
     , m_logicAspect(new Qt3DLogic::QLogicAspect)
     , m_cameraController(nullptr)
     , m_inputEnabled(true)
+    , m_surface(nullptr)
 {
     setFlag(ItemHasContents, true);
     m_aspectEngine->registerAspect(m_renderAspect);
@@ -153,6 +159,8 @@ EditorViewportItem::EditorViewportItem(QQuickItem *parent)
 
     setAcceptHoverEvents(true);
     setAcceptedMouseButtons(Qt::AllButtons);
+
+    connect(this, &QQuickItem::windowChanged, this, &EditorViewportItem::handleWindowChanged);
 }
 
 EditorViewportItem::~EditorViewportItem()
@@ -161,6 +169,9 @@ EditorViewportItem::~EditorViewportItem()
         static_cast<Qt3DRender::QRenderAspectPrivate *>
             (Qt3DRender::QRenderAspectPrivate::get(m_renderAspect))->renderShutdown();
     }
+
+    if (m_surface)
+        m_surface->deleteLater();
 }
 
 EditorScene *EditorViewportItem::scene() const
@@ -179,6 +190,17 @@ void EditorViewportItem::setInputEnabled(bool enable)
         m_inputEnabled = enable;
         handleInputCameraChange();
         emit inputEnabledChanged(m_inputEnabled);
+    }
+}
+
+void EditorViewportItem::handleWindowChanged(QQuickWindow *win)
+{
+    if (!m_surface && win) {
+        m_surface = new QOffscreenSurface;
+        QSurfaceFormat format = win->format();
+        format.setSamples(4);
+        m_surface->setFormat(format);
+        m_surface->create();
     }
 }
 
@@ -224,7 +246,7 @@ QQuickFramebufferObject::Renderer *EditorViewportItem::createRenderer() const
 {
     EditorViewportItem *self = const_cast<EditorViewportItem*>(this);
     return new FrameBufferObjectRenderer(self, m_aspectEngine, m_renderAspect,
-                                         m_inputAspect, m_logicAspect);
+                                         m_inputAspect, m_logicAspect, m_surface);
 }
 
 QSGNode *EditorViewportItem::updatePaintNode(QSGNode *node,
