@@ -26,33 +26,52 @@
 **
 ****************************************************************************/
 
-#include "qt3dsceneeditorfactory.h"
-#include "qt3dsceneeditorw.h"
-#include "qt3dsceneeditorplugin.h"
-#include "qt3dsceneeditorconstants.h"
+#include "qt3dsceneeditorwidget.h"
+#include "../editorlib/src/qt3dsceneeditor.h"
 
-#include <coreplugin/fileiconprovider.h>
-#include <coreplugin/editormanager/editormanager.h>
-#include <projectexplorer/projectexplorerconstants.h>
+#include <QBoxLayout>
+#include <QQuickWidget>
 
-using namespace Qt3DSceneEditor::Internal;
-using namespace Qt3DSceneEditor::Constants;
+using namespace Qt3DSceneEditor;
 
-Qt3DSceneEditorFactory::Qt3DSceneEditorFactory(Qt3DSceneEditorPlugin *plugin) :
-    Core::IEditorFactory(plugin),
-    m_plugin(plugin)
+namespace Qt3DSceneEditor {
+namespace Internal {
+
+Qt3DSceneEditorWidget::Qt3DSceneEditorWidget(QWidget *parent)
+    : QWidget(parent)
+    , m_sceneEditor(nullptr)
 {
-    setId(QT3DSCENEEDITOR_ID);
-    setMimeTypes(QStringList(QLatin1String(C_QT3DSCENEEDITOR_MIMETYPE)));
-    setDisplayName(qApp->translate("OpenWith::Editors", C_QT3DSCENEEDITOR_DISPLAY_NAME));
-
-    // TODO: Do we need special icon for qt3d.qrc files?
-//    Core::FileIconProvider::registerIconOverlayForSuffix(
-//                ProjectExplorer::Constants::FILEOVERLAY_QRC, "qt3d.qrc");
 }
 
-Core::IEditor *Qt3DSceneEditorFactory::createEditor()
+Qt3DSceneEditorWidget::~Qt3DSceneEditorWidget()
 {
-    Core::Context context(C_QT3DSCENEEDITOR);
-    return new Qt3DSceneEditorW(context, m_plugin);
 }
+
+void Qt3DSceneEditorWidget::setup()
+{
+    Qt3DSceneEditorLib::register3DSceneEditorQML();
+    m_sceneEditor = new QQuickWidget(this);
+    m_sceneEditor->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    m_sceneEditor->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/PluginMain.qml")));
+
+    QVBoxLayout *layout = new QVBoxLayout();
+    layout->setMargin(0);
+    layout->setSpacing(0);
+    layout->addWidget(m_sceneEditor);
+    setLayout(layout);
+
+    show();
+}
+
+void Qt3DSceneEditorWidget::initialize()
+{
+    if (m_initStatus == NotInitialized) {
+        m_initStatus = Initializing;
+        setup();
+    }
+
+    m_initStatus = Initialized;
+}
+
+} // namespace Internal
+} // namespace Qt3DSceneEditor

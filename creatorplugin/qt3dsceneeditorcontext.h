@@ -28,40 +28,16 @@
 
 #pragma once
 
-#include "qt3dsceneeditordocument.h"
-
-#include <coreplugin/idocument.h>
-#include <coreplugin/editormanager/ieditor.h>
-
-QT_BEGIN_NAMESPACE
-class QQuickWidget;
-QT_END_NAMESPACE
+#include <coreplugin/icontext.h>
 
 namespace Qt3DSceneEditor {
 namespace Internal {
 
-class Qt3DSceneEditorPlugin;
-class Qt3DSceneEditorDocument;
-
-class Qt3DSceneEditorW : public Core::IEditor
+class Qt3DSceneEditorContext : public Core::IContext
 {
-    Q_OBJECT
-
 public:
-    Qt3DSceneEditorW(const Core::Context &context,
-                   Qt3DSceneEditorPlugin *plugin,
-                   QWidget *parent = 0);
-    ~Qt3DSceneEditorW() override;
-
-    // IEditor
-    Core::IDocument *document() override { return m_document; }
-    QWidget *toolBar() override;
-
-private:
-    Qt3DSceneEditorDocument *m_document;
-    Qt3DSceneEditorPlugin *m_plugin;
-    QQuickWidget *m_sceneEditor;
+    Qt3DSceneEditorContext(QWidget *widget);
 };
 
-} // namespace Internal
-} // namespace Qt3DSceneEditor
+}
+}

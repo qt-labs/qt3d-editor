@@ -8,16 +8,14 @@ INCLUDEPATH += ../editorlib
 # Qt3DSceneEditor files
 
 SOURCES += qt3dsceneeditorplugin.cpp \
-        qt3dsceneeditorfactory.cpp \
-        qt3dsceneeditorw.cpp \
-        qt3dsceneeditordocument.cpp
+        qt3dsceneeditorwidget.cpp \
+        qt3dsceneeditorcontext.cpp
 
 HEADERS += qt3dsceneeditorplugin.h \
-        qt3dsceneeditorfactory.h \
-        qt3dsceneeditorw.h \
         qt3dsceneeditor_global.h \
         qt3dsceneeditorconstants.h \
-        qt3dsceneeditordocument.h
+        qt3dsceneeditorwidget.h \
+        qt3dsceneeditorcontext.h
 
 RESOURCES += creatorplugin.qrc
 

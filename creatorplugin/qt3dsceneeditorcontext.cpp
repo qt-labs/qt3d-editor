@@ -26,30 +26,19 @@
 **
 ****************************************************************************/
 
-#pragma once
-
-#include <coreplugin/editormanager/ieditorfactory.h>
-#include <coreplugin/icontext.h>
-
-#include <QStringList>
+#include "qt3dsceneeditorcontext.h"
+#include "qt3dsceneeditorconstants.h"
+#include "qt3dsceneeditorwidget.h"
 
 namespace Qt3DSceneEditor {
 namespace Internal {
 
-class Qt3DSceneEditorPlugin;
-
-class Qt3DSceneEditorFactory : public Core::IEditorFactory
+Qt3DSceneEditorContext::Qt3DSceneEditorContext(QWidget *widget)
+  : IContext(widget)
 {
-    Q_OBJECT
+    setWidget(widget);
+}
 
-public:
-    explicit Qt3DSceneEditorFactory(Qt3DSceneEditorPlugin *plugin);
+}
+}
 
-    Core::IEditor *createEditor();
-
-private:
-    Qt3DSceneEditorPlugin *m_plugin;
-};
-
-} // namespace Internal
-} // namespace Qt3DSceneEditor

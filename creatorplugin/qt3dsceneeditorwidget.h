@@ -28,45 +28,33 @@
 
 #pragma once
 
-#include <coreplugin/idocument.h>
+#include <QWidget>
 
+QT_BEGIN_NAMESPACE
+class QQuickWidget;
+QT_END_NAMESPACE
 
 namespace Qt3DSceneEditor {
 namespace Internal {
 
-class Qt3DSceneEditorPlugin;
-class Qt3DSceneEditorW;
-
-class Qt3DSceneEditorDocument
-  : public Core::IDocument
+class Qt3DSceneEditorWidget : public QWidget
 {
     Q_OBJECT
+
 public:
-    Qt3DSceneEditorDocument(QObject *parent = 0);
-    ~Qt3DSceneEditorDocument() {}
+    explicit Qt3DSceneEditorWidget(QWidget *parent = 0);
 
-    //IDocument
-    OpenResult open(QString *errorString, const QString &fileName,
-                    const QString &realFileName) override;
-    bool save(QString *errorString, const QString &fileName, bool autoSave) override;
-    QByteArray contents() const override;
-    bool setContents(const QByteArray &contents) override;
-    bool shouldAutoSave() const override;
-    bool isModified() const override;
-    bool isSaveAsAllowed() const override;
-    bool reload(QString *errorString, ReloadFlag flag, ChangeType type) override;
-    void setFilePath(const Utils::FileName &newName) override;
-    void setBlockDirtyChanged(bool value);
-    void setShouldAutoSave(bool save);
+    ~Qt3DSceneEditorWidget();
 
-signals:
-    void loaded(bool success);
+    void initialize();
 
-private:
-    void dirtyChanged(bool);
+private: // functions
+    enum InitializeStatus { NotInitialized, Initializing, Initialized };
+    void setup();
 
-    bool m_blockDirtyChanged = false;
-    bool m_shouldAutoSave = false;
+private: // variables
+    InitializeStatus m_initStatus = NotInitialized;
+    QQuickWidget *m_sceneEditor;
 };
 
 } // namespace Internal

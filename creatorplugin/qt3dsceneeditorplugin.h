@@ -31,10 +31,12 @@
 #include "qt3dsceneeditor_global.h"
 
 #include <extensionsystem/iplugin.h>
-#include <QtQml/QQmlApplicationEngine>
 
 namespace Qt3DSceneEditor {
 namespace Internal {
+
+class Qt3DSceneEditorWidget;
+class Qt3DSceneEditorContext;
 
 class Qt3DSceneEditorPlugin : public ExtensionSystem::IPlugin
 {
@@ -49,8 +51,16 @@ public:
     void extensionsInitialized();
     ShutdownFlag aboutToShutdown();
 
+    Qt3DSceneEditorWidget *sceneEditorWidget() const { return m_sceneEditorWidget; }
+
+    void showSceneEditor();
+    void hideSceneEditor();
+
 private:
-    QQmlApplicationEngine *m_qmlEngine;
+    void createSceneEditorWidget();
+
+    Qt3DSceneEditorWidget *m_sceneEditorWidget;
+    Qt3DSceneEditorContext *m_context;
 };
 
 } // namespace Internal

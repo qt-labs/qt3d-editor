@@ -31,9 +31,6 @@
 namespace Qt3DSceneEditor {
 namespace Constants {
 
-const char ACTION_ID[] = "Qt3DSceneEditor.Action";
-const char MENU_ID[] = "Qt3DSceneEditor.Menu";
-
 const char C_QT3DSCENEEDITOR[] = "Qt5.Qt3DSceneEditor";
 const char QT3DSCENEEDITOR_ID[] = "Qt5.Qt3DSceneEditor";
 const char C_QT3DSCENEEDITOR_DISPLAY_NAME[] = QT_TRANSLATE_NOOP("OpenWith::Editors", "Qt3D Scene Editor");
