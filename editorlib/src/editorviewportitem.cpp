@@ -279,7 +279,7 @@ void EditorViewportItem::geometryChanged(const QRectF &newGeometry, const QRectF
 
 void EditorViewportItem::mousePressEvent(QMouseEvent *event)
 {
-    if (m_inputEnabled) {
+    if (m_inputEnabled && m_cameraController) {
         m_cameraController->handleMousePress(event);
         event->accept();
     } else {
@@ -297,7 +297,7 @@ void EditorViewportItem::mouseMoveEvent(QMouseEvent *event)
 
 void EditorViewportItem::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (m_inputEnabled) {
+    if (m_inputEnabled && m_cameraController) {
         m_cameraController->handleMouseRelease(event);
         event->accept();
     } else {
@@ -307,7 +307,7 @@ void EditorViewportItem::mouseReleaseEvent(QMouseEvent *event)
 
 void EditorViewportItem::wheelEvent(QWheelEvent *event)
 {
-    if (m_inputEnabled)
+    if (m_inputEnabled && m_cameraController)
         m_cameraController->handleWheel(event);
     else
         event->ignore();
