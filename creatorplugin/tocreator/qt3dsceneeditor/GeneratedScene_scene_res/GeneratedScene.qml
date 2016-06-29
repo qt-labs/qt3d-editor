@@ -65,7 +65,7 @@ Scene3D {
                 fieldOfView: 45
                 aspectRatio: 1.7777777910232544
                 projectionMatrix: Qt.matrix4x4(1.358,0,0,0,0,2.41421,0,0,0,0,-1.00401,-0.200401,0,0,-1,0)
-                position: Qt.vector3d(5,5,5)
+                position: Qt.vector3d(4,5,-5)
                 viewCenter: Qt.vector3d(0,0,0)
             }
             Entity {
@@ -75,10 +75,8 @@ Scene3D {
                 }
                 Transform {
                     id: cube_transform
-                    matrix: Qt.matrix4x4(-1,8.74228e-8,0,0,-8.74228e-8,-1,0,0,0,0,1,5,0,0,0,1)
-                    rotation: Qt.quaternion(-4.37114e-8,0,0,1)
-                    translation: Qt.vector3d(0,0,0)
-                    rotationZ: -180
+                    matrix: Qt.matrix4x4(1,0,0,-1,0,1,0,0.5,0,0,1,1,0,0,0,1)
+                    translation: Qt.vector3d(-1,0.5,1)
                 }
                 DiffuseMapMaterial {
                     id: cube_diffusemapmaterial
@@ -98,8 +96,8 @@ Scene3D {
                 }
                 Transform {
                     id: light_transform
-                    matrix: Qt.matrix4x4(1,0,0,0,0,1,0,10,0,0,1,-5,0,0,0,1)
-                    translation: Qt.vector3d(5,5,5)
+                    matrix: Qt.matrix4x4(1,0,0,8,0,1,0,10,0,0,1,-5,0,0,0,1)
+                    translation: Qt.vector3d(8,10,-5)
                 }
                 components: [
                     scene_root_pointlight,
