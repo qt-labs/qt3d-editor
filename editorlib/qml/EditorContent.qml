@@ -105,6 +105,14 @@ Item {
         }
     }
 
+    function loadScene(fileUrl, folder) {
+        if (editorScene.loadScene(fileUrl)) {
+            entityTree.selectSceneRoot()
+            editorContent.saveFolder = folder
+            editorContent.saveFileUrl = fileUrl
+        }
+    }
+
     function fileSave() {
         if (saveFileUrl == "") {
             saveFileDialog.folder = saveFolder
@@ -220,6 +228,11 @@ Item {
         }
     }
 
+    function resetCameraToDefault() {
+        editorScene.freeView = true
+        editorScene.resetFreeViewCamera()
+    }
+
     Settings {
         // Save view panel sizes
         // Use detailed category name, as plugin saves settings under QtCreator application
@@ -264,11 +277,7 @@ Item {
             title: qsTr("Load Scene") + editorScene.emptyString
             nameFilters: [qsTr("Qt3D Scenes (*.qt3d.qrc)") + editorScene.emptyString]
             onAccepted: {
-                if (editorScene.loadScene(fileUrl)) {
-                    entityTree.selectSceneRoot()
-                    editorContent.saveFolder = folder
-                    editorContent.saveFileUrl = fileUrl
-                }
+                editorContent.loadScene(fileUrl, folder)
             }
         }
 
@@ -686,12 +695,6 @@ Item {
                 editorScene.saveScene(editorContent.saveFileUrl, true)
             }
         }
-
-        function resetCameraToDefault() {
-            editorScene.freeView = true
-            editorScene.resetFreeViewCamera()
-        }
-
     }
 }
 

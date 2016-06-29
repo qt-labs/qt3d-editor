@@ -29,8 +29,9 @@
 #include "qt3dsceneeditorwidget.h"
 #include "../editorlib/src/qt3dsceneeditor.h"
 
-#include <QBoxLayout>
-#include <QQuickWidget>
+#include <QtWidgets/QBoxLayout>
+#include <QtQuickWidgets/QQuickWidget>
+#include <QtQuick/QQuickItem>
 
 using namespace Qt3DSceneEditor;
 
@@ -40,6 +41,7 @@ namespace Internal {
 Qt3DSceneEditorWidget::Qt3DSceneEditorWidget(QWidget *parent)
     : QWidget(parent)
     , m_sceneEditor(nullptr)
+    , m_rootItem(nullptr)
 {
 }
 
@@ -53,6 +55,7 @@ void Qt3DSceneEditorWidget::setup()
     m_sceneEditor = new QQuickWidget(this);
     m_sceneEditor->setResizeMode(QQuickWidget::SizeRootObjectToView);
     m_sceneEditor->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/PluginMain.qml")));
+    m_rootItem = m_sceneEditor->rootObject();
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setMargin(0);
@@ -63,14 +66,15 @@ void Qt3DSceneEditorWidget::setup()
     show();
 }
 
-void Qt3DSceneEditorWidget::initialize()
+void Qt3DSceneEditorWidget::initialize(const QUrl &fileName)
 {
     if (m_initStatus == NotInitialized) {
         m_initStatus = Initializing;
         setup();
     }
-
     m_initStatus = Initialized;
+
+    QMetaObject::invokeMethod(m_rootItem, "loadScene", Q_ARG(QVariant, fileName));
 }
 
 } // namespace Internal

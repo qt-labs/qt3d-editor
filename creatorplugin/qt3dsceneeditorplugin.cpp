@@ -43,8 +43,10 @@
 #include <coreplugin/editormanager/ieditor.h>
 
 #include <utils/mimetypes/mimedatabase.h>
+#include <utils/fileutils.h>
 
 #include <QtCore/QTimer>
+#include <QtCore/QUrl>
 
 namespace Qt3DSceneEditor {
 namespace Internal {
@@ -155,8 +157,8 @@ void Qt3DSceneEditorPlugin::createSceneEditorWidget()
 
 void Qt3DSceneEditorPlugin::showSceneEditor()
 {
-    m_sceneEditorWidget->initialize();
-    // TODO: load the scene (probably as parameter to initialize)
+    m_sceneEditorWidget->initialize(
+                QUrl::fromLocalFile(Core::EditorManager::currentDocument()->filePath().toString()));
 }
 
 void Qt3DSceneEditorPlugin::hideSceneEditor()

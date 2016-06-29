@@ -32,6 +32,7 @@
 
 QT_BEGIN_NAMESPACE
 class QQuickWidget;
+class QQuickItem;
 QT_END_NAMESPACE
 
 namespace Qt3DSceneEditor {
@@ -46,7 +47,7 @@ public:
 
     ~Qt3DSceneEditorWidget();
 
-    void initialize();
+    void initialize(const QUrl &fileName);
 
 private: // functions
     enum InitializeStatus { NotInitialized, Initializing, Initialized };
@@ -55,6 +56,7 @@ private: // functions
 private: // variables
     InitializeStatus m_initStatus = NotInitialized;
     QQuickWidget *m_sceneEditor;
+    QQuickItem *m_rootItem;
 };
 
 } // namespace Internal
