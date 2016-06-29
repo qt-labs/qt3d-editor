@@ -124,6 +124,7 @@ private:
                             const QMetaProperty &property, const QObject *defaultComponent);
     void outHelperFunctions();
     void outSceneLoader(Qt3DCore::QComponent *component);
+    void outCamera(Qt3DCore::QEntity *entity);
 
     QString indent() const;
     EditorItemType itemType(QObject *item) const;

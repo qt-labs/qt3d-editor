@@ -64,7 +64,6 @@ Scene3D {
                 farPlane: 50
                 fieldOfView: 45
                 aspectRatio: 1.7777777910232544
-                projectionMatrix: Qt.matrix4x4(1.358,0,0,0,0,2.41421,0,0,0,0,-1.00401,-0.200401,0,0,-1,0)
                 position: Qt.vector3d(4,5,-5)
                 viewCenter: Qt.vector3d(0,0,0)
             }

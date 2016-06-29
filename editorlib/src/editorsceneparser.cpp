@@ -730,7 +730,10 @@ void EditorSceneParser::outEntity(Qt3DCore::QEntity *entity)
         m_idMap.insert(quint64(entity), entityId);
         outItemId(entityId);
 
-        outGenericProperties(type, entity);
+        if (type == Camera)
+            outCamera(entity);
+        else
+            outGenericProperties(type, entity);
 
         // Output components
         Qt3DCore::QComponentVector componentList = entity->components();
@@ -1069,6 +1072,20 @@ void EditorSceneParser::outHelperFunctions()
 void EditorSceneParser::outSceneLoader(Qt3DCore::QComponent *component)
 {
     outGenericProperties(SceneLoader, component);
+}
+
+void EditorSceneParser::outCamera(Qt3DCore::QEntity *entity)
+{
+    QVector<QMetaProperty> properties = m_propertyMap.value(Camera);
+    QObject *defaultObject = m_defaultObjectMap.value(Camera);
+    for (int i = 0; i < properties.size(); i++) {
+        QString propertyName = properties.at(i).name();
+        // Skip storing projection matrix for cameras, as setting it explicitly changes camera
+        // projectionType to CustomProjection, which we don't support.
+        // Also, projection matrix will be determined from other values, so storing it is unnecessary.
+        if (propertyName != QStringLiteral("projectionMatrix"))
+            outGenericProperty(entity, properties.at(i), defaultObject);
+    }
 }
 
 QString EditorSceneParser::indent() const
