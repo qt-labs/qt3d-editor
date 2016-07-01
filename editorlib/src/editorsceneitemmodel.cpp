@@ -44,6 +44,8 @@
 #include <Qt3DRender/QSceneLoader>
 #include <QtCore/QRegularExpression>
 
+const QString validEntityNameMatcher = QStringLiteral("^[A-Za-z_][A-Za-z0-9_ ]*$");
+
 EditorSceneItemModel::EditorSceneItemModel(EditorScene *scene)
     : QAbstractItemModel(scene)
     , m_scene(scene)
@@ -610,9 +612,23 @@ void EditorSceneItemModel::removeExpandedItems(Qt3DCore::QEntity *entity)
 QString EditorSceneItemModel::importEntity(const QUrl &fileUrl)
 {
     m_sceneLoaderEntity = new Qt3DCore::QEntity(m_scene->rootEntity());
-    //: This string is entity name, no non-ascii characters allowed
-    m_sceneLoaderEntity->setObjectName(generateValidName(tr("New imported entity"),
-                                                         m_sceneLoaderEntity));
+    QString fileName = fileUrl.toString();
+    int index = fileName.lastIndexOf(QLatin1Char('/'));
+    if (index > 0 && index < fileName.size())
+        fileName = fileName.mid(index + 1);
+    index = fileName.indexOf(QLatin1Char('.'));
+    if (index > 0)
+        fileName = fileName.left(index);
+
+    QRegularExpression re(validEntityNameMatcher);
+    QRegularExpressionMatch match = re.match(fileName);
+
+    if (!match.hasMatch()) {
+        //: This string is entity name, no non-ascii characters allowed
+        fileName = tr("New imported entity");
+    }
+
+    m_sceneLoaderEntity->setObjectName(generateValidName(fileName, m_sceneLoaderEntity));
     Qt3DRender::QSceneLoader *sceneLoader = new Qt3DRender::QSceneLoader(m_sceneLoaderEntity);
     QObject::connect(sceneLoader, &Qt3DRender::QSceneLoader::statusChanged,
                      this, &EditorSceneItemModel::handleImportEntityLoaderStatusChanged);
@@ -814,7 +830,7 @@ void EditorSceneItemModel::fixEntityNames(Qt3DCore::QEntity *entity)
     QString desiredName = entity->objectName();
 
     // Check that desired name matches our naming criteria
-    QRegularExpression re(QStringLiteral("^[A-Za-z_][A-Za-z0-9_ ]*$"));
+    QRegularExpression re(validEntityNameMatcher);
     QRegularExpressionMatch match = re.match(desiredName);
 
     if (!match.hasMatch())
