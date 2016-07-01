@@ -29,8 +29,8 @@
 #pragma once
 
 #include "qt3dsceneeditor_global.h"
-
 #include <extensionsystem/iplugin.h>
+#include <utils/fileutils.h>
 
 namespace Qt3DSceneEditor {
 namespace Internal {
@@ -58,9 +58,12 @@ public:
 
 private:
     void createSceneEditorWidget();
+    void fixProFile(const Utils::FileName &filePath);
 
     Qt3DSceneEditorWidget *m_sceneEditorWidget;
     Qt3DSceneEditorContext *m_context;
+    Utils::FileName m_previouslyLoadedScene;
+    bool m_proFileDirty;
 };
 
 } // namespace Internal

@@ -41,17 +41,55 @@
 #include <coreplugin/coreconstants.h>
 #include <coreplugin/designmode.h>
 #include <coreplugin/editormanager/ieditor.h>
+#include <coreplugin/documentmanager.h>
+#include <projectexplorer/project.h>
+#include <projectexplorer/projectexplorer.h>
+#include <projectexplorer/projecttree.h>
+#include <projectexplorer/projectexplorerconstants.h>
+#include <projectexplorer/projectnodes.h>
+#include <projectexplorer/session.h>
+#include <proparser/profileevaluator.h>
+#include <proparser/prowriter.h>
+#include <proparser/qmakevfs.h>
 
 #include <utils/mimetypes/mimedatabase.h>
 #include <utils/fileutils.h>
 
 #include <QtCore/QTimer>
 #include <QtCore/QUrl>
+#include <QtCore/QLibraryInfo>
 
 namespace Qt3DSceneEditor {
 namespace Internal {
 
-Qt3DSceneEditorPlugin::Qt3DSceneEditorPlugin()
+typedef QmakeProjectManager::Internal::ProWriter PW;
+
+class Handler : public QMakeHandler {
+public:
+    virtual void message(int type, const QString &msg, const QString &fileName, int lineNo)
+    {
+        Q_UNUSED(lineNo);
+        Q_UNUSED(fileName);
+        Q_UNUSED(type);
+        qDebug() << msg;
+    }
+
+    virtual void fileMessage(int type, const QString &msg)
+    {
+        Q_UNUSED(type)
+        qWarning("%s", qPrintable(msg));
+    }
+
+    virtual void aboutToEval(ProFile *, ProFile *, EvalFileType) {}
+    virtual void doneWithEval(ProFile *) {}
+};
+
+static Handler handler;
+
+Qt3DSceneEditorPlugin::Qt3DSceneEditorPlugin() :
+    m_sceneEditorWidget(nullptr)
+  , m_context(nullptr)
+  , m_proFileDirty(false)
 {
     // Create your members
 }
@@ -155,14 +193,112 @@ void Qt3DSceneEditorPlugin::createSceneEditorWidget()
     });
 }
 
+void Qt3DSceneEditorPlugin::fixProFile(const Utils::FileName &filePath)
+{
+    const ProjectExplorer::Project *project =
+            ProjectExplorer::SessionManager::projectForFile(filePath);
+
+    if (!project) {
+        // If the actual project could not be determined, check current project, as it is usually
+        // where things are added.
+        project = ProjectExplorer::ProjectTree::instance()->currentProject();
+        if (!project)
+            return;
+    }
+
+    QString checkedFile = filePath.fileName(0);
+    QString proFileName = project->projectFilePath().toString();
+    QMakeVfs vfs;
+    QMakeParser parser(0, &vfs, &handler);
+    ProFileGlobals option;
+    QString qmake = QLibraryInfo::location(QLibraryInfo::BinariesPath) + QLatin1String("/qmake");
+    option.qmake_abslocation = QDir::cleanPath(qmake);
+
+    ProFileEvaluator visitor(&option, &parser, &vfs, &handler);
+
+#ifdef PROEVALUATOR_CUMULATIVE
+    visitor.setCumulative(true);
+#endif
+    visitor.initialize();
+
+    QStringList lines;
+    {
+        QString contents;
+        {
+            Utils::FileReader reader;
+            if (!reader.fetch(proFileName, QIODevice::Text)) {
+                return;
+            }
+            contents = QString::fromLocal8Bit(reader.data());
+            lines = contents.split(QLatin1Char('\n'));
+        }
+    }
+
+    ProFile *pro;
+
+    if (!(pro = parser.parsedProFile(proFileName))) {
+        if (!QFile::exists(proFileName)) {
+            qCritical("Input file %s does not exist.", qPrintable(proFileName));
+            return;
+        }
+        return;
+    }
+
+    if (!visitor.accept(pro, QMakeEvaluator::LoadProOnly)) {
+        pro->deref();
+        return;
+    }
+
+    QStringList resources = visitor.values(QStringLiteral("RESOURCES"));
+    if (resources.contains(checkedFile)) {
+        pro->deref();
+        return;
+    }
+
+    QStringList distFiles = visitor.values(QStringLiteral("DISTFILES"));
+    if (!distFiles.contains(checkedFile)) {
+        pro->deref();
+        return;
+    }
+    m_proFileDirty = false;
+
+    QString scope = QLatin1String("");
+
+    QStringList checkedFileList;
+    checkedFileList << checkedFile;
+
+    Core::DocumentManager::expectFileChange(proFileName);
+    PW::removeVarValues(pro, &lines, checkedFileList,
+                        QStringList() << QStringLiteral("DISTFILES"));
+    PW::putVarValues(pro, &lines, checkedFileList, QStringLiteral("RESOURCES"),
+                     PW::PutFlags(PW::AppendValues | PW::MultiLine), scope);
+
+    Utils::FileSaver saver(proFileName, QIODevice::Text);
+    saver.write(lines.join(QLatin1Char('\n')).toLocal8Bit());
+    saver.finalize();
+
+    pro->deref();
+}
+
 void Qt3DSceneEditorPlugin::showSceneEditor()
 {
-    m_sceneEditorWidget->initialize(
-                QUrl::fromLocalFile(Core::EditorManager::currentDocument()->filePath().toString()));
+    Utils::FileName filePath = Core::EditorManager::currentDocument()->filePath();
+
+    if (filePath != m_previouslyLoadedScene) {
+        m_previouslyLoadedScene = filePath;
+        m_proFileDirty = true;
+        m_sceneEditorWidget->initialize(QUrl::fromLocalFile(filePath.toString()));
+        fixProFile(filePath);
+    }
 }
 
 void Qt3DSceneEditorPlugin::hideSceneEditor()
 {
+    // Reattempt fixing at editor hiding if fixing failed when showing editor, which can happen
+    // when adding scene to non-current project.
+    if (m_proFileDirty)
+        fixProFile(m_previouslyLoadedScene);
+
     // TODO: should save settings on qml side?
 }
 

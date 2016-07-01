@@ -29,14 +29,11 @@ import QtQuick 2.5
 
 Rectangle {
     color: editorContent.paneBackgroundColor
-    property url previouslyLoadedUrl: ""
 
     function loadScene(url) {
-        if (url !== previouslyLoadedUrl) {
-            var folder = url.toString();
-            folder = decodeURIComponent(folder.replace(/\/[^\/]*$/, ""));
-            editorContent.loadScene(url, folder)
-        }
+        var folder = url.toString();
+        folder = decodeURIComponent(folder.replace(/\/[^\/]*$/, ""));
+        editorContent.loadScene(url, folder)
     }
 
     EditorContent {

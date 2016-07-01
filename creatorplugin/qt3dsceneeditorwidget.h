@@ -28,7 +28,7 @@
 
 #pragma once
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
 class QQuickWidget;
