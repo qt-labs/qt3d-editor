@@ -1331,11 +1331,11 @@ void EditorUtils::copyRenderStates(Qt3DRender::QRenderPass *source,
                     Qt3DRender::QRenderStatePrivate::get(state));
 
         switch (stateP->m_type) {
-        case Qt3DRender::QRenderStatePrivate::AlphaCoverage: {
+        case Qt3DRender::Render::AlphaCoverageStateMask: {
             newState = new Qt3DRender::QAlphaCoverage;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::AlphaTest: {
+        case Qt3DRender::Render::AlphaTestMask: {
             Qt3DRender::QAlphaTest *sourceState =
                     qobject_cast<Qt3DRender::QAlphaTest *>(state);
             Qt3DRender::QAlphaTest *targetState = new Qt3DRender::QAlphaTest;
@@ -1344,7 +1344,7 @@ void EditorUtils::copyRenderStates(Qt3DRender::QRenderPass *source,
             newState = targetState;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::BlendEquation: {
+        case Qt3DRender::Render::BlendStateMask: {
             Qt3DRender::QBlendEquation *sourceState =
                     qobject_cast<Qt3DRender::QBlendEquation *>(state);
             Qt3DRender::QBlendEquation *targetState = new Qt3DRender::QBlendEquation;
@@ -1352,7 +1352,7 @@ void EditorUtils::copyRenderStates(Qt3DRender::QRenderPass *source,
             newState = targetState;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::BlendEquationArguments: {
+        case Qt3DRender::Render::BlendEquationArgumentsMask: {
             Qt3DRender::QBlendEquationArguments *sourceState =
                     qobject_cast<Qt3DRender::QBlendEquationArguments *>(state);
             Qt3DRender::QBlendEquationArguments *targetState =
@@ -1365,7 +1365,7 @@ void EditorUtils::copyRenderStates(Qt3DRender::QRenderPass *source,
             newState = targetState;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::ColorMask: {
+        case Qt3DRender::Render::ColorStateMask: {
             Qt3DRender::QColorMask *sourceState = qobject_cast<Qt3DRender::QColorMask *>(state);
             Qt3DRender::QColorMask *targetState = new Qt3DRender::QColorMask;
             targetState->setRedMasked(sourceState->isRedMasked());
@@ -1375,40 +1375,40 @@ void EditorUtils::copyRenderStates(Qt3DRender::QRenderPass *source,
             newState = targetState;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::CullFace: {
+        case Qt3DRender::Render::CullFaceStateMask: {
             Qt3DRender::QCullFace *sourceState = qobject_cast<Qt3DRender::QCullFace *>(state);
             Qt3DRender::QCullFace *targetState = new Qt3DRender::QCullFace;
             targetState->setMode(sourceState->mode());
             newState = targetState;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::MSAAEnabled: {
+        case Qt3DRender::Render::MSAAEnabledStateMask: {
             newState = new Qt3DRender::QMultiSampleAntiAliasing;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::NoDepthMask: {
+        case Qt3DRender::Render::DepthWriteStateMask: {
             newState = new Qt3DRender::QNoDepthMask;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::DepthTest: {
+        case Qt3DRender::Render::DepthTestStateMask: {
             Qt3DRender::QDepthTest *sourceState = qobject_cast<Qt3DRender::QDepthTest *>(state);
             Qt3DRender::QDepthTest *targetState = new Qt3DRender::QDepthTest;
             targetState->setDepthFunction(sourceState->depthFunction());
             newState = targetState;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::Dithering: {
+        case Qt3DRender::Render::DitheringStateMask: {
             newState = new Qt3DRender::QDithering;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::FrontFace: {
+        case Qt3DRender::Render::FrontFaceStateMask: {
             Qt3DRender::QFrontFace *sourceState = qobject_cast<Qt3DRender::QFrontFace *>(state);
             Qt3DRender::QFrontFace *targetState = new Qt3DRender::QFrontFace;
             targetState->setDirection(sourceState->direction());
             newState = targetState;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::PointSize: {
+        case Qt3DRender::Render::PointSizeMask: {
             Qt3DRender::QPointSize *sourceState = qobject_cast<Qt3DRender::QPointSize *>(state);
             Qt3DRender::QPointSize *targetState = new Qt3DRender::QPointSize;
             targetState->setSizeMode(sourceState->sizeMode());
@@ -1416,7 +1416,7 @@ void EditorUtils::copyRenderStates(Qt3DRender::QRenderPass *source,
             newState = targetState;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::PolygonOffset: {
+        case Qt3DRender::Render::PolygonOffsetStateMask: {
             Qt3DRender::QPolygonOffset *sourceState =
                     qobject_cast<Qt3DRender::QPolygonOffset *>(state);
             Qt3DRender::QPolygonOffset *targetState = new Qt3DRender::QPolygonOffset;
@@ -1425,7 +1425,7 @@ void EditorUtils::copyRenderStates(Qt3DRender::QRenderPass *source,
             newState = targetState;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::ScissorTest: {
+        case Qt3DRender::Render::ScissorStateMask: {
             Qt3DRender::QScissorTest *sourceState =
                     qobject_cast<Qt3DRender::QScissorTest *>(state);
             Qt3DRender::QScissorTest *targetState = new Qt3DRender::QScissorTest;
@@ -1436,7 +1436,7 @@ void EditorUtils::copyRenderStates(Qt3DRender::QRenderPass *source,
             newState = targetState;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::StencilTest: {
+        case Qt3DRender::Render::StencilTestStateMask: {
             Qt3DRender::QStencilTest *sourceState =
                     qobject_cast<Qt3DRender::QStencilTest *>(state);
             Qt3DRender::QStencilTest *targetState = new Qt3DRender::QStencilTest;
@@ -1449,7 +1449,7 @@ void EditorUtils::copyRenderStates(Qt3DRender::QRenderPass *source,
             newState = targetState;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::StencilMask: {
+        case Qt3DRender::Render::StencilWriteStateMask: {
             Qt3DRender::QStencilMask *sourceState =
                     qobject_cast<Qt3DRender::QStencilMask *>(state);
             Qt3DRender::QStencilMask *targetState = new Qt3DRender::QStencilMask;
@@ -1458,7 +1458,7 @@ void EditorUtils::copyRenderStates(Qt3DRender::QRenderPass *source,
             newState = targetState;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::StencilOp: {
+        case Qt3DRender::Render::StencilOpMask: {
             Qt3DRender::QStencilOperation *sourceState =
                     qobject_cast<Qt3DRender::QStencilOperation *>(state);
             Qt3DRender::QStencilOperation *targetState = new Qt3DRender::QStencilOperation;
@@ -1477,7 +1477,7 @@ void EditorUtils::copyRenderStates(Qt3DRender::QRenderPass *source,
             newState = targetState;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::ClipPlane: {
+        case Qt3DRender::Render::ClipPlaneMask: {
             Qt3DRender::QClipPlane *sourceState = qobject_cast<Qt3DRender::QClipPlane *>(state);
             Qt3DRender::QClipPlane *targetState = new Qt3DRender::QClipPlane;
             targetState->setPlaneIndex(sourceState->planeIndex());
@@ -1486,7 +1486,7 @@ void EditorUtils::copyRenderStates(Qt3DRender::QRenderPass *source,
             newState = targetState;
             break;
         }
-        case Qt3DRender::QRenderStatePrivate::SeamlessCubemap: {
+        case Qt3DRender::Render::SeamlessCubemapMask: {
             newState = new Qt3DRender::QSeamlessCubemap;
             break;
         }
