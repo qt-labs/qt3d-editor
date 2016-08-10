@@ -289,8 +289,10 @@ bool EditorSceneParser::exportQmlScene(Qt3DCore::QEntity *sceneEntity, const QUr
     Qt3DCore::QTransform *sceneEntityTransform = new Qt3DCore::QTransform;
     sceneEntity->addComponent(sceneEntityTransform);
 
-    m_stream << indent() << componentsStart << outComponent(renderSettings) << QStringLiteral(",")
-             << outComponent(inputSettings) << componentsEnd << endl << endl;
+    QString inputSettingsId = outComponent(inputSettings);
+    QString renderSettingsId = outComponent(renderSettings);
+    m_stream << indent() << componentsStart << renderSettingsId << QStringLiteral(",")
+             << inputSettingsId << componentsEnd << endl << endl;
 
     forwardRenderer->setCamera(nullptr);
     delete renderSettings;
