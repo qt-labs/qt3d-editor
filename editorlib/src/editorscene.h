@@ -357,6 +357,7 @@ private:
     void setupDefaultScene();
     void createRootEntity();
     void createHelperPlane();
+    void createHelperArrows();
     void setFrameGraphCamera(Qt3DCore::QEntity *cameraEntity);
     Qt3DRender::QCamera *frameGraphCamera() const;
     void enableVisibleCameras(bool enable);
@@ -379,7 +380,7 @@ private:
     bool handleMouseMove(QMouseEvent *event);
     QVector3D helperPlaneNormal() const;
     QVector3D projectVectorOnCameraPlane(const QVector3D &vector) const;
-    void resizeCameraViewCenterEntity();
+    void resizeConstantScreenSizeEntities();
     bool isPropertyLocked(const QString &propertyName, QObject *obj);
     void cancelDrag();
     void setSceneEntity(Qt3DCore::QEntity *newSceneEntity = nullptr);
@@ -391,6 +392,7 @@ private:
     EditorSceneItem *itemByName(const QString &name);
     void clearSingleSelection();
     Q_INVOKABLE void doUpdateGroupSelectionBoxes();
+    void enableHelperArrows(bool enable);
 
 private:
     Qt3DCore::QEntity *m_rootEntity;
@@ -427,6 +429,8 @@ private:
     UndoHandler *m_undoHandler;
     Qt3DCore::QEntity *m_helperPlane;
     Qt3DCore::QTransform *m_helperPlaneTransform;
+    Qt3DCore::QEntity *m_helperArrows;
+    Qt3DCore::QTransform *m_helperArrowsTransform;
 
     Qt3DRender::QMaterial *m_selectionBoxMaterial;
     Qt3DRender::QGeometryRenderer *m_selectionBoxMesh;

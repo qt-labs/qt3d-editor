@@ -28,6 +28,7 @@
 #include "editorutils.h"
 #include "editorsceneitemmodel.h"
 #include "editorsceneitem.h"
+#include "ontopeffect.h"
 #include "qdummyobjectpicker.h"
 
 #include <Qt3DCore/QEntity>
@@ -784,6 +785,34 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createMeshForInsertableType(Insertab
     }
 
     return mesh;
+}
+
+// Creates a single arrow
+Qt3DRender::QGeometryRenderer *EditorUtils::createArrowMesh()
+{
+    Qt3DRender::QMesh *customMesh = new Qt3DRender::QMesh();
+    customMesh->setSource(QUrl(QStringLiteral("qrc:/qt3deditorlib/meshes/arrow.obj")));
+    return customMesh;
+}
+
+void EditorUtils::createArrowEntity(const QColor &color,
+                                    Qt3DCore::QEntity *parent,
+                                    const QMatrix4x4 &matrix)
+{
+    Qt3DCore::QEntity *arrow = new Qt3DCore::QEntity(parent);
+
+    Qt3DRender::QGeometryRenderer *mesh = EditorUtils::createArrowMesh();
+
+    Qt3DRender::QMaterial *material = new Qt3DRender::QMaterial();
+    material->setEffect(new OnTopEffect());
+    material->addParameter(new Qt3DRender::QParameter(QStringLiteral("handleColor"), color));
+
+    Qt3DCore::QTransform *transform = new Qt3DCore::QTransform();
+    transform->setMatrix(matrix);
+
+    arrow->addComponent(mesh);
+    arrow->addComponent(material);
+    arrow->addComponent(transform);
 }
 
 void EditorUtils::addPositionAttributeToGeometry(Qt3DRender::QGeometry *geometry,

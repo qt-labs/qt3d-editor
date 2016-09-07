@@ -120,6 +120,10 @@ public:
     static Qt3DRender::QGeometryRenderer *createCameraViewCenterMesh(float size);
     static Qt3DRender::QGeometryRenderer *createLightMesh(ComponentTypes type);
     static Qt3DRender::QGeometryRenderer *createMeshForInsertableType(InsertableEntities type);
+    static Qt3DRender::QGeometryRenderer *createArrowMesh();
+    static void createArrowEntity(const QColor &color,
+                                  Qt3DCore::QEntity *parent,
+                                  const QMatrix4x4 &matrix);
     static void addPositionAttributeToGeometry(Qt3DRender::QGeometry *geometry,
                                                Qt3DRender::QBuffer *buffer,
                                                int count);

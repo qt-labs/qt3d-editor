@@ -88,6 +88,9 @@ static const int dragCornerHandleCount = 8; // One handle for each selection box
 static const QColor selectionBoxColor("#43adee");
 static const QColor cameraFrustumColor("#c22555");
 static const QColor helperPlaneColor("#585a5c");
+static const QColor helperArrowColorX("red");
+static const QColor helperArrowColorY("green");
+static const QColor helperArrowColorZ("blue");
 
 EditorScene::EditorScene(QObject *parent)
     : QObject(parent)
@@ -109,6 +112,8 @@ EditorScene::EditorScene(QObject *parent)
     , m_undoHandler(new UndoHandler(this))
     , m_helperPlane(nullptr)
     , m_helperPlaneTransform(nullptr)
+    , m_helperArrows(nullptr)
+    , m_helperArrowsTransform(nullptr)
     , m_meshCenterIndicatorLine(nullptr)
     , m_meshCenterIndicatorLineTransform(nullptr)
     , m_qtTranslator(new QTranslator(this))
@@ -883,6 +888,17 @@ void EditorScene::doUpdateGroupSelectionBoxes()
     m_groupBoxUpdatePending = false;
 }
 
+void EditorScene::enableHelperArrows(bool enable)
+{
+    // TODO: Remove this function once disabling parent properly hides the children
+    Q_FOREACH (QObject *child, m_helperArrows->children()) {
+        Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
+        if (childEntity)
+            childEntity->setEnabled(enable);
+    }
+    m_helperArrows->setEnabled(enable);
+}
+
 EditorSceneItem *EditorScene::itemByName(const QString &name)
 {
     const QList<EditorSceneItem *> items = m_sceneItems.values();
@@ -942,8 +958,9 @@ void EditorScene::updateVisibleSceneCameraMatrix(const EditorScene::CameraData &
 
         m_activeSceneCameraFrustumData.viewCenterTransform->setTranslation(
                     cameraData.cameraEntity->viewCenter());
-        resizeCameraViewCenterEntity();
+        resizeConstantScreenSizeEntities();
     }
+
 }
 
 void EditorScene::connectDragHandles(EditorSceneItem *item, bool enable)
@@ -1757,6 +1774,9 @@ void EditorScene::createRootEntity()
     // Helper plane
     createHelperPlane();
 
+    // Helper arrows
+    createHelperArrows();
+
     // The drag handles translation is same as the selection box + a specified distance
     // depending on the scale of the box.
     m_dragHandlesTransform = new Qt3DCore::QTransform();
@@ -1845,6 +1865,25 @@ void EditorScene::createHelperPlane()
     m_helperPlane->setParent(m_rootEntity);
 }
 
+void EditorScene::createHelperArrows()
+{
+    m_helperArrows = new Qt3DCore::QEntity();
+    m_helperArrows->setObjectName(QStringLiteral("__internal helper arrows"));
+
+    QMatrix4x4 matrix;
+    EditorUtils::createArrowEntity(helperArrowColorY, m_helperArrows, matrix);
+    matrix.rotate(90.0f, QVector3D(1.0f, 0.0f, 0.0f));
+    EditorUtils::createArrowEntity(helperArrowColorZ, m_helperArrows, matrix);
+    matrix = QMatrix();
+    matrix.rotate(-90.0f, QVector3D(0.0f, 0.0f, 1.0f));
+    EditorUtils::createArrowEntity(helperArrowColorX, m_helperArrows, matrix);
+
+    m_helperArrowsTransform = new Qt3DCore::QTransform();
+    m_helperArrows->addComponent(m_helperArrowsTransform);
+    m_helperArrows->setParent(m_rootEntity);
+    enableHelperArrows(false);
+}
+
 void EditorScene::setFrameGraphCamera(Qt3DCore::QEntity *cameraEntity)
 {
     if (m_renderer) {
@@ -1903,6 +1942,7 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
             emit selectionChanged(m_selectedEntity);
         }
         m_dragHandlesTransform->setEnabled(item->isSelectionBoxShowing());
+        enableHelperArrows(item->isSelectionBoxShowing());
 
         if (item->itemType() == EditorSceneItem::Camera) {
             // Disable scale handles for cameras
@@ -1953,6 +1993,7 @@ void EditorScene::setSelection(Qt3DCore::QEntity *entity)
         handleSelectionTransformChange();
     } else {
         m_dragHandlesTransform->setEnabled(false);
+        enableHelperArrows(false);
         if (m_selectedEntity != m_sceneEntity)
             setSelection(m_sceneEntity);
     }
@@ -2002,6 +2043,7 @@ void EditorScene::addEntityToMultiSelection(const QString &name)
         if (m_selectedEntity != m_sceneEntity) {
             m_selectedEntityNameList.append(m_selectedEntity->objectName());
             m_dragHandlesTransform->setEnabled(false);
+            enableHelperArrows(false);
             handleSelectionTransformChange();
             clearSingleSelection();
         } else {
@@ -2194,8 +2236,6 @@ void EditorScene::handleSelectionTransformChange()
     QVector3D cornerHandlePositions[dragCornerHandleCount];
     bool showCenterHandle = false;
 
-    resizeCameraViewCenterEntity();
-
     if (item) {
         Qt3DRender::QCamera *camera = frameGraphCamera();
 
@@ -2297,7 +2337,17 @@ void EditorScene::handleSelectionTransformChange()
                         m_dragHandlesTransform->translation());
             m_meshCenterIndicatorLineTransform->setScale(meshCenter.length());
         }
+
+        // Move the helper arrows to the center of the entity
+        if (showCenterHandle) {
+            m_helperArrowsTransform->setMatrix(m_dragHandlesTransform->matrix()
+                                               * m_dragHandleTranslateTransform->matrix());
+        } else {
+            m_helperArrowsTransform->setMatrix(m_dragHandlesTransform->matrix());
+        }
     }
+    resizeConstantScreenSizeEntities();
+
     m_meshCenterIndicatorLine->setEnabled(showCenterHandle && m_dragHandlesTransform->isEnabled());
 
     // Signal UI to reposition drag handles
@@ -2452,15 +2502,23 @@ QVector3D EditorScene::projectVectorOnCameraPlane(const QVector3D &vector) const
     return projectionVector;
 }
 
-void EditorScene::resizeCameraViewCenterEntity()
+// Rescales various entities that need to be constant size on the screen
+void EditorScene::resizeConstantScreenSizeEntities()
 {
     if (frameGraphCamera()) {
-        // Rescale the camera viewcenter entity according to distance, as it is draggable
+        // Camera viewcenter
         const float vcEntityAngle = 0.0045f;
         QVector3D vcPos = m_activeSceneCameraFrustumData.viewCenterTransform->translation();
         float distanceToVc = (vcPos - frameGraphCamera()->position()).length();
         float vcScale = vcEntityAngle * distanceToVc;
         m_activeSceneCameraFrustumData.viewCenterTransform->setScale(vcScale * 2.0f);
+
+        // Helper arrows
+        const float arrowsEntityAngle = 0.03f;
+        QVector3D arrowsPos = m_helperArrowsTransform->translation();
+        float distanceToArrows = (arrowsPos - frameGraphCamera()->position()).length();
+        float arrowsScale = arrowsEntityAngle * distanceToArrows;
+        m_helperArrowsTransform->setScale(arrowsScale * 2.0f);
     }
 }
 
