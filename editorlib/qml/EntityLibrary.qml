@@ -132,6 +132,7 @@ Item {
                                                                       dragPositionY)
                             editorScene.movePlaceholderEntity("dragInsert",
                                                               editorScene.getWorldPosition(scenePos.x, scenePos.y))
+                            editorScene.updateWorldPositionLabel(scenePos.x, scenePos.y)
                         }
 
                         onReleased: {
@@ -143,12 +144,14 @@ Item {
                                                                           dragPositionX,
                                                                           dragPositionY)
                                 createNewEntity(meshType, scenePos.x, scenePos.y)
+                                editorScene.updateWorldPositionLabel(scenePos.x, scenePos.y)
                             }
                         }
 
                         onCanceled: {
                             dragEntityItem.endDrag(false)
                             editorScene.hidePlaceholderEntity("dragInsert")
+                            editorScene.updateWorldPositionLabel(-1, -1)
                         }
 
                     }

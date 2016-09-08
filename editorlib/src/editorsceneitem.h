@@ -30,6 +30,7 @@
 
 #include <QtCore/QObject>
 #include <QtGui/QVector3D>
+#include <QtGui/QMatrix4x4>
 
 #include "editorsceneitemmeshcomponentsmodel.h" // For mesh type determination
 
@@ -94,8 +95,9 @@ public:
                                        const QVariant &value);
     Q_INVOKABLE QVariant customProperty(QObject *component, const QString name) const;
     Qt3DCore::QTransform *selectionTransform() const { return m_selectionTransform; }
+    const QMatrix4x4 &unadjustedSelectionBoxMatrix() const { return m_unadjustedSelectionBoxMatrix; }
     Qt3DCore::QTransform *entityTransform() const { return m_entityTransform; }
-    QVector3D selectionBoxExtents() const { return m_selectionBoxExtents; }
+    QVector3D unadjustedSelectionBoxExtents() const { return m_unadjustedSelectionBoxExtents; }
     QVector3D entityMeshExtents() const { return m_entityMeshExtents; }
     Q_INVOKABLE QVector3D selectionBoxCenter() const { return m_selectionBoxCenter; }
     QVector3D entityMeshCenter() const { return m_entityMeshCenter; }
@@ -140,6 +142,7 @@ private:
 
     Qt3DCore::QEntity *m_selectionBox;  // Created, but not owned
     Qt3DCore::QTransform *m_selectionTransform;  // Created, but not owned
+    QMatrix4x4 m_unadjustedSelectionBoxMatrix;
     Qt3DCore::QTransform *m_entityTransform; // Not owned
     Qt3DRender::QGeometryRenderer *m_entityMesh; // Not owned
     EditorSceneItemMeshComponentsModel::MeshComponentTypes m_entityMeshType;
@@ -148,7 +151,7 @@ private:
 
     QVector3D m_entityMeshExtents;
     QVector3D m_entityMeshCenter;
-    QVector3D m_selectionBoxExtents;
+    QVector3D m_unadjustedSelectionBoxExtents;
     QVector3D m_selectionBoxCenter;
 
     bool m_canRotate;

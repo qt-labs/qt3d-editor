@@ -241,6 +241,8 @@ public:
     Q_INVOKABLE void toggleEntityMultiSelection(const QString &name);
     Q_INVOKABLE void clearMultiSelection();
     Q_INVOKABLE QVector3D getMultiSelectionCenter();
+    Q_INVOKABLE void updateWorldPositionLabel(int xPos, int yPos);
+    Q_INVOKABLE void updateWorldPositionLabelToDragHandle(DragMode dragMode, int handleIndex = 0);
 
     void removeEntityFromMultiSelection(const QString &name);
     void addEntityToMultiSelection(const QString &name);
@@ -335,6 +337,7 @@ signals:
     void endDragHandlesRepositioning();
     void clipboardOperationChanged(ClipboardOperation clipboardOperation);
     void clipboardContentChanged(const QString &clipboardContent);
+    void worldPositionLabelUpdate(const QString &wpX, const QString &wpY, const QString &wpZ);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
@@ -393,6 +396,7 @@ private:
     void clearSingleSelection();
     Q_INVOKABLE void doUpdateGroupSelectionBoxes();
     void enableHelperArrows(bool enable);
+    void updateWorldPositionLabel(const QVector3D &worldPos);
 
 private:
     Qt3DCore::QEntity *m_rootEntity;

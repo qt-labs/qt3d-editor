@@ -32,6 +32,9 @@ import QtQuick.Layouts 1.2
 import QtQuick.Controls 2.0 as QQC2
 
 Item {
+    property alias coordDisplayText: coordinateDisplayLabel.text
+    property string coordDisplayTemplate: qsTr("x:%1 y:%2 z:%3") + editorScene.emptyString
+
     height: newButton.height
     ToolBar {
         id: mainToolBar
@@ -209,6 +212,15 @@ Item {
                 enabledIconSource: "images/settings.png"
                 tooltip: qsTr("Settings") + editorScene.emptyString
                 onEnabledButtonClicked: settingsDialog.show()
+            }
+
+            ToolbarSeparator {}
+
+            // Coordinate display label size is variable, so it should be the last item
+            StyledLabel {
+                id: coordinateDisplayLabel
+                rightPadding: 8
+                leftPadding: 8
             }
         }
     }

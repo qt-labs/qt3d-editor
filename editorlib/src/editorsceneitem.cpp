@@ -468,13 +468,14 @@ void EditorSceneItem::doUpdateSelectionBoxTransform()
     QMatrix4x4 transformMatrix = composeSelectionBoxTransform();
     transformMatrix.translate(m_entityMeshCenter);
     m_selectionBoxCenter = transformMatrix * QVector3D();
-    m_selectionBoxExtents = m_entityMeshExtents + selectionBoxAdjuster;
-    transformMatrix.scale(m_selectionBoxExtents);
+    m_unadjustedSelectionBoxExtents = m_entityMeshExtents;
+    m_unadjustedSelectionBoxMatrix = transformMatrix;
+    transformMatrix.scale(m_unadjustedSelectionBoxExtents + selectionBoxAdjuster);
 
     QVector3D ancestralScale = EditorUtils::totalAncestralScale(m_entity);
-    m_selectionBoxExtents *= ancestralScale;
+    m_unadjustedSelectionBoxExtents *= ancestralScale;
     if (m_entityTransform)
-        m_selectionBoxExtents *= m_entityTransform->scale3D();
+        m_unadjustedSelectionBoxExtents *= m_entityTransform->scale3D();
 
     m_selectionTransform->setMatrix(transformMatrix);
 

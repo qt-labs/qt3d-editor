@@ -56,7 +56,6 @@ Item {
     property int currentHelperPlane: 1
     property alias selectedEntityType: generalPropertyView.entityType
 
-    property bool trackMousePosition: false
     property int mousePosY: -1
     property int mousePosX: -1
 
@@ -185,7 +184,6 @@ Item {
                 var sceneItem = editorScene.sceneModel.editorSceneItemFromIndex(index)
                 sceneItem.entity().enabled = true
             }
-            trackMousePosition = true
             editorScene.clipboardContent = entityName
             editorScene.clipboardOperation = EditorScene.ClipboardCopy
             // TODO: When to stop reading mouse movements when copy-pasting?
@@ -195,7 +193,6 @@ Item {
 
     function cutEntity(entityName, entity) {
         if (entityName !== editorScene.sceneRootName()) {
-            trackMousePosition = true
             editorScene.clipboardContent = entityName
             editorScene.clipboardOperation = EditorScene.ClipboardCut
             entity.entity().enabled = false
@@ -221,10 +218,8 @@ Item {
             // When pasting to tree, world position is not used, and parent entity name is passed
             editorScene.undoHandler.createPasteEntityCommand(editorScene.getWorldPosition(
                                                                  mousePosX, mousePosY), parentName)
-            if (editorScene.clipboardOperation === EditorScene.ClipboardCut) {
-                trackMousePosition = false
+            if (editorScene.clipboardOperation === EditorScene.ClipboardCut)
                 editorScene.clipboardOperation = EditorScene.ClipboardNone
-            }
         }
     }
 
@@ -361,9 +356,9 @@ Item {
                 entityTree.menu.popup()
             }
 
-            onClipboardOperationChanged: {
-                if (clipboardOperation === EditorScene.ClipboardNone)
-                    editorContent.trackMousePosition = false
+            onWorldPositionLabelUpdate: {
+                editorToolbar.coordDisplayText =
+                        editorToolbar.coordDisplayTemplate.arg(wpX).arg(wpY).arg(wpZ)
             }
 
             function restoreSelection(entity) {
@@ -505,9 +500,14 @@ Item {
                             mouse.accepted = false
                         }
                         onEntered: entityTree.treeviewPasting = false
-                        hoverEnabled: editorContent.trackMousePosition
-                        onMouseYChanged: editorContent.mousePosY = mouseY
-                        onMouseXChanged: editorContent.mousePosX = mouseX
+                        hoverEnabled: true
+                        onPositionChanged: {
+                            editorContent.mousePosY = mouseY
+                            editorContent.mousePosX = mouseX
+                            editorScene.updateWorldPositionLabel(mouseX, mouseY)
+                        }
+                        onExited: editorScene.updateWorldPositionLabel(-1, -1)
+                        onCanceled: editorScene.updateWorldPositionLabel(-1, -1)
                     }
 
                     DropArea {

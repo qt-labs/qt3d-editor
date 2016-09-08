@@ -559,7 +559,7 @@ void EditorScene::dragHandlePress(EditorScene::DragMode dragMode, const QPoint &
                               * m_selectedEntityTransform->scale3D()
                               / selectedItem->selectionTransform()->scale3D()
                             : QVector3D();
-                    QVector3D snapPos = (selectedItem->selectionTransform()->matrix()
+                    QVector3D snapPos = (selectedItem->unadjustedSelectionBoxMatrix()
                                          * (m_dragHandleCornerAdjustments.at(i)
                                             * QVector3D(0.5f, 0.5f, 0.5f) + centerHandleAdj));
                     snapPos -= selectedItem->selectionBoxCenter();
@@ -2032,6 +2032,39 @@ QVector3D EditorScene::getMultiSelectionCenter()
     return m_selectedEntityNameList.size() ? (pos / m_selectedEntityNameList.size()) : QVector3D();
 }
 
+void EditorScene::updateWorldPositionLabel(int xPos, int yPos)
+{
+    updateWorldPositionLabel(getWorldPosition(xPos,yPos));
+}
+
+void EditorScene::updateWorldPositionLabelToDragHandle(EditorScene::DragMode dragMode,
+                                                       int handleIndex)
+{
+    // All handles show actual handle position
+    QMatrix4x4 matrix = m_dragHandlesTransform->matrix();
+    switch (dragMode) {
+    case EditorScene::DragTranslate:
+        if (handleIndex > 0)
+            matrix *= m_dragHandleTranslateTransform->matrix();
+        break;
+    case EditorScene::DragRotate:
+        matrix *= m_dragHandleRotateTransform->matrix();
+        break;
+    case EditorScene::DragScale:
+        matrix *= m_dragHandleScaleTransforms.at(handleIndex)->matrix();
+        break;
+    }
+
+    updateWorldPositionLabel(matrix * QVector3D());
+}
+
+void EditorScene::updateWorldPositionLabel(const QVector3D &worldPos)
+{
+    emit worldPositionLabelUpdate(QString::number(qreal(worldPos.x()), 'f', 2),
+                                  QString::number(qreal(worldPos.y()), 'f', 2),
+                                  QString::number(qreal(worldPos.z()), 'f', 2));
+}
+
 void EditorScene::addEntityToMultiSelection(const QString &name)
 {
     const int oldSize = m_selectedEntityNameList.size();
@@ -2242,7 +2275,7 @@ void EditorScene::handleSelectionTransformChange()
         m_dragHandlesTransform->setTranslation(item->selectionBoxCenter());
         m_dragHandlesTransform->setRotation(item->selectionTransform()->rotation());
 
-        QVector3D translation = (item->selectionBoxExtents() / 2.0f);
+        QVector3D translation = (item->unadjustedSelectionBoxExtents() / 2.0f);
 
         // m_dragHandleTranslateTransform indicates the mesh center position in drag handles
         // coordinates, i.e. the position of the secondary translate handle.
@@ -2451,6 +2484,7 @@ bool EditorScene::handleMousePress(QMouseEvent *event)
     if (m_mouseButton == Qt::LeftButton)
         m_ctrlDownOnLastLeftPress = event->modifiers() & Qt::ControlModifier;
     cancelDrag();
+    updateWorldPositionLabel(event->pos().x(), event->pos().y());
     return false; // Never consume press event
 }
 
@@ -2463,6 +2497,7 @@ bool EditorScene::handleMouseRelease(QMouseEvent *event)
     }
     m_cameraViewCenterSelected = false;
     cancelDrag();
+    updateWorldPositionLabel(event->pos().x(), event->pos().y());
     return false; // Never consume release event
 }
 
@@ -2471,6 +2506,13 @@ bool EditorScene::handleMouseMove(QMouseEvent *event)
     dragHandleMove(event->pos(), event->modifiers() & Qt::ShiftModifier,
                    event->modifiers() & Qt::ControlModifier,
                    event->modifiers() & Qt::AltModifier);
+
+    if (m_dragMode != DragNone) {
+        // Selection dragging updates world position label to mesh center while dragging
+        updateWorldPositionLabelToDragHandle(EditorScene::DragTranslate, 1);
+    } else {
+        updateWorldPositionLabel(event->pos().x(), event->pos().y());
+    }
     return (m_dragMode != DragNone);
 }
 

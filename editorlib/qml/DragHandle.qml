@@ -58,24 +58,32 @@ Item {
         hoverEnabled: true
         onPositionChanged: {
             var scenePos = editorViewport.mapFromItem(parent, mouseX, mouseY)
-            editorScene.dragHandleMove(scenePos,
-                                       mouse.modifiers & Qt.ShiftModifier,
-                                       mouse.modifiers & Qt.ControlModifier,
-                                       mouse.modifiers & Qt.AltModifier)
+            if (mouse.buttons & Qt.LeftButton) {
+                editorScene.dragHandleMove(scenePos,
+                                           mouse.modifiers & Qt.ShiftModifier,
+                                           mouse.modifiers & Qt.ControlModifier,
+                                           mouse.modifiers & Qt.AltModifier)
+            }
+            editorScene.updateWorldPositionLabelToDragHandle(handleType, handleIndex)
         }
         onPressed: {
             entityTree.focusTree()
             var scenePos = editorViewport.mapFromItem(parent, mouseX, mouseY)
             editorScene.dragHandlePress(handleType, scenePos, handleIndex)
             dragHandle.dragging = true
+            editorScene.updateWorldPositionLabelToDragHandle(handleType, handleIndex)
         }
         onReleased: {
+            editorScene.updateWorldPositionLabelToDragHandle(handleType, handleIndex)
             editorScene.dragHandleRelease()
             dragHandle.dragging = false
+            var scenePos = editorViewport.mapFromItem(parent, mouseX, mouseY)
+            editorScene.updateWorldPositionLabel(scenePos.x, scenePos.y)
         }
         onCanceled: {
             editorScene.dragHandleRelease()
             dragHandle.dragging = false
+            editorScene.updateWorldPositionLabel(-1, -1)
         }
     }
 

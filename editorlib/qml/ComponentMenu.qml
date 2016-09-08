@@ -137,7 +137,8 @@ Menu {
     }
     MenuItem {
         text: qsTr("Paste (Ctrl + v)") + editorScene.emptyString
-        enabled: editorContent.trackMousePosition && !editorScene.multiSelection
+        enabled: editorScene.clipboardOperation !== EditorScene.ClipboardNone
+                 && !editorScene.multiSelection
                  && (!entityTree.treeviewPasting || (entityTree.treeviewPasting
                                                      && editorScene.sceneModel.canReparent(
                          editorScene.sceneModel.editorSceneItemFromIndex(
