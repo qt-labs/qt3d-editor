@@ -45,6 +45,7 @@
         <file>images/spinbox_down.png</file>
         <file>images/spinbox_up.png</file>
         <file>images/reset.png</file>
+        <file>images/change_camera_position.png</file>
         <file>images/reset_camera_to_default_pressed.png</file>
         <file>images/reset_all.png</file>
         <file>images/rotate_handle.png</file>

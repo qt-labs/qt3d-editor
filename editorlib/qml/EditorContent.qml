@@ -228,6 +228,14 @@ Item {
         editorScene.resetFreeViewCamera()
     }
 
+    function changeCameraPosition() {
+        cameraPositionMenu.popup()
+    }
+
+    CameraPositionMenu {
+        id: cameraPositionMenu
+    }
+
     Settings {
         // Save view panel sizes
         // Use detailed category name, as plugin saves settings under QtCreator application
@@ -697,4 +705,3 @@ Item {
         }
     }
 }
-

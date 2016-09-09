@@ -156,6 +156,12 @@ Item {
                 onEnabledButtonClicked: editorScene.snapFreeViewCameraToActiveSceneCamera()
             }
             ToolbarButton {
+                // TODO: Needs a proper icon
+                enabledIconSource: "images/change_camera_position.png"
+                tooltip: qsTr("Change a camera position (Ctrl + 6)") + editorScene.emptyString
+                onEnabledButtonClicked: editorContent.changeCameraPosition()
+            }
+            ToolbarButton {
                 enabledIconSource: "images/reset_camera_to_default.png"
                 disabledIconSource: "images/reset_camera_to_default.png"
                 pressedIconSource: "images/reset_camera_to_default_pressed.png"
@@ -170,6 +176,10 @@ Item {
                 checked: true
                 onCheckedChanged: {
                     editorScene.freeView = checked
+                }
+                Connections {
+                    target: editorScene
+                    onFreeViewChanged: freeViewCheckBox.checked = editorScene.freeView
                 }
             }
             StyledLabel {
@@ -286,5 +296,10 @@ Item {
         id: snapToActiveCameraShortcut
         sequence: "Ctrl+5"
         onActivated: editorScene.snapFreeViewCameraToActiveSceneCamera()
+    }
+    Shortcut {
+        id: changeCameraPositionShortcut
+        sequence: "Ctrl+6"
+        onActivated: editorContent.changeCameraPosition()
     }
 }

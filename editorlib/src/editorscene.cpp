@@ -2058,6 +2058,47 @@ void EditorScene::updateWorldPositionLabelToDragHandle(EditorScene::DragMode dra
     updateWorldPositionLabel(matrix * QVector3D());
 }
 
+void EditorScene::changeCameraPosition(EditorScene::CameraPosition preset)
+{
+    Qt3DRender::QCamera *camera = frameGraphCamera();
+
+    QVector3D cameraDirection;
+    QVector3D up(0.0f, 0.0f, 0.0f);
+    switch (preset) {
+    case CameraPositionTop:
+        cameraDirection.setY(1.0f);
+        up.setZ(1.0f);
+        break;
+    case CameraPositionBottom:
+        cameraDirection.setY(-1.0f);
+        up.setZ(-1.0f);
+        break;
+    case CameraPositionLeft:
+        cameraDirection.setX(1.0f);
+        up.setY(1.0f);
+        break;
+    case CameraPositionRight:
+        cameraDirection.setX(-1.0f);
+        up.setY(1.0f);
+        break;
+    case CameraPositionFront:
+        cameraDirection.setZ(-1.0f);
+        up.setY(1.0f);
+        break;
+    case CameraPositionBack:
+        cameraDirection.setZ(1.0f);
+        up.setY(1.0f);
+        break;
+    default:
+        return;
+    }
+
+    // Keep the current distance and viewcenter, but change upvector to properly orient the camera.
+    float len = camera->viewVector().length();
+    camera->setPosition(camera->viewCenter() + cameraDirection * len);
+    camera->setUpVector(up);
+}
+
 void EditorScene::updateWorldPositionLabel(const QVector3D &worldPos)
 {
     emit worldPositionLabelUpdate(QString::number(qreal(worldPos.x()), 'f', 2),

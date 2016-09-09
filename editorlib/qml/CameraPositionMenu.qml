@@ -31,39 +31,34 @@ import QtQml.Models 2.2
 import com.theqtcompany.SceneEditor3D 1.0
 
 Menu {
-    title: qsTr("Add Entity") + editorScene.emptyString
+    MenuItem {
+        text: qsTr("Change camera to:") + editorScene.emptyString
+        enabled: false
+    }
+    MenuSeparator {}
 
     MenuItem {
-        text: qsTr("Mesh") + editorScene.emptyString
-        iconSource: "images/mesh.png"
-        enabled: !entityTreeView.cameraSelected
-        onTriggered: {
-            entityTree.addNewEntity(EditorUtils.CuboidEntity)
-        }
+        text: qsTr("Top") + editorScene.emptyString
+        onTriggered: editorScene.changeCameraPosition(EditorScene.CameraPositionTop)
     }
     MenuItem {
-        text: qsTr("Camera") + editorScene.emptyString
-        iconSource: "images/camera.png"
-        enabled: !entityTreeView.cameraSelected
-        onTriggered: {
-            entityTree.addNewEntity(EditorUtils.CameraEntity)
-        }
+        text: qsTr("Bottom") + editorScene.emptyString
+        onTriggered: editorScene.changeCameraPosition(EditorScene.CameraPositionBottom)
     }
     MenuItem {
-        text: qsTr("Light") + editorScene.emptyString
-        iconSource: "images/light.png"
-        enabled: !entityTreeView.cameraSelected
-        onTriggered: {
-            entityTree.addNewEntity(EditorUtils.LightEntity)
-        }
+        text: qsTr("Left") + editorScene.emptyString
+        onTriggered: editorScene.changeCameraPosition(EditorScene.CameraPositionLeft)
     }
     MenuItem {
-        text: qsTr("Group") + editorScene.emptyString
-        iconSource: "images/group.png"
-        enabled: entityTreeView.groupSelected || entityTreeView.sceneRootSelected
-        onTriggered: {
-            entityTree.addNewEntity(EditorUtils.GroupEntity)
-        }
+        text: qsTr("Right") + editorScene.emptyString
+        onTriggered: editorScene.changeCameraPosition(EditorScene.CameraPositionRight)
+    }
+    MenuItem {
+        text: qsTr("Front") + editorScene.emptyString
+        onTriggered: editorScene.changeCameraPosition(EditorScene.CameraPositionFront)
+    }
+    MenuItem {
+        text: qsTr("Back") + editorScene.emptyString
+        onTriggered: editorScene.changeCameraPosition(EditorScene.CameraPositionBack)
     }
 }
-

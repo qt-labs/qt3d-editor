@@ -107,6 +107,17 @@ public:
     };
     Q_ENUM(ClipboardOperation)
 
+    enum CameraPosition {
+        CameraPositionNone = 0,
+        CameraPositionTop,
+        CameraPositionBottom,
+        CameraPositionLeft,
+        CameraPositionRight,
+        CameraPositionFront,
+        CameraPositionBack
+    };
+    Q_ENUM(CameraPosition)
+
 private:
     struct CameraFrustumData {
         CameraFrustumData() :
@@ -243,6 +254,7 @@ public:
     Q_INVOKABLE QVector3D getMultiSelectionCenter();
     Q_INVOKABLE void updateWorldPositionLabel(int xPos, int yPos);
     Q_INVOKABLE void updateWorldPositionLabelToDragHandle(DragMode dragMode, int handleIndex = 0);
+    Q_INVOKABLE void changeCameraPosition(CameraPosition preset);
 
     void removeEntityFromMultiSelection(const QString &name);
     void addEntityToMultiSelection(const QString &name);
