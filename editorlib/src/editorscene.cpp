@@ -540,7 +540,7 @@ void EditorScene::dragHandlePress(EditorScene::DragMode dragMode, const QPoint &
                 else
                     m_dragInitialWorldTranslationValue = cameraEntity->position();
             } else {
-                if (handleIndex) {
+                if (handleIndex == 0) {
                     m_dragInitialWorldTranslationValue = m_dragHandlesTransform->translation();
                 } else {
                     m_dragInitialWorldTranslationValue = m_dragHandlesTransform->matrix()
