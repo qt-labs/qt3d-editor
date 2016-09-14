@@ -178,6 +178,7 @@ Item {
 
         property bool sceneRootSelected: true
         property bool cameraSelected: true
+        property bool lightSelected: true
         property bool groupSelected: true
         property real preResetContentY: 0
 
@@ -481,6 +482,8 @@ Item {
                                 editorContent.selectedEntity.itemType() === EditorSceneItem.Camera
                         entityTreeView.groupSelected =
                                 editorContent.selectedEntity.itemType() === EditorSceneItem.Group
+                        entityTreeView.lightSelected =
+                                editorContent.selectedEntity.itemType() === EditorSceneItem.Light
                         editorContent.selectedEntityName = editorScene.sceneModel.entityName(
                                     entityTreeView.selection.currentIndex)
                     } else {

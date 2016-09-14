@@ -41,36 +41,23 @@ Menu {
 
     MenuItem {
         enabled: editorScene.freeView
-        text: qsTr("Add scene camera here") + editorScene.emptyString
-        onTriggered: {
-            entityTree.selectSceneRoot()
-            editorScene.undoHandler.beginMacro(text)
-            entityTree.addNewEntity(EditorUtils.CameraEntity)
-            // When a new camera is added, it is automatically selected
-            editorScene.undoHandler.createCopyCameraPropertiesCommand(
-                        editorContent.selectedEntityName);
-            editorScene.undoHandler.endMacro()
-        }
+        text: qsTr("Add scene camera here (0)") + editorScene.emptyString
+        onTriggered: addSceneCamera()
     }
     MenuItem {
         enabled: editorScene.freeView
-        text: qsTr("Move active camera here") + editorScene.emptyString
-        onTriggered: {
-            editorScene.undoHandler.createCopyCameraPropertiesCommand(
-                        editorScene.cameraName(editorScene.activeSceneCameraIndex),
-                        "", text);
-        }
+        text: qsTr("Move active camera here (1)") + editorScene.emptyString
+        onTriggered: moveSceneCamera()
     }
 
     MenuSeparator {}
 
     MenuItem {
-        text: qsTr("Object Picker") + editorScene.emptyString
+        text: qsTr("Add object picker (Ctrl + P)") + editorScene.emptyString
         iconSource: "images/picker.png"
-        enabled: !editorScene.multiSelection
-        onTriggered: {
-            componentPropertiesView.model.appendNewComponent(EditorSceneItemComponentsModel.ObjectPicker)
-        }
+        enabled: !editorScene.multiSelection && !entityTreeView.cameraSelected
+                 && !entityTreeView.sceneRootSelected && !entityTreeView.lightSelected
+        onTriggered: addPickerToSelectedEntity()
     }
 
     MenuSeparator {}
@@ -80,7 +67,7 @@ Menu {
         enabled: !editorScene.multiSelection && !entityTreeView.cameraSelected
     }
     MenuItem {
-        text: qsTr("Remove") + editorScene.emptyString
+        text: qsTr("Remove (del)") + editorScene.emptyString
         enabled: !entityTreeView.sceneRootSelected
         iconSource: "images/minus.png"
         onTriggered: {
@@ -100,27 +87,13 @@ Menu {
         }
     }
     MenuItem {
-        text: qsTr("Duplicate") + editorScene.emptyString
+        text: qsTr("Duplicate (Ctrl + D)") + editorScene.emptyString
         enabled: !entityTreeView.sceneRootSelected
         iconSource: "images/duplicate.png"
-        onTriggered: {
-            if (editorScene.multiSelection) {
-                // Handle multiselection duplication
-                editorScene.undoHandler.beginMacro(text)
-                var duplicateList = editorScene.sceneModel.parentList(editorScene.multiSelectionList)
-                for (var i = 0; i < duplicateList.length; ++i)
-                    editorScene.undoHandler.createDuplicateEntityCommand(duplicateList[i])
-                editorScene.undoHandler.endMacro()
-                editorScene.restoreMultiSelection(editorScene.multiSelectionList)
-            } else {
-                var currentSelection = editorContent.selectedEntity.entity()
-                editorScene.undoHandler.createDuplicateEntityCommand(editorContent.selectedEntityName)
-                editorScene.restoreSelection(currentSelection)
-            }
-        }
+        onTriggered: editorContent.duplicateEntity()
     }
     MenuItem {
-        text: qsTr("Copy (Ctrl + c)") + editorScene.emptyString
+        text: qsTr("Copy (Ctrl + C)") + editorScene.emptyString
         enabled: !editorScene.multiSelection && !entityTreeView.sceneRootSelected
         iconSource: "images/copy.png"
         onTriggered: {
@@ -128,7 +101,7 @@ Menu {
         }
     }
     MenuItem {
-        text: qsTr("Cut (Ctrl + x)") + editorScene.emptyString
+        text: qsTr("Cut (Ctrl + X)") + editorScene.emptyString
         enabled: !editorScene.multiSelection && !entityTreeView.sceneRootSelected
         iconSource: "images/cut.png"
         onTriggered: {
@@ -136,7 +109,7 @@ Menu {
         }
     }
     MenuItem {
-        text: qsTr("Paste (Ctrl + v)") + editorScene.emptyString
+        text: qsTr("Paste (Ctrl + V)") + editorScene.emptyString
         enabled: editorScene.clipboardOperation !== EditorScene.ClipboardNone
                  && !editorScene.multiSelection
                  && (!entityTree.treeviewPasting || (entityTree.treeviewPasting
@@ -153,55 +126,22 @@ Menu {
         }
     }
     MenuItem {
-        text: qsTr("Reset") + editorScene.emptyString
+        text: qsTr("Reset (Shift + R)") + editorScene.emptyString
         iconSource: "images/reset_all.png"
         enabled: !editorScene.multiSelection && !entityTreeView.sceneRootSelected
-        onTriggered: {
-            editorScene.undoHandler.createResetEntityCommand(editorContent.selectedEntityName)
-        }
+        onTriggered: editorContent.resetSelectedEntity()
     }
     MenuItem {
-        text: qsTr("Reset Transform") + editorScene.emptyString
+        text: qsTr("Reset Transform (Shift + Alt + R)") + editorScene.emptyString
         iconSource: "images/reset.png"
         enabled: !editorScene.multiSelection && !entityTreeView.sceneRootSelected
                  && !entityTreeView.cameraSelected
-        onTriggered: {
-            editorScene.undoHandler.createResetTransformCommand(editorContent.selectedEntityName)
-        }
+        onTriggered: editorContent.resetSelectedEntityTransform()
     }
     MenuItem {
-        text: qsTr("Group Selected") + editorScene.emptyString
+        text: qsTr("Group Selected (Ctrl + G)") + editorScene.emptyString
         enabled: !entityTreeView.sceneRootSelected
         iconSource: "images/group.png"
-        onTriggered: {
-            editorScene.undoHandler.beginMacro(text)
-            // Copy list, as the original is emptied on insertEntity
-            var reparentList = []
-            var groupCenter
-            if (editorScene.multiSelection) {
-                reparentList = editorScene.sceneModel.parentList(editorScene.multiSelectionList)
-                groupCenter = editorScene.getMultiSelectionCenter()
-            } else {
-                reparentList[0] = editorContent.selectedEntityName
-                groupCenter = editorContent.selectedEntity.selectionBoxCenter()
-            }
-
-            // TODO: Allow creating groups under other entities?
-
-            // Add new group
-            editorScene.undoHandler.createInsertEntityCommand(1, editorScene.sceneRootName(),
-                                                              groupCenter)
-            var index = editorScene.sceneModel.lastInsertedIndex()
-            var groupName = editorScene.sceneModel.entityName(index)
-            // Move selected entities under the added group
-            for (var i = 0; i < reparentList.length; ++i)
-                editorScene.undoHandler.createReparentEntityCommand(groupName, reparentList[i])
-            editorScene.undoHandler.endMacro()
-
-            // Single-select the added group. Need to fetch group index again as reparenting
-            // resets the model.
-            editorScene.clearMultiSelection()
-            editorScene.selectIndex(editorScene.sceneModel.getModelIndexByName(groupName))
-        }
+        onTriggered: editorContent.groupSelected()
     }
 }

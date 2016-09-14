@@ -149,6 +149,13 @@ Item {
         }
     }
 
+    function importEntity() {
+        if (!editorScene.sceneModel.importEntityInProgress) {
+            importEntityDialog.folder = importFolder
+            importEntityDialog.open()
+        }
+    }
+
     function showNormalXPlane() {
         editorScene.helperPlane.enabled = true
         editorScene.helperPlaneTransform.rotation =
@@ -223,6 +230,26 @@ Item {
         }
     }
 
+    function duplicateEntity() {
+        if (!entityTree.view.sceneRootSelected) {
+            if (editorScene.multiSelection) {
+                // Handle multiselection duplication
+                editorScene.undoHandler.beginMacro(text)
+                var duplicateList = editorScene.sceneModel.parentList(
+                            editorScene.multiSelectionList)
+                for (var i = 0; i < duplicateList.length; ++i)
+                    editorScene.undoHandler.createDuplicateEntityCommand(duplicateList[i])
+                editorScene.undoHandler.endMacro()
+                editorScene.restoreMultiSelection(editorScene.multiSelectionList)
+            } else {
+                var currentSelection = editorContent.selectedEntity.entity()
+                editorScene.undoHandler.createDuplicateEntityCommand(
+                            editorContent.selectedEntityName)
+                editorScene.restoreSelection(currentSelection)
+            }
+        }
+    }
+
     function resetCameraToDefault() {
         editorScene.freeView = true
         editorScene.resetFreeViewCamera()
@@ -232,8 +259,92 @@ Item {
         cameraPositionMenu.popup()
     }
 
+    function showEntityMenu() {
+        if (!editorScene.multiSelection && !entityTree.view.cameraSelected)
+            entityMenu.popup()
+    }
+
+    function groupSelected() {
+        if (!entityTree.view.sceneRootSelected) {
+            editorScene.undoHandler.beginMacro(qsTr("Group Selected"))
+            // Copy list, as the original is emptied on insertEntity
+            var reparentList = []
+            var groupCenter
+            if (editorScene.multiSelection) {
+                reparentList = editorScene.sceneModel.parentList(editorScene.multiSelectionList)
+                groupCenter = editorScene.getMultiSelectionCenter()
+            } else {
+                reparentList[0] = editorContent.selectedEntityName
+                groupCenter = editorContent.selectedEntity.selectionBoxCenter()
+            }
+
+            // TODO: Allow creating groups under other entities?
+
+            // Add new group
+            editorScene.undoHandler.createInsertEntityCommand(1, editorScene.sceneRootName(),
+                                                              groupCenter)
+            var index = editorScene.sceneModel.lastInsertedIndex()
+            var groupName = editorScene.sceneModel.entityName(index)
+            // Move selected entities under the added group
+            for (var i = 0; i < reparentList.length; ++i)
+                editorScene.undoHandler.createReparentEntityCommand(groupName, reparentList[i])
+            editorScene.undoHandler.endMacro()
+
+            // Single-select the added group. Need to fetch group index again as reparenting
+            // resets the model.
+            editorScene.clearMultiSelection()
+            editorScene.selectIndex(editorScene.sceneModel.getModelIndexByName(groupName))
+        }
+    }
+
+    function resetSelectedEntity() {
+        if (!editorScene.multiSelection && !entityTree.view.sceneRootSelected)
+            editorScene.undoHandler.createResetEntityCommand(editorContent.selectedEntityName)
+    }
+
+    function resetSelectedEntityTransform() {
+        if (!editorScene.multiSelection && !entityTree.view.sceneRootSelected
+                && !entityTree.view.cameraSelected) {
+            editorScene.undoHandler.createResetTransformCommand(editorContent.selectedEntityName)
+        }
+    }
+
+    function addSceneCamera() {
+        if (editorScene.freeView) {
+            entityTree.selectSceneRoot()
+            editorScene.undoHandler.beginMacro(qsTr("Add scene camera"))
+            entityTree.addNewEntity(EditorUtils.CameraEntity)
+            // When a new camera is added, it is automatically selected
+            editorScene.undoHandler.createCopyCameraPropertiesCommand(
+                        editorContent.selectedEntityName);
+            editorScene.undoHandler.endMacro()
+        }
+    }
+
+    function moveSceneCamera() {
+        if (editorScene.freeView) {
+            editorScene.undoHandler.createCopyCameraPropertiesCommand(
+                        editorScene.cameraName(editorScene.activeSceneCameraIndex),
+                        "", qsTr("Move scene camera"));
+        }
+    }
+
+    function addPickerToSelectedEntity() {
+        if (!editorScene.multiSelection && !entityTree.view.sceneRootSelected
+                && !entityTree.view.cameraSelected && !entityTree.view.lightSelected) {
+            componentPropertiesView.model.appendNewComponent(
+                        EditorSceneItemComponentsModel.ObjectPicker)
+        }
+    }
+
+    EntityMenu {
+        id: entityMenu
+        isPopup: true
+    }
+
     CameraPositionMenu {
         id: cameraPositionMenu
+        isPopup: true
     }
 
     Settings {
@@ -314,7 +425,6 @@ Item {
 
 
         Shortcut {
-            id: copyShortcut
             sequence: StandardKey.Copy
             onActivated: {
                 // Prevent copying multiselection (for now, at least)
@@ -324,7 +434,6 @@ Item {
         }
 
         Shortcut {
-            id: cutShortcut
             sequence: StandardKey.Cut
             onActivated: {
                 // Prevent cutting multiselection (for now, at least)
@@ -334,11 +443,42 @@ Item {
         }
 
         Shortcut {
-            id: pasteShortcut
             sequence: StandardKey.Paste
             onActivated: {
                 editorContent.pasteEntity()
             }
+        }
+        Shortcut {
+            sequence: "Ctrl+D"
+            onActivated: editorContent.duplicateEntity()
+        }
+        Shortcut {
+            sequence: "A"
+            onActivated: editorContent.showEntityMenu()
+        }
+        Shortcut {
+            sequence: "Ctrl+G"
+            onActivated: editorContent.groupSelected()
+        }
+        Shortcut {
+            sequence: "Shift+R"
+            onActivated: editorContent.resetSelectedEntity()
+        }
+        Shortcut {
+            sequence: "Shift+Alt+R"
+            onActivated: editorContent.resetSelectedEntityTransform()
+        }
+        Shortcut {
+            sequence: "0"
+            onActivated: editorContent.addSceneCamera()
+        }
+        Shortcut {
+            sequence: "1"
+            onActivated: editorContent.moveSceneCamera()
+        }
+        Shortcut {
+            sequence: "Ctrl+P"
+            onActivated: editorContent.addPickerToSelectedEntity()
         }
 
         EditorScene {

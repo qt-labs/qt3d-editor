@@ -31,34 +31,41 @@ import QtQml.Models 2.2
 import com.theqtcompany.SceneEditor3D 1.0
 
 Menu {
-    MenuItem {
-        text: qsTr("Change camera to:") + editorScene.emptyString
-        enabled: false
-    }
-    MenuSeparator {}
+    property bool isPopup: false
+
+    title: qsTr("Camera Position") + editorScene.emptyString
 
     MenuItem {
-        text: qsTr("Top") + editorScene.emptyString
+        text: qsTr("Camera Position") + editorScene.emptyString
+        enabled: false
+        visible: isPopup
+    }
+    MenuSeparator {
+        visible: isPopup
+    }
+
+    MenuItem {
+        text: qsTr("Top (7)") + editorScene.emptyString
         onTriggered: editorScene.changeCameraPosition(EditorScene.CameraPositionTop)
     }
     MenuItem {
-        text: qsTr("Bottom") + editorScene.emptyString
+        text: qsTr("Bottom (Ctrl+7)") + editorScene.emptyString
         onTriggered: editorScene.changeCameraPosition(EditorScene.CameraPositionBottom)
     }
     MenuItem {
-        text: qsTr("Left") + editorScene.emptyString
+        text: qsTr("Left (8)") + editorScene.emptyString
         onTriggered: editorScene.changeCameraPosition(EditorScene.CameraPositionLeft)
     }
     MenuItem {
-        text: qsTr("Right") + editorScene.emptyString
+        text: qsTr("Right (Ctrl+8)") + editorScene.emptyString
         onTriggered: editorScene.changeCameraPosition(EditorScene.CameraPositionRight)
     }
     MenuItem {
-        text: qsTr("Front") + editorScene.emptyString
+        text: qsTr("Front (9)") + editorScene.emptyString
         onTriggered: editorScene.changeCameraPosition(EditorScene.CameraPositionFront)
     }
     MenuItem {
-        text: qsTr("Back") + editorScene.emptyString
+        text: qsTr("Back (Ctrl+9)") + editorScene.emptyString
         onTriggered: editorScene.changeCameraPosition(EditorScene.CameraPositionBack)
     }
 }

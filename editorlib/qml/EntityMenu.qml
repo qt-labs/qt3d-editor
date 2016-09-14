@@ -31,12 +31,23 @@ import QtQml.Models 2.2
 import com.theqtcompany.SceneEditor3D 1.0
 
 Menu {
-    title: qsTr("Add Entity") + editorScene.emptyString
+    property bool isPopup: false
+
+    title: qsTr("Add Entity (A)") + editorScene.emptyString
+
+    MenuItem {
+        text: qsTr("Add Entity") + editorScene.emptyString
+        enabled: false
+        visible: isPopup
+    }
+    MenuSeparator {
+        visible: isPopup
+    }
 
     MenuItem {
         text: qsTr("Mesh") + editorScene.emptyString
         iconSource: "images/mesh.png"
-        enabled: !entityTreeView.cameraSelected
+        enabled: !entityTree.view.cameraSelected
         onTriggered: {
             entityTree.addNewEntity(EditorUtils.CuboidEntity)
         }
@@ -44,7 +55,7 @@ Menu {
     MenuItem {
         text: qsTr("Camera") + editorScene.emptyString
         iconSource: "images/camera.png"
-        enabled: !entityTreeView.cameraSelected
+        enabled: entityTree.view.sceneRootSelected
         onTriggered: {
             entityTree.addNewEntity(EditorUtils.CameraEntity)
         }
@@ -52,7 +63,7 @@ Menu {
     MenuItem {
         text: qsTr("Light") + editorScene.emptyString
         iconSource: "images/light.png"
-        enabled: !entityTreeView.cameraSelected
+        enabled: !entityTree.view.cameraSelected
         onTriggered: {
             entityTree.addNewEntity(EditorUtils.LightEntity)
         }
@@ -60,7 +71,7 @@ Menu {
     MenuItem {
         text: qsTr("Group") + editorScene.emptyString
         iconSource: "images/group.png"
-        enabled: entityTreeView.groupSelected || entityTreeView.sceneRootSelected
+        enabled: entityTree.view.groupSelected || entityTree.view.sceneRootSelected
         onTriggered: {
             entityTree.addNewEntity(EditorUtils.GroupEntity)
         }

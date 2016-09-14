@@ -30,6 +30,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Layouts 1.2
 import QtQuick.Controls 2.0 as QQC2
+import com.theqtcompany.SceneEditor3D 1.0
 
 Item {
     property alias coordDisplayText: coordinateDisplayLabel.text
@@ -67,12 +68,9 @@ Item {
             ToolbarButton {
                 enabledIconSource: "images/import.png"
                 disabledIconSource: "images/import_disabled.png"
-                tooltip: qsTr("Import Entity") + editorScene.emptyString
+                tooltip: qsTr("Import Entity (Ctrl + I)") + editorScene.emptyString
                 buttonEnabled: !editorScene.sceneModel.importEntityInProgress
-                onEnabledButtonClicked: {
-                    importEntityDialog.folder = editorContent.importFolder
-                    importEntityDialog.open()
-                }
+                onEnabledButtonClicked: editorContent.importEntity()
             }
 
             ToolbarSeparator {}
@@ -150,7 +148,9 @@ Item {
                 enabledIconSource: "images/helperarrows_local.png"
                 disabledIconSource: "images/helperarrows_global.png"
                 selectedBgColor: editorContent.iconHighlightColor
-                tooltip: qsTr("Helper arrows mode") + editorScene.emptyString
+                tooltip: editorScene.helperArrowsLocal
+                         ? qsTr("Local transformation orientation (6)") + editorScene.emptyString
+                         : qsTr("Global transformation orientation (6)") + editorScene.emptyString
                 buttonEnabled: editorScene.helperArrowsLocal
                 onEnabledButtonClicked: editorScene.helperArrowsLocal = !editorScene.helperArrowsLocal
                 hoverAlways: true
@@ -166,9 +166,8 @@ Item {
                 onEnabledButtonClicked: editorScene.snapFreeViewCameraToActiveSceneCamera()
             }
             ToolbarButton {
-                // TODO: Needs a proper icon
                 enabledIconSource: "images/change_camera_position.png"
-                tooltip: qsTr("Change a camera position (Ctrl + 6)") + editorScene.emptyString
+                tooltip: qsTr("Change a camera position") + editorScene.emptyString
                 onEnabledButtonClicked: editorContent.changeCameraPosition()
             }
             ToolbarButton {
@@ -230,7 +229,7 @@ Item {
 
             ToolbarButton {
                 enabledIconSource: "images/settings.png"
-                tooltip: qsTr("Settings") + editorScene.emptyString
+                tooltip: qsTr("Settings (Shift+S)") + editorScene.emptyString
                 onEnabledButtonClicked: settingsDialog.show()
             }
 
@@ -246,70 +245,92 @@ Item {
     }
 
     Shortcut {
-        id: fileNewShortcut
         sequence: StandardKey.New
         onActivated: editorContent.fileNew()
     }
     Shortcut {
-        id: fileLoadShortcut
         sequence: StandardKey.Open
         onActivated: editorContent.fileLoad()
     }
     Shortcut {
-        id: fileSaveShortcut
+        sequence: "Ctrl+I"
+        onActivated: editorContent.importEntity()
+    }
+    Shortcut {
         sequence: StandardKey.Save
         onActivated: editorContent.fileSave()
     }
     Shortcut {
-        id: fileSaveAsShortcut
         sequence: StandardKey.SaveAs
         onActivated: editorContent.fileSaveAs()
     }
 
     Shortcut {
-        id: undoShortcut
         sequence: StandardKey.Undo
         onActivated: editorContent.undo()
     }
     Shortcut {
-        id: redoShortcut
         sequence: StandardKey.Redo
         onActivated: editorContent.redo()
     }
-
     Shortcut {
-        id: resetCameraShortcut
         sequence: "Ctrl+0"
         onActivated: editorContent.resetCameraToDefault()
     }
     Shortcut {
-        id: normalXShortcut
         sequence: "Ctrl+1"
         onActivated: editorContent.showNormalXPlane()
     }
     Shortcut {
-        id: normalYShortcut
         sequence: "Ctrl+2"
         onActivated: editorContent.showNormalYPlane()
     }
     Shortcut {
-        id: normalZShortcut
         sequence: "Ctrl+3"
         onActivated: editorContent.showNormalZPlane()
     }
     Shortcut {
-        id: hideHelperPlaneShortcut
         sequence: "Ctrl+4"
         onActivated: editorContent.hideHelperPlane()
     }
     Shortcut {
-        id: snapToActiveCameraShortcut
         sequence: "Ctrl+5"
         onActivated: editorScene.snapFreeViewCameraToActiveSceneCamera()
     }
     Shortcut {
-        id: changeCameraPositionShortcut
         sequence: "Ctrl+6"
-        onActivated: editorContent.changeCameraPosition()
+        onActivated: editorScene.freeView = !editorScene.freeView
+    }
+    Shortcut {
+        sequence: "6"
+        onActivated: editorScene.helperArrowsLocal = !editorScene.helperArrowsLocal
+    }
+    Shortcut {
+        sequence: "7"
+        onActivated: editorScene.changeCameraPosition(EditorScene.CameraPositionTop)
+    }
+    Shortcut {
+        sequence: "Ctrl+7"
+        onActivated: editorScene.changeCameraPosition(EditorScene.CameraPositionBottom)
+    }
+    Shortcut {
+        sequence: "8"
+        onActivated: editorScene.changeCameraPosition(EditorScene.CameraPositionLeft)
+    }
+    Shortcut {
+        sequence: "Ctrl+8"
+        onActivated: editorScene.changeCameraPosition(EditorScene.CameraPositionRight)
+    }
+    Shortcut {
+        sequence: "9"
+        onActivated: editorScene.changeCameraPosition(EditorScene.CameraPositionFront)
+    }
+    Shortcut {
+        sequence: "Ctrl+9"
+        onActivated: editorScene.changeCameraPosition(EditorScene.CameraPositionBack)
+    }
+    Shortcut {
+        sequence: "Shift+S"
+        onActivated: settingsDialog.show()
     }
 }
