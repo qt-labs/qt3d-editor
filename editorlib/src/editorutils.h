@@ -121,9 +121,10 @@ public:
     static Qt3DRender::QGeometryRenderer *createLightMesh(ComponentTypes type);
     static Qt3DRender::QGeometryRenderer *createMeshForInsertableType(InsertableEntities type);
     static Qt3DRender::QGeometryRenderer *createArrowMesh();
-    static void createArrowEntity(const QColor &color,
-                                  Qt3DCore::QEntity *parent,
-                                  const QMatrix4x4 &matrix);
+    static Qt3DCore::QEntity *createArrowEntity(const QColor &color,
+                                                Qt3DCore::QEntity *parent,
+                                                const QMatrix4x4 &matrix,
+                                                const QString &name);
     static void addPositionAttributeToGeometry(Qt3DRender::QGeometry *geometry,
                                                Qt3DRender::QBuffer *buffer,
                                                int count);

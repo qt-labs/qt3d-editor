@@ -40,6 +40,8 @@
         <file>images/helperplane_y_selected.png</file>
         <file>images/helperplane_z_deselected.png</file>
         <file>images/helperplane_z_selected.png</file>
+        <file>images/helperarrows_local.png</file>
+        <file>images/helperarrows_global.png</file>
         <file>images/reset_camera_to_default.png</file>
         <file>images/duplicate.png</file>
         <file>images/spinbox_down.png</file>

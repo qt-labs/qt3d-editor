@@ -78,6 +78,7 @@ class EditorScene : public QObject
     Q_PROPERTY(int activeSceneCameraIndex READ activeSceneCameraIndex WRITE setActiveSceneCameraIndex NOTIFY activeSceneCameraIndexChanged)
     Q_PROPERTY(EditorViewportItem *viewport READ viewport WRITE setViewport NOTIFY viewportChanged)
     Q_PROPERTY(bool freeView READ freeView WRITE setFreeView NOTIFY freeViewChanged)
+    Q_PROPERTY(bool helperArrowsLocal READ helperArrowsLocal WRITE setHelperArrowsLocal NOTIFY helperArrowsLocalChanged)
     Q_PROPERTY(QAbstractItemModel *sceneCamerasModel READ sceneCamerasModel NOTIFY sceneCamerasModelChanged)
     Q_PROPERTY(UndoHandler *undoHandler READ undoHandler CONSTANT)
     Q_PROPERTY(Qt3DCore::QEntity *helperPlane READ helperPlane CONSTANT)
@@ -99,6 +100,15 @@ public:
         DragDebug  // Can be used to debugging positions
     };
     Q_ENUM(DragMode)
+
+    enum TranslateHandleIndex {
+        TranslateHandleBoxCenter,
+        TranslateHandleMeshCenter,
+        TranslateHandleArrowX,
+        TranslateHandleArrowY,
+        TranslateHandleArrowZ
+    };
+    Q_ENUM(TranslateHandleIndex)
 
     enum ClipboardOperation {
         ClipboardNone = 0,
@@ -287,6 +297,8 @@ public:
 
     void setFreeView(bool enable);
     bool freeView() const { return m_freeView; }
+    void setHelperArrowsLocal(bool enable);
+    bool helperArrowsLocal() const { return m_helperArrowsLocal; }
 
     int gridSize() const;
     void setGridSize(int size);
@@ -350,6 +362,7 @@ signals:
     void clipboardOperationChanged(ClipboardOperation clipboardOperation);
     void clipboardContentChanged(const QString &clipboardContent);
     void worldPositionLabelUpdate(const QString &wpX, const QString &wpY, const QString &wpZ);
+    void helperArrowsLocalChanged(bool enable);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
@@ -447,6 +460,9 @@ private:
     Qt3DCore::QTransform *m_helperPlaneTransform;
     Qt3DCore::QEntity *m_helperArrows;
     Qt3DCore::QTransform *m_helperArrowsTransform;
+    bool m_helperArrowsLocal;
+    QMap<Qt3DCore::QEntity *, int> m_helperArrowHandleIndexMap;
+    QVector3D m_helperArrowGrabOffset;
 
     Qt3DRender::QMaterial *m_selectionBoxMaterial;
     Qt3DRender::QGeometryRenderer *m_selectionBoxMesh;
@@ -482,6 +498,7 @@ private:
     QVector3D m_dragInitialRotateCustomVector;
     QVector3D m_dragInitialHandleTranslation;
     QVector3D m_dragInitialHandleCornerTranslation;
+    QQuaternion m_dragInitialHandleRotationValue;
     QVector3D m_dragInitialCenterTranslation;
     QVector3D m_dragHandleCornerTranslation;
     QVector<QVector3D> m_dragEntitySnapOffsets;

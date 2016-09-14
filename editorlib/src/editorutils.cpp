@@ -795,11 +795,13 @@ Qt3DRender::QGeometryRenderer *EditorUtils::createArrowMesh()
     return customMesh;
 }
 
-void EditorUtils::createArrowEntity(const QColor &color,
-                                    Qt3DCore::QEntity *parent,
-                                    const QMatrix4x4 &matrix)
+Qt3DCore::QEntity *EditorUtils::createArrowEntity(const QColor &color,
+                                                  Qt3DCore::QEntity *parent,
+                                                  const QMatrix4x4 &matrix,
+                                                  const QString &name)
 {
     Qt3DCore::QEntity *arrow = new Qt3DCore::QEntity(parent);
+    arrow->setObjectName(name);
 
     Qt3DRender::QGeometryRenderer *mesh = EditorUtils::createArrowMesh();
 
@@ -813,6 +815,8 @@ void EditorUtils::createArrowEntity(const QColor &color,
     arrow->addComponent(mesh);
     arrow->addComponent(material);
     arrow->addComponent(transform);
+
+    return arrow;
 }
 
 void EditorUtils::addPositionAttributeToGeometry(Qt3DRender::QGeometry *geometry,

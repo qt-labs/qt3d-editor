@@ -42,7 +42,7 @@ Item {
     property color defaultBgColor: "transparent"
     property color hoveredBgColor: "transparent"
     property color selectedBgColor: "transparent"
-
+    property bool hoverAlways: false
 
     signal enabledButtonClicked()
 
@@ -58,7 +58,7 @@ Item {
                 implicitHeight: enableButton.height
                 implicitWidth: enableButton.width
                 color: {
-                    if (buttonEnabled && enabled) {
+                    if ((buttonEnabled || hoverAlways) && enabled) {
                         if (propertyButton.hovered)
                             hoveredBgColor
                         else

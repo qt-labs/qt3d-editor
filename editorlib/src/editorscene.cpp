@@ -79,6 +79,7 @@
 static const QString cameraVisibleEntityName = QStringLiteral("__internal camera visible entity");
 static const QString lightVisibleEntityName = QStringLiteral("__internal light visible entity");
 static const QString sceneLoaderSubEntityName = QStringLiteral("__internal sceneloader sub entity");
+static const QString helperArrowName = QStringLiteral("__internal helper arrow");
 static const QString autoSavePostfix = QStringLiteral(".autosave");
 static const QVector3D defaultLightDirection(0.0f, -1.0f, 0.0f);
 static const float freeViewCameraNearPlane = 0.1f;
@@ -114,6 +115,7 @@ EditorScene::EditorScene(QObject *parent)
     , m_helperPlaneTransform(nullptr)
     , m_helperArrows(nullptr)
     , m_helperArrowsTransform(nullptr)
+    , m_helperArrowsLocal(false)
     , m_meshCenterIndicatorLine(nullptr)
     , m_meshCenterIndicatorLineTransform(nullptr)
     , m_qtTranslator(new QTranslator(this))
@@ -540,21 +542,25 @@ void EditorScene::dragHandlePress(EditorScene::DragMode dragMode, const QPoint &
                 else
                     m_dragInitialWorldTranslationValue = cameraEntity->position();
             } else {
-                if (handleIndex == 0) {
-                    m_dragInitialWorldTranslationValue = m_dragHandlesTransform->translation();
-                } else {
+                if (handleIndex == TranslateHandleMeshCenter
+                        || (handleIndex >= TranslateHandleArrowX && m_helperArrowsLocal)) {
                     m_dragInitialWorldTranslationValue = m_dragHandlesTransform->matrix()
                             * m_dragHandleTranslateTransform->matrix() * QVector3D();
+                } else {
+                    m_dragInitialWorldTranslationValue = m_dragHandlesTransform->translation();
                 }
             }
             m_dragInitialEntityTranslationValue = m_selectedEntityTransform->translation();
+            m_dragInitialHandleRotationValue = m_dragHandlesTransform->rotation();
 
             // Calculate snap point offset in world coordinates
             for (int i = 0; i < dragCornerHandleCount; ++i) {
                 if (cameraEntity) {
                     m_dragEntitySnapOffsets[i] = QVector3D();
                 } else {
-                    QVector3D centerHandleAdj = handleIndex
+                    QVector3D centerHandleAdj =
+                            (handleIndex == TranslateHandleMeshCenter
+                            || (handleIndex >= TranslateHandleArrowX && m_helperArrowsLocal))
                             ? selectedItem->entityMeshCenter()
                               * m_selectedEntityTransform->scale3D()
                               / selectedItem->selectionTransform()->scale3D()
@@ -983,6 +989,7 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
     // When shift is pressed, translate along camera plane
     // When ctrl is pressed, snap to grid
     // When alt is pressed, translate along helper plane normal (lock to one axis)
+    // Dragging helper arrows only translates along arrow vector. Ctrl translates in units of grid.
 
     Qt3DRender::QCamera *camera = frameGraphCamera();
     if (camera && m_selectedEntityTransform) {
@@ -999,7 +1006,8 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
         QVector3D helperNormal = helperPlaneNormal();
         QVector3D planeOrigin = m_dragInitialWorldTranslationValue;
         QVector3D planeNormal;
-        const bool useCameraNormal = shiftDown || altDown;
+        const bool useCameraNormal =
+                shiftDown || altDown || m_dragHandleIndex >= TranslateHandleArrowX;
         if (useCameraNormal)
             planeNormal = EditorUtils::cameraNormal(frameGraphCamera());
         else
@@ -1030,13 +1038,13 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
             }
 
             QVector3D newPosition = intersection;
-            if (ctrlDown) {
+            if (ctrlDown && m_dragHandleIndex < TranslateHandleArrowX) {
                 newPosition = snapPosition(intersection,
                                            useCameraNormal || helperNormal.x() < 0.5,
                                            useCameraNormal || helperNormal.y() < 0.5,
                                            useCameraNormal || helperNormal.z() < 0.5);
             }
-            if (altDown) {
+            if (altDown && m_dragHandleIndex < TranslateHandleArrowX) {
                 QVector3D snapPos = newPosition;
                 newPosition = m_dragInitialEntityTranslationValue;
                 if (helperNormal.x() > 0.5)
@@ -1046,9 +1054,32 @@ void EditorScene::dragTranslateSelectedEntity(const QPoint &newPos, bool shiftDo
                 else if (helperNormal.z() > 0.5)
                     newPosition.setZ(snapPos.z());
             } else {
+                if (m_dragHandleIndex >= TranslateHandleArrowX) {
+                    QVector3D arrowVector = m_dragHandleIndex == TranslateHandleArrowX
+                                ? QVector3D(1.0f, 0.0f, 0.0f)
+                              : m_dragHandleIndex == TranslateHandleArrowY
+                                  ? QVector3D(0.0f, 1.0f, 0.0f) : QVector3D(0.0f, 0.0f, 1.0f);
+
+                    if (m_helperArrowsLocal)
+                        arrowVector = m_dragInitialHandleRotationValue.rotatedVector(arrowVector);
+
+                    QVector3D planeOffset = EditorUtils::projectVectorOnPlane(
+                                m_helperArrowGrabOffset, planeNormal);
+
+                    QVector3D initialPos = m_dragInitialWorldTranslationValue + planeOffset;
+                    float distance = newPosition.distanceToPlane(initialPos,
+                                                                 planeOffset.normalized());
+                    if (ctrlDown)
+                        distance = qRound(distance / m_gridSize) * m_gridSize;
+
+                    newPosition = m_dragInitialWorldTranslationValue
+                            + distance * arrowVector;
+                }
                 // If entity has parents with transfroms, those need to be applied in inverse
                 QMatrix4x4 totalTransform = EditorUtils::totalAncestralTransform(m_selectedEntity);
-                if (m_dragHandleIndex == 0 && !cameraEntity) {
+                if ((m_dragHandleIndex == TranslateHandleBoxCenter
+                        || (m_dragHandleIndex >= TranslateHandleArrowX && !m_helperArrowsLocal))
+                        && !cameraEntity) {
                     newPosition = totalTransform.inverted()
                             * (newPosition + m_dragHandlesTransform->rotation()
                                * m_dragHandleTranslateTransform->translation());
@@ -1867,16 +1898,28 @@ void EditorScene::createHelperPlane()
 
 void EditorScene::createHelperArrows()
 {
+    m_helperArrowHandleIndexMap.clear();
     m_helperArrows = new Qt3DCore::QEntity();
     m_helperArrows->setObjectName(QStringLiteral("__internal helper arrows"));
 
     QMatrix4x4 matrix;
-    EditorUtils::createArrowEntity(helperArrowColorY, m_helperArrows, matrix);
+    Qt3DCore::QEntity *arrow = EditorUtils::createArrowEntity(helperArrowColorY, m_helperArrows,
+                                                              matrix, helperArrowName);
+    createObjectPickerForEntity(arrow);
+    m_helperArrowHandleIndexMap.insert(arrow, TranslateHandleArrowY);
+
     matrix.rotate(90.0f, QVector3D(1.0f, 0.0f, 0.0f));
-    EditorUtils::createArrowEntity(helperArrowColorZ, m_helperArrows, matrix);
+    arrow = EditorUtils::createArrowEntity(helperArrowColorZ, m_helperArrows, matrix,
+                                           helperArrowName);
+    createObjectPickerForEntity(arrow);
+    m_helperArrowHandleIndexMap.insert(arrow, TranslateHandleArrowZ);
+
     matrix = QMatrix();
     matrix.rotate(-90.0f, QVector3D(0.0f, 0.0f, 1.0f));
-    EditorUtils::createArrowEntity(helperArrowColorX, m_helperArrows, matrix);
+    arrow = EditorUtils::createArrowEntity(helperArrowColorX, m_helperArrows, matrix,
+                                           helperArrowName);
+    createObjectPickerForEntity(arrow);
+    m_helperArrowHandleIndexMap.insert(arrow, TranslateHandleArrowX);
 
     m_helperArrowsTransform = new Qt3DCore::QTransform();
     m_helperArrows->addComponent(m_helperArrowsTransform);
@@ -2044,8 +2087,10 @@ void EditorScene::updateWorldPositionLabelToDragHandle(EditorScene::DragMode dra
     QMatrix4x4 matrix = m_dragHandlesTransform->matrix();
     switch (dragMode) {
     case EditorScene::DragTranslate:
-        if (handleIndex > 0)
+        if (handleIndex == TranslateHandleMeshCenter
+                || (handleIndex >= TranslateHandleArrowX && m_helperArrowsLocal)) {
             matrix *= m_dragHandleTranslateTransform->matrix();
+        }
         break;
     case EditorScene::DragRotate:
         matrix *= m_dragHandleRotateTransform->matrix();
@@ -2237,6 +2282,15 @@ void EditorScene::setFreeView(bool enable)
     emit freeViewChanged(m_freeView);
 }
 
+void EditorScene::setHelperArrowsLocal(bool enable)
+{
+    if (enable != m_helperArrowsLocal) {
+        m_helperArrowsLocal = enable;
+        handleSelectionTransformChange();
+        emit helperArrowsLocalChanged(m_helperArrowsLocal);
+    }
+}
+
 void EditorScene::setViewport(EditorViewportItem *viewport)
 {
     if (m_viewport != viewport) {
@@ -2413,11 +2467,17 @@ void EditorScene::handleSelectionTransformChange()
         }
 
         // Move the helper arrows to the center of the entity
-        if (showCenterHandle) {
-            m_helperArrowsTransform->setMatrix(m_dragHandlesTransform->matrix()
-                                               * m_dragHandleTranslateTransform->matrix());
+        if (m_helperArrowsLocal) {
+            if (showCenterHandle) {
+                m_helperArrowsTransform->setMatrix(m_dragHandlesTransform->matrix()
+                                                   * m_dragHandleTranslateTransform->matrix());
+            } else {
+                m_helperArrowsTransform->setMatrix(m_dragHandlesTransform->matrix());
+            }
         } else {
-            m_helperArrowsTransform->setMatrix(m_dragHandlesTransform->matrix());
+            QMatrix4x4 matrix;
+            matrix.translate(QVector3D(m_dragHandlesTransform->translation()));
+            m_helperArrowsTransform->setMatrix(matrix);
         }
     }
     resizeConstantScreenSizeEntities();
@@ -2460,8 +2520,16 @@ void EditorScene::handlePickerPress(Qt3DRender::QPickEvent *event)
         // and the selection has changed to a different type of entity since the mouse press was
         // registered. Since the new entity is not the one we wanted to modify anyway, just
         // skip handling the pick event.
-        if (pressedEntity->isEnabled()) {
-            if (pressedEntity && (!m_pickedEntity || m_pickedDistance > event->distance())) {
+        if (pressedEntity && pressedEntity->isEnabled()) {
+            if (pressedEntity->objectName() == helperArrowName) {
+                if (m_selectedEntity) {
+                    m_helperArrowGrabOffset =
+                            event->worldIntersection() - m_helperArrowsTransform->translation();
+                    dragHandlePress(DragTranslate, m_previousMousePosition,
+                                    m_helperArrowHandleIndexMap.value(pressedEntity));
+                    m_pickedEntity = m_selectedEntity;
+                }
+            } else if (!m_pickedEntity || m_pickedDistance > event->distance()) {
                 // Ignore presses that are farther away than the closest one
                 m_pickedDistance = event->distance();
                 bool select = false;
@@ -2597,7 +2665,7 @@ void EditorScene::resizeConstantScreenSizeEntities()
         m_activeSceneCameraFrustumData.viewCenterTransform->setScale(vcScale * 2.0f);
 
         // Helper arrows
-        const float arrowsEntityAngle = 0.03f;
+        const float arrowsEntityAngle = 0.035f;
         QVector3D arrowsPos = m_helperArrowsTransform->translation();
         float distanceToArrows = (arrowsPos - frameGraphCamera()->position()).length();
         float arrowsScale = arrowsEntityAngle * distanceToArrows;

@@ -146,6 +146,16 @@ Item {
                 onEnabledButtonClicked: editorContent.hideHelperPlane()
             }
 
+            ToolbarButton {
+                enabledIconSource: "images/helperarrows_local.png"
+                disabledIconSource: "images/helperarrows_global.png"
+                selectedBgColor: editorContent.iconHighlightColor
+                tooltip: qsTr("Helper arrows mode") + editorScene.emptyString
+                buttonEnabled: editorScene.helperArrowsLocal
+                onEnabledButtonClicked: editorScene.helperArrowsLocal = !editorScene.helperArrowsLocal
+                hoverAlways: true
+            }
+
             ToolbarSeparator {}
 
             ToolbarButton {

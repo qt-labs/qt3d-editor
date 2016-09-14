@@ -531,7 +531,7 @@ Item {
                         baseZ: 3 // Make sure translate handle is on top of scale handles
                         color: "#c22555"
                         radius: height / 2
-                        handleIndex: 0
+                        handleIndex: EditorScene.TranslateHandleBoxCenter
                     }
                     DragHandle {
                         // This is the group/mesh center indicator handle
@@ -539,7 +539,7 @@ Item {
                         baseZ: 3 // Make sure center handle is on top of scale handles
                         color: "blue"
                         radius: height / 2
-                        handleIndex: 1
+                        handleIndex: EditorScene.TranslateHandleMeshCenter
                     }
                     DragHandle {
                         handleType: EditorScene.DragRotate
