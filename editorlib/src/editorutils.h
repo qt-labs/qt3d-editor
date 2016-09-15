@@ -172,6 +172,7 @@ public:
     static void copyLockProperties(const QObject *source, QObject *target);
     static void lockProperty(const QByteArray &lockPropertyName, QObject *obj, bool lock);
     static InsertableEntities insertableEntityType(Qt3DCore::QEntity *entity);
+    static void setEnabledToSubtree(Qt3DCore::QEntity *entity, bool enable);
 
 private:
     // Private constructor to ensure no actual instance is created

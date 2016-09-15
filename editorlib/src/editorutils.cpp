@@ -1288,6 +1288,16 @@ EditorUtils::InsertableEntities EditorUtils::insertableEntityType(Qt3DCore::QEnt
     return insertableType;
 }
 
+void EditorUtils::setEnabledToSubtree(Qt3DCore::QEntity *entity, bool enable)
+{
+    entity->setEnabled(enable);
+    Q_FOREACH (QObject *child, entity->children()) {
+        Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
+        if (childEntity)
+            setEnabledToSubtree(childEntity, enable);
+    }
+}
+
 
 template <typename T>
 void EditorUtils::copyRenderParameters(T *source, T *target)

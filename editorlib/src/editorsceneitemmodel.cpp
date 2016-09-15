@@ -201,6 +201,10 @@ void EditorSceneItemModel::handleImportEntityLoaderStatusChanged()
             } else if (sceneLoader->status() == Qt3DRender::QSceneLoader::Error) {
                 m_scene->setError(tr("Failed to import an Entity"));
             }
+            // TODO: Work around enabled false status not properly propagating to children
+            // TODO: Remove when fixed in Qt3D.
+            EditorUtils::setEnabledToSubtree(m_sceneLoaderEntity, false);
+
             // TODO: deleteLater commented out as a workaround for entity deletion crash,
             // TODO: obviously causes memory leak.
             //m_sceneLoaderEntity->deleteLater();
