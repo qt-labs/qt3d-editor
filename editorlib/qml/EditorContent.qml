@@ -46,6 +46,7 @@ Item {
     property url saveFolder: "file:///"
     property url textureFolder: "file:///"
     property url importFolder: "file:///"
+    property url exportGltfFolder: "file:///"
     property string saveFileTitleAddition: {
         if (saveFileUrl != "")
             " - " + saveFileUrl.toString().substring(saveFileUrl.toString().lastIndexOf("/") + 1)
@@ -154,6 +155,11 @@ Item {
             importEntityDialog.folder = importFolder
             importEntityDialog.open()
         }
+    }
+
+    function exportGltfScene() {
+        exportGltfSceneDialog.folder = exportGltfFolder
+        exportGltfSceneDialog.open();
     }
 
     function showNormalXPlane() {
@@ -361,6 +367,7 @@ Item {
         property alias saveFolder: editorContent.saveFolder
         property alias textureFolder: editorContent.textureFolder
         property alias importFolder: editorContent.importFolder
+        property alias exportGltfFolder: editorContent.exportGltfFolder
         property alias defaultFolder: editorContent.defaultFolder
     }
 
@@ -423,6 +430,21 @@ Item {
             }
         }
 
+        FileDialog {
+            id: exportGltfSceneDialog
+            selectMultiple: false
+            selectExisting: false
+            selectFolder: true
+            title: qsTr("Export GLTF Scene to a folder") + editorScene.emptyString
+            onAccepted: {
+                if (editorScene.exportGltfScene(fileUrl) === true) {
+                    notification.title = qsTr("GLTF Export Success") + editorScene.emptyString
+                    notification.text = qsTr("Scene exported successfully.") + editorScene.emptyString
+                    notification.open()
+                }
+                editorContent.exportGltfFolder = folder;
+            }
+        }
 
         Shortcut {
             sequence: StandardKey.Copy

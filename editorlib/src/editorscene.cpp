@@ -67,6 +67,11 @@
 
 #include <QtQml/QQmlEngine>
 
+#ifdef GLTF_EXPORTER_AVAILABLE
+#include <Qt3DRender/private/qsceneexportfactory_p.h>
+#include <Qt3DRender/private/qsceneexporter_p.h>
+#endif
+
 #include <cfloat>
 
 //#define TEST_SCENE // If a test scene is wanted instead of the default scene
@@ -135,6 +140,9 @@ EditorScene::EditorScene(QObject *parent)
     , m_ctrlDownOnLastLeftPress(false)
     , m_clipboardOperation(ClipboardNone)
     , m_groupBoxUpdatePending(false)
+#ifdef GLTF_EXPORTER_AVAILABLE
+    , m_gltfExporter(nullptr)
+#endif
 {
     setLanguage(language());
     retranslateUi();
@@ -708,6 +716,7 @@ void EditorScene::retranslateUi()
     m_cameraString = tr("Camera");
     m_cubeString = tr("Cube");
     m_lightString = tr("Light");
+    m_gltfExportFailString = tr("Failed to export GLTF scene");
 }
 
 const QString EditorScene::emptyString() const
@@ -881,6 +890,32 @@ void EditorScene::queueUpdateGroupSelectionBoxes()
         m_groupBoxUpdatePending = true;
         QMetaObject::invokeMethod(this, "doUpdateGroupSelectionBoxes", Qt::QueuedConnection);
     }
+}
+
+bool EditorScene::canExportGltf()
+{
+#ifdef GLTF_EXPORTER_AVAILABLE
+    static int canExportGltf = -1;
+
+    if (canExportGltf < 0) {
+        canExportGltf++;
+        // Try to find the export plugin
+        QStringList keys = Qt3DRender::QSceneExportFactory::keys();
+        for (const QString &key : keys) {
+            Qt3DRender::QSceneExporter *exporter =
+                    Qt3DRender::QSceneExportFactory::create(key, QStringList());
+            if (exporter != nullptr && key == QStringLiteral("gltfexport")) {
+                m_gltfExporter = exporter;
+                canExportGltf++;
+                break;
+            }
+        }
+    }
+
+    return (canExportGltf > 0);
+#else
+    return false;
+#endif
 }
 
 void EditorScene::doUpdateGroupSelectionBoxes()
@@ -2142,6 +2177,32 @@ void EditorScene::changeCameraPosition(EditorScene::CameraPosition preset)
     float len = camera->viewVector().length();
     camera->setPosition(camera->viewCenter() + cameraDirection * len);
     camera->setUpVector(up);
+}
+
+bool EditorScene::exportGltfScene(const QUrl &fileUrl)
+{
+#ifdef GLTF_EXPORTER_AVAILABLE
+    if (canExportGltf()) {
+        QVariantHash options;
+        // Export binary json for maximum loading efficiency
+        options.insert(QStringLiteral("binaryJson"), QVariant(true));
+        QString exportDir = fileUrl.toLocalFile();
+        int index = exportDir.lastIndexOf(QLatin1Char('/'));
+        QString sceneName = exportDir.mid(index + 1);
+        exportDir.chop(sceneName.length() + 1);
+        if (exportDir.length() > 0 && sceneName.length() > 0) {
+            if (!m_gltfExporter->exportScene(m_sceneEntity, exportDir, sceneName, options))
+                setError(m_gltfExportFailString);
+            else
+                return true;
+        } else {
+            setError(m_gltfExportFailString);
+        }
+    }
+#else
+    Q_UNUSED(fileUrl)
+#endif
+    return false;
 }
 
 void EditorScene::updateWorldPositionLabel(const QVector3D &worldPos)

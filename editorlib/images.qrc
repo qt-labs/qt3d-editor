@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/qt3deditorlib/">
+    <qresource prefix="/qt3deditorlib">
         <file>images/camera.png</file>
         <file>images/light.png</file>
         <file>images/mesh.png</file>
@@ -80,5 +80,6 @@
         <file>images/paste.png</file>
         <file>images/copy.png</file>
         <file>images/no_drag.png</file>
+        <file>images/export_gltf.png</file>
     </qresource>
 </RCC>

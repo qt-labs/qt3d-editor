@@ -72,6 +72,12 @@ Item {
                 buttonEnabled: !editorScene.sceneModel.importEntityInProgress
                 onEnabledButtonClicked: editorContent.importEntity()
             }
+            ToolbarButton {
+                enabledIconSource: "images/export_gltf.png"
+                tooltip: qsTr("Export Scene as GLTF (Ctrl + E)") + editorScene.emptyString
+                onEnabledButtonClicked: editorContent.exportGltfScene()
+                visible: editorScene.canExportGltf
+            }
 
             ToolbarSeparator {}
 

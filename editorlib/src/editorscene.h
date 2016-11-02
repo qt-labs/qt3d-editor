@@ -53,6 +53,7 @@ namespace Qt3DRender {
     class QGeometryRenderer;
     class QCamera;
     class QCameraLens;
+    class QSceneExporter;
 }
 
 namespace Qt3DExtras {
@@ -90,6 +91,7 @@ class EditorScene : public QObject
     Q_PROPERTY(int gridSize READ gridSize WRITE setGridSize NOTIFY gridSizeChanged)
     Q_PROPERTY(ClipboardOperation clipboardOperation READ clipboardOperation WRITE setClipboardOperation NOTIFY clipboardOperationChanged)
     Q_PROPERTY(QString clipboardContent READ clipboardContent WRITE setClipboardContent NOTIFY clipboardContentChanged)
+    Q_PROPERTY(bool canExportGltf READ canExportGltf CONSTANT)
 
 public:
     enum DragMode {
@@ -265,6 +267,7 @@ public:
     Q_INVOKABLE void updateWorldPositionLabel(int xPos, int yPos);
     Q_INVOKABLE void updateWorldPositionLabelToDragHandle(DragMode dragMode, int handleIndex = 0);
     Q_INVOKABLE void changeCameraPosition(CameraPosition preset);
+    Q_INVOKABLE bool exportGltfScene(const QUrl &fileUrl);
 
     void removeEntityFromMultiSelection(const QString &name);
     void addEntityToMultiSelection(const QString &name);
@@ -338,6 +341,8 @@ public:
     void showDebugHandle(bool show, int handleIndex = 0, const QVector3D &worldPosition = QVector3D());
     void queueEnsureSelection();
     void queueUpdateGroupSelectionBoxes();
+
+    bool canExportGltf();
 
 public slots:
     void clearSelectionBoxes(Qt3DCore::QEntity *skipEntity = nullptr);
@@ -481,6 +486,7 @@ private:
     QString m_cameraString;
     QString m_cubeString;
     QString m_lightString;
+    QString m_gltfExportFailString;
 
     Qt3DCore::QTransform *m_dragHandlesTransform;
     Qt3DCore::QTransform *m_dragHandleRotateTransform;
@@ -519,6 +525,9 @@ private:
 
     QMap<QString, PlaceholderEntityData *> m_placeholderEntityMap;
     bool m_groupBoxUpdatePending;
+#ifdef GLTF_EXPORTER_AVAILABLE
+    Qt3DRender::QSceneExporter *m_gltfExporter;
+#endif
 };
 
 #endif // EDITORSCENE_H
