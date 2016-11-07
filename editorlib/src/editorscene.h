@@ -39,6 +39,7 @@
 #include <QtGui/QQuaternion>
 #include <Qt3DCore/QNodeId>
 #include <Qt3DCore/QEntity>
+#include <QtQml/QJSValue>
 
 namespace Qt3DCore {
     class QTransform;
@@ -267,7 +268,8 @@ public:
     Q_INVOKABLE void updateWorldPositionLabel(int xPos, int yPos);
     Q_INVOKABLE void updateWorldPositionLabelToDragHandle(DragMode dragMode, int handleIndex = 0);
     Q_INVOKABLE void changeCameraPosition(CameraPosition preset);
-    Q_INVOKABLE bool exportGltfScene(const QUrl &fileUrl);
+    Q_INVOKABLE bool exportGltfScene(const QUrl &folder, const QString &exportName,
+                                     const QJSValue &options);
 
     void removeEntityFromMultiSelection(const QString &name);
     void addEntityToMultiSelection(const QString &name);

@@ -87,6 +87,7 @@
         <file alias="StyledRadioButton.qml">qml/inputfields/StyledRadioButton.qml</file>
         <file alias="SettingsDialog.qml">qml/SettingsDialog.qml</file>
         <file alias="CameraPositionMenu.qml">qml/CameraPositionMenu.qml</file>
+        <file alias="ExportDialog.qml">qml/ExportDialog.qml</file>
         <file>editorlib_en.qm</file>
         <file>editorlib_fi.qm</file>
         <file>shaders/ontopmaterial.frag</file>

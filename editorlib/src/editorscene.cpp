@@ -2179,19 +2179,21 @@ void EditorScene::changeCameraPosition(EditorScene::CameraPosition preset)
     camera->setUpVector(up);
 }
 
-bool EditorScene::exportGltfScene(const QUrl &fileUrl)
+bool EditorScene::exportGltfScene(const QUrl &folder, const QString &exportName,
+                                  const QJSValue &options)
 {
 #ifdef GLTF_EXPORTER_AVAILABLE
     if (canExportGltf()) {
-        QVariantHash options;
-        // Export binary json for maximum loading efficiency
-        options.insert(QStringLiteral("binaryJson"), QVariant(true));
-        QString exportDir = fileUrl.toLocalFile();
-        int index = exportDir.lastIndexOf(QLatin1Char('/'));
-        QString sceneName = exportDir.mid(index + 1);
-        exportDir.chop(sceneName.length() + 1);
-        if (exportDir.length() > 0 && sceneName.length() > 0) {
-            if (!m_gltfExporter->exportScene(m_sceneEntity, exportDir, sceneName, options))
+        QString exportDir = folder.toLocalFile();
+        QVariantHash optionsHash;
+        const QString binaryKey = QStringLiteral("binaryJson");
+        const QString compactKey = QStringLiteral("compactJson");
+        if (options.hasProperty(binaryKey))
+            optionsHash.insert(binaryKey, options.property(binaryKey).toBool());
+        if (options.hasProperty(compactKey))
+            optionsHash.insert(compactKey, options.property(compactKey).toBool());
+        if (exportDir.length() > 0 && exportName.length() > 0) {
+            if (!m_gltfExporter->exportScene(m_sceneEntity, exportDir, exportName, optionsHash))
                 setError(m_gltfExportFailString);
             else
                 return true;
@@ -2200,7 +2202,9 @@ bool EditorScene::exportGltfScene(const QUrl &fileUrl)
         }
     }
 #else
-    Q_UNUSED(fileUrl)
+    Q_UNUSED(folder)
+    Q_UNUSED(exportName)
+    Q_UNUSED(options)
 #endif
     return false;
 }

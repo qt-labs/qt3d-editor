@@ -29,6 +29,7 @@ import QtQuick 2.5
 
 Item {
     property alias text: buttonText.text
+    property int margins: 4
     width: 100
     height: 32
 
@@ -37,7 +38,7 @@ Item {
     Rectangle {
         id: control
         anchors.fill: parent
-        anchors.margins: 4
+        anchors.margins: parent.margins
         color: {
             if (mouseArea.containsPress)
                 editorContent.iconHighlightColor

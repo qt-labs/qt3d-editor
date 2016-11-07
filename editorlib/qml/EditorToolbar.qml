@@ -75,7 +75,7 @@ Item {
             ToolbarButton {
                 enabledIconSource: "images/export_gltf.png"
                 tooltip: qsTr("Export Scene as GLTF (Ctrl + E)") + editorScene.emptyString
-                onEnabledButtonClicked: editorContent.exportGltfScene()
+                onEnabledButtonClicked: exportDialog.show()
                 visible: editorScene.canExportGltf
             }
 
@@ -338,5 +338,12 @@ Item {
     Shortcut {
         sequence: "Shift+S"
         onActivated: settingsDialog.show()
+    }
+    Shortcut {
+        sequence: "Ctrl+E"
+        onActivated: {
+            if (editorScene.canExportGltf)
+                exportDialog.show();
+        }
     }
 }
