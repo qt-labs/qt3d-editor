@@ -171,7 +171,7 @@ void EditorSceneItemModel::handleImportEntityLoaderStatusChanged()
                 QList<Qt3DCore::QEntity *> entityChildren;
                 Q_FOREACH (QObject *child, m_sceneLoaderEntity->children()) {
                     Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
-                    if (childEntity && pruneNonMeshEntitites(childEntity, true))
+                    if (childEntity && pruneUnimportableEntitites(childEntity, true))
                         entityChildren.append(childEntity);
                 }
                 Qt3DCore::QEntity *parentEntity = m_scene->sceneEntityItem()->entity();
@@ -190,7 +190,7 @@ void EditorSceneItemModel::handleImportEntityLoaderStatusChanged()
                     // Workaround for crash when deleting the originally loaded entities.
                     // TODO: Once the crash issue is fixed in Qt3D, the first pruning above can
                     // TODO: be changed to delete and this one removed.
-                    pruneNonMeshEntitites(duplicate, false);
+                    pruneUnimportableEntitites(duplicate, false);
 
                     ensureTransforms(duplicate);
                     m_scene->addEntity(duplicate, -1, parentEntity);
@@ -201,13 +201,12 @@ void EditorSceneItemModel::handleImportEntityLoaderStatusChanged()
             } else if (sceneLoader->status() == Qt3DRender::QSceneLoader::Error) {
                 m_scene->setError(tr("Failed to import an Entity"));
             }
-            // TODO: Work around enabled false status not properly propagating to children
-            // TODO: Remove when fixed in Qt3D.
-            EditorUtils::setEnabledToSubtree(m_sceneLoaderEntity, false);
 
-            // TODO: deleteLater commented out as a workaround for entity deletion crash,
-            // TODO: obviously causes memory leak.
-            //m_sceneLoaderEntity->deleteLater();
+            // Delete the loaded entities before deleting m_sceneLoaderEntity, as otherwise
+            // it crashes Qt3D
+            for (auto node : m_sceneLoaderEntity->childNodes())
+                delete qobject_cast<Qt3DCore::QEntity *>(node);
+            delete m_sceneLoaderEntity;
             m_sceneLoaderEntity = nullptr;
             emit importEntityInProgressChanged(false);
         }
@@ -864,31 +863,32 @@ void EditorSceneItemModel::ensureTransforms(Qt3DCore::QEntity *entity)
     }
 }
 
-bool EditorSceneItemModel::pruneNonMeshEntitites(Qt3DCore::QEntity *entity, bool justCheck)
+bool EditorSceneItemModel::pruneUnimportableEntitites(Qt3DCore::QEntity *entity, bool justCheck)
 {
-    // Delete all branches that do not end in meshes
-    // Delete all non-group, non-mesh entities
+    // Delete all branches that do not end in meshes or lights
+    // Delete all non-group, non-mesh, non-light entities
 
     bool isGroup = EditorUtils::isGroupEntity(entity);
-    bool isMesh = EditorUtils::entityMesh(entity);
+    bool isMesh = EditorUtils::entityMesh(entity) != nullptr;
+    bool isLight = EditorUtils::entityLight(entity) != nullptr;
 
-    if (!isGroup && !isMesh) {
+    if (!isGroup && !isMesh && !isLight) {
         if (!justCheck)
             delete entity;
         return false;
     }
 
-    // At this point, we know our ancestors are only meshes or groups.
-    bool hasMeshChild = false;
+    // At this point, we know our ancestors are only meshes, lights, or groups.
+    bool hasValidChild = false;
     Q_FOREACH (QObject *child, entity->children()) {
         Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
         if (childEntity)
-            hasMeshChild = pruneNonMeshEntitites(childEntity, justCheck) || hasMeshChild;
+            hasValidChild = pruneUnimportableEntitites(childEntity, justCheck) || hasValidChild;
     }
 
     // Prune empty groups
-    if (isGroup && !hasMeshChild && !justCheck)
+    if (isGroup && !hasValidChild && !justCheck)
         delete entity;
 
-    return isMesh || hasMeshChild;
+    return isMesh || isLight || hasValidChild;
 }

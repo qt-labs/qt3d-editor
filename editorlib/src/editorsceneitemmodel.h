@@ -119,7 +119,7 @@ private:
     void disconnectEntity(Qt3DCore::QEntity *entity);
     void fixEntityNames(Qt3DCore::QEntity *entity);
     void ensureTransforms(Qt3DCore::QEntity *entity);
-    bool pruneNonMeshEntitites(Qt3DCore::QEntity *entity, bool justCheck);
+    bool pruneUnimportableEntitites(Qt3DCore::QEntity *entity, bool justCheck);
 
     EditorScene *m_scene;
     QModelIndex m_lastInsertedIndex;
