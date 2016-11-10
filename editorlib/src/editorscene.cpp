@@ -2180,7 +2180,7 @@ void EditorScene::changeCameraPosition(EditorScene::CameraPosition preset)
 }
 
 bool EditorScene::exportGltfScene(const QUrl &folder, const QString &exportName,
-                                  const QJSValue &options)
+                                  bool exportSelected, const QJSValue &options)
 {
 #ifdef GLTF_EXPORTER_AVAILABLE
     if (canExportGltf()) {
@@ -2193,7 +2193,10 @@ bool EditorScene::exportGltfScene(const QUrl &folder, const QString &exportName,
         if (options.hasProperty(compactKey))
             optionsHash.insert(compactKey, options.property(compactKey).toBool());
         if (exportDir.length() > 0 && exportName.length() > 0) {
-            if (!m_gltfExporter->exportScene(m_sceneEntity, exportDir, exportName, optionsHash))
+            Qt3DCore::QEntity *exportEntity = m_selectedEntity;
+            if (!exportSelected || !exportEntity)
+                exportEntity = m_sceneEntity;
+            if (!m_gltfExporter->exportScene(exportEntity, exportDir, exportName, optionsHash))
                 setError(m_gltfExportFailString);
             else
                 return true;

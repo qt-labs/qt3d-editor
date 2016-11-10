@@ -40,11 +40,13 @@ Window {
     color: editorContent.paneBackgroundColor
     minimumHeight: exportLayout.Layout.minimumHeight + buttonRow.Layout.minimumHeight
     minimumWidth: buttonRow.Layout.minimumWidth
+    property bool previousExportSceneRoot
     property bool previousExportBinaryJson
     property bool previousExportCompactJson
     property string previousExportSceneName
     property url previousExportFolder
 
+    property bool exportSceneRoot
     property bool exportBinaryJson: true
     property bool exportCompactJson: false
     property string exportSceneName: ""
@@ -57,10 +59,13 @@ Window {
     onVisibleChanged: {
         if (visible == true) {
             accepted = false;
+            previousExportSceneRoot = exportSceneRoot;
             previousExportBinaryJson = exportBinaryJson;
             previousExportCompactJson = exportCompactJson;
             previousExportSceneName = exportSceneName;
             previousExportFolder = exportFolder;
+            selectedEntityButton.checked = true;
+            sceneRootButton.checked = exportSceneRoot;
             humanReadableJsonButton.checked = true;
             binaryJsonButton.checked = exportBinaryJson;
             compactJsonButton.checked = exportCompactJson;
@@ -68,6 +73,7 @@ Window {
             currentFolder = exportFolder;
         } else {
             if (accepted) {
+                exportSceneRoot = sceneRootButton.checked;
                 exportBinaryJson = binaryJsonButton.checked;
                 exportCompactJson = compactJsonButton.checked;
                 exportSceneName = sceneNameField.text;
@@ -76,6 +82,7 @@ Window {
                 notification.text = qsTr("Scene exported successfully.");
                 notification.open();
             } else {
+                exportSceneRoot = previousExportSceneRoot;
                 exportBinaryJson = previousExportBinaryJson;
                 exportCompactJson = previousExportCompactJson;
                 exportSceneName = previousExportSceneName;
@@ -109,6 +116,26 @@ Window {
         ColumnLayout {
             id: gltfOptionsLayout
             StyledLabel {
+                text: qsTr("Exported entity") + editorScene.emptyString
+                font.weight: Font.Bold
+            }
+            RowLayout {
+                StyledRadioButton {
+                    id: sceneRootButton
+                }
+                StyledLabel {
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: qsTr("Scene Root") + editorScene.emptyString
+                }
+                StyledRadioButton {
+                    id: selectedEntityButton
+                }
+                StyledLabel {
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: qsTr("Selected Entity: %1").arg(selectedEntityName) + editorScene.emptyString
+                }
+            }
+            StyledLabel {
                 text: qsTr("JSON format") + editorScene.emptyString
                 font.weight: Font.Bold
             }
@@ -122,7 +149,6 @@ Window {
                 }
                 StyledRadioButton {
                     id: compactJsonButton
-                    checked: exportCompactJson
                 }
                 StyledLabel {
                     anchors.verticalCenter: parent.verticalCenter
@@ -130,7 +156,6 @@ Window {
                 }
                 StyledRadioButton {
                     id: binaryJsonButton
-                    checked: exportBinaryJson
                 }
                 StyledLabel {
                     anchors.verticalCenter: parent.verticalCenter
@@ -209,8 +234,8 @@ Window {
             onButtonClicked: {
                 var options = {binaryJson: binaryJsonButton.checked,
                     compactJson: compactJsonButton.checked};
-                if (editorScene.exportGltfScene(currentFolder, sceneNameField.text, options)
-                        === true) {
+                if (editorScene.exportGltfScene(currentFolder, sceneNameField.text,
+                                                selectedEntityButton.checked, options) === true) {
                     dialog.accepted = true;
                     dialog.close();
                 }

@@ -269,7 +269,7 @@ public:
     Q_INVOKABLE void updateWorldPositionLabelToDragHandle(DragMode dragMode, int handleIndex = 0);
     Q_INVOKABLE void changeCameraPosition(CameraPosition preset);
     Q_INVOKABLE bool exportGltfScene(const QUrl &folder, const QString &exportName,
-                                     const QJSValue &options);
+                                     bool exportSelected, const QJSValue &options);
 
     void removeEntityFromMultiSelection(const QString &name);
     void addEntityToMultiSelection(const QString &name);
