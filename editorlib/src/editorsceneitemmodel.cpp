@@ -206,7 +206,8 @@ void EditorSceneItemModel::handleImportEntityLoaderStatusChanged()
             // it crashes Qt3D
             for (auto node : m_sceneLoaderEntity->childNodes())
                 delete qobject_cast<Qt3DCore::QEntity *>(node);
-            delete m_sceneLoaderEntity;
+            // Can't delete yet, as sceneloader still does things after this method exits
+            m_sceneLoaderEntity->deleteLater();
             m_sceneLoaderEntity = nullptr;
             emit importEntityInProgressChanged(false);
         }
