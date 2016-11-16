@@ -101,6 +101,5 @@ SOURCES = qml/*.qml \
 }
 
 greaterThan(QT_MAJOR_VERSION, 4):greaterThan(QT_MINOR_VERSION, 8) {
-# TODO: Uncomment once exporter is merged (or replace define with Qt version checks in code)
-    #DEFINES += GLTF_EXPORTER_AVAILABLE
+    DEFINES += GLTF_EXPORTER_AVAILABLE
 }
