@@ -64,10 +64,15 @@ namespace Qt3DExtras {
 
 class EditorSceneItemModel;
 class EditorSceneItem;
-class EditorSceneParser;
 class EditorViewportItem;
 class UndoHandler;
 class QMouseEvent;
+
+#ifdef GLTF_EXPORTER_AVAILABLE
+class EditorSceneSaver;
+#else
+class EditorSceneParser;
+#endif
 
 class EditorScene : public QObject
 {
@@ -438,7 +443,6 @@ private:
 
     QMap<Qt3DCore::QNodeId, EditorSceneItem *> m_sceneItems;
 
-    EditorSceneParser *m_sceneParser;
     Qt3DRender::QRenderSettings *m_renderSettings;
     Qt3DExtras::QForwardRenderer *m_renderer;
     Qt3DCore::QEntity *m_sceneEntity;
@@ -529,6 +533,9 @@ private:
     bool m_groupBoxUpdatePending;
 #ifdef GLTF_EXPORTER_AVAILABLE
     Qt3DRender::QSceneExporter *m_gltfExporter;
+    EditorSceneSaver *m_sceneSaver;
+#else
+    EditorSceneParser *m_sceneParser;
 #endif
 };
 

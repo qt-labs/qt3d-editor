@@ -1298,6 +1298,22 @@ void EditorUtils::setEnabledToSubtree(Qt3DCore::QEntity *entity, bool enable)
     }
 }
 
+Qt3DCore::QEntity *EditorUtils::findEntityByName(Qt3DCore::QEntity *entity, const QString &name)
+{
+    if (entity->objectName() == name) {
+        return entity;
+    } else {
+        for (QObject *child : entity->children()) {
+            Qt3DCore::QEntity *childEntity = qobject_cast<Qt3DCore::QEntity *>(child);
+            if (childEntity) {
+                Qt3DCore::QEntity *foundEntity = findEntityByName(childEntity, name);
+                if (foundEntity)
+                    return foundEntity;
+            }
+        }
+    }
+    return nullptr;
+}
 
 template <typename T>
 void EditorUtils::copyRenderParameters(T *source, T *target)

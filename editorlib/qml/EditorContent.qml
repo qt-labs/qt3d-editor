@@ -52,6 +52,12 @@ Item {
         else
             saveFileUrl.toString()
     }
+    property string saveFilterString: {
+        if (editorScene.canExportGltf)
+            qsTr("Qt3D Scenes (*.qt3dscene)") + editorScene.emptyString;
+        else
+            qsTr("Qt3D Scenes (*.qt3d.qrc)") + editorScene.emptyString;
+    }
 
     property int currentHelperPlane: 1
     property alias selectedEntityType: generalPropertyView.entityType
@@ -389,7 +395,7 @@ Item {
             selectMultiple: false
             selectExisting: true
             title: qsTr("Load Scene") + editorScene.emptyString
-            nameFilters: [qsTr("Qt3D Scenes (*.qt3d.qrc)") + editorScene.emptyString]
+            nameFilters: [editorContent.saveFilterString]
             onAccepted: {
                 editorContent.loadScene(fileUrl, folder)
             }
@@ -401,7 +407,7 @@ Item {
             selectExisting: false
             property bool exiting: false
             title: qsTr("Save Scene") + editorScene.emptyString
-            nameFilters: [qsTr("Qt3D Scenes (*.qt3d.qrc)") + editorScene.emptyString]
+            nameFilters: [editorContent.saveFilterString]
             onAccepted: {
                 editorScene.saveScene(fileUrl)
                 editorContent.saveFolder = folder

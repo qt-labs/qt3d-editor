@@ -13,7 +13,6 @@ SOURCES += src/qt3dsceneeditor.cpp \
     src/editorsceneitemmodel.cpp \
     src/editorsceneitem.cpp \
     src/editorsceneitemcomponentsmodel.cpp \
-    src/editorsceneparser.cpp \
     src/components/transformcomponentproxyitem.cpp \
     src/components/editorsceneitemtransformcomponentsmodel.cpp \
     src/components/materialcomponentproxyitem.cpp \
@@ -60,7 +59,6 @@ HEADERS += \
     src/editorsceneitemmodel.h \
     src/editorsceneitem.h \
     src/editorsceneitemcomponentsmodel.h \
-    src/editorsceneparser.h \
     src/components/transformcomponentproxyitem.h \
     src/components/editorsceneitemtransformcomponentsmodel.h \
     src/components/materialcomponentproxyitem.h \
@@ -102,4 +100,9 @@ SOURCES = qml/*.qml \
 
 greaterThan(QT_MAJOR_VERSION, 4):greaterThan(QT_MINOR_VERSION, 8) {
     DEFINES += GLTF_EXPORTER_AVAILABLE
+    SOURCES += src/editorscenesaver.cpp
+    HEADERS += src/editorscenesaver.h
+} else {
+    SOURCES += src/editorsceneparser.cpp
+    HEADERS += src/editorsceneparser.h
 }

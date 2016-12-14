@@ -28,7 +28,6 @@
 #include "editorscene.h"
 #include "editorutils.h"
 #include "editorsceneitem.h"
-#include "editorsceneparser.h"
 #include "editorsceneitemcomponentsmodel.h"
 #include "editorviewportitem.h"
 #include "ontopeffect.h"
@@ -70,6 +69,9 @@
 #ifdef GLTF_EXPORTER_AVAILABLE
 #include <Qt3DRender/private/qsceneexportfactory_p.h>
 #include <Qt3DRender/private/qsceneexporter_p.h>
+#include "editorscenesaver.h"
+#else
+#include "editorsceneparser.h"
 #endif
 
 #include <cfloat>
@@ -85,7 +87,6 @@ static const QString cameraVisibleEntityName = QStringLiteral("__internal camera
 static const QString lightVisibleEntityName = QStringLiteral("__internal light visible entity");
 static const QString sceneLoaderSubEntityName = QStringLiteral("__internal sceneloader sub entity");
 static const QString helperArrowName = QStringLiteral("__internal helper arrow");
-static const QString autoSavePostfix = QStringLiteral(".autosave");
 static const QVector3D defaultLightDirection(0.0f, -1.0f, 0.0f);
 static const float freeViewCameraNearPlane = 0.1f;
 static const float freeViewCameraFarPlane = 10000.0f;
@@ -97,6 +98,9 @@ static const QColor helperPlaneColor("#585a5c");
 static const QColor helperArrowColorX("red");
 static const QColor helperArrowColorY("green");
 static const QColor helperArrowColorZ("blue");
+#ifndef GLTF_EXPORTER_AVAILABLE
+static const QString autoSavePostfix = QStringLiteral(".autosave");
+#endif
 
 EditorScene::EditorScene(QObject *parent)
     : QObject(parent)
@@ -104,7 +108,6 @@ EditorScene::EditorScene(QObject *parent)
     , m_componentCache(nullptr)
     , m_rootItem(nullptr)
     , m_sceneModel(new EditorSceneItemModel(this))
-    , m_sceneParser(new EditorSceneParser(this))
     , m_renderSettings(nullptr)
     , m_renderer(nullptr)
     , m_sceneEntity(nullptr)
@@ -142,6 +145,9 @@ EditorScene::EditorScene(QObject *parent)
     , m_groupBoxUpdatePending(false)
 #ifdef GLTF_EXPORTER_AVAILABLE
     , m_gltfExporter(nullptr)
+    , m_sceneSaver(new EditorSceneSaver(this))
+#else
+    , m_sceneParser(new EditorSceneParser(this))
 #endif
 {
     setLanguage(language());
@@ -300,6 +306,16 @@ void EditorScene::resetScene()
 
 bool EditorScene::saveScene(const QUrl &fileUrl, bool autosave)
 {
+    if (!fileUrl.isValid())
+        return false;
+
+#ifdef GLTF_EXPORTER_AVAILABLE
+    QString camera;
+    if (m_activeSceneCameraIndex >= 0 && m_activeSceneCameraIndex < m_sceneCameras.size())
+        camera = m_sceneCameras.at(m_activeSceneCameraIndex).cameraEntity->objectName();
+
+    bool retval = m_sceneSaver->saveScene(m_sceneEntity, camera, fileUrl.toLocalFile(), autosave);
+#else
     QUrl url = fileUrl;
     if (!url.toString().endsWith(QStringLiteral(".qt3d.qrc"))) {
         QString filePath = url.toString() + QStringLiteral(".qt3d.qrc");
@@ -310,6 +326,8 @@ bool EditorScene::saveScene(const QUrl &fileUrl, bool autosave)
     if (m_activeSceneCameraIndex >= 0 && m_activeSceneCameraIndex < m_sceneCameras.size())
         camera = m_sceneCameras.at(m_activeSceneCameraIndex).cameraEntity;
     bool retval = m_sceneParser->exportQmlScene(m_sceneEntity, url, camera, autosave);
+#endif
+
     if (retval)
         m_undoHandler->setClean();
     else
@@ -319,8 +337,15 @@ bool EditorScene::saveScene(const QUrl &fileUrl, bool autosave)
 
 bool EditorScene::loadScene(const QUrl &fileUrl)
 {
+    if (!fileUrl.isValid())
+        return false;
+
     Qt3DCore::QEntity *camera = nullptr;
+#ifdef GLTF_EXPORTER_AVAILABLE
+    Qt3DCore::QEntity *newSceneEntity = m_sceneSaver->loadScene(fileUrl.toLocalFile(), camera);
+#else
     Qt3DCore::QEntity *newSceneEntity = m_sceneParser->importQmlScene(fileUrl, camera);
+#endif
 
     if (newSceneEntity) {
         clearSingleSelection();
@@ -347,6 +372,12 @@ bool EditorScene::loadScene(const QUrl &fileUrl)
 
 void EditorScene::deleteScene(const QUrl &fileUrl, bool autosave)
 {
+    if (!fileUrl.isValid())
+        return;
+
+#ifdef GLTF_EXPORTER_AVAILABLE
+    m_sceneSaver->deleteSavedScene(fileUrl.toLocalFile(), autosave);
+#else
     // Remove qml file
     QString fileName = fileUrl.toLocalFile();
     if (autosave)
@@ -362,6 +393,7 @@ void EditorScene::deleteScene(const QUrl &fileUrl, bool autosave)
         resourceDirName.append(autoSavePostfix);
     QDir dir = QDir(resourceDirName);
     dir.removeRecursively();
+#endif
 }
 
 QString EditorScene::cameraName(int index) const
@@ -2207,6 +2239,7 @@ bool EditorScene::exportGltfScene(const QUrl &folder, const QString &exportName,
 #else
     Q_UNUSED(folder)
     Q_UNUSED(exportName)
+    Q_UNUSED(exportSelected)
     Q_UNUSED(options)
 #endif
     return false;
