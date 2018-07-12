@@ -107,7 +107,7 @@ Item {
             ToolbarButton {
                 enabledIconSource: "images/redo.png"
                 disabledIconSource: "images/redo_disabled.png"
-                tooltip: (editorScene.undoHandler.undoText === "" || !buttonEnabled)
+                tooltip: (editorScene.undoHandler.redoText === "" || !buttonEnabled)
                          ? qsTr ("Redo") + editorScene.emptyString
                          : qsTr ("Redo '%1'").arg(editorScene.undoHandler.redoText)
                            + editorScene.emptyString
